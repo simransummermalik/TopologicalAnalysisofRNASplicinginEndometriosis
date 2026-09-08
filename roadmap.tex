@@ -1,0 +1,149 @@
+% Include from the existing main document with \input{roadmap}.
+% This section uses core LaTeX only and inherits the parent document style.
+\section{Project Execution Roadmap}
+
+This roadmap turns the proposed study into team assignments and a reusable
+Rust tool. The research question and graph-level Hodge method remain those
+of the proposal. Detailed tasks, dependencies, file contracts, and acceptance
+checks are recorded in \texttt{ROADMAP.md}. Environmental-response evidence
+prioritizes genes; without patient exposure measurements, it does not establish
+that an exposure caused a splicing change.
+
+\subsection{Team Workstreams}
+
+The genetics team will collect susceptibility evidence, normalize stable gene
+identifiers, retain source provenance, and export a checked gene table. The
+environment team will record exposure and tissue context, build the corresponding
+response-gene table, and prepare risk, environmental, and overlap memberships.
+These two tasks can proceed in parallel.
+
+The data team will obtain the selected public endometriosis and control data,
+verify tissue and sample metadata, obtain or derive junction counts, and export
+quality-checked standard tables. The mathematics team will specify graph
+orientation, incidence matrices, normalization, projections, numerical tolerances,
+and synthetic expected answers. Dataset preparation and synthetic validation can
+proceed simultaneously.
+
+The Rust team will build input validation, sample and gene grouping, graph and
+matrix construction, decomposition, comparison, ranking, and export modules.
+Parser development can begin with synthetic inputs before real data are ready.
+The statistics team will compare per-sample measurements, report effect sizes,
+validate permutation tests, correct for multiple testing, and compare simpler
+baselines. The presentation team will prepare pipeline and graph figures,
+reviewed biological explanations, and a small live demonstration. Team members
+may share roles, but each deliverable will have an owner and a reviewer.
+
+\subsection{Development Phases}
+
+The phase numbers identify dependencies rather than requiring every task to run
+in sequence. Schemas and mathematical checks must be agreed before real-data
+integration; biological interpretation follows validated statistical outputs.
+
+\begin{center}
+\small
+\begin{tabular}{@{}p{0.11\linewidth}p{0.40\linewidth}p{0.39\linewidth}@{}}
+\hline
+Phase & Main work & Deliverable \\
+\hline
+1 & Organize sources, roles, and interfaces & Assigned tasks and data contract \\
+2 & Build gene evidence and memberships & Risk, environment, candidate tables \\
+3 & Prepare data and verify metadata & Standard junction tables and QC \\
+4 & Validate synthetic mathematics & Known answers and numerical checks \\
+5 & Implement Rust core & Synthetic end-to-end CLI \\
+6 & Integrate real junction data & Checked real-data run \\
+7 & Compare disease and control & Per-sample values and differences \\
+8 & Test effects and compare baselines & Statistical and baseline outputs \\
+9 & Interpret supported findings & Evidence-linked explanations \\
+10 & Complete tool usability & Documented, tested Rust release \\
+11 & Rehearse small live example & Fast demo and offline backup \\
+12 & Assemble report and presentation & Figures, slides, reproducible methods \\
+13 & Optional proposal extensions & Separately validated extensions \\
+\hline
+\end{tabular}
+\end{center}
+
+Core phases are required. Performance improvements are desirable when needed;
+patient-level exposure analysis, full simplicial Hodge analysis, genome-wide
+scaling, and other-disease applications remain optional extensions after the
+core deliverables are ready.
+
+\subsection{Minimum Viable Tool}
+
+The minimum software deliverable is a reusable Rust command-line program. It
+will read standardized junction counts, validate sample and gene identifiers,
+construct directed splice graphs and the incidence matrix, normalize junction
+usage, and calculate the gradient and cycle-space projections defined in the
+proposal. It will retain per-sample measurements, compare eligible case and
+control groups, rank genes, identify contributing junctions, and export both
+readable summaries and machine-readable results with run parameters.
+
+Synthetic validation will cover linear and branching trees, exon skipping,
+back-splicing, noise, and changing junction weights. Checks will verify signal
+reconstruction, cycle-space membership, orthogonality, and energy accounting.
+A graph cycle-space component does not by itself establish a directed biological
+cycle or a circular RNA molecule. Zero-support inputs and numerical failures
+must receive explicit statuses.
+
+The following commands illustrate the intended interface; they are not yet
+implemented, and the tool name is a placeholder:
+\begin{verbatim}
+tool analyze sample.tsv
+tool gene GENE_ID --case cases/ --control controls/
+tool compare --case cases/ --control controls/
+tool rank --genes candidate_genes.tsv \
+    --case cases/ --control controls/
+\end{verbatim}
+
+The first release may analyze a small candidate set. It must remain usable with
+new conforming input files and include installation instructions, input and
+output specifications, example data, numerical tests, and actionable errors.
+A report or notebook alone does not satisfy the software deliverable.
+
+\subsection{Midpoint Milestone}
+
+By midpoint, the team should have documented gene-set criteria and provenance,
+candidate tables, a selected accessible dataset with reviewed metadata and a
+prepared small junction subset, and stable input/output schemas. Synthetic
+expected answers and mathematical validation should be ready. The Rust parser,
+graph constructor, and incidence-matrix code should work, with one synthetic
+example running through normalization, decomposition, and export. Final
+biological results are not required at this checkpoint. Any missing data
+prerequisite must remain recorded as an outstanding task.
+
+\subsection{Final Deliverables}
+
+The final deliverables are a documented reusable Rust CLI, integrated real
+endometriosis/control data, validated per-sample measurements, group effects,
+statistical testing where the sample design permits it, baseline comparisons,
+and evidence-linked interpretation. Statistical outputs will retain sample
+counts, exclusions, permutation settings, and multiple-testing adjustments.
+Figures and final documentation will distinguish observed findings from
+illustrative examples and state the limitations of the analysis.
+
+The live demonstration will show a tiny synthetic graph, run its decomposition,
+and then run one reviewed real gene through the case/control command. The team
+will explain the nodes, junctions, cycle-space measurement, group difference,
+and contributing junctions. Each live command should finish in seconds during
+rehearsal. Larger analyses will be precomputed and clearly labeled. Saved output,
+matching figures, and a short recording will provide an offline backup.
+
+\subsection{Risks and Fallbacks}
+
+If the overlap gene set is small, the team can retain the risk and environmental
+sets separately, as already allowed in the proposal. If junction tables are
+unavailable, the data team can derive them from available sequencing files with
+established software. Poor coverage or unsuitable metadata must be documented;
+insufficient biological replication supports descriptive comparisons, with
+inference explicitly unavailable.
+
+If the full dataset is too large, the team will use the proposal's small-gene-set
+MVP while preserving the graph-level method and real-data comparison. If the
+Hodge summary offers little advantage over simpler measurements, that outcome
+will be reported honestly. Full simplicial analysis will remain deferred unless
+biologically meaningful higher-order structures can be justified. A synthetic-only
+demonstration is useful progress but does not complete the real-data milestone.
+
+Exact dataset accessions, exposure scope, graph representation, support filters,
+normalization settings, numerical library and tolerances, statistical settings,
+and final CLI details will be recorded as implementation decisions. They do not
+reopen the approved research question or replace its mathematical method.
