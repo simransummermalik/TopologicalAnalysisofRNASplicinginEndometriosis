@@ -1,0 +1,5 @@
+sample_id	gene_id	from	to	count
+sample_cycle	GENE_CYCLE	E1	E2	100
+sample_cycle	GENE_CYCLE	E2	E3	100
+sample_cycle	GENE_CYCLE	E3	E1	100
+

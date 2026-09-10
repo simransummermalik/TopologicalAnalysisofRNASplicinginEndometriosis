@@ -7,8 +7,8 @@ Topological Analysis of RNA Splicing in Endometriosis: Integrating Genetic Susce
 | 1 | Organize documents, owners, and interfaces | Source map, task assignments, draft schemas | Available proposal | MUST HAVE | Ready |
 | 2 | Assemble genetics and environmental gene evidence | Risk, environment, overlap, and candidate TSVs | 1 | MUST HAVE | Not Started |
 | 3 | Prepare endometriosis/control junction data | Metadata, junction tables, QC report | 1; dataset decision | MUST HAVE | Not Started |
-| 4 | Specify and validate graph mathematics | Math specification, synthetic fixtures, expected answers | 1; graph contract | MUST HAVE | Not Started |
-| 5 | Build Rust MVP | Synthetic input-to-output CLI | 1, 4; stable schema | MUST HAVE | Not Started |
+| 4 | Specify and validate graph mathematics | Math specification, synthetic fixtures, expected answers | 1; graph contract | MUST HAVE | In Progress |
+| 5 | Build Rust MVP | Synthetic input-to-output CLI | 1, 4; stable schema | MUST HAVE | In Progress |
 | 6 | Integrate real splice data | Validated real-data tool run | 2, 3, 5 | MUST HAVE | Not Started |
 | 7 | Produce disease/control comparisons | Per-sample values and gene differences | 6 | MUST HAVE | Not Started |
 | 8 | Test differences and compare baselines | Effects, permutation results, FDR, baseline report | 7; valid sample design | MUST HAVE | Not Started |
@@ -18,7 +18,7 @@ Topological Analysis of RNA Splicing in Endometriosis: Integrating Genetic Susce
 | 12 | Assemble final report and presentation | Figures, slides, report, reproducibility record | 8–11 | MUST HAVE | Not Started |
 | 13 | Pursue proposal extensions if time permits | Separately documented extension | Core final milestone | STRETCH | Not Started |
 
-Status vocabulary: **Not Started**, **Ready**, **In Progress**, **Blocked**, **Complete**. Ready means prerequisites permit starting; it does not mean work has been performed. Only this execution documentation has been produced. No gene selection, dataset acquisition, analysis, tests of the scientific method, or Rust implementation has been performed for this roadmap.
+Status vocabulary: **Not Started**, **Ready**, **In Progress**, **Blocked**, **Complete**. Ready means prerequisites permit starting; it does not mean work has been performed. A basic Rust implementation and two synthetic checks now exist; the remaining synthetic validation, gene selection, dataset acquisition, real-data analysis, statistics, ranking, and final tool work have not been performed.
 
 ## Authority and scope
 
@@ -214,7 +214,7 @@ Each unchecked item is future work. Complete an item only when its output and re
 | `src/ranking.rs` | Rank by documented effects/evidence and select explanatory junctions | Deterministic ties; signed direction retained; no causal attribution |
 | `src/output.rs` | Export TSVs, manifest, and concise human-readable summary | Schema-valid files and round-trip checks |
 
-- [ ] R1. Agree on CLI name, supported input contract, output schema, and stable module interfaces.
+- [ ] R1. Record the settled `splice-girl` command name and agree on the supported input contract, output schema, and stable module interfaces.
 - [ ] R2. Set up the Rust package later with documented compiler/toolchain and dependency versions.
 - [ ] R3. Evaluate and select the numerical crate using singular/disconnected synthetic cases; prioritize correct projection for the MVP before scale optimizations.
 - [ ] R4. Build CLI shell and error reporting.
@@ -232,13 +232,13 @@ Each unchecked item is future work. Complete an item only when its output and re
 - [ ] R16. Add user installation/input/tutorial documentation, license decision, versioned release, and a small redistributable example.
 - [ ] R17. Have another teammate build from a clean checkout and reproduce the example without developer help; run formatting, lint, unit and integration checks appropriate to the implementation.
 
-**Proposed commands, not implemented now:** `tool` and the IDs are placeholders. The CLI may preserve the proposal's `cargo run -- compare ...` development interface.
+**Target commands:** the software is named Splice Girl and uses the command `splice-girl`. The subcommands and IDs below remain planned interfaces beyond the current basic synthetic prototype. The CLI may preserve the proposal's `cargo run -- compare ...` development interface.
 
 ```sh
-tool analyze sample.tsv
-tool gene GENE_ID --case endometriosis/ --control controls/
-tool compare --case endometriosis/ --control controls/
-tool rank --genes candidate_genes.tsv --case endometriosis/ --control controls/
+splice-girl analyze sample.tsv
+splice-girl gene GENE_ID --case endometriosis/ --control controls/
+splice-girl compare --case endometriosis/ --control controls/
+splice-girl rank --genes candidate_genes.tsv --case endometriosis/ --control controls/
 ```
 
 `analyze` validates input and returns per-sample/per-gene metrics. `gene` exposes graph and junction components for one gene and compares eligible samples. `compare` produces sample-based group differences and statistical outputs. `rank` applies candidate membership and the recorded ranking rule. Directory inputs require explicit sample-to-metadata mappings. A successful command reports analyzed/excluded counts, output locations, and meaningful statuses; an input/numerical failure is actionable.
@@ -503,9 +503,9 @@ Prepare the full analysis beforehand; live commands use a tiny local package. Th
 | Step | Speaker/action | What the audience sees | Acceptance |
 |---|---|---|---|
 | 1 | Math speaker introduces tiny chain and cycle | Named nodes, directed junctions, known counts | No unexplained notation |
-| 2 | Operator runs `tool analyze examples/demo/synthetic.tsv` | Gradient/cycle metrics and exported components | Command finishes in seconds; matches expected fixture |
+| 2 | Operator runs `splice-girl analyze examples/demo/synthetic.tsv` | Gradient/cycle metrics and exported components | Command finishes in seconds; matches expected fixture |
 | 3 | Math speaker explains decomposition | Which signal is explained by a vertex potential and which lies in cycle space | Clarify this is a mathematical projection |
-| 4 | Operator runs `tool gene GENE_ID --case examples/demo/case/ --control examples/demo/control/` | One real gene, nodes/junctions, sample fractions, group difference | Stable local data; command finishes in seconds |
+| 4 | Operator runs `splice-girl gene GENE_ID --case examples/demo/case/ --control examples/demo/control/` | One real gene, nodes/junctions, sample fractions, group difference | Stable local data; command finishes in seconds |
 | 5 | Biology/Stats speakers interpret | Supported junction contributions, sample variation, relevant evidence and inference status | No circular-RNA or exposure-causation claim from graph energy |
 | 6 | Operator shows precomputed larger ranking and help | Reusable input/output interface and full-study context | Precomputed results labeled with run version |
 
@@ -527,7 +527,7 @@ These are execution details left open by the proposal or necessary to make its i
 | Initial normalization | Math/Data | Before fixture acceptance | Proposal suggests within-gene total normalization; confirm and document zero-total handling |
 | Comparable graph support across samples | Math/Data/Stats | Before phase 6 | Decide shared support or explicitly justified varying support; avoid label-dependent filtering |
 | Numerical crate, solver, precision and tolerances | Rust/Math | Before M/R acceptance | Math specification; equations unchanged |
-| CLI name, exact flags, output and manifest formats | Rust/Data/Stats | Before public interface stabilizes | CLI/data contract; commands above conceptual |
+| Exact subcommand flags, output and manifest formats | Rust/Data/Stats | Before public interface stabilizes | The `splice-girl` command name is settled; command details above remain conceptual |
 | Permutation design/count/seed/sidedness, FDR family | Stats | Before real testing | Statistics specification; design must support exchangeability |
 | Baseline definitions, ranking/tie rules and junction contribution aggregation | Stats/Math/Rust | Before phase 7–8 outputs | Distinguish effects, significance and explanatory components |
 | Example redistribution, software license, release platform | Coordinator/Rust | Before packaging | Document source terms and tested build environment |

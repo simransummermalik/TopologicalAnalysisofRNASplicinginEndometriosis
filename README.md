@@ -1,15 +1,15 @@
 # Topological Analysis of RNA Splicing in Endometriosis
 
 **Integrating Genetic Susceptibility, Environmental Response, and Hodge Theory**  
-BINF 2111 research project
+BINF 2111 research project, 2026
 
 This project asks whether genes associated with endometriosis show differences in RNA-splicing topology between endometriosis and normal endometrial tissue. Genetic susceptibility and environmental-response evidence will prioritize genes. The study will represent splice junctions as weighted graphs and use graph-level Hodge decomposition to examine how their junction-usage patterns differ between samples.
 
-The final computational deliverable is a reusable command-line tool written primarily in Rust. The endometriosis study will be its first application.
+The final computational deliverable is a reusable command-line tool named **Splice Girl**, written primarily in Rust. Its command name is `splice-girl`, and the endometriosis study will be its first application.
 
 ## Current status
 
-The scientific proposal and execution roadmap are available. Software implementation, gene-set construction, dataset preparation, and research analysis have not started in this repository. There is no runnable CLI or installation procedure yet. Commands and output paths in the roadmap describe future deliverables.
+The scientific proposal and execution roadmap are available. A basic Rust prototype now performs the graph-level decomposition on two synthetic fixtures. Gene-set construction, dataset preparation, real-data integration, statistics, ranking, and research analysis have not started. Most commands and output paths in the roadmap remain future deliverables.
 
 The approved proposal remains the scientific source of truth. The roadmap translates it into assignments, dependencies, and completion checks.
 
@@ -21,6 +21,33 @@ The approved proposal remains the scientific source of truth. The roadmap transl
 | [Execution roadmap](ROADMAP.md) | Detailed team responsibilities, 13 execution phases, task checklists, file contracts, milestones, and fallbacks |
 | [LaTeX roadmap section](roadmap.tex) | Short roadmap section for inclusion in the existing Overleaf proposal |
 | [Roadmap PDF preview](roadmap-preview.pdf) | Compiled standalone preview of the LaTeX section |
+| [Basic math specification](docs/math_spec.md) | Orientation, normalization, decomposition equations, validation identities, and first expected examples |
+| [Contribution logs](logs/README.md) | Dated record of Summer's and Sydney's repository contributions |
+
+## Run the basic synthetic prototype
+
+The current command accepts a tab-separated file with exactly these columns:
+
+```text
+sample_id	gene_id	from	to	count
+```
+
+Run the chain and cycle examples:
+
+```sh
+cargo run -- tests/fixtures/linear.tsv
+cargo run -- tests/fixtures/cycle.tsv
+```
+
+Run the automated checks:
+
+```sh
+cargo test
+```
+
+The chain should report a cycle fraction near zero. The equal-weight directed cycle should report a cycle fraction near one. Both runs also check reconstruction, cycle-space membership, and orthogonality. The prototype currently rejects zero-total groups, duplicate directed edges, and self-loops with explicit errors.
+
+These `cargo run` commands build and run the `splice-girl` executable. After a release build, the equivalent direct command begins with `./target/release/splice-girl`.
 
 ## How the project connects
 

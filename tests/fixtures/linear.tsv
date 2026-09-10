@@ -1,0 +1,4 @@
+sample_id	gene_id	from	to	count
+sample_linear	GENE_LINEAR	E1	E2	100
+sample_linear	GENE_LINEAR	E2	E3	80
+

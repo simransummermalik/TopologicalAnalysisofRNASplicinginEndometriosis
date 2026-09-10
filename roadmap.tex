@@ -84,13 +84,14 @@ A graph cycle-space component does not by itself establish a directed biological
 cycle or a circular RNA molecule. Zero-support inputs and numerical failures
 must receive explicit statuses.
 
-The following commands illustrate the intended interface; they are not yet
-implemented, and the tool name is a placeholder:
+The software is named Splice Girl and its command is \texttt{splice-girl}.
+The following commands illustrate the intended interface; these subcommands are
+not yet implemented:
 \begin{verbatim}
-tool analyze sample.tsv
-tool gene GENE_ID --case cases/ --control controls/
-tool compare --case cases/ --control controls/
-tool rank --genes candidate_genes.tsv \
+splice-girl analyze sample.tsv
+splice-girl gene GENE_ID --case cases/ --control controls/
+splice-girl compare --case cases/ --control controls/
+splice-girl rank --genes candidate_genes.tsv \
     --case cases/ --control controls/
 \end{verbatim}
 
