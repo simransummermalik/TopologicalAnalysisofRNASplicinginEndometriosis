@@ -1,3 +1,7 @@
+//! CLI entry point for `splice-girl`. Currently a single-purpose command
+//! (`splice-girl <junctions.tsv>`) that runs the full parse -> graph ->
+//! decompose pipeline and prints results to stdout; the `analyze`/`gene`/
+//! `compare`/`rank` subcommands described in ROADMAP.md are not built yet.
 use std::env;
 use std::path::Path;
 use std::process::ExitCode;
@@ -28,6 +32,7 @@ fn run() -> Result<(), String> {
     let junctions = parse_tsv(Path::new(&path))?;
     let results = analyze_junctions(junctions)?;
 
+    // One block of metrics per (sample, gene) group found in the input.
     for result in results {
         let decomposition = result.decomposition;
         println!("sample: {}", result.sample_id);

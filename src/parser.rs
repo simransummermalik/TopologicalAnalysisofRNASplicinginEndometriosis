@@ -1,6 +1,13 @@
+//! Reads and validates the tab-separated junction input described in the
+//! README: one row per observed splice junction, with columns
+//! `sample_id, gene_id, from, to, count`. This is the only place raw input
+//! is trusted from disk; everything downstream assumes rows already passed
+//! these checks.
 use std::fs;
 use std::path::Path;
 
+/// One observed splice junction: `count` reads support the `from -> to`
+/// edge for a given sample and gene.
 #[derive(Clone, Debug)]
 pub struct Junction {
     pub sample_id: String,
@@ -12,12 +19,15 @@ pub struct Junction {
 
 const REQUIRED_HEADER: [&str; 5] = ["sample_id", "gene_id", "from", "to", "count"];
 
+/// Reads `path` from disk and parses it as junction TSV.
 pub fn parse_tsv(path: &Path) -> Result<Vec<Junction>, String> {
     let contents = fs::read_to_string(path)
         .map_err(|error| format!("could not read {}: {error}", path.display()))?;
     parse_tsv_text(&contents)
 }
 
+/// Parses already-read TSV text into junction rows. Split out from
+/// `parse_tsv` so tests can exercise parsing without touching the filesystem.
 pub fn parse_tsv_text(contents: &str) -> Result<Vec<Junction>, String> {
     let mut lines = contents.lines();
     let header = lines.next().ok_or("input is empty")?;
@@ -32,6 +42,7 @@ pub fn parse_tsv_text(contents: &str) -> Result<Vec<Junction>, String> {
 
     let mut rows = Vec::new();
     for (offset, line) in lines.enumerate() {
+        // +2: line 1 is the header, and `enumerate` is zero-based.
         let line_number = offset + 2;
         if line.trim().is_empty() {
             continue;
@@ -45,6 +56,8 @@ pub fn parse_tsv_text(contents: &str) -> Result<Vec<Junction>, String> {
             ));
         }
 
+        // Only the first four columns are identifiers; `count` gets its own
+        // numeric check below.
         for (column, value) in REQUIRED_HEADER[..4].iter().zip(&fields[..4]) {
             if value.trim().is_empty() {
                 return Err(format!("line {line_number}: {column} cannot be empty"));
@@ -59,6 +72,9 @@ pub fn parse_tsv_text(contents: &str) -> Result<Vec<Junction>, String> {
                 "line {line_number}: count must be finite and nonnegative"
             ));
         }
+        // Self-loops have no meaningful incidence-matrix column (a -1 and a
+        // +1 would cancel at the same node), so the graph math can't handle
+        // them yet; reject explicitly rather than silently dropping signal.
         if fields[2] == fields[3] {
             return Err(format!(
                 "line {line_number}: self-loop {} -> {} is not supported in the basic prototype",

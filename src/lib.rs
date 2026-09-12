@@ -1,3 +1,6 @@
+//! Library entry point tying the pipeline together: parsed junctions ->
+//! per-(sample, gene) graphs -> Hodge decomposition. `main.rs` is a thin
+//! CLI wrapper around `analyze_junctions`.
 pub mod graph;
 pub mod hodge;
 pub mod matrix;
@@ -9,6 +12,7 @@ use graph::SpliceGraph;
 use hodge::{Decomposition, decompose};
 use parser::Junction;
 
+/// The graph and decomposition computed for one sample's one gene.
 #[derive(Debug)]
 pub struct GroupResult {
     pub sample_id: String,
@@ -17,6 +21,9 @@ pub struct GroupResult {
     pub decomposition: Decomposition,
 }
 
+/// Groups junction rows by (sample_id, gene_id) — the decomposition is
+/// always computed within a single sample/gene, never pooled across
+/// samples — then builds a graph and runs the decomposition for each group.
 pub fn analyze_junctions(junctions: Vec<Junction>) -> Result<Vec<GroupResult>, String> {
     let mut groups: BTreeMap<(String, String), Vec<Junction>> = BTreeMap::new();
 
