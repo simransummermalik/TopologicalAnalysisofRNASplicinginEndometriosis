@@ -23,6 +23,7 @@ The approved proposal remains the scientific source of truth. The roadmap transl
 | [Roadmap PDF preview](roadmap-preview.pdf) | Compiled standalone preview of the LaTeX section |
 | [Basic math specification](docs/math_spec.md) | Orientation, normalization, decomposition equations, validation identities, and first expected examples |
 | [Contribution logs](logs/README.md) | Dated record of Summer's and Sydney's repository contributions |
+| [Splice Girl startup art](assets/splice_girl_banner.txt) | Detailed ASCII figure printed when the CLI starts |
 
 ## Run the basic synthetic prototype
 
@@ -39,6 +40,14 @@ cargo run -- tests/fixtures/linear.tsv
 cargo run -- tests/fixtures/cycle.tsv
 ```
 
+To start Splice Girl with its interactive menu, run:
+
+```sh
+cargo run -- --start
+```
+
+The menu currently contains one action, **Analyze a junction TSV**, plus quit. Choose `1`, enter a path such as `tests/fixtures/cycle.tsv`, and press Enter to return to the menu. The direct file-path command remains available for scripts and quick checks.
+
 Run the automated checks:
 
 ```sh
@@ -48,6 +57,8 @@ cargo test
 The chain should report a cycle fraction near zero. The equal-weight directed cycle should report a cycle fraction near one. Both runs also check reconstruction, cycle-space membership, and orthogonality. The prototype currently rejects zero-total groups, duplicate directed edges, and self-loops with explicit errors.
 
 These `cargo run` commands build and run the `splice-girl` executable. After a release build, the equivalent direct command begins with `./target/release/splice-girl`.
+
+Splice Girl prints its detailed ASCII startup figure before each run. The figure is stored in `assets/splice_girl_banner.txt` and is shown in a soft terminal color when output is connected to a terminal.
 
 ## How the project connects
 

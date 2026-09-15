@@ -1,8 +1,9 @@
-//! CLI entry point for `splice-girl`. Currently a single-purpose command
-//! (`splice-girl <junctions.tsv>`) that runs the full parse -> graph ->
-//! decompose pipeline and prints results to stdout; the `analyze`/`gene`/
-//! `compare`/`rank` subcommands described in ROADMAP.md are not built yet.
+//! CLI entry point for `splice-girl`. The basic direct command accepts a
+//! junction TSV, while `--start` opens the small interactive menu around that
+//! same analysis feature. The `analyze`/`gene`/`compare`/`rank` subcommands
+//! described in ROADMAP.md are not built yet.
 use std::env;
+use std::io::{self, IsTerminal, Write};
 use std::path::Path;
 use std::process::ExitCode;
 
@@ -10,6 +11,7 @@ use splice_girl::analyze_junctions;
 use splice_girl::parser::parse_tsv;
 
 fn main() -> ExitCode {
+    print_banner();
     match run() {
         Ok(()) => ExitCode::SUCCESS,
         Err(error) => {
@@ -19,19 +21,101 @@ fn main() -> ExitCode {
     }
 }
 
+fn print_banner() {
+    let banner = include_str!("../assets/splice_girl_banner.txt");
+    if io::stdout().is_terminal() {
+        print!("\x1b[38;5;217m{banner}\x1b[0m");
+    } else {
+        print!("{banner}");
+    }
+    println!();
+    let _ = io::stdout().flush();
+}
+
 fn run() -> Result<(), String> {
     let mut arguments = env::args();
     let program = arguments.next().unwrap_or_else(|| "splice-girl".to_owned());
-    let path = arguments
+    let first_argument = arguments
         .next()
-        .ok_or_else(|| format!("usage: {program} <junctions.tsv>"))?;
-    if arguments.next().is_some() {
-        return Err(format!("usage: {program} <junctions.tsv>"));
+        .ok_or_else(|| format!("usage: {program} [--start | <junctions.tsv>]"))?;
+
+    if first_argument == "--start" {
+        if arguments.next().is_some() {
+            return Err(format!("usage: {program} [--start | <junctions.tsv>]"));
+        }
+        return run_start_menu();
     }
 
-    let junctions = parse_tsv(Path::new(&path))?;
-    let results = analyze_junctions(junctions)?;
+    if arguments.next().is_some() {
+        return Err(format!("usage: {program} [--start | <junctions.tsv>]"));
+    }
 
+    let results = analyze_path(Path::new(&first_argument))?;
+    print_results(results)
+}
+
+fn analyze_path(path: &Path) -> Result<Vec<splice_girl::GroupResult>, String> {
+    let junctions = parse_tsv(path)?;
+    analyze_junctions(junctions)
+}
+
+fn run_start_menu() -> Result<(), String> {
+    loop {
+        println!();
+        println!("  Splice Girl");
+        println!("  -----------");
+        println!("  [1] Analyze a junction TSV");
+        println!("  [q] Quit");
+        println!();
+
+        let Some(choice) = prompt("  Choose an option: ")? else {
+            return Ok(());
+        };
+
+        match choice.trim().to_ascii_lowercase().as_str() {
+            "1" => {
+                let Some(path) = prompt("  Junction TSV path: ")? else {
+                    return Ok(());
+                };
+                let path = path.trim();
+                if path.is_empty() {
+                    println!("  Please enter a TSV path.");
+                    continue;
+                }
+
+                match analyze_path(Path::new(path)).and_then(print_results) {
+                    Ok(()) => {
+                        if prompt("  Press Enter to return to the menu...")?.is_none() {
+                            return Ok(());
+                        }
+                    }
+                    Err(error) => println!("  error: {error}"),
+                }
+            }
+            "q" => return Ok(()),
+            "" => {}
+            _ => println!("  Please choose 1 or q."),
+        }
+    }
+}
+
+fn prompt(message: &str) -> Result<Option<String>, String> {
+    print!("{message}");
+    io::stdout()
+        .flush()
+        .map_err(|error| format!("could not flush terminal prompt: {error}"))?;
+    let mut line = String::new();
+    let bytes_read = io::stdin()
+        .read_line(&mut line)
+        .map_err(|error| format!("could not read terminal input: {error}"))?;
+    if bytes_read == 0 {
+        Ok(None)
+    } else {
+        Ok(Some(line))
+    }
+}
+
+fn print_results(results: Vec<splice_girl::GroupResult>) -> Result<(), String> {
     // One block of metrics per (sample, gene) group found in the input.
     for result in results {
         let decomposition = result.decomposition;

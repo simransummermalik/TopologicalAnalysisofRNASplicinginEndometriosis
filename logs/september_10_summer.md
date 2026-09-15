@@ -13,6 +13,10 @@ complete research tool.
 - Added `Cargo.toml` and `Cargo.lock` for the `splice-girl` Rust package.
 - Added `.gitignore` so Rust's generated `target/` directory is not committed.
 - Added the command entry point in `src/main.rs`.
+- Added the detailed `assets/splice_girl_banner.txt` startup figure and wired
+  it into the CLI with terminal-safe color output.
+- Added the `splice-girl --start` interactive menu with the currently available
+  junction-TSV analysis action and a quit option.
 
 ### Basic input and graph processing
 
@@ -66,4 +70,3 @@ Validation completed for this version:
 This contribution does not include real RNA-seq integration, gene research,
 case/control statistics, gene ranking, or the final subcommand interface. Those
 remain later project stages.
-

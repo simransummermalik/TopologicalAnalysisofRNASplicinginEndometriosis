@@ -5,6 +5,7 @@
 //!   - a cycle-space part `F_cycle = F - F_grad`, the leftover signal that
 //!     can't be explained by any per-node potential (e.g. exon-skipping
 //!     loops, back-splicing).
+//!
 //! `cycle_fraction = ||F_cycle||^2 / ||F||^2` is the number this project
 //! ultimately compares between endometriosis and control samples.
 use crate::graph::SpliceGraph;
