@@ -11,7 +11,7 @@ The final computational deliverable is a reusable command-line tool named **Spli
 
 The scientific proposal and execution roadmap are available. A basic Rust prototype now performs the graph-level decomposition on two synthetic fixtures. Gene-set construction, dataset preparation, real-data integration, statistics, ranking, and research analysis have not started. Most commands and output paths in the roadmap remain future deliverables.
 
-The approved proposal remains the scientific source of truth. The roadmap translates it into assignments, dependencies, and completion checks.
+The approved proposal remains the scientific source of truth. The roadmap translates it into tasks, dependencies, and completion checks.
 
 ## Start here
 
@@ -19,6 +19,7 @@ The approved proposal remains the scientific source of truth. The roadmap transl
 |---|---|
 | [Project proposal](assets/hodgetheorynew.pdf) | Full research question, biological motivation, mathematical method, validation strategy, and limitations |
 | [Execution roadmap](ROADMAP.md) | Detailed team responsibilities, 13 execution phases, task checklists, file contracts, milestones, and fallbacks |
+| [Beginner task guide](delegations_and_tasks/tasks.md) | Very detailed step-by-step guide for every workstream task |
 | [LaTeX roadmap section](roadmap.tex) | Short roadmap section for inclusion in the existing Overleaf proposal |
 | [Roadmap PDF preview](roadmap-preview.pdf) | Compiled standalone preview of the LaTeX section |
 | [Basic math specification](docs/math_spec.md) | Orientation, normalization, decomposition equations, validation identities, and first expected examples |
