@@ -1,19 +1,11 @@
-# Splice Girl — Beginner Task Guide
+# Splice Girl — Task Guide
 
-> **Shared task list:** this file contains general tasks only. It does not
-> assign leads, owners, or roles.
+> **Shared task list:** this file contains general task.
 
-This file expands the task IDs in `ROADMAP.md` into small tasks that a beginner
+This file expands the task IDs in `ROADMAP.md` into small tasks that anyone
 can pick up one at a time. It is a shared checklist for the team.
 Split the tasks in whatever way is convenient; this file only describes the
 work and its expected outputs.
-
-It is an execution checklist. It does not change the approved research question,
-replace graph-level Hodge decomposition, or choose a new disease.
-
-The proposal is the scientific source of truth. `ROADMAP.md` is the detailed
-execution plan. This file explains what each task means in ordinary
-language and what evidence shows that it is finished.
 
 ## How to use this file
 
