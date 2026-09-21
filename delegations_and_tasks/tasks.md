@@ -45,9 +45,7 @@ decision or explanation behind the task. If the task requires a new paper,
 database, or dataset, record its exact citation in the output instead of
 leaving the source in a chat message.
 
-## What the words mean
-
-These definitions are enough to begin the technical tasks.
+## Dictionary (Continue to Add More)
 
 - A **gene** is a named region of biological information. The project will
   analyze selected genes rather than every gene immediately.
