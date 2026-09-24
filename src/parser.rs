@@ -107,4 +107,28 @@ mod tests {
         let input = "sample_id\tgene_id\tfrom\tto\tcount\ns1\tg1\tE1\tE2\t-1\n";
         assert!(parse_tsv_text(input).unwrap_err().contains("nonnegative"));
     }
+
+    #[test]
+    fn rejects_empty_sample_ids() {
+        let input = "sample_id\tgene_id\tfrom\tto\tcount\n\tg1\tE1\tE2\t1\n";
+        assert!(parse_tsv_text(input).unwrap_err().contains("sample_id"));
+    }
+
+    #[test]
+    fn rejects_rows_with_the_wrong_number_of_fields() {
+        let input = "sample_id\tgene_id\tfrom\tto\tcount\ns1\tg1\tE1\tE2\n";
+        assert!(parse_tsv_text(input).unwrap_err().contains("expected 5"));
+    }
+
+    #[test]
+    fn rejects_non_finite_counts() {
+        let input = "sample_id\tgene_id\tfrom\tto\tcount\ns1\tg1\tE1\tE2\tNaN\n";
+        assert!(parse_tsv_text(input).unwrap_err().contains("nonnegative"));
+    }
+
+    #[test]
+    fn rejects_self_loops() {
+        let input = "sample_id\tgene_id\tfrom\tto\tcount\ns1\tg1\tE1\tE1\t1\n";
+        assert!(parse_tsv_text(input).unwrap_err().contains("self-loop"));
+    }
 }
