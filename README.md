@@ -92,6 +92,27 @@ In the graph, vertices represent exons or splice sites, edges represent observed
 
 Environmental-response evidence is initially a gene-prioritization component. Without patient-level exposure measurements, it cannot establish that an exposure caused a splicing change. Likewise, a cycle-space component does not establish the existence of circular RNA. Full simplicial Hodge decomposition remains an optional extension.
 
+## Why Hodge theory?
+
+RNA splicing is about connections between exons, so counting junctions alone
+can miss the structure of those connections. Hodge theory gives Splice Girl a
+way to separate that structure:
+
+1. **Build a graph:** exons or splice sites are nodes, and observed splice
+   junctions are directed edges with read-support weights.
+2. **Find the node-explainable part:** the gradient component captures signal
+   that can be explained by assigning values to the nodes.
+3. **Find the circulating part:** the cycle-space component captures signal
+   that remains around graph loops or alternative paths after the gradient part
+   is removed.
+4. **Compare samples:** the resulting components and cycle fraction can be
+   compared across endometriosis and control samples for the same gene.
+
+This makes the result more informative than one total read count while keeping
+the interpretation careful: a cycle-space signal does not by itself prove
+circular RNA, disease causation, or an exposure effect. See the [math
+specification](docs/math_spec.md) for the equations and validation checks.
+
 ## Team workstreams
 
 | Workstream | Main responsibility |
