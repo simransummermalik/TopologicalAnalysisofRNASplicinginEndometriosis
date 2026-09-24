@@ -23,6 +23,7 @@ The approved proposal remains the scientific source of truth. The roadmap transl
 | [LaTeX roadmap section](roadmap.tex) | Short roadmap section for inclusion in the existing Overleaf proposal |
 | [Roadmap PDF preview](roadmap-preview.pdf) | Compiled standalone preview of the LaTeX section |
 | [Basic math specification](docs/math_spec.md) | Orientation, normalization, decomposition equations, validation identities, and first expected examples |
+| [Input data contract](docs/data_contract.md) | Required TSV columns, validation rules, examples, and current prototype limits |
 | [Contribution logs](logs/README.md) | Dated record of Summer's and Sydney's repository contributions |
 | [Splice Girl startup art](assets/splice_girl_banner.txt) | Detailed ASCII figure printed when the CLI starts |
 
