@@ -108,6 +108,42 @@ junctions are directed edges with read-support weights.
 4. **Compare samples:** the resulting components and cycle fraction can be
    compared across endometriosis and control samples for the same gene.
 
+### The core math
+
+For one sample and one gene, each junction has a support value $c_e$. Splice
+Girl turns that support into a normalized edge signal:
+
+$$
+w_e = \frac{c_e}{\sum_j c_j}
+$$
+
+The incidence matrix $B_1$ records where each directed edge starts and ends.
+The fitted node values $\phi^*$ explain as much of the edge signal as possible:
+
+$$
+\phi^* = \operatorname*{arg\,min}_{\phi}
+\left\|F - B_1^T\phi\right\|_2^2
+$$
+
+The remaining signal is the cycle-space component:
+
+$$
+F_{\mathrm{grad}} = B_1^T\phi^*, \qquad
+F_{\mathrm{cycle}} = F - F_{\mathrm{grad}}
+$$
+
+Splice Girl summarizes it with a cycle fraction:
+
+$$
+C = \frac{\left\|F_{\mathrm{cycle}}\right\|_2^2}
+        {\left\|F\right\|_2^2}
+$$
+
+A valid result should reconstruct the original signal, satisfy
+$B_1F_{\mathrm{cycle}} \approx 0$, and keep the gradient and cycle components
+orthogonal. The implementation checks these identities before reporting a
+result.
+
 This makes the result more informative than one total read count while keeping
 the interpretation careful: a cycle-space signal does not by itself prove
 circular RNA, disease causation, or an exposure effect. See the [math
