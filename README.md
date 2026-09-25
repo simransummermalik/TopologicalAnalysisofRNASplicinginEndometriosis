@@ -99,7 +99,7 @@ can miss the structure of those connections. Hodge theory gives Splice Girl a
 way to separate that structure:
 
 1. **Build a graph:** exons or splice sites are nodes, and observed splice
-   junctions are directed edges with read-support weights.
+junctions are directed edges with read-support weights.
 2. **Find the node-explainable part:** the gradient component captures signal
    that can be explained by assigning values to the nodes.
 3. **Find the circulating part:** the cycle-space component captures signal
