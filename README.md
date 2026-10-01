@@ -25,7 +25,7 @@ The approved proposal remains the scientific source of truth. The roadmap transl
 | [Basic math specification](docs/math_spec.md) | Orientation, normalization, decomposition equations, validation identities, and first expected examples |
 | [Input data contract](docs/data_contract.md) | Required TSV columns, validation rules, examples, and current prototype limits |
 | [Public data manifest](data/README.md) | GSE179640 source snapshot, sample groups, accessions, and data-use limits |
-| [Cleaver preprocessing](preprocessing/README.md) | One-sample FASTQ-to-junction pipeline, setup, commands, outputs, and safeguards |
+| [RNA-seq preprocessing](preprocessing/README.md) | One-sample FASTQ-to-junction workflow using Cleaver-X, STAR, and project conversion helpers |
 | [Contribution logs](logs/README.md) | Dated record of Summer's and Sydney's repository contributions |
 | [Splice Girl startup art](assets/splice_girl_banner.txt) | Detailed ASCII figure printed when the CLI starts |
 

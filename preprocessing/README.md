@@ -1,50 +1,71 @@
-# Cleaver preprocessing
+# RNA-seq preprocessing
 
-Cleaver is Splice Girl's small preprocessing wrapper. It turns one raw FASTQ
-sample into cleaned reads, a sorted/indexed alignment, a STAR splice-junction
-table, and the five-column TSV accepted by Splice Girl.
+This folder contains Splice Girl's small workflow for turning one raw FASTQ
+sample into the junction table accepted by the Rust analyzer.
+
+It uses [Cleaver-X](https://github.com/raw-lab/cleaver-x) as an external
+bioinformatics tool. Cleaver-X supplies the `cleaver fastp` read-cleaning step
+and `cleaver samtools index` BAM-indexing step. The local Python runner is named
+`run_preprocessing.py`; it coordinates tools but is not Cleaver-X itself.
 
 ```text
-FASTQ
-  -> fastp trimming and before/after QC report
+raw FASTQ
+  -> Cleaver-X read trimming, filtering, and JSON QC
   -> optional Bowtie2 PhiX removal
   -> STAR splice-aware alignment
-  -> sorted BAM and STAR SJ.out.tab
-  -> annotated Splice Girl junction TSV
+  -> Cleaver-X BAM indexing
+  -> project helper converts STAR junctions to a Splice Girl TSV
 ```
 
-Cleaver is the project wrapper name. It is not the unrelated Bioconductor
-`cleaver` protein-cleavage package.
+## What is implemented
 
-## What is working now
-
-- `cleaver.py check` reports missing external programs.
-- `cleaver.py plan` validates the paths and prints the exact commands without
-  processing the reads.
-- `cleaver.py run` executes one single-end or paired-end sample.
-- `build_junction_gene_map.py` builds the required junction-to-gene mapping
-  from adjacent exons in the same transcript in a GTF file.
+- `run_preprocessing.py check` reports missing external programs.
+- `run_preprocessing.py plan` validates inputs and prints the exact commands
+  without processing reads.
+- `run_preprocessing.py run` executes one single-end or paired-end sample and
+  records the commands, settings, tool versions, and status in a manifest.
+- `build_junction_gene_map.py` builds a junction-to-gene map from adjacent
+  exons in the same GTF transcript.
 - `star_junctions.py` converts annotated STAR junctions into Splice Girl's
-  input format and writes a small QC JSON file.
-- The included smoke tests exercise the map builder, strand-aware conversion,
-  filtering, and command planning without requiring large reference files.
+  five-column input and writes conversion QC as JSON.
 
-The external bioinformatics programs are not installed automatically. The
-provided `environment.yml` records the required packages, but creating the
-environment should wait until installation is approved.
+## Install the command-line tools
+
+Cleaver-X's official installation command is:
+
+```sh
+cargo install cleaver
+cleaver doctor
+```
+
+The remaining dependencies are listed in `environment.yml`:
+
+```sh
+conda env create -f preprocessing/environment.yml
+conda activate splice-girl-preprocessing
+```
+
+The runner expects `cleaver` and `STAR` on `PATH`. Bowtie2 is required only
+when `--phix-index` is used.
+
+On Apple Silicon, STAR 2.7.11b may complete while reading zero input sequences.
+Check STAR's `Log.final.out` before trusting an alignment. This upstream issue
+is tracked at <https://github.com/alexdobin/STAR/issues/2632>. The project has
+not yet validated a replacement aligner, so a zero-read STAR run must be
+treated as failed preprocessing.
 
 ## 1. Check the computer
 
 From the repository root:
 
 ```sh
-python3 preprocessing/cleaver.py check
+python3 preprocessing/run_preprocessing.py check
 ```
 
-If PhiX filtering has been approved for the dataset:
+If PhiX filtering will be used:
 
 ```sh
-python3 preprocessing/cleaver.py check --with-phix
+python3 preprocessing/run_preprocessing.py check --with-phix
 ```
 
 ## 2. Build the annotation map
@@ -57,15 +78,13 @@ python3 preprocessing/build_junction_gene_map.py \
   --output references/junction_gene_map.tsv
 ```
 
-The map uses STAR's one-based intron coordinates. Junctions assigned to more
-than one gene are treated as ambiguous and omitted by the converter.
+The map uses STAR's one-based intron coordinates. The converter omits
+junctions that map ambiguously to more than one gene.
 
 ## 3. Preview one sample
 
-Paired-end example:
-
 ```sh
-python3 preprocessing/cleaver.py plan \
+python3 preprocessing/run_preprocessing.py plan \
   --sample-id C01 \
   --read1 data/raw/C01_R1.fastq.gz \
   --read2 data/raw/C01_R2.fastq.gz \
@@ -74,18 +93,17 @@ python3 preprocessing/cleaver.py plan \
   --output-dir preprocessing/runs/C01
 ```
 
-Add `--phix-index references/phix/phix` only when PhiX filtering is needed and
-the matching Bowtie2 index exists. The default count uses uniquely mapped
-reads only. Multimapping support is excluded unless
-`--include-multimapping` is explicitly supplied.
+For paired-end reads, the runner asks Cleaver-X to detect adapters from read
+overlap. Add `--phix-index references/phix/phix` only when PhiX filtering is
+needed and the matching Bowtie2 index exists. Junction counts use uniquely
+mapped reads unless `--include-multimapping` is supplied.
 
-## 4. Run one approved sample
+## 4. Run one sample
 
-After reviewing the plan, replace `plan` with `run`. Cleaver refuses to
-overwrite its main outputs.
+After checking the printed plan, replace `plan` with `run`:
 
 ```sh
-python3 preprocessing/cleaver.py run \
+python3 preprocessing/run_preprocessing.py run \
   --sample-id C01 \
   --read1 data/raw/C01_R1.fastq.gz \
   --read2 data/raw/C01_R2.fastq.gz \
@@ -94,13 +112,14 @@ python3 preprocessing/cleaver.py run \
   --output-dir preprocessing/runs/C01
 ```
 
-The final input will be:
+The runner refuses to overwrite its main outputs. When every command succeeds,
+the Splice Girl input is:
 
 ```text
 preprocessing/runs/C01/splice_girl/C01.junctions.tsv
 ```
 
-Run it through the current Rust program with:
+Analyze it with:
 
 ```sh
 cargo run -- preprocessing/runs/C01/splice_girl/C01.junctions.tsv
@@ -110,13 +129,13 @@ cargo run -- preprocessing/runs/C01/splice_girl/C01.junctions.tsv
 
 | Directory | Contents |
 |---|---|
-| `trimmed/` | Adapter- and quality-trimmed FASTQ files |
-| `cleaned/` | Reads not aligned to PhiX, when that optional step is enabled |
-| `aligned/` | STAR logs, sorted BAM, and `SJ.out.tab` |
-| `qc/` | fastp HTML/JSON and junction-conversion QC JSON |
+| `trimmed/` | Cleaver-X-cleaned FASTQ files |
+| `cleaned/` | Reads not aligned to PhiX, if that optional step is enabled |
+| `aligned/` | STAR logs, sorted BAM, BAM index, and `SJ.out.tab` |
+| `qc/` | Cleaver-X JSON and junction-conversion JSON |
 | `splice_girl/` | Five-column junction TSV |
-| `run_manifest.json` | Input paths, options, commands, tool paths/versions, and status |
+| `run_manifest.json` | Inputs, settings, commands, tool versions, outputs, and status |
 
-Raw reads, reference indexes, BAM files, and run directories are deliberately
-excluded from Git because they can be very large. Keep their checksums and
-storage locations in the sample manifest.
+Raw reads, references, indexes, BAM files, and run directories are excluded
+from Git because they can be large. Keep their checksums and storage locations
+in the sample record.

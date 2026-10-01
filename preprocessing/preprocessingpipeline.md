@@ -1,38 +1,38 @@
 # RNA-seq preprocessing pipeline notes
 
-These notes describe the step before Splice Girl. The goal is to turn raw
-sequencing reads into a small, traceable junction table that follows the
-[Splice Girl input contract](../docs/data_contract.md).
+These notes describe the work before Splice Girl's graph and Hodge analysis.
+The goal is to turn raw sequencing reads into a small, traceable junction table
+that follows the [Splice Girl input contract](../docs/data_contract.md).
 
-A basic one-sample implementation now lives in
-[`preprocessing/README.md`](README.md). The project calls the wrapper
-**Cleaver**. Its current tool chain is fastp, optional Bowtie2 PhiX filtering,
-STAR, samtools, and a small STAR-junction converter. The exact reference,
-filtering settings, and PhiX decision still need approval before full data are
-processed.
+The initial one-sample runner is documented in
+[`preprocessing/README.md`](README.md). It uses the existing RAW Lab
+[Cleaver-X](https://github.com/raw-lab/cleaver-x) command-line tool for read
+cleaning and BAM indexing. STAR performs splice-aware alignment, optional
+Bowtie2 filtering removes PhiX when appropriate, and project-specific helpers
+create the final junction table.
 
-## Proposed flow
+## Current flow
 
 ```text
 raw FASTQ reads
       |
       v
-quality check and trimming report (fastp)
+trim, filter, and write JSON QC (Cleaver-X: cleaver fastp)
       |
       v
-trim and clean reads (fastp)
+remove PhiX/control reads when the experiment requires it (Bowtie2)
       |
       v
-remove or filter PhiX/control reads when needed
+align cleaned reads to the matching human reference (STAR)
       |
       v
-align cleaned reads to an indexed human reference genome (STAR)
+coordinate-sorted BAM and splice-junction table (STAR)
       |
       v
-sorted BAM (STAR) and BAM index (samtools)
+build BAM index (Cleaver-X: cleaver samtools index)
       |
       v
-extract and annotate STAR splice junctions
+annotate and filter STAR splice junctions (project helper)
       |
       v
 quality-controlled junction TSV for Splice Girl
@@ -40,65 +40,56 @@ quality-controlled junction TSV for Splice Girl
 
 ## What each step means
 
-1. **Sample manifest:** Give every sample a stable `sample_id` before touching
-   the files. Record whether reads are paired-end, the tissue, condition,
-   accession, and original filenames.
+1. **Sample record:** Give every sample a stable `sample_id`. Record whether
+   reads are paired-end, the tissue, condition, accession, and original files.
 2. **Reference preparation:** Record the human genome build and annotation
-   release. Build or obtain the matching searchable genome index.
-3. **Raw-read quality check:** Inspect read quality, length, adapter content,
-   and obvious contamination before trimming.
-4. **Trim and clean:** Remove adapters and low-quality bases with the tool that
-   the data team approves. Save its version and settings.
-5. **PhiX/control filtering:** Decide whether PhiX reads are present and how
-   they will be removed. Do not assume that a trimming tool automatically does
-   PhiX filtering.
-6. **Splice-aware alignment:** Align cleaned reads to the matching genome index
-   with the confirmed RNA-seq aligner. Record whether the settings preserve
-   the junction information needed by this project.
-7. **SAM to BAM:** Convert alignment output to sorted, indexed BAM files. Keep
-   the sample ID attached to every file.
-8. **Feature extraction:** Derive the gene, exon, or splice-junction features
-   needed for the graph input. Record the extraction tool, annotation, and
-   filtering settings.
-9. **Final QC:** Check missing fields, low support, duplicate junctions,
-   sample joins, and whether back-splice detection is supported.
-10. **Splice Girl export:** Write rows with exactly these columns:
+   release. Build or obtain the matching STAR genome index.
+3. **Read cleaning:** Use `cleaver fastp` to trim and filter FASTQ records. Keep
+   its JSON report and exact command. Paired-end overlap detection is enabled
+   by the current runner; final thresholds still need dataset-specific review.
+4. **PhiX filtering:** Decide from the library method and QC evidence whether
+   PhiX removal is needed. Cleaver-X read cleaning does not itself remove PhiX;
+   the optional workflow step uses Bowtie2 and a matching PhiX index.
+5. **Splice-aware alignment:** Align the cleaned reads with STAR. Inspect the
+   STAR logs, especially the input-read and mapping counts, before continuing.
+6. **BAM indexing:** STAR creates a coordinate-sorted BAM. The workflow runs
+   `cleaver samtools index` so tools can access it by genomic position.
+7. **Feature extraction:** Convert `SJ.out.tab` coordinates and read support to
+   gene-labelled directed junctions using an annotation-derived gene map.
+8. **Final QC:** Check unannotated and ambiguous junction counts, support
+   thresholds, duplicate rows, sample labels, and missing values.
+9. **Splice Girl export:** Write exactly these tab-separated columns:
 
-    ```text
-    sample_id    gene_id    from    to    count
-    ```
-
-    The separators in the real file must be tab characters.
+   ```text
+   sample_id    gene_id    from    to    count
+   ```
 
 ## Files to keep
 
-For each sample, keep a small manifest that points to:
+For each sample, retain or record the location of:
 
-- original FASTQ files and their checksums;
-- raw and cleaned quality reports;
-- cleaned FASTQ files or their documented storage location;
-- the reference build, annotation, and index version;
-- sorted/indexed BAM files or their documented storage location;
-- extracted junction features;
-- the final standardized junction TSV;
-- tool versions, commands, dates, and filtering settings.
+- original FASTQ files and checksums;
+- Cleaver-X JSON QC and cleaned FASTQ files;
+- reference build, annotation release, and index version;
+- STAR logs, sorted BAM, and BAM index;
+- STAR splice-junction output;
+- standardized Splice Girl junction TSV and conversion QC;
+- tool versions, commands, date, and filtering settings.
 
-Do not pool samples during preprocessing. A row must remain traceable to one
-sample, one gene, and one directed junction. A missing measurement must remain
-different from a measured zero.
+Do not pool samples during preprocessing. Each row must remain traceable to one
+sample, one gene, and one directed junction. Keep missing measurements distinct
+from measured zeros.
 
 ## Decisions still needed
 
 - Which public dataset and tissue design will be used?
 - Which human genome build and annotation release match that dataset?
-- Are fastp, optional Bowtie2 PhiX filtering, STAR, and samtools approved for
-  the final data method?
-- Is PhiX filtering needed for these libraries, and is the correct PhiX index
-  available?
-- Which minimum unique-read support should be used for the final analysis?
-- Can the chosen workflow detect back-splice junctions?
-- Which support and coverage filters will be applied?
+- Is PhiX filtering appropriate for these libraries?
+- Which read-cleaning and minimum junction-support thresholds are justified?
+- Does the final question require back-splice detection, which STAR's standard
+  `SJ.out.tab` export does not represent as ordinary forward splice junctions?
+- Which aligner setup will be used if STAR reports zero input reads on Apple
+  Silicon?
 
-These choices belong in the data methods record before full-scale processing.
-The current Rust CLI starts after this pipeline, when it receives the
-standardized junction TSV.
+Record these choices before processing the full dataset. The current Rust CLI
+starts after this workflow, when it receives the standardized junction TSV.

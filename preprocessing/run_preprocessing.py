@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Cleaver: the small raw-read preprocessing wrapper for Splice Girl."""
+"""Run one raw-read preprocessing workflow for Splice Girl."""
 
 from __future__ import annotations
 
@@ -16,7 +16,7 @@ from pathlib import Path
 
 SCRIPT_DIR = Path(__file__).resolve().parent
 CONVERTER = SCRIPT_DIR / "star_junctions.py"
-REQUIRED_TOOLS = ("fastp", "STAR", "samtools")
+REQUIRED_TOOLS = ("cleaver", "STAR")
 
 
 @dataclass(frozen=True)
@@ -61,8 +61,8 @@ def output_paths(config: PipelineConfig) -> dict[str, Path]:
         "clean_r1": output / "cleaned" / f"{sample}.R1.fastq.gz",
         "clean_r2": output / "cleaned" / f"{sample}.R2.fastq.gz",
         "fastp_json": output / "qc" / f"{sample}.fastp.json",
-        "fastp_html": output / "qc" / f"{sample}.fastp.html",
         "star_prefix": output / "aligned" / f"{sample}.",
+        "star_log": output / "aligned" / f"{sample}.Log.final.out",
         "bam": output / "aligned" / f"{sample}.Aligned.sortedByCoord.out.bam",
         "sj": output / "aligned" / f"{sample}.SJ.out.tab",
         "junction_tsv": output / "splice_girl" / f"{sample}.junctions.tsv",
@@ -73,24 +73,28 @@ def output_paths(config: PipelineConfig) -> dict[str, Path]:
 
 def build_commands(config: PipelineConfig) -> list[list[str]]:
     paths = output_paths(config)
-    fastp = [
+    cleaver_fastp = [
+        "cleaver",
         "fastp",
         "-i",
         str(config.read1),
         "-o",
         str(paths["trimmed_r1"]),
-        "--json",
+        "-j",
         str(paths["fastp_json"]),
-        "--html",
-        str(paths["fastp_html"]),
-        "--thread",
-        str(config.threads),
     ]
     if config.read2 is not None:
-        fastp[3:3] = ["-I", str(config.read2)]
-        fastp[7:7] = ["-O", str(paths["trimmed_r2"])]
+        cleaver_fastp.extend(
+            [
+                "-I",
+                str(config.read2),
+                "-O",
+                str(paths["trimmed_r2"]),
+                "-2",
+            ]
+        )
 
-    commands = [fastp]
+    commands = [cleaver_fastp]
     star_r1 = paths["trimmed_r1"]
     star_r2 = paths["trimmed_r2"] if config.read2 is not None else None
 
@@ -154,9 +158,7 @@ def build_commands(config: PipelineConfig) -> list[list[str]]:
         ]
     )
     commands.append(star)
-    commands.append(
-        ["samtools", "index", "-@", str(config.threads), str(paths["bam"])]
-    )
+    commands.append(["cleaver", "samtools", "index", str(paths["bam"])])
 
     converter = [
         sys.executable,
@@ -189,9 +191,8 @@ def tool_status(include_phix: bool) -> dict[str, str | None]:
 
 def tool_details(include_phix: bool) -> dict[str, dict[str, str | None]]:
     version_arguments = {
-        "fastp": ["--version"],
+        "cleaver": ["--version"],
         "STAR": ["--version"],
-        "samtools": ["--version"],
         "bowtie2": ["--version"],
     }
     details: dict[str, dict[str, str | None]] = {}
@@ -220,6 +221,40 @@ def command_plan(config: PipelineConfig) -> str:
     return "\n".join(f"{index}. {shlex.join(command)}" for index, command in enumerate(build_commands(config), 1))
 
 
+def validate_star_outputs(config: PipelineConfig) -> None:
+    """Reject a nominally successful STAR run that did not process reads."""
+    paths = output_paths(config)
+    log_path = paths["star_log"]
+    if not log_path.is_file():
+        raise ValueError(f"STAR did not create its final log: {log_path}")
+
+    input_reads: int | None = None
+    for line in log_path.read_text(encoding="utf-8").splitlines():
+        if "Number of input reads" not in line:
+            continue
+        _, separator, value = line.partition("|")
+        if not separator:
+            continue
+        try:
+            input_reads = int(value.strip().replace(",", ""))
+        except ValueError as error:
+            raise ValueError(
+                f"could not read STAR's input-read count from {log_path}"
+            ) from error
+        break
+
+    if input_reads is None:
+        raise ValueError(f"STAR's final log has no input-read count: {log_path}")
+    if input_reads == 0:
+        raise ValueError(
+            "STAR reported zero input reads; stop before BAM indexing and inspect "
+            f"{log_path}"
+        )
+    for required_path in (paths["bam"], paths["sj"]):
+        if not required_path.is_file():
+            raise ValueError(f"STAR did not create expected output: {required_path}")
+
+
 def write_manifest(
     config: PipelineConfig,
     commands: list[list[str]],
@@ -232,7 +267,7 @@ def write_manifest(
         for key, value in asdict(config).items()
     }
     manifest = {
-        "pipeline": "Cleaver",
+        "pipeline": "Splice Girl RNA-seq preprocessing",
         "status": status,
         "timestamp_utc": datetime.now(timezone.utc).isoformat(),
         "configuration": serializable_config,
@@ -260,7 +295,7 @@ def execute(config: PipelineConfig) -> None:
     protected_outputs = [
         paths["trimmed_r1"],
         paths["fastp_json"],
-        paths["fastp_html"],
+        paths["star_log"],
         paths["bam"],
         paths["sj"],
         paths["junction_tsv"],
@@ -283,9 +318,11 @@ def execute(config: PipelineConfig) -> None:
         for number, command in enumerate(commands, start=1):
             print(f"[{number}/{len(commands)}] {shlex.join(command)}", flush=True)
             subprocess.run(command, check=True)
-    except (OSError, subprocess.CalledProcessError) as error:
+            if command[0] == "STAR":
+                validate_star_outputs(config)
+    except (OSError, subprocess.CalledProcessError, ValueError) as error:
         write_manifest(config, commands, "failed", str(error))
-        raise ValueError(f"Cleaver stopped: {error}") from error
+        raise ValueError(f"preprocessing stopped: {error}") from error
     write_manifest(config, commands, "complete")
     print(f"Splice Girl input: {paths['junction_tsv']}")
 
@@ -323,7 +360,7 @@ def config_from_args(args: argparse.Namespace) -> PipelineConfig:
 
 def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(
-        description="Cleaver: FASTQ-to-junction preprocessing for Splice Girl."
+        description="FASTQ-to-junction preprocessing for Splice Girl."
     )
     subparsers = parser.add_subparsers(dest="command", required=True)
     check = subparsers.add_parser("check", help="Report required installed tools.")
