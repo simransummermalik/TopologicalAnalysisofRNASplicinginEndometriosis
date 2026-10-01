@@ -1,2 +1,10 @@
 /target/
-
+/data/raw/
+/references/
+/preprocessing/runs/
+__pycache__/
+*.pyc
+*.bam
+*.bam.bai
+*.fastq.gz
+*.fq.gz

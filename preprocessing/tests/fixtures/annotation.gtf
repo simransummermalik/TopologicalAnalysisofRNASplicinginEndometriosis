@@ -1,0 +1,6 @@
+##gtf-version 2.2
+chr1	test	exon	100	199	.	+	.	gene_id "GENE_A"; transcript_id "TX_A"; exon_number "1";
+chr1	test	exon	300	399	.	+	.	gene_id "GENE_A"; transcript_id "TX_A"; exon_number "2";
+chr1	test	exon	500	599	.	+	.	gene_id "GENE_A"; transcript_id "TX_A"; exon_number "3";
+chr2	test	exon	100	149	.	-	.	gene_id "GENE_B"; transcript_id "TX_B"; exon_number "2";
+chr2	test	exon	250	299	.	-	.	gene_id "GENE_B"; transcript_id "TX_B"; exon_number "1";

@@ -1,0 +1,10 @@
+name: splice-girl-preprocessing
+channels:
+  - conda-forge
+  - bioconda
+dependencies:
+  - python>=3.11
+  - fastp
+  - star
+  - samtools
+  - bowtie2

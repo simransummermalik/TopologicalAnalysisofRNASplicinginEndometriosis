@@ -1,0 +1,3 @@
+##gtf-version 2.2
+chrTest	test	exon	100	199	.	+	.	gene_id "GENE_SMOKE"; transcript_id "TX_SMOKE"; exon_number "1";
+chrTest	test	exon	300	399	.	+	.	gene_id "GENE_SMOKE"; transcript_id "TX_SMOKE"; exon_number "2";

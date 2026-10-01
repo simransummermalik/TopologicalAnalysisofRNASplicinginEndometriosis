@@ -1,11 +1,15 @@
 # RNA-seq preprocessing pipeline notes
 
-These are planning notes for the step before Splice Girl. The goal is to turn
-raw sequencing reads into a small, traceable junction table that follows the
+These notes describe the step before Splice Girl. The goal is to turn raw
+sequencing reads into a small, traceable junction table that follows the
 [Splice Girl input contract](../docs/data_contract.md).
 
-This is not implemented yet. The exact tools and settings should be confirmed
-with Dr. White and the data team before anyone processes the full dataset.
+A basic one-sample implementation now lives in
+[`preprocessing/README.md`](README.md). The project calls the wrapper
+**Cleaver**. Its current tool chain is fastp, optional Bowtie2 PhiX filtering,
+STAR, samtools, and a small STAR-junction converter. The exact reference,
+filtering settings, and PhiX decision still need approval before full data are
+processed.
 
 ## Proposed flow
 
@@ -13,25 +17,22 @@ with Dr. White and the data team before anyone processes the full dataset.
 raw FASTQ reads
       |
       v
-quality check (FastQC or confirmed equivalent)
+quality check and trimming report (fastp)
       |
       v
-trim and clean reads (tool to be confirmed)
+trim and clean reads (fastp)
       |
       v
 remove or filter PhiX/control reads when needed
       |
       v
-align cleaned reads to an indexed human reference genome
+align cleaned reads to an indexed human reference genome (STAR)
       |
       v
-SAM alignment
+sorted BAM (STAR) and BAM index (samtools)
       |
       v
-sorted and indexed BAM (samtools or confirmed equivalent)
-      |
-      v
-extract gene/exon/splice-junction features
+extract and annotate STAR splice junctions
       |
       v
 quality-controlled junction TSV for Splice Girl
@@ -90,11 +91,11 @@ different from a measured zero.
 
 - Which public dataset and tissue design will be used?
 - Which human genome build and annotation release match that dataset?
-- Which trimming/cleaning tool will be used?
-- Which tool will handle PhiX filtering, if it is needed?
-- Which splice-aware aligner will be used: STAR, HISAT2, or another approved
-  tool?
-- Which feature extractor will produce junction counts?
+- Are fastp, optional Bowtie2 PhiX filtering, STAR, and samtools approved for
+  the final data method?
+- Is PhiX filtering needed for these libraries, and is the correct PhiX index
+  available?
+- Which minimum unique-read support should be used for the final analysis?
 - Can the chosen workflow detect back-splice junctions?
 - Which support and coverage filters will be applied?
 
