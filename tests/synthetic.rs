@@ -30,6 +30,20 @@ fn equal_weight_directed_cycle_is_entirely_cyclic() {
 }
 
 #[test]
+fn exon_skipping_graph_has_nonzero_cycle_component_despite_no_directed_cycle() {
+    // E1 -> E2 -> E3 plus the E1 -> E3 skip edge is acyclic as a directed
+    // graph (no directed path leads back to E1), but as an undirected
+    // triangle it has one independent cycle. With equal edge weights, hand
+    // solving the normal equations (pinning E1's potential to zero) gives
+    // cycle = (w/3, -w/3, w/3) for any w, so cycle_fraction is exactly 1/9
+    // regardless of the total read support. M11 exists to confirm the
+    // engine agrees with that independently derived answer.
+    let result = analyze_fixture("exon_skip.tsv");
+    assert!(result.decomposition.checks.passed);
+    assert!((result.decomposition.cycle_fraction - 1.0 / 9.0).abs() < 1e-12);
+}
+
+#[test]
 fn incidence_columns_use_negative_source_and_positive_destination() {
     let result = analyze_fixture("linear.tsv");
     assert_eq!(result.graph.nodes, ["E1", "E2", "E3"]);

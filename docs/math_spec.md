@@ -72,7 +72,7 @@ $$
 
 The command exits with an error if these checks fail.
 
-## First two expected examples
+## First three expected examples
 
 `tests/fixtures/linear.tsv` is a three-node chain. A tree has no graph cycle
 space, so every edge signal is a gradient and its expected cycle fraction is
@@ -82,6 +82,18 @@ zero.
 $E_1 \rightarrow E_2 \rightarrow E_3 \rightarrow E_1$ with equal weights.
 The signal is in $\ker(B_1)$, so its expected gradient component is zero and
 its expected cycle fraction is one.
+
+`tests/fixtures/exon_skip.tsv` is the exon-skipping graph
+$E_1 \rightarrow E_2$, $E_2 \rightarrow E_3$, $E_1 \rightarrow E_3$. As a
+directed graph it has no return path to $E_1$, but as an undirected graph it
+is a triangle with one independent cycle, so a nonzero cycle-space component
+is still expected. Pinning $E_1$'s potential to zero and solving the normal
+equations by hand gives, for equal edge weights $w$, a cycle component of
+$(w/3,\,-w/3,\,w/3)$ on edges $(E_1{\to}E_2,\,E_1{\to}E_3,\,E_2{\to}E_3)$
+regardless of $w$, so the expected cycle fraction is exactly $1/9$. This case
+demonstrates that an acyclic directed graph can still carry a nonzero
+cycle-space signal; absence of a directed cycle is not the same as absence of
+graph cycle-space structure.
 
 This basic solver uses normal equations and dense Gaussian elimination. It is
 appropriate for the tiny validation fixtures, but the numerical method must be
