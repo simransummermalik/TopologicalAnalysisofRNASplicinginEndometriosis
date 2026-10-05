@@ -1,31 +1,61 @@
-_**Dataset Overview**_
-**Organism**: Homo sapiens (Human)
+# E-MTAB-15117 endometriosis RNA-seq dataset
 
-**Study Focus**: Endometriosis vs. Normal controls
+This folder records a second public endometriosis RNA-seq dataset identified as
+**E-MTAB-15117**. The original source sheet is preserved as
+[research/dataorg.csv](dataorg.csv). Despite its filename, that file is
+tab-separated MAGE-TAB sample metadata.
 
-**Sequencing Type**: Bulk RNA-Seq (Paired-end, PolyA selection, nominal insert length: 300 bp)
+The source sheet describes 48 unique female human samples, all paired-end
+PolyA-selected RNA-seq libraries with a nominal insert length of 300 bp. It
+contains direct ENA FASTQ links and one ENA run accession per sample.
 
-**Performing Institution / Sequencing Facility**: General Hospital in Prague / National Center for Medical Genomics (Pilsen, Czech Republic)
+## Sample breakdown
 
-**Principal Investigator / Performer**: Radoslav Janoštiak
+| Condition | Samples | Tissue or site |
+|---|---:|---|
+| Control | 15 | Endometrium |
+| Deep-infiltrating endometriosis | 16 | Body proper / lesion site |
+| Ovarian endometriosis | 11 | Ovary |
+| Peritoneal endometriosis | 6 | Peritoneal cavity |
 
-**Sample Breakdown**
-Group Prefix	Sample Count (Unique Individuals)	Tissue / Organism Part	Condition / Disease Status
-B- (B-01 to B-16)	11 unique individuals	Endometrium	Normal (Control)
-DE- (DE-01 to DE-20)	10+ unique individuals	Body proper (lesion site)	Deep Infiltration Endometriosis (DIE)
-Patient Demographics (Calculated from Data)
+The disease label for one source row (DE-14) contains a missing separator.
+The reader preserves that original value in original_disease and maps it to
+the normalized deep_infiltrating_endometriosis condition.
 
-**Control Group Age Range**: 23–38 years old (Mean: ~30.8 years)
+## Clean manifest
 
-**DIE Group Age Range**: 24–40 years old (Mean: ~31.3 years)
+Run this from the repository root:
 
-**Sex**: Female (100%)
+```sh
+python3 research/read_dataorg.py
+```
 
-**Developmental Stage**: Adult (100%)
+The script validates that each sample has exactly one R1 and one R2 FASTQ,
+checks that paired rows agree on their metadata, normalizes condition labels,
+and writes:
 
-Data Files & Identifiers
-Runs (Comment[ENA_RUN]): ERR14943004 through ERR14943032
+```text
+data/metadata/E-MTAB-15117_samples.tsv
+```
 
-Experiments (Comment[ENA_EXPERIMENT]): ERX14347347 through ERX14347375
+To validate without writing the output:
 
-File Format: Paired FASTQ files (*_R1.fastq.gz and *_R2.fastq.gz) downloadable via European Nucleotide Archive (ENA) FTP.
+```sh
+python3 research/read_dataorg.py --check-only
+```
+
+The generated manifest has one row per sample and includes the sample, tissue,
+condition, ENA experiment and run IDs, and both FASTQ URLs. Keep the original
+sheet unchanged so the normalized file can always be traced back to its source.
+
+## Important comparison note
+
+The control samples are normal endometrium. The disease samples are lesions
+from body proper, ovary, or peritoneal cavity. This makes the dataset useful
+for lesion-subtype and exploratory comparisons, but a direct disease-versus-
+control result may also reflect tissue location. The research group should
+choose the primary comparison before full-scale processing.
+
+For the first technical pilot, use one control and one lesion sample. Do not
+download all 48 samples or commit FASTQ/BAM files to Git until the pipeline has
+passed that pilot.
