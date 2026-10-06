@@ -35,6 +35,7 @@ alone or worked on together. A simple shared table is enough:
 | G1 | Not started | |
 | M1 | Not started | |
 | R1 | Not started | |
+| M11 | Done | Exon-skipping fixture, independently derived 1/9 expected cycle fraction, test, and math_spec write-up — [logs/october_5th_vania.md](../logs/october_5th_vania.md) |
 
 Add rows as needed. When a task is finished, link its output and change the
 status to **Done**. When a task is blocked, write the missing information in
