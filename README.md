@@ -27,7 +27,7 @@ The approved proposal remains the scientific source of truth. The roadmap transl
 | [Public data manifest](data/README.md) | GSE179640 source snapshot, sample groups, accessions, and data-use limits |
 | [E-MTAB-15117 research data](research/README.md) | Validated paired-end sample sheet, normalized manifest, ENA run links, and tissue-comparison notes |
 | [RNA-seq preprocessing](preprocessing/README.md) | One-sample FASTQ-to-junction workflow using Cleaver-X, STAR, and project conversion helpers |
-| [Contribution logs](logs/README.md) | Dated record of Summer's and Sydney's repository contributions |
+| [Contribution logs](logs/README.md) | Dated record of repository contributions |
 | [Splice Girl startup art](assets/splice_girl_banner.txt) | Detailed ASCII figure printed when the CLI starts |
 
 ## Run the basic synthetic prototype
