@@ -1,7 +1,7 @@
 # Topological Analysis of RNA Splicing in Endometriosis
 
 **Integrating Genetic Susceptibility, Environmental Response, and Hodge Theory**  
-BINF 2111 research project, 2026
+BINF 2111 research project
 
 This project asks whether genes associated with endometriosis show differences in RNA-splicing topology between endometriosis and normal endometrial tissue. Genetic susceptibility and environmental-response evidence will prioritize genes. The study will represent splice junctions as weighted graphs and use graph-level Hodge decomposition to examine how their junction-usage patterns differ between samples.
 
