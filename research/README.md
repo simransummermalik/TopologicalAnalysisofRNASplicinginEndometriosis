@@ -48,6 +48,17 @@ The generated manifest has one row per sample and includes the sample, tissue,
 condition, ENA experiment and run IDs, and both FASTQ URLs. Keep the original
 sheet unchanged so the normalized file can always be traced back to its source.
 
+The first two-sample technical pilot is recorded in
+[data/metadata/E-MTAB-15117_pilot.tsv](../data/metadata/E-MTAB-15117_pilot.tsv):
+`B-01` is one normal-endometrium control and `DE-01` is one
+deep-infiltrating-endometriosis lesion. The pilot is deliberately small enough
+to test the workflow before downloading the rest of the study.
+
+Before running the pilot, record the human genome build and annotation release
+chosen by the research group, then build the matching STAR index and junction
+gene map. Those files are not in this repository yet; the FASTQ download should
+wait until that reference choice is recorded so reads are aligned consistently.
+
 ## Important comparison note
 
 The control samples are normal endometrium. The disease samples are lesions
