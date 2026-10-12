@@ -23,6 +23,43 @@ fn linear_graph_has_no_cycle_component() {
 }
 
 #[test]
+fn shuffled_rows_preserve_graph_and_metrics() {
+    let ordered = parse_tsv_text(
+        "sample_id\tgene_id\tfrom\tto\tcount\n\
+         sample_linear\tGENE_LINEAR\tE1\tE2\t100\n\
+         sample_linear\tGENE_LINEAR\tE2\tE3\t80\n",
+    )
+    .expect("ordered input should parse");
+    let shuffled = parse_tsv_text(
+        "sample_id\tgene_id\tfrom\tto\tcount\n\
+         sample_linear\tGENE_LINEAR\tE2\tE3\t80\n\
+         sample_linear\tGENE_LINEAR\tE1\tE2\t100\n",
+    )
+    .expect("shuffled input should parse");
+
+    let ordered = analyze_junctions(ordered)
+        .expect("ordered input should analyze")
+        .remove(0);
+    let shuffled = analyze_junctions(shuffled)
+        .expect("shuffled input should analyze")
+        .remove(0);
+
+    assert_eq!(ordered.graph.nodes, shuffled.graph.nodes);
+    assert_eq!(ordered.graph.edges.len(), shuffled.graph.edges.len());
+    for (left, right) in ordered.graph.edges.iter().zip(&shuffled.graph.edges) {
+        assert_eq!((left.from, left.to), (right.from, right.to));
+        assert!((left.count - right.count).abs() < 1e-12);
+    }
+    for (left, right) in ordered.graph.signal.iter().zip(&shuffled.graph.signal) {
+        assert!((left - right).abs() < 1e-12);
+    }
+    assert!(
+        (ordered.decomposition.cycle_fraction - shuffled.decomposition.cycle_fraction).abs()
+            < 1e-12
+    );
+}
+
+#[test]
 fn equal_weight_directed_cycle_is_entirely_cyclic() {
     let result = analyze_fixture("cycle.tsv");
     assert!(result.decomposition.checks.passed);

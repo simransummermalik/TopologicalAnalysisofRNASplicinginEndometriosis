@@ -1,5 +1,12 @@
 # Splice Girl input data contract
 
+**Contract version:** 0.1 (2026-10-12)
+
+This version uses text node identifiers for the synthetic prototype. When real
+STAR junctions are added, the genome build, annotation release, and genomic
+coordinate convention must be recorded in the separate sample/run metadata;
+those reference choices are not silently inferred from this five-column file.
+
 This document defines the small TSV format accepted by the current Splice Girl
 prototype.It does not replace the final biological metadata schema that will be
 needed for real RNA-seq analysis.

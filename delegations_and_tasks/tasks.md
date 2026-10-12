@@ -33,9 +33,24 @@ alone or worked on together. A simple shared table is enough:
 |---|---|---|
 | P1.1 | Not started | |
 | G1 | Not started | |
-| M1 | Not started | |
 | R1 | Not started | |
+| M1 | Done | Deterministic node and edge ordering is documented in [docs/math_spec.md](../docs/math_spec.md) and implemented in `src/graph.rs`. |
+| M2 | Done | Source `-1` and destination `+1` orientation is documented and tested in `tests/synthetic.rs`. |
+| M3 | Done | Normalization, zero-support, duplicate-edge, self-loop, and disconnected-component rules are implemented and documented in [docs/data_contract.md](../docs/data_contract.md) and [docs/math_spec.md](../docs/math_spec.md). |
+| M4 | Done | Gradient least-squares equation and potential convention are documented in [docs/math_spec.md](../docs/math_spec.md). |
+| M5 | Done | Cycle residual, kernel check, and directed-cycle versus graph-cycle explanation are documented and implemented in `src/hodge.rs`. |
+| M6 | Done | Signal energy, cycle energy, cycle fraction, and zero-energy failure are documented and implemented. |
+| M7 | Done | `f64`, tolerance `1e-9`, partial pivoting, and singular-system failure are recorded in [docs/math_spec.md](../docs/math_spec.md) and `src/matrix.rs`. |
+| M8 | Done | Reconstruction, kernel, orthogonality, and cycle-fraction checks run for every decomposition. |
 | M11 | Done | Exon-skipping fixture, independently derived 1/9 expected cycle fraction, test, and math_spec write-up — [logs/october_5th_vania.md](../logs/october_5th_vania.md) |
+| M12 | Done | Equal-weight directed-cycle fixture and expected cycle fraction of 1 are covered by `tests/fixtures/cycle.tsv` and `tests/synthetic.rs`. |
+| R2 | Done | Cargo package, source folders, tests, `.gitignore`, and build instructions are present. |
+| R4 | Done | `splice-girl <junctions.tsv>` and `splice-girl --start` work with explicit usage and error handling. |
+| R5 | Done | Parser checks headers, fields, identifiers, counts, self-loops, and line-numbered errors. |
+| R6 | Done | Rows are grouped by sample/gene and converted into deterministic normalized graphs. |
+| R7 | Done | Incidence matrix, projection, cycle residual, and tolerance checks are implemented. |
+| R8 | Done | CLI prints sample/gene IDs, graph sizes, energies, cycle fraction, edge components, and check status. |
+| R9 | In progress | Linear, directed-cycle, and exon-skipping cases pass; branching-tree, noise, and weight-sweep cases still need to be added. |
 
 Add rows as needed. When a task is finished, link its output and change the
 status to **Done**. When a task is blocked, write the missing information in
