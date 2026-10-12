@@ -2,12 +2,12 @@
 
 **Status:** Prepared for push; not committed yet
 
-Today I cleaned up the project records and checked what work was already
-finished. I updated the task table to mark the verified math and Rust pieces,
-left the unfinished synthetic tests marked as still in progress, added a
-version number and clearer reference note to the data contract, and added a
-test showing that changing the order of input rows does not change the answer.
-I also reviewed the Git history and made the missing dated contribution logs
-for my earlier work so the project has a clearer record of what happened on
-each day. The Rust test suite passes with seven tests, and no real RNA data was
-downloaded or changed today.
+Today I cleaned up the project records and finished the remaining small Hodge
+validation fixtures. I added branching-tree, disconnected, fixed-noise,
+weight-sweep, zero-support, duplicate-edge, and self-loop examples, recorded
+their expected answers, and added tests for matrix dimensions and cycle rank.
+I also updated the task table and math specification, added a version number
+and clearer reference note to the data contract, added a row-order stability
+test, and reviewed the Git history to make the missing dated contribution logs.
+The Rust test suite now passes all 12 integration tests, and no real RNA data
+was downloaded or changed today.

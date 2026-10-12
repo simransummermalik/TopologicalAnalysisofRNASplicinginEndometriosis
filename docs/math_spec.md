@@ -72,7 +72,7 @@ $$
 
 The command exits with an error if these checks fail.
 
-## First three expected examples
+## Reviewed synthetic validation examples
 
 `tests/fixtures/linear.tsv` is a three-node chain. A tree has no graph cycle
 space, so every edge signal is a gradient and its expected cycle fraction is
@@ -94,6 +94,26 @@ regardless of $w$, so the expected cycle fraction is exactly $1/9$. This case
 demonstrates that an acyclic directed graph can still carry a nonzero
 cycle-space signal; absence of a directed cycle is not the same as absence of
 graph cycle-space structure.
+
+`tests/fixtures/branching_tree.tsv` adds a branch without closing a graph loop.
+Its expected cycle fraction is zero. `tests/fixtures/disconnected.tsv` has two
+separate edge components; its incidence matrix has two connected components and
+its cycle rank is still zero.
+
+`tests/fixtures/noise.tsv` is a fixed perturbation of the exon-skipping shape.
+The counts are `103`, `100`, and `97` in input order, with the fixed seed note
+`20261012`; its independently calculated cycle fraction is
+$5618/45027 \approx 0.1247695827$.
+
+`tests/fixtures/weight_sweep.tsv` keeps two directed-cycle edges at `100` reads
+and changes the back-splice edge to `1`, `5`, `10`, `20`, and `40` reads. The
+relative weights are `0.01`, `0.05`, `0.10`, `0.20`, and `0.40`; the exact
+fractions and normalization denominators are recorded in
+`tests/fixtures/expected.md`.
+
+The complete fixture review, including expected failure behavior for zero
+support, duplicate edges, and self-loops, is recorded in
+`tests/fixtures/expected.md`.
 
 This basic solver uses normal equations and dense Gaussian elimination. It is
 appropriate for the tiny validation fixtures, but the numerical method must be

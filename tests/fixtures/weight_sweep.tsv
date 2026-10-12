@@ -1,0 +1,16 @@
+sample_id	gene_id	from	to	count
+sample_weight_0_01	GENE_WEIGHT	E1	E2	100
+sample_weight_0_01	GENE_WEIGHT	E2	E3	100
+sample_weight_0_01	GENE_WEIGHT	E3	E1	1
+sample_weight_0_05	GENE_WEIGHT	E1	E2	100
+sample_weight_0_05	GENE_WEIGHT	E2	E3	100
+sample_weight_0_05	GENE_WEIGHT	E3	E1	5
+sample_weight_0_10	GENE_WEIGHT	E1	E2	100
+sample_weight_0_10	GENE_WEIGHT	E2	E3	100
+sample_weight_0_10	GENE_WEIGHT	E3	E1	10
+sample_weight_0_20	GENE_WEIGHT	E1	E2	100
+sample_weight_0_20	GENE_WEIGHT	E2	E3	100
+sample_weight_0_20	GENE_WEIGHT	E3	E1	20
+sample_weight_0_40	GENE_WEIGHT	E1	E2	100
+sample_weight_0_40	GENE_WEIGHT	E2	E3	100
+sample_weight_0_40	GENE_WEIGHT	E3	E1	40

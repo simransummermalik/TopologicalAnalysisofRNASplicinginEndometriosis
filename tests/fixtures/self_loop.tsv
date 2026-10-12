@@ -1,0 +1,2 @@
+sample_id	gene_id	from	to	count
+sample_self_loop	GENE_SELF_LOOP	E1	E1	10

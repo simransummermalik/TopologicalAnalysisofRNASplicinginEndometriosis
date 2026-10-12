@@ -42,15 +42,21 @@ alone or worked on together. A simple shared table is enough:
 | M6 | Done | Signal energy, cycle energy, cycle fraction, and zero-energy failure are documented and implemented. |
 | M7 | Done | `f64`, tolerance `1e-9`, partial pivoting, and singular-system failure are recorded in [docs/math_spec.md](../docs/math_spec.md) and `src/matrix.rs`. |
 | M8 | Done | Reconstruction, kernel, orthogonality, and cycle-fraction checks run for every decomposition. |
+| M9 | Done | Incidence dimensions and `m - n + k` cycle rank are checked against numerical matrix rank on linear, cycle, exon-skipping, and disconnected fixtures. |
+| M10 | Done | Branching-tree fixture confirms that a tree has cycle fraction zero. |
 | M11 | Done | Exon-skipping fixture, independently derived 1/9 expected cycle fraction, test, and math_spec write-up — [logs/october_5th_vania.md](../logs/october_5th_vania.md) |
 | M12 | Done | Equal-weight directed-cycle fixture and expected cycle fraction of 1 are covered by `tests/fixtures/cycle.tsv` and `tests/synthetic.rs`. |
+| M13 | Done | Fixed noise fixture and independently calculated expected cycle fraction are recorded in `tests/fixtures/expected.md`. |
+| M14 | Done | Back-splice weight sweep for `0.01`, `0.05`, `0.10`, `0.20`, and `0.40` is tested with denominators and expected values. |
+| M15 | Done | Zero-support, duplicate-edge, self-loop, disconnected, and row-order edge cases have explicit fixtures and tests. |
+| M16 | Done | All synthetic expectations are recorded and reviewed in `tests/fixtures/expected.md`. |
 | R2 | Done | Cargo package, source folders, tests, `.gitignore`, and build instructions are present. |
 | R4 | Done | `splice-girl <junctions.tsv>` and `splice-girl --start` work with explicit usage and error handling. |
 | R5 | Done | Parser checks headers, fields, identifiers, counts, self-loops, and line-numbered errors. |
 | R6 | Done | Rows are grouped by sample/gene and converted into deterministic normalized graphs. |
 | R7 | Done | Incidence matrix, projection, cycle residual, and tolerance checks are implemented. |
 | R8 | Done | CLI prints sample/gene IDs, graph sizes, energies, cycle fraction, edge components, and check status. |
-| R9 | In progress | Linear, directed-cycle, and exon-skipping cases pass; branching-tree, noise, and weight-sweep cases still need to be added. |
+| R9 | Done | The complete synthetic gate passes: linear, branching-tree, directed-cycle, exon-skipping, noise, weight-sweep, disconnected, and failure fixtures. |
 
 Add rows as needed. When a task is finished, link its output and change the
 status to **Done**. When a task is blocked, write the missing information in

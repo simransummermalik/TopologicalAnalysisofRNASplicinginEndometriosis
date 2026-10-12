@@ -9,7 +9,7 @@ The final computational deliverable is a reusable command-line tool named **Spli
 
 ## Current status
 
-The scientific proposal and execution roadmap are available. A basic Rust prototype now performs the graph-level decomposition on two synthetic fixtures. Gene-set construction, dataset preparation, real-data integration, statistics, ranking, and research analysis have not started. Most commands and output paths in the roadmap remain future deliverables.
+The scientific proposal and execution roadmap are available. A basic Rust prototype now performs the graph-level decomposition on reviewed synthetic fixtures. Gene-set construction, dataset preparation, real-data integration, statistics, ranking, and research analysis have not started. Most commands and output paths in the roadmap remain future deliverables.
 
 The approved proposal remains the scientific source of truth. The roadmap translates it into tasks, dependencies, and completion checks.
 

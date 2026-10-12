@@ -1,0 +1,4 @@
+sample_id	gene_id	from	to	count
+sample_branching	GENE_BRANCHING	E1	E2	50
+sample_branching	GENE_BRANCHING	E1	E3	30
+sample_branching	GENE_BRANCHING	E3	E4	20
