@@ -21,3 +21,4 @@ changes that have not yet been committed.
 | October 5, 2026 | Summer | Pushed | [Validated E-MTAB sample manifest](october_5th_summer.md) |
 | October 6, 2026 | Summer | Pushed | [README cleanup](october_6th_summer.md) |
 | October 7, 2026 | Summer | Pushed | [Pilot setup and data checklist](october_7th_summer.md) |
+| October 12, 2026 | Summer | Prepared for push | [Task review, data-contract update, and row-order test](october_12th_summer.md) |
