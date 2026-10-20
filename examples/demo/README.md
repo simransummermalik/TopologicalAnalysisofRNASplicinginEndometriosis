@@ -75,9 +75,9 @@ Create a browser-ready picture of `case_02`'s exon-skipping graph:
 cargo run -- visualize case_02 GENE_DEMO examples/demo/junctions.tsv splice-girl-demo.svg
 ```
 
-Open `splice-girl-demo.svg` in any browser. The figure shows the nodes and
-directed junctions, uses arrow thickness for read support, colors arrows by
-the signed Hodge cycle component, and reports the graph's cycle fraction.
+Open `splice-girl-demo.svg` in any browser. The plain academic figure shows
+the nodes and directed junctions, uses arrow thickness for read support, and
+reports the graph's cycle fraction and signed components in a small table.
 Splice Girl refuses to overwrite a figure that already exists, so choose a
 new output name or remove the old demo SVG before running the command again.
 

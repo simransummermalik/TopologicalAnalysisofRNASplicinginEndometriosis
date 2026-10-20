@@ -262,12 +262,11 @@ self-contained SVG that opens in any web browser:
 cargo run -- visualize case_02 GENE_DEMO examples/demo/junctions.tsv splice-girl-demo.svg
 ```
 
-The graph keeps the biological direction of each junction. Thicker arrows
-have more read support. Pink and teal show the positive and negative parts of
-the signed cycle-space component, and the summary card reports the total cycle
-fraction. These signs follow the chosen edge direction; they do not mean
-endometriosis versus control. The figure also states the main interpretation
-limit: cycle-space structure alone does not prove circular RNA or causation.
+The graph keeps the biological direction of each junction, and thicker arrows
+have more read support. A small table reports the normalized signal and signed
+cycle component for every junction. The figure uses a plain black-and-white
+academic style and states the main interpretation limit: cycle-space structure
+alone does not prove circular RNA or causation.
 
 ### 5. Run the automated checks
 
