@@ -166,7 +166,7 @@ In plain language:
 | Preprocessing design | The path from FASTQ reads to Splice Girl junction tables is documented and scripted. |
 | Public dataset selection | Four control and four endometriosis RNA-seq samples have been identified. |
 
-The Rust project currently passes **29 automated tests**. Real-data retrieval
+The Rust project currently passes **31 automated tests**. Real-data retrieval
 is in progress through Galaxy, where the large files can be processed without
 filling a personal laptop.
 
@@ -347,7 +347,7 @@ the final analysis.
 Audience members who want more detail can continue with:
 
 - [Math specification](docs/math_spec.md) — equations and numerical checks
-- [Data contract](docs/data_contract.md) — accepted TSV formats
+- [Data contract](docs/data_contract.md) — accepted TSV formats and the frozen Rust CLI interface
 - [Preprocessing guide](preprocessing/README.md) — FASTQ-to-junction workflow
 - [Execution roadmap](ROADMAP.md) — detailed implementation plan
 - [Beginner task guide](delegations_and_tasks/tasks.md) — team work breakdown
