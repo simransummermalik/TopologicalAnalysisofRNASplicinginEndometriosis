@@ -1,0 +1,80 @@
+# Splice Girl demo package
+
+Small, hand-built files for demonstrating the tool in seconds, not minutes.
+Nothing here is real biological data — see `docs/data_contract.md` and
+`tests/fixtures/expected.md` for the reviewed synthetic fixtures this demo
+reuses the shapes of.
+
+## Part 1 — core math on known shapes
+
+These already live in `tests/fixtures/` and are covered by `cargo test`; running
+them directly shows the decomposition output a reader can sanity-check by eye.
+
+```sh
+cargo run -- tests/fixtures/linear.tsv      # a chain: cycle_fraction 0
+cargo run -- tests/fixtures/cycle.tsv       # a pure directed cycle: cycle_fraction 1
+cargo run -- tests/fixtures/exon_skip.tsv   # acyclic directed graph, nonzero cycle_fraction (1/9)
+```
+
+The `exon_skip.tsv` case is the one worth narrating: there is no directed path
+back to `E1`, but the *undirected* shape is a triangle, so the decomposition
+still finds cycle-space signal. See `docs/math_spec.md` for the derivation.
+
+## Part 2 — validation fails loudly
+
+```sh
+cargo run -- tests/fixtures/zero_support.tsv    # error: positive total support required
+cargo run -- tests/fixtures/duplicate_edge.tsv  # error: duplicate edge
+cargo run -- tests/fixtures/self_loop.tsv       # error: self-loop not supported
+```
+
+## Part 3 — case/control comparison (R10)
+
+`junctions.tsv` and `manifest.tsv` in this folder are built specifically for
+this demo, reusing the same known shapes from Part 1 so the numbers are
+recognizable:
+
+- `case_01` is shaped like `cycle.tsv` (pure circulation) → `cycle_fraction = 1.0`
+- `case_02` is shaped like `exon_skip.tsv` → `cycle_fraction = 1/9`
+- `control_01` and `control_02` are tree-shaped (a chain and a branch) → `cycle_fraction = 0.0`
+- `control_03` is listed in the manifest but has no junction rows for `GENE_DEMO`
+- `orphan_01` has junction rows for `GENE_DEMO` but no manifest entry
+
+```sh
+cargo run -- gene GENE_DEMO examples/demo/junctions.tsv examples/demo/manifest.tsv
+```
+
+Expected output:
+
+```text
+gene: GENE_DEMO
+included: 4 sample(s), excluded: 2 sample(s)
+
+included:
+  sample_id	condition	cycle_fraction
+  case_01	case	1.0000000000
+  case_02	case	0.1111111111
+  control_01	control	0.0000000000
+  control_02	control	0.0000000000
+
+excluded:
+  sample_id	reason
+  control_03	no junction data for gene 'GENE_DEMO'
+  orphan_01	no manifest entry for this sample_id
+```
+
+`control_03` and `orphan_01` demonstrate the two distinct exclusion reasons
+`compare_gene` (`src/compare.rs`) reports — nothing is silently dropped in
+either direction.
+
+## Timing
+
+Both commands run in well under a second on a development machine (the
+startup ASCII banner printing accounts for most of the visible delay).
+
+## Scope
+
+This is an illustrative demo package for showing the tool working end to end.
+It is not the real-data demo described in `ROADMAP.md` Phase 11 (which uses
+an actual candidate gene and real GSE179640/E-MTAB-15117 samples) — that
+remains a separate, later milestone.

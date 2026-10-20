@@ -1,0 +1,13 @@
+sample_id	gene_id	from	to	count
+case_01	GENE_DEMO	E1	E2	100
+case_01	GENE_DEMO	E2	E3	100
+case_01	GENE_DEMO	E3	E1	100
+case_02	GENE_DEMO	E1	E2	100
+case_02	GENE_DEMO	E2	E3	100
+case_02	GENE_DEMO	E1	E3	100
+control_01	GENE_DEMO	E1	E2	100
+control_01	GENE_DEMO	E2	E3	80
+control_02	GENE_DEMO	E1	E2	50
+control_02	GENE_DEMO	E1	E3	30
+control_02	GENE_DEMO	E3	E4	20
+orphan_01	GENE_DEMO	E1	E2	10
