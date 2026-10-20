@@ -1,200 +1,353 @@
-# Topological Analysis of RNA Splicing in Endometriosis
+# Splice Girl
 
-**Integrating Genetic Susceptibility, Environmental Response, and Hodge Theory**  
-BINF 2111 research project
+**Using graphs and Hodge theory to study RNA splicing in endometriosis**
 
-This project asks whether genes associated with endometriosis show differences in RNA-splicing topology between endometriosis and normal endometrial tissue. Genetic susceptibility and environmental-response evidence will prioritize genes. The study will represent splice junctions as weighted graphs and use graph-level Hodge decomposition to examine how their junction-usage patterns differ between samples.
+Splice Girl is a research software project that turns RNA splice-junction data
+into graphs. Those graphs let us ask whether RNA connections are organized
+differently in endometriosis and control endometrial tissue.
 
-The final computational deliverable is a reusable command-line tool named **Splice Girl**, written primarily in Rust. Its command name is `splice-girl`, and the endometriosis study will be its first application.
+> **Current status:** the software prototype, graph construction, Hodge
+> decomposition, sample comparison, and mathematical checks are working. The
+> eight public RNA-seq samples are now entering the real-data processing stage,
+> so no final biological result is being claimed yet.
 
-## Current status
+## The project in some short stuff?
 
-The scientific proposal and execution roadmap are available. A basic Rust prototype now performs the graph-level decomposition on reviewed synthetic fixtures. Gene-set construction, dataset preparation, real-data integration, statistics, ranking, and research analysis have not started. Most commands and output paths in the roadmap remain future deliverables.
+1. RNA sequencing shows which parts of a gene were connected in each sample.
+2. Splice Girl represents those connections as a graph.
+3. Hodge theory separates the graph signal into node-explainable flow and
+   alternative-path or cycle-space flow.
+4. We compare the resulting measurements between four control and four
+   endometriosis samples.
 
-The approved proposal remains the scientific source of truth. The roadmap translates it into tasks, dependencies, and completion checks.
+The goal is to move from millions of sequencing reads to a small set of
+transparent, mathematically checked measurements that can support biological
+interpretation.
 
-## Start here
+## Explore the project
 
-| Document | Purpose |
+| If you are interested in... | Read this section |
 |---|---|
-| [Project proposal](assets/hodgetheorynew.pdf) | Full research question, biological motivation, mathematical method, validation strategy, and limitations |
-| [Execution roadmap](ROADMAP.md) | Detailed team responsibilities, 13 execution phases, task checklists, file contracts, milestones, and fallbacks |
-| [Beginner task guide](delegations_and_tasks/tasks.md) | Very detailed step-by-step guide for every workstream task |
-| [LaTeX roadmap section](roadmap.tex) | Short roadmap section for inclusion in the existing Overleaf proposal |
-| [Roadmap PDF preview](roadmap-preview.pdf) | Compiled standalone preview of the LaTeX section |
-| [Basic math specification](docs/math_spec.md) | Orientation, normalization, decomposition equations, validation identities, and first expected examples |
-| [Input data contract](docs/data_contract.md) | Required TSV columns, validation rules, examples, and current prototype limits |
-| [Public data manifest](data/README.md) | GSE179640 source snapshot, sample groups, accessions, and data-use limits |
-| [E-MTAB-15117 research data](research/README.md) | Validated paired-end sample sheet, normalized manifest, ENA run links, and tissue-comparison notes |
-| [RNA-seq preprocessing](preprocessing/README.md) | One-sample FASTQ-to-junction workflow using Cleaver-X, STAR, and project conversion helpers |
-| [Contribution logs](logs/README.md) | Dated record of repository contributions |
-| [Splice Girl startup art](assets/splice_girl_banner.txt) | Detailed ASCII figure printed when the CLI starts |
+| The biological question | [Why study RNA splicing?](#why-study-rna-splicing) |
+| The graph idea | [From RNA connections to a graph](#from-rna-connections-to-a-graph) |
+| The mathematics | [Why Hodge theory?](#why-hodge-theory) |
+| The software | [What Splice Girl does](#what-splice-girl-does) |
+| Our progress | [What we have built](#what-we-have-built) |
+| The public data | [The eight-sample study](#the-eight-sample-study) |
+| A live demonstration | [Try Splice Girl](#try-splice-girl) |
+| An unfamiliar word | [Beginner dictionary](#beginner-dictionary) |
+| Scientific cautions | [How to interpret the results](#how-to-interpret-the-results) |
 
-## Run the basic synthetic prototype
+## The research question
 
-The current command accepts a tab-separated file with exactly these columns:
+**Do endometriosis samples organize their RNA splice connections differently
+from control samples?**
+
+Traditional RNA-seq summaries can tell us how much of a gene was detected or
+how many reads support one junction. Our project asks an additional question:
+how do all of a gene's observed junctions fit together as a connected
+structure?
+
+The first analysis uses tissue-matched public RNA-seq samples from
+proliferative endometrium. Every sample will pass through the same cleaning,
+alignment, junction-extraction, graph, and mathematical-analysis steps.
+
+## Why study RNA splicing?
+
+A gene is not always used as one uninterrupted block. Cells first copy a gene
+into an early RNA molecule containing sections called **exons** and **introns**.
+During splicing, introns are usually removed and selected exons are joined.
+
+Different joining choices can produce different finished RNA molecules from
+the same gene. This is called **alternative splicing**. Changes in these
+choices may affect which RNA and protein products a cell can make.
+
+RNA sequencing gives us short reads that support particular exon-to-exon
+connections. Those connections are called **splice junctions**. Splice Girl
+uses the junctions as evidence; it does not guess connections that were not
+observed.
+
+## From RNA connections to a graph
+
+For one gene in one sample:
+
+- an exon or splice site becomes a **node**;
+- an observed splice junction becomes a directed **edge**;
+- the number of reads supporting the junction becomes its **weight**.
+
+A simple exon path might look like this:
 
 ```text
-sample_id	gene_id	from	to	count
+E1 ─────→ E2 ─────→ E3
 ```
 
-Run the chain and cycle examples:
+An exon-skipping event adds another possible route:
+
+```text
+E1 ─────→ E2 ─────→ E3
+ └────────────────→ E3
+```
+
+The second graph contains more than a list of counts. It contains two routes
+from `E1` to `E3`, which gives it a different topology. Splice Girl is designed
+to measure that structure consistently across samples.
+
+## Why Hodge theory?
+
+Hodge theory provides a principled way to separate signal on a graph. Imagine
+each weighted junction as an arrow carrying flow.
+
+Splice Girl separates that flow into:
+
+- a **gradient component**, which can be explained by values assigned to the
+  nodes; and
+- a **cycle-space component**, which remains around alternative paths or loops
+  after the best node-based explanation is removed.
+
+The software summarizes the second part with a **cycle fraction**: the share of
+the normalized graph signal found in the cycle-space component.
+
+This is useful because two samples can have similar total read support while
+distributing that support across different junction patterns. Hodge theory
+gives us a reproducible measurement of that difference.
+
+The full equations and validation identities are available in the
+[math specification](docs/math_spec.md). Understanding those equations is not
+required to understand the biological goal or run the demonstration.
+
+## Why Rust?
+
+Splice Girl's command-line tool is written in Rust. Rust was chosen because it
+is fast, portable, and strict about many programming mistakes before the code
+runs. That makes it a strong fit for a reusable analysis tool that may later
+run on laptops, lab workstations, or computing clusters.
+
+Rust does not clean or align the raw sequencing reads. Established
+bioinformatics programs prepare the junction evidence first. Rust then handles
+Splice Girl's input validation, graph construction, mathematical decomposition,
+checks, and comparison output.
+
+## What Splice Girl does
+
+```mermaid
+flowchart LR
+    A[RNA-seq samples] --> B[Clean reads]
+    B --> C[Align to GRCh38]
+    C --> D[Extract splice junctions]
+    D --> E[Build weighted graphs]
+    E --> F[Apply Hodge analysis]
+    F --> G[Compare groups]
+```
+
+In plain language:
+
+1. Public paired-end sequencing reads are retrieved from NCBI.
+2. The reads are quality-checked and cleaned.
+3. STAR places the reads on the GRCh38 human reference genome.
+4. Junction-spanning reads provide exon-to-exon connection counts.
+5. A project helper converts those counts into Splice Girl's input format.
+6. Splice Girl builds one graph for each sample and gene.
+7. The program calculates gradient energy, cycle energy, and cycle fraction.
+8. Numerical checks must pass before a result is reported.
+9. Eligible control and endometriosis samples can then be compared.
+
+## What we have built
+
+| Completed work | What it means |
+|---|---|
+| Rust command-line prototype | Splice Girl can run from a terminal or interactive menu. |
+| Input validation | Incorrect headers, invalid counts, self-loops, and duplicate edges are rejected clearly. |
+| Deterministic graph construction | The same data produces the same node and edge order every time. |
+| Hodge decomposition | Junction signal is separated into gradient and cycle-space components. |
+| Mathematical acceptance checks | Reconstruction, cycle-space membership, and orthogonality are checked automatically. |
+| Synthetic validation examples | Linear, branching, exon-skipping, cyclic, noisy, and edge-case graphs are tested. |
+| Sample manifest support | Samples remain separate and are assigned to case or control groups. |
+| Gene comparison command | One gene's cycle fractions can be reported across eligible samples. |
+| Preprocessing design | The path from FASTQ reads to Splice Girl junction tables is documented and scripted. |
+| Public dataset selection | Four control and four endometriosis RNA-seq samples have been identified. |
+
+The Rust project currently passes **29 automated tests**. Real-data retrieval
+is in progress through Galaxy, where the large files can be processed without
+filling a personal laptop.
+
+## The eight-sample study
+
+The current dataset is [GEO GSE315857](https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE315857).
+It contains paired-end RNA-seq data from proliferative endometrium.
+
+| Group | Number of samples | SRA runs |
+|---|---:|---|
+| Control | 4 | `SRR36710390` to `SRR36710387` |
+| Endometriosis | 4 | `SRR36710386` to `SRR36710383` |
+
+The exact GEO sample, SRA experiment, SRA run, layout, and condition labels are
+recorded in [`endometriosis-splicing/samples.tsv`](endometriosis-splicing/samples.tsv).
+
+The processing plan is:
+
+```text
+8 public SRA runs
+        ↓
+quality control and cleaning
+        ↓
+alignment to the same human reference
+        ↓
+8 splice-junction files
+        ↓
+one graph per sample and gene
+        ↓
+Hodge measurements
+        ↓
+control-versus-endometriosis comparison
+```
+
+## How to interpret the results
+
+Splice Girl reports graph measurements, not a diagnosis.
+
+- A larger cycle fraction means more of the normalized junction signal lies
+  in the cycle-space component.
+- A group difference would mean the measured graph feature differs between the
+  sampled control and endometriosis groups.
+- A cycle-space signal does **not** automatically prove circular RNA.
+- A group difference does **not** prove that endometriosis caused the change.
+- The result must still be reviewed for sample quality, tissue comparability,
+  batch effects, replicate consistency, effect size, and statistical support.
+
+Negative results are also meaningful. If the groups do not differ, or if the
+Hodge measurements do not outperform simpler junction summaries, that should
+be reported honestly.
+
+## Try Splice Girl
+
+The demonstration uses tiny synthetic files included in the repository. It
+does not download patient data.
+
+### 1. Check Rust
 
 ```sh
-cargo run -- tests/fixtures/linear.tsv
-cargo run -- tests/fixtures/cycle.tsv
+rustc --version
+cargo --version
 ```
 
-To start Splice Girl with its interactive menu, run:
+If those commands are missing, install Rust from
+[rustup.rs](https://rustup.rs/).
+
+### 2. Open the interactive menu
+
+From the repository folder, run:
 
 ```sh
 cargo run -- --start
 ```
 
-The menu currently contains one action, **Analyze a junction TSV**, plus quit. Choose `1`, enter a path such as `tests/fixtures/cycle.tsv`, and press Enter to return to the menu. The direct file-path command remains available for scripts and quick checks.
+Choose **Analyze a junction TSV** and enter:
 
-Run the automated checks:
+```text
+tests/fixtures/cycle.tsv
+```
+
+### 3. Run a direct example
+
+```sh
+cargo run -- tests/fixtures/exon_skip.tsv
+```
+
+### 4. Run the automated checks
 
 ```sh
 cargo test
 ```
 
-The chain should report a cycle fraction near zero. The equal-weight directed cycle should report a cycle fraction near one. Both runs also check reconstruction, cycle-space membership, and orthogonality. The prototype currently rejects zero-total groups, duplicate directed edges, and self-loops with explicit errors.
+The linear and branching examples should have a cycle fraction near `0`. The
+equal-weight directed cycle should have a cycle fraction near `1`. The
+exon-skipping example should have a smaller nonzero cycle fraction because it
+contains an alternative path.
 
-These `cargo run` commands build and run the `splice-girl` executable. After a release build, the equivalent direct command begins with `./target/release/splice-girl`.
+## What the output means
 
-Splice Girl prints its detailed ASCII startup figure before each run. The figure is stored in `assets/splice_girl_banner.txt` and is shown in a soft terminal color when output is connected to a terminal.
+A result includes:
 
-## How the project connects
-
-```text
-Genetic-risk evidence + Environmental-response evidence
-                          |
-                          v
-                    Candidate genes
-                          |
-Endometriosis/control RNA-seq --> Standardized junction tables
-                                          |
-                                          v
-                                 Rust splice-graph engine
-                                          |
-                                          v
-                              Gradient/cycle-space decomposition
-                                          |
-                                          v
-                              Per-sample measurements
-                                          |
-                                          v
-                         Case/control statistics and baselines
-                                          |
-                                          v
-                         Gene ranking, interpretation, and demo
-```
-
-In the graph, vertices represent exons or splice sites, edges represent observed splice junctions, and normalized read support describes junction usage. The decomposition separates the edge signal into a gradient component explained by values assigned to vertices and a component in the graph's cycle space. Synthetic examples will validate the calculations before real-data interpretation.
-
-Environmental-response evidence is initially a gene-prioritization component. Without patient-level exposure measurements, it cannot establish that an exposure caused a splicing change. Likewise, a cycle-space component does not establish the existence of circular RNA. Full simplicial Hodge decomposition remains an optional extension.
-
-## Why Hodge theory?
-
-RNA splicing is about connections between exons, so counting junctions alone
-can miss the structure of those connections. Hodge theory gives Splice Girl a
-way to separate that structure:
-
-1. **Build a graph:** exons or splice sites are nodes, and observed splice
-junctions are directed edges with read-support weights.
-2. **Find the node-explainable part:** the gradient component captures signal
-   that can be explained by assigning values to the nodes.
-3. **Find the circulating part:** the cycle-space component captures signal
-   that remains around graph loops or alternative paths after the gradient part
-   is removed.
-4. **Compare samples:** the resulting components and cycle fraction can be
-   compared across endometriosis and control samples for the same gene.
-
-### The core math
-
-For one sample and one gene, each junction has a support value $c_e$. Splice
-Girl turns that support into a normalized edge signal:
-
-$$
-w_e = \frac{c_e}{\sum_j c_j}
-$$
-
-The incidence matrix $B_1$ records where each directed edge starts and ends.
-The fitted node values $\phi^*$ explain as much of the edge signal as possible:
-
-$$
-\phi^* = \operatorname*{arg\,min}_{\phi}
-\left\|F - B_1^T\phi\right\|_2^2
-$$
-
-The remaining signal is the cycle-space component:
-
-$$
-F_{\mathrm{grad}} = B_1^T\phi^*, \qquad
-F_{\mathrm{cycle}} = F - F_{\mathrm{grad}}
-$$
-
-Splice Girl summarizes it with a cycle fraction:
-
-$$
-C = \frac{\left\|F_{\mathrm{cycle}}\right\|_2^2}
-        {\left\|F\right\|_2^2}
-$$
-
-A valid result should reconstruct the original signal, satisfy
-$B_1F_{\mathrm{cycle}} \approx 0$, and keep the gradient and cycle components
-orthogonal. The implementation checks these identities before reporting a
-result.
-
-This makes the result more informative than one total read count while keeping
-the interpretation careful: a cycle-space signal does not by itself prove
-circular RNA, disease causation, or an exposure effect. See the [math
-specification](docs/math_spec.md) for the equations and validation checks.
-
-## Team workstreams
-
-| Workstream | Main responsibility |
+| Output | Meaning |
 |---|---|
-| Endometriosis genetics | Build a stable-ID susceptibility gene set with traceable evidence |
-| Environmental response | Record exposure and tissue context; build response-gene and overlap sets |
-| RNA-seq / data | Verify sample comparability, prepare junction counts, and deliver quality-checked standard inputs |
-| Mathematics | Specify graph orientation and projections; validate synthetic examples and numerical identities |
-| Rust tool | Implement input validation, graph construction, decomposition, comparison, ranking, and export |
-| Statistics | Compare biological samples, quantify effects, run valid permutation tests, correct multiple testing, and assess baselines |
-| Visualization / presentation | Prepare understandable figures, reviewed interpretations, and a small live demonstration |
+| `nodes` | Number of exons or splice sites in the graph |
+| `edges` | Number of observed splice junctions |
+| `signal_energy` | Total squared size of the normalized junction signal |
+| `gradient_energy` | Signal explained by the node-based component |
+| `cycle_energy` | Signal remaining in the cycle-space component |
+| `cycle_fraction` | Cycle energy divided by total signal energy |
+| `checks: PASS` | The required mathematical identities passed within tolerance |
 
-Names and assignments belong in the roadmap's **Who is doing what** table. Team members may share roles; each deliverable should have an owner and reviewer.
+The program also prints each edge's original normalized signal, gradient
+component, and cycle component so the calculation can be inspected rather
+than treated as a black box.
 
-## Next steps for the group
+## Beginner dictionary
 
-1. Assign workstream owners and reviewers, and record course milestone dates.
-2. Recover the original Overleaf source files; only the proposal PDF is currently present.
-3. Document genetic-evidence criteria and the environmental exposure scope.
-4. Review public dataset suitability, tissue comparability, metadata, and access requirements.
-5. Agree on identifiers, junction-table fields, graph representation, and numerical validation expectations.
-6. Assign the roadmap's first tasks and update their statuses as work begins.
+| Term | Plain-language meaning |
+|---|---|
+| **RNA** | A molecule cells use to carry and use genetic instructions. |
+| **RNA-seq** | A sequencing experiment that gives evidence about RNA molecules in a sample. |
+| **Gene** | A region of DNA used to make a functional RNA or protein product. |
+| **Exon** | A section of a gene that can remain in the finished RNA. |
+| **Intron** | A section usually removed before the RNA is finished. |
+| **Splicing** | Removing introns and joining selected exons. |
+| **Alternative splicing** | Producing different RNA forms by joining exons in different ways. |
+| **Splice junction** | The observed connection between two exons. |
+| **Read** | One short sequence produced by a sequencing machine. |
+| **Read support** | The number of reads supporting a junction. |
+| **FASTQ** | A file containing sequencing reads and quality scores. |
+| **Paired-end** | Sequencing both ends of each RNA-derived fragment. |
+| **Reference genome** | A standard genome sequence used as a map for alignment. |
+| **GRCh38 / hg38** | A commonly used human reference-genome version. |
+| **Alignment** | Matching a sequencing read to a location in the reference genome. |
+| **Quality control** | Checks for low-quality reads and technical problems. |
+| **Graph** | A collection of points and connections. |
+| **Node / vertex** | A graph point; here it represents an exon or splice site. |
+| **Edge** | A graph connection; here it represents a splice junction. |
+| **Directed edge** | A connection with a start and end, such as `E1 -> E2`. |
+| **Edge weight** | A value attached to an edge; here it comes from read support. |
+| **Gradient component** | The part of edge signal explained by node values. |
+| **Cycle-space component** | Remaining signal associated with alternative paths or graph loops. |
+| **Cycle fraction** | The share of normalized signal energy in the cycle-space component. |
+| **Manifest** | A table connecting each sample ID to its condition and metadata. |
+| **CLI** | A program operated by typing commands in a terminal. |
+| **Prototype** | An early working version used to test and validate the main idea. |
 
-Genetics and environmental evidence preparation can proceed in parallel. Dataset review can run alongside synthetic mathematics and Rust interface design. Real statistical analysis depends on validated per-sample tool outputs; final biological interpretation follows statistical and baseline review.
+## Important limitations
 
-## Milestones
+Splice Girl is a research prototype, not a clinical diagnostic tool. The
+current command performs per-sample graph analysis and a basic gene-level
+sample comparison. Final group statistics, multiple-testing correction,
+gene ranking, baseline comparisons, and biological interpretation remain
+future stages of the study.
 
-**Midpoint:** candidate-gene files with provenance, a selected accessible dataset and prepared small input subset, stable schemas, reviewed synthetic examples, and a Rust MVP that runs one synthetic decomposition from input through export. Final biological results are not required at midpoint.
+Real RNA-seq results will depend on consistent preprocessing, the selected
+reference and annotation, tissue and sample comparability, sequencing quality,
+and the number of biological replicates. These limits will be reported with
+the final analysis.
 
-**Final:** a documented reusable Rust CLI that processes real junction data, calculates per-sample components, compares case/control groups, ranks genes, identifies relevant junctions, and exports reproducible outputs. The study should include validated statistics where the sample design supports inference, baseline comparisons, interpreted findings, final figures, and a real-gene demonstration that runs in seconds.
+## Technical documentation
 
-The live demonstration will use tiny local inputs. Larger analyses will be precomputed, with saved output and a recording available as backup. Null findings or no advantage over simpler baselines remain valid outcomes and should be reported honestly.
+Audience members who want more detail can continue with:
 
-## Overleaf documentation
+- [Math specification](docs/math_spec.md) — equations and numerical checks
+- [Data contract](docs/data_contract.md) — accepted TSV formats
+- [Preprocessing guide](preprocessing/README.md) — FASTQ-to-junction workflow
+- [Execution roadmap](ROADMAP.md) — detailed implementation plan
+- [Beginner task guide](delegations_and_tasks/tasks.md) — team work breakdown
+- [Contribution logs](logs/README.md) — dated development record
+- [Original README](oldREADME.md) — archived earlier project overview
 
-Add `roadmap.tex` alongside the original main `.tex` file and include it where the execution roadmap belongs:
+## Repository map
 
-```latex
-\input{roadmap}
-```
-
-The section inherits the parent document's formatting and contains no document class or document environment. It uses standard LaTeX sectioning, a simple table, and verbatim command examples.
-
-The supplied three-page preview compiled successfully with Tectonic in a temporary standard article wrapper and was checked for formatting issues. Integration with the original Overleaf document remains unverified until its source files are restored. The preview is not a rebuilt version of the proposal.
-
-See [ROADMAP.md](ROADMAP.md) for open implementation decisions, detailed acceptance criteria, and practical fallbacks.
+| Location | Purpose |
+|---|---|
+| `src/` | Rust source code |
+| `tests/` | Automated tests and synthetic examples |
+| `endometriosis-splicing/` | Eight-sample study metadata |
+| `preprocessing/` | FASTQ and junction-processing scripts |
+| `docs/` | Mathematical and data specifications |
+| `research/` | Background research and source material |
+| `logs/` | Dated contribution records |
+| `assets/` | Proposal and terminal artwork |
