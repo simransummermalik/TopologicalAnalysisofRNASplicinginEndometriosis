@@ -22,4 +22,5 @@ changes that have not yet been committed.
 | October 6, 2026 | Summer | Pushed | [README cleanup](october_6th_summer.md) |
 | October 7, 2026 | Summer | Pushed | [Pilot setup and data checklist](october_7th_summer.md) |
 | October 12, 2026 | Summer | Prepared for push | [Task review, data-contract update, and row-order test](october_12th_summer.md) |
-| October 19, 2026 | Vania | Prepared for push | [Sample manifest, gene comparison, and CLI wiring (R10)](october_19th_vania.md) |
+| October 19, 2026 | Vania | Pushed | [Sample manifest, gene comparison, and CLI wiring (R10)](october_19th_vania.md) |
+| October 19, 2026 | Vania | Pushed | [Runnable demo package for the check-up](october_19th_vania_demo.md) |
