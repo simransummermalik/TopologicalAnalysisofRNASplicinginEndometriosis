@@ -4,8 +4,9 @@
 //! `gene` syntax is directory-based (`--case dir/ --control dir/`); this
 //! implementation instead takes one junction TSV (already carrying
 //! `sample_id`) plus a separate manifest TSV, matching the formats this
-//! tool actually parses. The `analyze`/`compare`/`rank` subcommands are
-//! not built yet.
+//! tool actually parses. `analyze` is also available as an explicit alias
+//! for the direct command. The planned multi-gene `compare` and `rank`
+//! subcommands are not built yet.
 use std::env;
 use std::io::{self, IsTerminal, Write};
 use std::path::Path;
@@ -15,6 +16,7 @@ use splice_girl::analyze_junctions;
 use splice_girl::compare::{GeneComparison, compare_gene};
 use splice_girl::manifest::parse_manifest;
 use splice_girl::parser::parse_tsv;
+use splice_girl::visualize::write_svg;
 
 fn main() -> ExitCode {
     print_banner();
@@ -40,7 +42,18 @@ fn print_banner() {
 
 fn usage(program: &str) -> String {
     format!(
-        "usage: {program} [--start | <junctions.tsv> | gene <GENE_ID> <junctions.tsv> <manifest.tsv>]"
+        "Splice Girl — turn RNA splice junctions into graphs and Hodge measurements\n\n\
+usage:\n  \
+  {program} --start\n  \
+  {program} <junctions.tsv>\n  \
+  {program} analyze <junctions.tsv>\n  \
+  {program} gene <GENE_ID> <junctions.tsv> <manifest.tsv>\n  \
+  {program} visualize <SAMPLE_ID> <GENE_ID> <junctions.tsv> <output.svg>\n\n\
+commands:\n  \
+  analyze     calculate graph and Hodge measurements\n  \
+  gene        compare one gene across case/control samples\n  \
+  visualize   save one sample/gene graph as a browser-ready SVG\n  \
+  --start     open the interactive menu"
     )
 }
 
@@ -48,6 +61,16 @@ fn run() -> Result<(), String> {
     let mut arguments = env::args();
     let program = arguments.next().unwrap_or_else(|| "splice-girl".to_owned());
     let first_argument = arguments.next().ok_or_else(|| usage(&program))?;
+
+    if matches!(first_argument.as_str(), "--help" | "-h" | "help") {
+        println!("{}", usage(&program));
+        return Ok(());
+    }
+
+    if matches!(first_argument.as_str(), "--version" | "-V") {
+        println!("splice-girl {}", env!("CARGO_PKG_VERSION"));
+        return Ok(());
+    }
 
     if first_argument == "--start" {
         if arguments.next().is_some() {
@@ -69,6 +92,31 @@ fn run() -> Result<(), String> {
             Path::new(&manifest_path),
         )?;
         return print_gene_comparison(comparison);
+    }
+
+    if first_argument == "visualize" {
+        let sample_id = arguments.next().ok_or_else(|| usage(&program))?;
+        let gene_id = arguments.next().ok_or_else(|| usage(&program))?;
+        let junctions_path = arguments.next().ok_or_else(|| usage(&program))?;
+        let output_path = arguments.next().ok_or_else(|| usage(&program))?;
+        if arguments.next().is_some() {
+            return Err(usage(&program));
+        }
+        return create_visualization(
+            &sample_id,
+            &gene_id,
+            Path::new(&junctions_path),
+            Path::new(&output_path),
+        );
+    }
+
+    if first_argument == "analyze" {
+        let junctions_path = arguments.next().ok_or_else(|| usage(&program))?;
+        if arguments.next().is_some() {
+            return Err(usage(&program));
+        }
+        let results = analyze_path(Path::new(&junctions_path))?;
+        return print_results(results);
     }
 
     if arguments.next().is_some() {
@@ -101,6 +149,7 @@ fn run_start_menu() -> Result<(), String> {
         println!("  -----------");
         println!("  [1] Analyze a junction TSV");
         println!("  [2] Compare one gene across case/control samples");
+        println!("  [3] Save one splice graph as an SVG");
         println!("  [q] Quit");
         println!();
 
@@ -161,11 +210,84 @@ fn run_start_menu() -> Result<(), String> {
                     Err(error) => println!("  error: {error}"),
                 }
             }
+            "3" => {
+                let Some(sample_id) = prompt("  Sample ID: ")? else {
+                    return Ok(());
+                };
+                let Some(gene_id) = prompt("  Gene ID: ")? else {
+                    return Ok(());
+                };
+                let Some(junctions_path) = prompt("  Junction TSV path: ")? else {
+                    return Ok(());
+                };
+                let Some(output_path) = prompt("  Output SVG path: ")? else {
+                    return Ok(());
+                };
+                let sample_id = sample_id.trim();
+                let gene_id = gene_id.trim();
+                let junctions_path = junctions_path.trim();
+                let output_path = output_path.trim();
+                if sample_id.is_empty()
+                    || gene_id.is_empty()
+                    || junctions_path.is_empty()
+                    || output_path.is_empty()
+                {
+                    println!("  Please enter a sample ID, gene ID, and both file paths.");
+                    continue;
+                }
+
+                match create_visualization(
+                    sample_id,
+                    gene_id,
+                    Path::new(junctions_path),
+                    Path::new(output_path),
+                ) {
+                    Ok(()) => {
+                        if prompt("  Press Enter to return to the menu...")?.is_none() {
+                            return Ok(());
+                        }
+                    }
+                    Err(error) => println!("  error: {error}"),
+                }
+            }
             "q" => return Ok(()),
             "" => {}
-            _ => println!("  Please choose 1, 2, or q."),
+            _ => println!("  Please choose 1, 2, 3, or q."),
         }
     }
+}
+
+fn create_visualization(
+    sample_id: &str,
+    gene_id: &str,
+    junctions_path: &Path,
+    output_path: &Path,
+) -> Result<(), String> {
+    let results = analyze_path(junctions_path)?;
+    let available: Vec<String> = results
+        .iter()
+        .map(|result| format!("{}/{}", result.sample_id, result.gene_id))
+        .collect();
+    let result = results
+        .iter()
+        .find(|result| result.sample_id == sample_id && result.gene_id == gene_id)
+        .ok_or_else(|| {
+            format!(
+                "no graph found for sample '{sample_id}' and gene '{gene_id}'; available sample/gene pairs: {}",
+                available.join(", ")
+            )
+        })?;
+
+    if !result.decomposition.checks.passed {
+        return Err(format!(
+            "refusing to visualize sample '{sample_id}' and gene '{gene_id}' because its mathematical checks failed"
+        ));
+    }
+
+    write_svg(output_path, result)?;
+    println!("graph saved: {}", output_path.display());
+    println!("open the SVG in a web browser to view it");
+    Ok(())
 }
 
 fn prompt(message: &str) -> Result<Option<String>, String> {

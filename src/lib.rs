@@ -7,6 +7,7 @@ pub mod hodge;
 pub mod manifest;
 pub mod matrix;
 pub mod parser;
+pub mod visualize;
 
 use std::collections::BTreeMap;
 

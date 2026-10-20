@@ -253,7 +253,23 @@ tests/fixtures/cycle.tsv
 cargo run -- tests/fixtures/exon_skip.tsv
 ```
 
-### 4. Run the automated checks
+### 4. Draw the splice graph
+
+The visualization uses the synthetic case/control demo data and creates a
+self-contained SVG that opens in any web browser:
+
+```sh
+cargo run -- visualize case_02 GENE_DEMO examples/demo/junctions.tsv splice-girl-demo.svg
+```
+
+The graph keeps the biological direction of each junction. Thicker arrows
+have more read support. Pink and teal show the positive and negative parts of
+the signed cycle-space component, and the summary card reports the total cycle
+fraction. These signs follow the chosen edge direction; they do not mean
+endometriosis versus control. The figure also states the main interpretation
+limit: cycle-space structure alone does not prove circular RNA or causation.
+
+### 5. Run the automated checks
 
 ```sh
 cargo test
