@@ -1,0 +1,66 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="900" height="711" viewBox="0 0 900 711" role="img" aria-labelledby="title description">
+<title id="title">Splice graph for sample case_02 and gene GENE_DEMO</title>
+<desc id="description">A directed splice graph. Line width represents junction read support. The table reports normalized signal and the signed Hodge cycle component.</desc>
+<defs>
+  <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+    <path d="M 0 0 L 10 5 L 0 10 z" fill="#111111"/>
+  </marker>
+  <style>
+    .serif { font-family: Georgia, "Times New Roman", serif; }
+    .mono { font-family: "Courier New", Courier, monospace; }
+  </style>
+</defs>
+<rect width="100%" height="100%" fill="#ffffff"/>
+
+<text class="serif" x="55" y="48" font-size="24" font-weight="700" fill="#111111">Splice graph: GENE_DEMO</text>
+<text class="serif" x="55" y="78" font-size="15" fill="#111111">Sample: case_02</text>
+<line x1="55" y1="96" x2="845.0" y2="96" stroke="#111111" stroke-width="1"/>
+<text class="serif" x="55" y="121" font-size="14" fill="#111111">Nodes: 3   ·   Junctions: 3   ·   Cycle fraction: 0.1111   ·   Mathematical checks: PASS</text>
+
+<text class="serif" x="55" y="164" font-size="17" font-weight="700" fill="#111111">Observed junction graph</text>
+<text class="serif" x="55" y="188" font-size="13" font-style="italic" fill="#333333">Arrow direction follows the junction data; thicker arrows have greater read support.</text>
+<path d="M 155.0 330.0 Q 180.0 251.0 205.0 330.0" fill="none" stroke="#111111" stroke-width="3.00" stroke-linecap="round" marker-end="url(#arrow)"/>
+<rect x="166.0" y="273.5" width="28" height="19" fill="#ffffff" stroke="#111111" stroke-width="0.8"/>
+<text class="serif" x="180.0" y="286.5" text-anchor="middle" font-size="11" fill="#111111">J1</text>
+<path d="M 155.0 330.0 Q 255.0 227.0 355.0 330.0" fill="none" stroke="#111111" stroke-width="3.00" stroke-linecap="round" marker-end="url(#arrow)"/>
+<rect x="241.0" y="261.5" width="28" height="19" fill="#ffffff" stroke="#111111" stroke-width="0.8"/>
+<text class="serif" x="255.0" y="274.5" text-anchor="middle" font-size="11" fill="#111111">J2</text>
+<path d="M 305.0 330.0 Q 330.0 251.0 355.0 330.0" fill="none" stroke="#111111" stroke-width="3.00" stroke-linecap="round" marker-end="url(#arrow)"/>
+<rect x="316.0" y="273.5" width="28" height="19" fill="#ffffff" stroke="#111111" stroke-width="0.8"/>
+<text class="serif" x="330.0" y="286.5" text-anchor="middle" font-size="11" fill="#111111">J3</text>
+<rect x="55.0" y="309.0" width="100.0" height="42.0" fill="#ffffff" stroke="#111111" stroke-width="1.4"/>
+<text class="serif" x="105.0" y="335.0" text-anchor="middle" font-size="14" fill="#111111">E1<title>E1</title></text>
+<rect x="205.0" y="309.0" width="100.0" height="42.0" fill="#ffffff" stroke="#111111" stroke-width="1.4"/>
+<text class="serif" x="255.0" y="335.0" text-anchor="middle" font-size="14" fill="#111111">E2<title>E2</title></text>
+<rect x="355.0" y="309.0" width="100.0" height="42.0" fill="#ffffff" stroke="#111111" stroke-width="1.4"/>
+<text class="serif" x="405.0" y="335.0" text-anchor="middle" font-size="14" fill="#111111">E3<title>E3</title></text>
+<text class="serif" x="55" y="482" font-size="17" font-weight="700" fill="#111111">Junction values</text>
+<line x1="55" y1="497" x2="845.0" y2="497" stroke="#111111" stroke-width="1"/>
+<text class="serif" x="68" y="518" font-size="12" font-weight="700" fill="#111111">ID</text>
+<text class="serif" x="120" y="518" font-size="12" font-weight="700" fill="#111111">Junction</text>
+<text class="serif" x="350" y="518" font-size="12" font-weight="700" fill="#111111">Read support</text>
+<text class="serif" x="500" y="518" font-size="12" font-weight="700" fill="#111111">Normalized signal</text>
+<text class="serif" x="675" y="518" font-size="12" font-weight="700" fill="#111111">Cycle component</text>
+<line x1="55" y1="524" x2="845.0" y2="524" stroke="#777777" stroke-width="0.7"/>
+<text class="serif" x="68" y="535.0" font-size="12" fill="#111111">J1</text>
+<text class="serif" x="120" y="535.0" font-size="12" fill="#111111">E1 → E2</text>
+<text class="mono" x="350" y="535.0" font-size="11" fill="#111111">100</text>
+<text class="mono" x="500" y="535.0" font-size="11" fill="#111111">0.3333</text>
+<text class="mono" x="675" y="535.0" font-size="11" fill="#111111">+0.1111</text>
+<line x1="55" y1="543.0" x2="845.0" y2="543.0" stroke="#cccccc" stroke-width="0.5"/>
+<text class="serif" x="68" y="561.0" font-size="12" fill="#111111">J2</text>
+<text class="serif" x="120" y="561.0" font-size="12" fill="#111111">E1 → E3</text>
+<text class="mono" x="350" y="561.0" font-size="11" fill="#111111">100</text>
+<text class="mono" x="500" y="561.0" font-size="11" fill="#111111">0.3333</text>
+<text class="mono" x="675" y="561.0" font-size="11" fill="#111111">-0.1111</text>
+<line x1="55" y1="569.0" x2="845.0" y2="569.0" stroke="#cccccc" stroke-width="0.5"/>
+<text class="serif" x="68" y="587.0" font-size="12" fill="#111111">J3</text>
+<text class="serif" x="120" y="587.0" font-size="12" fill="#111111">E2 → E3</text>
+<text class="mono" x="350" y="587.0" font-size="11" fill="#111111">100</text>
+<text class="mono" x="500" y="587.0" font-size="11" fill="#111111">0.3333</text>
+<text class="mono" x="675" y="587.0" font-size="11" fill="#111111">+0.1111</text>
+<line x1="55" y1="595.0" x2="845.0" y2="595.0" stroke="#cccccc" stroke-width="0.5"/>
+<line x1="55" y1="635.0" x2="845.0" y2="635.0" stroke="#111111" stroke-width="1"/>
+<text class="serif" x="55" y="663.0" font-size="12" fill="#222222">Cycle fraction = cycle energy / total signal energy. Component signs follow the stored edge direction.</text>
+<text class="serif" x="55" y="685.0" font-size="12" font-style="italic" fill="#444444">Cycle-space structure alone does not establish circular RNA or disease causation.</text>
+</svg>
