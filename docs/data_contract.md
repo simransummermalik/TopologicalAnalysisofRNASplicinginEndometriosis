@@ -1,6 +1,6 @@
 # Splice Girl input data contract
 
-**Contract version:** 0.1 (2026-10-12)
+**Contract version:** 0.2 (2026-10-19) — added the sample manifest format below.
 
 This version uses text node identifiers for the synthetic prototype. When real
 STAR junctions are added, the genome build, annotation release, and genomic
@@ -120,6 +120,30 @@ cargo run -- tests/fixtures/cycle.tsv
 The automated tests check reconstruction, cycle-space membership, and
 orthogonality. The chain and cycle commands provide quick human-readable
 checks while the input and output format are still small.
+
+## Sample manifest
+
+A separate TSV assigns each `sample_id` used in the junction table to a case
+or control group. This file is independent of the junction table's own format
+and is not required for the basic synthetic prototype — only for
+sample-preserving comparisons (R10).
+
+Required columns, found by name (extra columns are permitted and ignored;
+column order does not matter):
+
+| Column | Meaning | Rule |
+|---|---|---|
+| `sample_id` | Identifier matching the `sample_id` values used in the junction table | Required, nonempty, unique within the manifest |
+| `condition` | Case/control group | Required; normalizes case-insensitively to `case` or `control`; any other value is rejected |
+
+Unlike the junction table's header, the manifest header is matched by column
+name rather than an exact fixed header, since real metadata files (for
+example GEO or ArrayExpress sample sheets) carry many additional columns this
+tool does not need.
+
+This manifest states group membership only. It does not state sample
+eligibility (tissue suitability, QC status, or inclusion in a specific
+comparison) — that remains a separate, later decision.
 
 ## Future extensions
 

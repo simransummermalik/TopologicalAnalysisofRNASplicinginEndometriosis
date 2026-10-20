@@ -57,6 +57,7 @@ alone or worked on together. A simple shared table is enough:
 | R7 | Done | Incidence matrix, projection, cycle residual, and tolerance checks are implemented. |
 | R8 | Done | CLI prints sample/gene IDs, graph sizes, energies, cycle fraction, edge components, and check status. |
 | R9 | Done | The complete synthetic gate passes: linear, branching-tree, directed-cycle, exon-skipping, noise, weight-sweep, disconnected, and failure fixtures. |
+| R10 | Done | Sample manifest format (`docs/data_contract.md`), `src/manifest.rs` parser, `src/compare.rs` join/exclusion logic, and the `splice-girl gene <GENE_ID> <junctions.tsv> <manifest.tsv>` CLI command (plus a matching `--start` menu option) — [logs/october_19th_vania.md](../logs/october_19th_vania.md) |
 
 Add rows as needed. When a task is finished, link its output and change the
 status to **Done**. When a task is blocked, write the missing information in
