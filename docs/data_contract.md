@@ -1,15 +1,16 @@
 # Splice Girl input data contract
 
-**Contract version:** 0.2 (2026-10-19) — added the sample manifest format below.
+**Contract version:** 0.3 (2026-10-20) — added the Rust command-line interface below.
 
 This version uses text node identifiers for the synthetic prototype. When real
 STAR junctions are added, the genome build, annotation release, and genomic
 coordinate convention must be recorded in the separate sample/run metadata;
 those reference choices are not silently inferred from this five-column file.
 
-This document defines the small TSV format accepted by the current Splice Girl
-prototype.It does not replace the final biological metadata schema that will be
-needed for real RNA-seq analysis.
+This document defines the small TSV formats accepted by the current Splice
+Girl prototype and the command-line interface built on top of them. It does
+not replace the final biological metadata schema that will be needed for real
+RNA-seq analysis.
 
 ## Required header
 
@@ -144,6 +145,73 @@ tool does not need.
 This manifest states group membership only. It does not state sample
 eligibility (tissue suitability, QC status, or inclusion in a specific
 comparison) — that remains a separate, later decision.
+
+## Rust command-line interface
+
+The package and command name are settled: `splice-girl`. This section records
+the commands that exist today as frozen interface; the multi-gene `compare`
+and `rank` commands sketched in ROADMAP.md remain future work and are listed
+separately below so the two are never confused.
+
+### Implemented commands
+
+| Command | Behavior |
+|---|---|
+| `splice-girl <junctions.tsv>` | direct-mode shorthand for `analyze` |
+| `splice-girl analyze <junctions.tsv>` | explicit alias of the same behavior |
+| `splice-girl gene <GENE_ID> <junctions.tsv> <manifest.tsv>` | case/control comparison for one gene, joining the junction table against a sample manifest |
+| `splice-girl visualize <SAMPLE_ID> <GENE_ID> <junctions.tsv> <output.svg>` | renders one sample/gene's splice graph as a standalone SVG |
+| `splice-girl --start` | interactive menu wrapping the three commands above |
+| `splice-girl --help`, `-h`, `help` | prints usage and the command list |
+| `splice-girl --version`, `-V` | prints the Cargo package version |
+
+ROADMAP.md's sketched `gene` syntax is directory-based
+(`--case dir/ --control dir/`); the implemented syntax instead takes one
+junction TSV (already carrying `sample_id`) plus the manifest TSV described
+above, matching the formats this tool actually parses.
+
+### Not yet implemented
+
+- A multi-gene `compare` across case/control sample directories.
+- A `rank` command applying candidate-gene membership and a ranking rule.
+
+Neither exists yet; nothing in this document should be read as describing
+their behavior.
+
+### Output fields, per command
+
+- **`analyze`** (and its `<junctions.tsv>` alias): one block per sample/gene
+  group, with `sample_id`, `gene_id`, `nodes`, `edges`, `signal_energy`,
+  `gradient_energy`, `cycle_energy`, `cycle_fraction`, a per-edge component
+  table (`from`, `to`, `signal`, `gradient`, `cycle`), and a
+  `checks: PASS|FAIL` line reporting the reconstruction, kernel, and
+  orthogonality error magnitudes.
+- **`gene`**: `gene_id`, the included/excluded sample counts, an `included`
+  table (`sample_id`, `condition`, `cycle_fraction`) and an `excluded` table
+  (`sample_id`, `reason`).
+- **`visualize`**: not a tabular export — writes an SVG containing the same
+  node/edge counts, cycle fraction, and checks status, the drawn graph, a
+  per-junction table with signed cycle components, and a fixed caveat line
+  stating that cycle-space structure alone does not establish circular RNA.
+  Standard output only confirms the saved path.
+
+### Errors and exit codes
+
+- Every error is printed to standard error as `error: <message>`. Exit code
+  is `0` on success and nonzero on any error.
+- A missing-argument or too-many-argument error prints the full multi-line
+  usage/help text as the error body, not a short one-line usage string. This
+  is deliberate, not a bug: the full command list stays visible whenever
+  invocation fails.
+- `analyze` and `gene` can both print complete, correct output to standard
+  output and then still exit with a failure status: `analyze` prints each
+  sample/gene's full block before checking that group's `checks.passed`, and
+  `gene` prints the full `included`/`excluded` tables before failing if
+  `included` turned out to be empty. Success on these two commands is not
+  all-or-nothing on standard output; a caller scripting against them must
+  check the exit code, not assume failure means no output was produced.
+- `visualize` refuses to overwrite an existing output file and fails with a
+  specific error naming the path, rather than silently replacing a figure.
 
 ## Future extensions
 

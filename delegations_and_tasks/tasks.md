@@ -33,7 +33,7 @@ alone or worked on together. A simple shared table is enough:
 |---|---|---|
 | P1.1 | Not started | |
 | G1 | Not started | |
-| R1 | Not started | |
+| R1 | Done | Rust command-line interface frozen in [docs/data_contract.md](../docs/data_contract.md): implemented commands table, explicit not-yet-implemented list (`compare`/`rank`), per-command output fields, and the errors/exit-code conventions. |
 | M1 | Done | Deterministic node and edge ordering is documented in [docs/math_spec.md](../docs/math_spec.md) and implemented in `src/graph.rs`. |
 | M2 | Done | Source `-1` and destination `+1` orientation is documented and tested in `tests/synthetic.rs`. |
 | M3 | Done | Normalization, zero-support, duplicate-edge, self-loop, and disconnected-component rules are implemented and documented in [docs/data_contract.md](../docs/data_contract.md) and [docs/math_spec.md](../docs/math_spec.md). |
