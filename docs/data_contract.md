@@ -1,6 +1,6 @@
 # Splice Girl input data contract
 
-**Contract version:** 0.3 (2026-10-20) — added the Rust command-line interface below.
+**Contract version:** 0.4 (2026-10-22) — added machine-readable result bundles.
 
 This version uses text node identifiers for the synthetic prototype. When real
 STAR junctions are added, the genome build, annotation release, and genomic
@@ -157,9 +157,9 @@ separately below so the two are never confused.
 
 | Command | Behavior |
 |---|---|
-| `splice-girl <junctions.tsv>` | direct-mode shorthand for `analyze` |
-| `splice-girl analyze <junctions.tsv>` | explicit alias of the same behavior |
-| `splice-girl gene <GENE_ID> <junctions.tsv> <manifest.tsv>` | case/control comparison for one gene, joining the junction table against a sample manifest |
+| `splice-girl <junctions.tsv> [--output <folder>]` | direct-mode shorthand for `analyze` |
+| `splice-girl analyze <junctions.tsv> [--output <folder>]` | analyzes every sample/gene group and optionally saves a result bundle |
+| `splice-girl gene <GENE_ID> <junctions.tsv> <manifest.tsv> [--output <folder>]` | compares one gene across case/control samples and optionally saves a result bundle |
 | `splice-girl visualize <SAMPLE_ID> <GENE_ID> <junctions.tsv> <output.svg>` | renders one sample/gene's splice graph as a standalone SVG |
 | `splice-girl --start` | interactive menu wrapping the three commands above |
 | `splice-girl --help`, `-h`, `help` | prints usage and the command list |
@@ -195,6 +195,24 @@ their behavior.
   stating that cycle-space structure alone does not establish circular RNA.
   Standard output only confirms the saved path.
 
+### Saved result bundle
+
+The `analyze` and `gene` commands keep their terminal output by default. Add
+`--output <folder>` (or `-o <folder>`) to also save machine-readable files.
+The folder must not already exist; Splice Girl refuses to overwrite a previous
+run.
+
+| File | Contents |
+|---|---|
+| `sample_metrics.tsv` | One row per analyzed sample/gene, including graph size, raw total support, energies, cycle fraction, and numerical-check errors |
+| `junction_components.tsv` | One row per junction, including raw count, normalized signal, gradient component, and signed cycle component |
+| `comparisons.tsv` | `gene` only: one row per included or excluded sample, with condition, cycle fraction, status, and exclusion reason |
+| `run_manifest.json` | Run ID, exact command arguments, tool version, input paths and SHA-256 checksums, solver settings, tolerance, output filenames, counts, exclusions, and failures |
+
+The manifest records `random_seed` as `null` because the current commands do
+not use randomness. A later statistics command must record its actual seed.
+The TSVs include the same `run_id` so rows can be joined back to the manifest.
+
 ### Errors and exit codes
 
 - Every error is printed to standard error as `error: <message>`. Exit code
@@ -212,6 +230,8 @@ their behavior.
   check the exit code, not assume failure means no output was produced.
 - `visualize` refuses to overwrite an existing output file and fails with a
   specific error naming the path, rather than silently replacing a figure.
+- `--output` also refuses to use an existing folder. Choose a new run folder
+  instead of deleting or silently replacing prior results.
 
 ## Future extensions
 

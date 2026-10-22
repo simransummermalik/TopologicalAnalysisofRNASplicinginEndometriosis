@@ -21,6 +21,9 @@ pub struct IncludedSample {
 #[derive(Debug)]
 pub struct ExcludedSample {
     pub sample_id: String,
+    /// Known case/control label when the sample came from the manifest. This
+    /// remains `None` for a junction-data sample that has no manifest row.
+    pub condition: Option<Condition>,
     pub reason: String,
 }
 
@@ -81,16 +84,19 @@ pub fn compare_gene(
                     cycle_fraction: result.decomposition.cycle_fraction,
                 });
             }
-            (Some(_), Some(_)) => excluded.push(ExcludedSample {
+            (Some(record), Some(_)) => excluded.push(ExcludedSample {
                 sample_id: sample_id.to_owned(),
+                condition: Some(record.condition),
                 reason: format!("decomposition checks failed for gene '{gene_id}'"),
             }),
             (None, Some(_)) => excluded.push(ExcludedSample {
                 sample_id: sample_id.to_owned(),
+                condition: None,
                 reason: "no manifest entry for this sample_id".to_owned(),
             }),
-            (Some(_), None) => excluded.push(ExcludedSample {
+            (Some(record), None) => excluded.push(ExcludedSample {
                 sample_id: sample_id.to_owned(),
+                condition: Some(record.condition),
                 reason: format!("no junction data for gene '{gene_id}'"),
             }),
             (None, None) => unreachable!("sample_id came from one of the two source maps"),

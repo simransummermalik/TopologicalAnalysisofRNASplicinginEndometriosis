@@ -67,6 +67,17 @@ excluded:
 `compare_gene` (`src/compare.rs`) reports — nothing is silently dropped in
 either direction.
 
+Save the same run as reusable files:
+
+```sh
+cargo run -- gene GENE_DEMO examples/demo/junctions.tsv examples/demo/manifest.tsv \
+  --output demo_results
+```
+
+This creates `sample_metrics.tsv`, `junction_components.tsv`,
+`comparisons.tsv`, and `run_manifest.json`. Use a new output-folder name for
+each run because Splice Girl protects existing results from being overwritten.
+
 ## Part 4 — graph visualization
 
 Create a browser-ready picture of `case_02`'s exon-skipping graph:

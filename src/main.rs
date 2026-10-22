@@ -15,12 +15,14 @@ use std::process::ExitCode;
 use splice_girl::analyze_junctions;
 use splice_girl::compare::{GeneComparison, compare_gene};
 use splice_girl::manifest::parse_manifest;
+use splice_girl::output::{ExportSummary, write_analysis_bundle, write_gene_bundle};
 use splice_girl::parser::parse_tsv;
 use splice_girl::visualize::write_svg;
 
 fn main() -> ExitCode {
+    let command: Vec<String> = env::args().collect();
     print_banner();
-    match run() {
+    match run(&command) {
         Ok(()) => ExitCode::SUCCESS,
         Err(error) => {
             eprintln!("error: {error}");
@@ -45,9 +47,9 @@ fn usage(program: &str) -> String {
         "Splice Girl — turn RNA splice junctions into graphs and Hodge measurements\n\n\
 usage:\n  \
   {program} --start\n  \
-  {program} <junctions.tsv>\n  \
-  {program} analyze <junctions.tsv>\n  \
-  {program} gene <GENE_ID> <junctions.tsv> <manifest.tsv>\n  \
+  {program} <junctions.tsv> [--output <folder>]\n  \
+  {program} analyze <junctions.tsv> [--output <folder>]\n  \
+  {program} gene <GENE_ID> <junctions.tsv> <manifest.tsv> [--output <folder>]\n  \
   {program} visualize <SAMPLE_ID> <GENE_ID> <junctions.tsv> <output.svg>\n\n\
 commands:\n  \
   analyze     calculate graph and Hodge measurements\n  \
@@ -57,9 +59,12 @@ commands:\n  \
     )
 }
 
-fn run() -> Result<(), String> {
-    let mut arguments = env::args();
-    let program = arguments.next().unwrap_or_else(|| "splice-girl".to_owned());
+fn run(command: &[String]) -> Result<(), String> {
+    let program = command
+        .first()
+        .cloned()
+        .unwrap_or_else(|| "splice-girl".to_owned());
+    let mut arguments = command.iter().skip(1).cloned();
     let first_argument = arguments.next().ok_or_else(|| usage(&program))?;
 
     if matches!(first_argument.as_str(), "--help" | "-h" | "help") {
@@ -83,15 +88,24 @@ fn run() -> Result<(), String> {
         let gene_id = arguments.next().ok_or_else(|| usage(&program))?;
         let junctions_path = arguments.next().ok_or_else(|| usage(&program))?;
         let manifest_path = arguments.next().ok_or_else(|| usage(&program))?;
-        if arguments.next().is_some() {
-            return Err(usage(&program));
-        }
-        let comparison = run_gene_comparison(
+        let output_dir = parse_optional_output(arguments.collect(), &program)?;
+        let (results, comparison) = run_gene_comparison(
             &gene_id,
             Path::new(&junctions_path),
             Path::new(&manifest_path),
         )?;
-        return print_gene_comparison(comparison);
+        if let Some(output_dir) = output_dir {
+            let summary = write_gene_bundle(
+                &output_dir,
+                Path::new(&junctions_path),
+                Path::new(&manifest_path),
+                &results,
+                &comparison,
+                command,
+            )?;
+            print_export_summary(&summary);
+        }
+        return print_gene_comparison(&comparison);
     }
 
     if first_argument == "visualize" {
@@ -112,19 +126,40 @@ fn run() -> Result<(), String> {
 
     if first_argument == "analyze" {
         let junctions_path = arguments.next().ok_or_else(|| usage(&program))?;
-        if arguments.next().is_some() {
-            return Err(usage(&program));
-        }
+        let output_dir = parse_optional_output(arguments.collect(), &program)?;
         let results = analyze_path(Path::new(&junctions_path))?;
-        return print_results(results);
+        if let Some(output_dir) = output_dir {
+            let summary =
+                write_analysis_bundle(&output_dir, Path::new(&junctions_path), &results, command)?;
+            print_export_summary(&summary);
+        }
+        return print_results(&results);
     }
 
-    if arguments.next().is_some() {
-        return Err(usage(&program));
-    }
+    let output_dir = parse_optional_output(arguments.collect(), &program)?;
 
     let results = analyze_path(Path::new(&first_argument))?;
-    print_results(results)
+    if let Some(output_dir) = output_dir {
+        let summary =
+            write_analysis_bundle(&output_dir, Path::new(&first_argument), &results, command)?;
+        print_export_summary(&summary);
+    }
+    print_results(&results)
+}
+
+fn parse_optional_output(
+    arguments: Vec<String>,
+    program: &str,
+) -> Result<Option<std::path::PathBuf>, String> {
+    match arguments.as_slice() {
+        [] => Ok(None),
+        [flag, folder]
+            if matches!(flag.as_str(), "--output" | "-o") && !folder.trim().is_empty() =>
+        {
+            Ok(Some(folder.into()))
+        }
+        _ => Err(usage(program)),
+    }
 }
 
 fn analyze_path(path: &Path) -> Result<Vec<splice_girl::GroupResult>, String> {
@@ -136,10 +171,11 @@ fn run_gene_comparison(
     gene_id: &str,
     junctions_path: &Path,
     manifest_path: &Path,
-) -> Result<GeneComparison, String> {
+) -> Result<(Vec<splice_girl::GroupResult>, GeneComparison), String> {
     let manifest = parse_manifest(manifest_path)?;
     let results = analyze_path(junctions_path)?;
-    Ok(compare_gene(&manifest, &results, gene_id))
+    let comparison = compare_gene(&manifest, &results, gene_id);
+    Ok((results, comparison))
 }
 
 fn run_start_menu() -> Result<(), String> {
@@ -168,7 +204,26 @@ fn run_start_menu() -> Result<(), String> {
                     continue;
                 }
 
-                match analyze_path(Path::new(path)).and_then(print_results) {
+                let output_dir = prompt("  Output folder (leave blank for terminal only): ")?;
+                let output_dir = output_dir
+                    .as_deref()
+                    .map(str::trim)
+                    .filter(|value| !value.is_empty())
+                    .map(std::path::PathBuf::from);
+                let menu_command = vec!["splice-girl".to_owned(), "--start".to_owned()];
+                let outcome = analyze_path(Path::new(path)).and_then(|results| {
+                    if let Some(output_dir) = &output_dir {
+                        let summary = write_analysis_bundle(
+                            output_dir,
+                            Path::new(path),
+                            &results,
+                            &menu_command,
+                        )?;
+                        print_export_summary(&summary);
+                    }
+                    print_results(&results)
+                });
+                match outcome {
                     Ok(()) => {
                         if prompt("  Press Enter to return to the menu...")?.is_none() {
                             return Ok(());
@@ -195,12 +250,32 @@ fn run_start_menu() -> Result<(), String> {
                     continue;
                 }
 
+                let output_dir = prompt("  Output folder (leave blank for terminal only): ")?;
+                let output_dir = output_dir
+                    .as_deref()
+                    .map(str::trim)
+                    .filter(|value| !value.is_empty())
+                    .map(std::path::PathBuf::from);
+                let menu_command = vec!["splice-girl".to_owned(), "--start".to_owned()];
                 let outcome = run_gene_comparison(
                     gene_id,
                     Path::new(junctions_path),
                     Path::new(manifest_path),
                 )
-                .and_then(print_gene_comparison);
+                .and_then(|(results, comparison)| {
+                    if let Some(output_dir) = &output_dir {
+                        let summary = write_gene_bundle(
+                            output_dir,
+                            Path::new(junctions_path),
+                            Path::new(manifest_path),
+                            &results,
+                            &comparison,
+                            &menu_command,
+                        )?;
+                        print_export_summary(&summary);
+                    }
+                    print_gene_comparison(&comparison)
+                });
                 match outcome {
                     Ok(()) => {
                         if prompt("  Press Enter to return to the menu...")?.is_none() {
@@ -306,10 +381,10 @@ fn prompt(message: &str) -> Result<Option<String>, String> {
     }
 }
 
-fn print_results(results: Vec<splice_girl::GroupResult>) -> Result<(), String> {
+fn print_results(results: &[splice_girl::GroupResult]) -> Result<(), String> {
     // One block of metrics per (sample, gene) group found in the input.
     for result in results {
-        let decomposition = result.decomposition;
+        let decomposition = &result.decomposition;
         println!("sample: {}", result.sample_id);
         println!("gene: {}", result.gene_id);
         println!("nodes: {}", result.graph.nodes.len());
@@ -354,7 +429,7 @@ fn print_results(results: Vec<splice_girl::GroupResult>) -> Result<(), String> {
     Ok(())
 }
 
-fn print_gene_comparison(comparison: GeneComparison) -> Result<(), String> {
+fn print_gene_comparison(comparison: &GeneComparison) -> Result<(), String> {
     println!("gene: {}", comparison.gene_id);
     println!(
         "included: {} sample(s), excluded: {} sample(s)",
@@ -392,4 +467,13 @@ fn print_gene_comparison(comparison: GeneComparison) -> Result<(), String> {
     }
 
     Ok(())
+}
+
+fn print_export_summary(summary: &ExportSummary) {
+    println!("results saved: {}", summary.output_dir.display());
+    println!("run_id: {}", summary.run_id);
+    for file in &summary.files {
+        println!("  {}", file.display());
+    }
+    println!();
 }

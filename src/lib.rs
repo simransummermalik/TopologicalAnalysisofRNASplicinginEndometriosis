@@ -6,6 +6,7 @@ pub mod graph;
 pub mod hodge;
 pub mod manifest;
 pub mod matrix;
+pub mod output;
 pub mod parser;
 pub mod visualize;
 

@@ -29,39 +29,119 @@ means Rust task 5.
 Split task IDs according to available time and interest. A task can be completed
 alone or worked on together. A simple shared table is enough:
 
-| Task ID | Status | Notes or link to output |
-|---|---|---|
-| P1.1 | Not started | |
-| G1 | Not started | |
-| R1 | Done | Rust command-line interface frozen in [docs/data_contract.md](../docs/data_contract.md): implemented commands table, explicit not-yet-implemented list (`compare`/`rank`), per-command output fields, and the errors/exit-code conventions — [logs/october_20th_vania.md](../logs/october_20th_vania.md) |
-| M1 | Done | Deterministic node and edge ordering is documented in [docs/math_spec.md](../docs/math_spec.md) and implemented in `src/graph.rs`. |
-| M2 | Done | Source `-1` and destination `+1` orientation is documented and tested in `tests/synthetic.rs`. |
-| M3 | Done | Normalization, zero-support, duplicate-edge, self-loop, and disconnected-component rules are implemented and documented in [docs/data_contract.md](../docs/data_contract.md) and [docs/math_spec.md](../docs/math_spec.md). |
-| M4 | Done | Gradient least-squares equation and potential convention are documented in [docs/math_spec.md](../docs/math_spec.md). |
-| M5 | Done | Cycle residual, kernel check, and directed-cycle versus graph-cycle explanation are documented and implemented in `src/hodge.rs`. |
-| M6 | Done | Signal energy, cycle energy, cycle fraction, and zero-energy failure are documented and implemented. |
-| M7 | Done | `f64`, tolerance `1e-9`, partial pivoting, and singular-system failure are recorded in [docs/math_spec.md](../docs/math_spec.md) and `src/matrix.rs`. |
-| M8 | Done | Reconstruction, kernel, orthogonality, and cycle-fraction checks run for every decomposition. |
-| M9 | Done | Incidence dimensions and `m - n + k` cycle rank are checked against numerical matrix rank on linear, cycle, exon-skipping, and disconnected fixtures. |
-| M10 | Done | Branching-tree fixture confirms that a tree has cycle fraction zero. |
-| M11 | Done | Exon-skipping fixture, independently derived 1/9 expected cycle fraction, test, and math_spec write-up — [logs/october_5th_vania.md](../logs/october_5th_vania.md) |
-| M12 | Done | Equal-weight directed-cycle fixture and expected cycle fraction of 1 are covered by `tests/fixtures/cycle.tsv` and `tests/synthetic.rs`. |
-| M13 | Done | Fixed noise fixture and independently calculated expected cycle fraction are recorded in `tests/fixtures/expected.md`. |
-| M14 | Done | Back-splice weight sweep for `0.01`, `0.05`, `0.10`, `0.20`, and `0.40` is tested with denominators and expected values. |
-| M15 | Done | Zero-support, duplicate-edge, self-loop, disconnected, and row-order edge cases have explicit fixtures and tests. |
-| M16 | Done | All synthetic expectations are recorded and reviewed in `tests/fixtures/expected.md`. |
-| R2 | Done | Cargo package, source folders, tests, `.gitignore`, and build instructions are present. |
-| R4 | Done | `splice-girl <junctions.tsv>` and `splice-girl --start` work with explicit usage and error handling. |
-| R5 | Done | Parser checks headers, fields, identifiers, counts, self-loops, and line-numbered errors. |
-| R6 | Done | Rows are grouped by sample/gene and converted into deterministic normalized graphs. |
-| R7 | Done | Incidence matrix, projection, cycle residual, and tolerance checks are implemented. |
-| R8 | Done | CLI prints sample/gene IDs, graph sizes, energies, cycle fraction, edge components, and check status. |
-| R9 | Done | The complete synthetic gate passes: linear, branching-tree, directed-cycle, exon-skipping, noise, weight-sweep, disconnected, and failure fixtures. |
-| R10 | Done | Sample manifest format (`docs/data_contract.md`), `src/manifest.rs` parser, `src/compare.rs` join/exclusion logic, and the `splice-girl gene <GENE_ID> <junctions.tsv> <manifest.tsv>` CLI command (plus a matching `--start` menu option) — [logs/october_19th_vania.md](../logs/october_19th_vania.md) |
+This status board was checked against the repository on **October 22, 2026**.
+**Done** is used only when the task's requested output and acceptance evidence
+exist. **In progress** means useful work exists but the full “Done when” rule
+has not been met.
 
-Add rows as needed. When a task is finished, link its output and change the
-status to **Done**. When a task is blocked, write the missing information in
-the Notes column and choose another task until the blocker is resolved.
+### Project setup status
+
+| Task ID | Status | Evidence or next requirement |
+|---|---|---|
+| P1.1 | **Done** | This file now contains a visible status entry for every task group. |
+| P1.2 | Not started | Course checkpoints and final dates still need to be recorded. |
+| P1.3 | Not started | `docs/source_map.md` does not exist yet. |
+| P1.4 | **Done** | [Data contract](../docs/data_contract.md), version 0.4. |
+| P1.5 | Not started | `docs/decisions.md` does not exist yet. |
+| P1.6 | In progress | Statuses are visible here; dependencies and team due dates still need to be added. |
+| P1.7 | In progress | Large-file rules exist in `.gitignore`; the decisions record is still missing. |
+
+### Biology research status
+
+| Task IDs | Status | Evidence or next requirement |
+|---|---|---|
+| G1–G10 | Not started | The reviewed risk-gene criteria, evidence table, normalized IDs, and audited export do not exist yet. |
+| E1–E11 | Not started | The reviewed exposure scope, evidence table, normalized IDs, overlap, and interpretation boundary do not exist yet. |
+
+### RNA-seq data status
+
+| Task ID | Status | Evidence or next requirement |
+|---|---|---|
+| D1 | In progress | GSE315857 samples and raw-read QC are documented; the formal suitability review is incomplete. |
+| D2 | **Done** | GSE315857 and its eight exact run accessions are recorded in [samples.tsv](../endometriosis-splicing/samples.tsv) and the [README](../README.md#the-eight-sample-study). |
+| D3 | In progress | Eight runs were retrieved in Galaxy and one control pilot is local; complete source checksums are still needed. |
+| D4 | In progress | The accession table exists, but the final Splice Girl manifest still needs standardized `sample_id`, tissue, QC, and eligibility fields. |
+| D5 | Blocked | Waiting for the matching human FASTA, GTF, and recorded reference convention. |
+| D6 | Blocked | Junction derivation requires D5 and splice-aware alignment. |
+| D7 | Not started | Back-splice detection support has not been documented for the selected workflow. |
+| D8 | Blocked | Junction QC requires D6 junction counts. |
+| D9 | Blocked | Count and coverage rules require D8. |
+| D10 | Blocked | Standard node/junction tables require D6 and D9. |
+| D11 | Blocked | Graph comparability requires standardized real junction tables. |
+| D12 | Blocked | The real integration subset requires D10 and D11. |
+
+### Mathematics status
+
+| Task ID | Status | Evidence or link to output |
+|---|---|---|
+| M1 | **Done** | Deterministic ordering is documented in [math_spec.md](../docs/math_spec.md) and implemented in `src/graph.rs`. |
+| M2 | **Done** | Source `-1` and destination `+1` are documented and tested. |
+| M3 | **Done** | Normalization and exceptional-input rules are implemented and documented. |
+| M4 | **Done** | The gradient least-squares problem and potential convention are documented. |
+| M5 | **Done** | The cycle residual, kernel check, and graph-cycle interpretation are implemented. |
+| M6 | **Done** | Signal energy, cycle energy, cycle fraction, and zero-energy behavior are documented. |
+| M7 | **Done** | `f64`, tolerance `1e-9`, partial pivoting, and singular failure are recorded. |
+| M8 | **Done** | Reconstruction, kernel, orthogonality, and fraction checks run for every decomposition. |
+| M9 | **Done** | Incidence dimensions and `m - n + k` cycle rank are tested. |
+| M10 | **Done** | The line and branching-tree fixtures have zero cycle fraction. |
+| M11 | **Done** | The exon-skipping fixture independently gives cycle fraction `1/9`. |
+| M12 | **Done** | The equal-weight directed-cycle fixture gives cycle fraction `1`. |
+| M13 | **Done** | The fixed-noise fixture has an independently recorded expectation. |
+| M14 | **Done** | The five-value back-splice weight sweep is tested. |
+| M15 | **Done** | Zero support, duplicate edge, self-loop, disconnected, and row-order cases are tested. |
+| M16 | **Done** | Reviewed expectations are saved in [expected.md](../tests/fixtures/expected.md). |
+
+### Rust software status
+
+| Task ID | Status | Evidence or next requirement |
+|---|---|---|
+| R1 | **Done** | The implemented CLI and current limits are frozen in [data_contract.md](../docs/data_contract.md). |
+| R2 | **Done** | The Cargo package, modules, fixtures, and build instructions exist. |
+| R3 | **Done** | The dependency-free dense solver, partial pivoting, and singular/disconnected tests are implemented. |
+| R4 | **Done** | Direct commands and the interactive menu start and report usage errors. |
+| R5 | **Done** | Parser validation reports invalid fields and line numbers. |
+| R6 | **Done** | Rows are grouped by sample/gene and converted into deterministic normalized graphs. |
+| R7 | **Done** | Incidence construction, projection, residuals, and numerical checks are implemented. |
+| R8 | **Done** | One-sample analysis prints graph metrics and signed edge components. |
+| R9 | **Done** | The complete synthetic acceptance suite passes. |
+| R10 | **Done** | Manifest parsing and one-gene case/control inclusion and exclusion are implemented. |
+| R11 | In progress | R13 now exports one row per sample/gene; the approved statistics interface and checks are still missing. |
+| R12 | Blocked | Ranking needs approved candidate and statistics rules plus real junction results. |
+| R13 | **Done** | [`src/output.rs`](../src/output.rs) writes metrics, junction components, comparisons, and `run_manifest.json` with checksums and settings; see the [October 22 log](../logs/october_22nd_summer.md). |
+| R14 | In progress | Many parser and overwrite errors are tested; the full listed error audit is incomplete. |
+| R15 | Not started | No saved runtime and memory benchmark note exists. |
+| R16 | In progress | README and demo instructions exist; minimum Rust version, release packaging, and final limitations audit remain. |
+| R17 | Not started | A clean-checkout review by another person has not been recorded. |
+
+### Real-data integration and comparison status
+
+| Task IDs | Status | Evidence or next requirement |
+|---|---|---|
+| D/R6.1–D/R6.2 | Blocked | Real junction counts and the matching reference are required. |
+| C1–C4 | Blocked | Eligible samples and per-sample real gene metrics do not exist yet. |
+| S1–S12 | Not started | The statistical specification and real analysis outputs do not exist yet. |
+| I1–I3 | Blocked | Biological interpretation must wait for reviewed real results and provenance tables. |
+
+### Usability, presentation, and final work status
+
+| Task ID | Status | Evidence or next requirement |
+|---|---|---|
+| U1 | In progress | Cargo builds locally; minimum version and clean-install validation remain. |
+| U2 | **Done** | The input contract includes valid, invalid, and runnable examples in beginner-readable language. |
+| U3 | In progress | Parser and CLI errors are actionable; the complete R14 error review remains. |
+| U4 | **Done** | R13 records run IDs, commands, versions, SHA-256 input checksums, settings, exclusions, and failures. |
+| U5 | Not started | An independent beginner usability review has not been recorded. |
+| V1 | **Done** | The complete pipeline is shown in the main [README](../README.md#what-splice-girl-does). |
+| V2 | **Done** | `visualize` draws the tested synthetic splice graph with direction and support. |
+| V3 | In progress | The SVG shows signal and cycle components; a full original/gradient/cycle display remains. |
+| V4–V8 | Not started | Real sample displays, results, explanations, speaking plan, and demo-gene selection remain. |
+| V9 | **Done** | [examples/demo](../examples/demo/README.md) contains tiny inputs, exact commands, expected output, and runtime guidance. |
+| V10–V11 | Not started | Rehearsal, backup recording, and final figure audit remain. |
+| F1–F5 | Not started | Final methods, results, release, compiled documents, and acceptance review remain. |
+| X1–X4 | Not started | These are optional extensions after the required workflow works. |
+
+When a task changes, update its status and link the concrete output. Mark a
+task **Blocked** only when its named dependency prevents useful work on it.
 
 Every task has a **Source** line. Open those links first to see the project
 decision or explanation behind the task. If the task requires a new paper,

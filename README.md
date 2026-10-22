@@ -163,10 +163,11 @@ In plain language:
 | Synthetic validation examples | Linear, branching, exon-skipping, cyclic, noisy, and edge-case graphs are tested. |
 | Sample manifest support | Samples remain separate and are assigned to case or control groups. |
 | Gene comparison command | One gene's cycle fractions can be reported across eligible samples. |
+| Reproducible result bundles | Metrics, junction components, comparisons, checksums, and run settings can be saved as TSV and JSON files. |
 | Preprocessing design | The path from FASTQ reads to Splice Girl junction tables is documented and scripted. |
 | Public dataset selection | Four control and four endometriosis RNA-seq samples have been identified. |
 
-The Rust project currently passes **31 automated tests**. Real-data retrieval
+The Rust project currently passes **35 automated tests**. Real-data retrieval
 is in progress through Galaxy, where the large files can be processed without
 filling a personal laptop.
 
@@ -268,7 +269,22 @@ cycle component for every junction. The figure uses a plain black-and-white
 academic style and states the main interpretation limit: cycle-space structure
 alone does not prove circular RNA or causation.
 
-### 5. Run the automated checks
+### 5. Save results for later analysis
+
+Add `--output` followed by a new folder name:
+
+```sh
+cargo run -- gene GENE_DEMO examples/demo/junctions.tsv examples/demo/manifest.tsv \
+  --output demo_results
+```
+
+The folder contains sample metrics, junction-level components, the comparison
+table, and a JSON run manifest. The manifest records the command, software
+version, input checksums, and numerical settings so another person can trace
+the result back to its inputs. Splice Girl will not overwrite an existing
+results folder.
+
+### 6. Run the automated checks
 
 ```sh
 cargo test
