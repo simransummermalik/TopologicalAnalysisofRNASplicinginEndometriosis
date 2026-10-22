@@ -25,4 +25,4 @@ changes that have not yet been committed.
 | October 19, 2026 | Vania | Pushed | [Sample manifest, gene comparison, and CLI wiring (R10)](october_19th_vania.md) |
 | October 19, 2026 | Vania | Pushed | [Runnable demo package for the check-up](october_19th_vania_demo.md) |
 | October 20, 2026 | Vania | Pushed | [Froze the Rust CLI interface (R1)](october_20th_vania.md) |
-| October 22, 2026 | Summer | Prepared for push | [Machine-readable result bundles and task-board audit (R13)](october_22nd_summer.md) |
+| October 22, 2026 | Summer | Pushed | [Machine-readable result bundles and task-board audit (R13)](october_22nd_summer.md) |
