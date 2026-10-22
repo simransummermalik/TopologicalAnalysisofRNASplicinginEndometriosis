@@ -1,0 +1,23 @@
+{
+  "summary": {
+    "before_filtering": {"total_reads":98954118,"total_bases":9954450166,"q20_bases":9493352315,"q30_bases":8800323929,"q20_rate":0.953679,"q30_rate":0.884059,"gc_content":0.503673},
+    "after_filtering": {"total_reads":98953584,"total_bases":9855177009,"q20_bases":9450198385,"q30_bases":8774110597,"q20_rate":0.958907,"q30_rate":0.890305,"gc_content":0.501455}
+  },
+  "filtering_result": {
+    "passed_filter_reads": 98953851,
+    "low_quality_reads": 237,
+    "too_many_N_reads": 0,
+    "too_short_reads": 30,
+    "too_long_reads": 0,
+    "low_complexity_reads": 0
+  },
+  "adapter_cutting": {
+    "adapter_trimmed_reads": 8529,
+    "adapter_trimmed_bases": 275033
+  },
+  "base_correction": {
+    "corrected_bases": 0
+  },
+  "paired_end": true,
+  "command": ""
+}
