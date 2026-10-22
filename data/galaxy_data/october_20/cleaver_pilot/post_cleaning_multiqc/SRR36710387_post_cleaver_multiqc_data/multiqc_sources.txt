@@ -1,0 +1,3 @@
+Module	Section	Sample Name	Source
+FastQC	all_sections	SRR36710387.R1	/Users/summermalik/Documents/GitHub/TopologicalAnalysisofRNASplicinginEndometriosis/data/galaxy_data/october_20/cleaver_pilot/post_cleaning_fastqc/SRR36710387.R1_fastqc.zip
+FastQC	all_sections	SRR36710387.R2	/Users/summermalik/Documents/GitHub/TopologicalAnalysisofRNASplicinginEndometriosis/data/galaxy_data/october_20/cleaver_pilot/post_cleaning_fastqc/SRR36710387.R2_fastqc.zip
