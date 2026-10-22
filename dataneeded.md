@@ -1,75 +1,75 @@
 # Data needed for Splice Girl
 
-This is the full data checklist. The raw FASTQ files, genome files, BAM files,
-and STAR index should stay outside Git because they are very large. Keep their
-file paths and checksums in the project notes.
+This checklist follows the current GSE315857 analysis. Large FASTQ, reference,
+index, SAM, and BAM files stay outside Git. Their identifiers, paths, versions,
+and checksums belong in the project records.
 
-## Needed for the first small test
+## Sample information
 
-- [ ] **Human genome FASTA** — the DNA sequence that the RNA reads will be
-  matched against.
-- [ ] **Matching GTF annotation** — the file that tells us where genes, exons,
-  and transcripts are located.
-- [ ] **STAR genome index** — the computer-ready version of the genome FASTA
-  and GTF. It must use the same genome build as the FASTA and GTF.
-- [ ] **Junction gene map** — made from the matching GTF with:
-  `python3 preprocessing/build_junction_gene_map.py`.
-- [ ] **B-01 read 1 and read 2** — the paired raw FASTQ files for one control
-  sample.
-- [ ] **DE-01 read 1 and read 2** — the paired raw FASTQ files for one
-  deep-infiltrating-endometriosis sample.
-- [ ] **Pilot sample sheet** —
-  `data/metadata/E-MTAB-15117_pilot.tsv`, which connects each sample name to
-  its condition, tissue, and FASTQ download links.
+- [x] Eight stable SRA-run sample IDs.
+- [x] Four `control` and four `case` labels.
+- [x] GEO sample, SRA experiment, and SRA run accessions.
+- [x] Tissue and menstrual phase: proliferative-phase eutopic endometrium for
+  every sample.
+- [x] Paired-end library layout and the current read locations.
+- [x] Separate internal subject labels for all eight biological subjects.
+- [x] Public-metadata gaps, including unavailable patient IDs and batch, are
+  written explicitly instead of guessed.
+- [ ] Final project genome build and annotation release. These are waiting on
+  the matching reference files in D5.
 
-## Metadata needed for every sample
+The complete table is [`data/metadata/samples.tsv`](data/metadata/samples.tsv).
+Per-subject ages and original clinical IDs are not available in the public
+sample records; the study reports an overall age range of 18–45 years.
 
-- [ ] A stable sample ID.
-- [ ] The condition or group: control, deep-infiltrating endometriosis,
-  ovarian endometriosis, or peritoneal endometriosis.
-- [ ] The tissue or lesion site.
-- [ ] The study, sample accession, and sequencing run accession.
-- [ ] The individual ID, age, sex, and other available variables that could
-  affect a comparison.
-- [ ] The FASTQ file names and whether the sample is paired-end.
-- [ ] The genome build, GTF release, and STAR index version used for that
-  sample.
+## Raw reads and quality control
 
-## Needed after the pilot works
+- [x] All eight paired-end SRA runs were retrieved in Galaxy.
+- [x] Raw FastQC and MultiQC reports exist for all eight samples.
+- [x] One control pilot, `SRR36710387`, has local raw reads, a Cleaver report,
+  cleaned paired reads, checksums, and post-cleaning FastQC/MultiQC.
+- [ ] Run the same reviewed Cleaver cleaning on the remaining seven samples.
+- [ ] Record cleaned-file checksums for the remaining seven samples.
+- [ ] Review the complete post-cleaning cohort together before alignment.
 
-- [ ] The remaining E-MTAB-15117 paired FASTQ files, if the group approves
-  processing the full study.
-- [ ] The final comparison groups chosen by the research team.
-- [ ] Any batch, library, or sequencing-center information available for
-  checking technical differences.
-- [ ] Optional comparison data from GSE179640, if the group decides to use the
-  tissue-matched endometrium dataset as a second analysis.
+The raw and cleaned reads are intentionally ignored by Git. The small reports
+are under [`data/galaxy_data/october_20`](data/galaxy_data/october_20).
 
-## Files Splice Girl must receive
+## Human reference files
 
-For each sample, preprocessing must produce a tab-separated junction file with
-these five columns:
+- [ ] Human genome FASTA.
+- [ ] Matching GTF annotation.
+- [ ] Exact genome build and annotation release recorded in the manifest and
+  data-methods document.
+- [ ] HISAT2 index built from that same genome. HISAT2 is the planned
+  splice-aware Bowtie-family aligner; plain Bowtie2 should not be used for
+  intron-spanning RNA-seq reads.
+- [ ] Reference-file checksums and software versions.
+
+## Alignment and splice junctions
+
+- [ ] Align the cleaned paired reads for the pilot sample with HISAT2.
+- [ ] Save the alignment summary, SAM/BAM output, sorted BAM, and BAM index.
+- [ ] Derive splice-junction counts without losing the sample ID.
+- [ ] Map junction coordinates to genes using the matching GTF.
+- [ ] Repeat the approved alignment and junction process for the remaining
+  eligible samples.
+- [ ] Run junction QC and record exclusion reasons.
+
+For every retained sample, preprocessing must produce a tab-separated junction
+file with these five columns:
 
 ```text
 sample_id    gene_id    from    to    count
 ```
 
-The `count` value is the number of reads supporting that splice junction. Each
-row must remain connected to its sample and gene; samples must not be pooled
-during preprocessing.
-
-## Quality and record files
-
-- [ ] Cleaver read-cleaning report.
-- [ ] STAR alignment log and `SJ.out.tab` file.
-- [ ] Sorted BAM file and BAM index for each sample.
-- [ ] Junction-conversion quality report.
-- [ ] Checksums or recorded download locations for raw files and references.
-- [ ] A note stating how many reads were kept, aligned, and converted into
-  junctions.
+`sample_id` must match the SRA-run value in the sample manifest. `count` is the
+number of reads supporting that directed splice junction. Samples must stay
+separate throughout preprocessing.
 
 ## What the final analysis uses
 
-The final Hodge analysis uses the cleaned junction TSV files, not the raw FASTQ
-files directly. It compares the graph measurements for the chosen sample
-groups after the preprocessing and quality checks pass.
+Splice Girl analyzes the cleaned junction TSVs, not FASTQ files directly. The
+Rust tool will build one graph per sample and gene, run the Hodge decomposition,
+and compare the resulting measurements only after preprocessing, alignment,
+junction QC, and eligibility checks are complete.

@@ -142,9 +142,12 @@ name rather than an exact fixed header, since real metadata files (for
 example GEO or ArrayExpress sample sheets) carry many additional columns this
 tool does not need.
 
-This manifest states group membership only. It does not state sample
-eligibility (tissue suitability, QC status, or inclusion in a specific
-comparison) — that remains a separate, later decision.
+The Rust parser uses this manifest for group membership only. The current
+real-data manifest at [`data/metadata/samples.tsv`](../data/metadata/samples.tsv)
+also carries tissue, QC, processing, and eligibility fields for project
+tracking, but the parser ignores those extra fields. Until eligibility
+filtering is implemented, only approved samples should be present in the
+junction table passed to a comparison.
 
 ## Rust command-line interface
 
@@ -235,8 +238,8 @@ The TSVs include the same `run_id` so rows can be joined back to the manifest.
 
 ## Future extensions
 
-Real-data analysis will add separate metadata files for subject, condition,
-tissue, accession, batch, genome build, and annotation version. Those fields
-should not be squeezed into this five-column junction table. The future
-metadata schema must preserve the same `sample_id` so each junction row can be
-traced back to its sample.
+The current real-data [sample manifest](../data/metadata/samples.tsv) records
+subject, condition, tissue, accession, batch, file location, QC status, genome
+build, annotation version, and eligibility separately from the five-column
+junction table. It preserves the same run-based `sample_id` so each future
+junction row can be traced back to its sample.

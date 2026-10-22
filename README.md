@@ -181,8 +181,13 @@ It contains paired-end RNA-seq data from proliferative endometrium.
 | Control | 4 | `SRR36710390` to `SRR36710387` |
 | Endometriosis | 4 | `SRR36710386` to `SRR36710383` |
 
-The exact GEO sample, SRA experiment, SRA run, layout, and condition labels are
-recorded in [`endometriosis-splicing/samples.tsv`](endometriosis-splicing/samples.tsv).
+The complete working manifest is
+[`data/metadata/samples.tsv`](data/metadata/samples.tsv). It records the exact
+GEO and SRA accessions, internal subject labels, case/control status, matched
+tissue, file locations, QC status, and what processing is still pending. The
+earlier accession-only table remains in
+[`endometriosis-splicing/samples.tsv`](endometriosis-splicing/samples.tsv) for
+provenance.
 
 The processing plan is:
 

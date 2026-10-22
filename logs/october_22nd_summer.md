@@ -1,8 +1,8 @@
 # October 22, 2026 — Summer
 
-**Status:** Pushed
+**Status:** R13 pushed; D4 prepared for push
 
-**Commit:** `a9ed39e` — `adding output.rs`
+**Commit:** `a9ed39e` — `adding output.rs` (R13 portion)
 
 ## Contribution
 
@@ -38,3 +38,16 @@ names the actual blocker for unfinished real-data tasks.
 - Known SHA-256 test vectors for empty input and `abc` pass.
 
 The completed R13 work and task-board audit are recorded in commit `a9ed39e`.
+
+## D4 sample manifest
+
+I also made the final working sample table for GSE315857 at
+`data/metadata/samples.tsv`. It puts all eight samples in one place and records
+which four are controls and which four are endometriosis cases, their GEO and
+SRA accessions, their matched proliferative eutopic-endometrium tissue, where
+their reads or reports are stored, and how far each sample has moved through
+quality control. All eight have raw FastQC/MultiQC results. SRR36710387 is
+marked as the completed Cleaver pilot, while the other seven are still waiting
+for Cleaver. The genome, annotation, alignment, and junction fields are clearly
+marked as pending instead of being guessed. I checked that the sample IDs and
+accessions are unique and that the table has four cases and four controls.
