@@ -40,8 +40,14 @@ pub fn analyze_junctions(junctions: Vec<Junction>) -> Result<Vec<GroupResult>, S
 
     let mut results = Vec::with_capacity(groups.len());
     for ((sample_id, gene_id), rows) in groups {
-        let graph = SpliceGraph::from_junctions(&rows)?;
-        let decomposition = decompose(&graph)?;
+        let graph = SpliceGraph::from_junctions(&rows).map_err(|error| {
+            format!("could not build graph for sample '{sample_id}', gene '{gene_id}': {error}")
+        })?;
+        let decomposition = decompose(&graph).map_err(|error| {
+            format!(
+                "Hodge decomposition failed for sample '{sample_id}', gene '{gene_id}': {error}; inspect this sample/gene graph and its junction counts"
+            )
+        })?;
         results.push(GroupResult {
             sample_id,
             gene_id,

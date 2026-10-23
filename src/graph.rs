@@ -31,7 +31,10 @@ impl SpliceGraph {
     pub fn from_junctions(rows: &[Junction]) -> Result<Self, String> {
         let total: f64 = rows.iter().map(|row| row.count).sum();
         if !total.is_finite() || total <= 0.0 {
-            return Err("each sample/gene group must have positive total support".to_owned());
+            return Err(
+                "total read support is zero; each sample/gene group must have positive total support, so at least one junction count must be greater than zero"
+                    .to_owned(),
+            );
         }
 
         let mut node_names = BTreeSet::new();
@@ -44,7 +47,7 @@ impl SpliceGraph {
             // "duplicate edge" open decision), so reject rather than guess.
             if !edge_keys.insert((row.from.clone(), row.to.clone())) {
                 return Err(format!(
-                    "duplicate edge {} -> {} in one sample/gene group",
+                    "duplicate edge {} -> {} in one sample/gene group; combine its counts into one row before running Splice Girl",
                     row.from, row.to
                 ));
             }

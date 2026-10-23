@@ -303,6 +303,25 @@ equal-weight directed cycle should have a cycle fraction near `1`. The
 exon-skipping example should have a smaller nonzero cycle fraction because it
 contains an alternative path.
 
+### If a command fails
+
+Splice Girl returns a failure code and explains what to inspect. It does not
+silently skip malformed input or replace an existing result.
+
+| Message mentions | What to check |
+|---|---|
+| `could not read junction TSV` | Check the filename, path, file permissions, and that the file is UTF-8 text. |
+| `header must be exactly` | Use the five tab-separated columns `sample_id`, `gene_id`, `from`, `to`, and `count` in that order. |
+| `column 'count'` | Replace the named value with a finite number greater than or equal to zero. |
+| `invalid sample manifest` | Check the named line and use one unique `sample_id` per row with condition `case` or `control`. |
+| `no eligible samples` | Make sure junction and manifest sample IDs match and the selected gene has junction rows. |
+| `no eligible case/control samples` | At least one eligible sample from each group is required for a comparison. |
+| `total read support is zero` | At least one junction in that sample/gene group needs a positive count. |
+| `already exists` | Choose a new output folder or SVG filename; Splice Girl will not overwrite it. |
+
+The error tests in `tests/cli_errors.rs` run these mistakes through the real
+command and confirm that each one exits unsuccessfully with a useful message.
+
 ## What the output means
 
 A result includes:

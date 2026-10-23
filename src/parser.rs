@@ -21,20 +21,30 @@ const REQUIRED_HEADER: [&str; 5] = ["sample_id", "gene_id", "from", "to", "count
 
 /// Reads `path` from disk and parses it as junction TSV.
 pub fn parse_tsv(path: &Path) -> Result<Vec<Junction>, String> {
-    let contents = fs::read_to_string(path)
-        .map_err(|error| format!("could not read {}: {error}", path.display()))?;
+    let contents = fs::read_to_string(path).map_err(|error| {
+        format!(
+            "could not read junction TSV {}: {error}; check that the path exists, is readable, and points to a UTF-8 text file",
+            path.display()
+        )
+    })?;
     parse_tsv_text(&contents)
+        .map_err(|error| format!("invalid junction TSV {}: {error}", path.display()))
 }
 
 /// Parses already-read TSV text into junction rows. Split out from
 /// `parse_tsv` so tests can exercise parsing without touching the filesystem.
 pub fn parse_tsv_text(contents: &str) -> Result<Vec<Junction>, String> {
     let mut lines = contents.lines();
-    let header = lines.next().ok_or("input is empty")?;
+    let header = lines.next().ok_or_else(|| {
+        format!(
+            "file is empty; add the required header {} and at least one junction row",
+            REQUIRED_HEADER.join("\\t")
+        )
+    })?;
     let columns: Vec<&str> = header.split('\t').collect();
     if columns != REQUIRED_HEADER {
         return Err(format!(
-            "expected header {}, found {}",
+            "header must be exactly {}, found {}; check the column names, order, and tab separators",
             REQUIRED_HEADER.join("\\t"),
             columns.join("\\t")
         ));
@@ -51,7 +61,8 @@ pub fn parse_tsv_text(contents: &str) -> Result<Vec<Junction>, String> {
         let fields: Vec<&str> = line.split('\t').collect();
         if fields.len() != REQUIRED_HEADER.len() {
             return Err(format!(
-                "line {line_number}: expected 5 tab-separated fields, found {}",
+                "line {line_number}: expected 5 tab-separated fields ({}) but found {}; check for missing values or extra tabs",
+                REQUIRED_HEADER.join(", "),
                 fields.len()
             ));
         }
@@ -60,16 +71,24 @@ pub fn parse_tsv_text(contents: &str) -> Result<Vec<Junction>, String> {
         // numeric check below.
         for (column, value) in REQUIRED_HEADER[..4].iter().zip(&fields[..4]) {
             if value.trim().is_empty() {
-                return Err(format!("line {line_number}: {column} cannot be empty"));
+                return Err(format!(
+                    "line {line_number}, column '{column}': value cannot be empty; provide a nonempty identifier"
+                ));
             }
         }
 
         let count: f64 = fields[4]
             .parse()
-            .map_err(|_| format!("line {line_number}: count must be a number"))?;
+            .map_err(|_| {
+                format!(
+                    "line {line_number}, column 'count': expected a finite nonnegative number, found '{}'; replace it with a numeric read count",
+                    fields[4]
+                )
+            })?;
         if !count.is_finite() || count < 0.0 {
             return Err(format!(
-                "line {line_number}: count must be finite and nonnegative"
+                "line {line_number}, column 'count': expected a finite nonnegative number, found '{}'; replace it with a numeric read count greater than or equal to zero",
+                fields[4]
             ));
         }
         // Self-loops have no meaningful incidence-matrix column (a -1 and a
@@ -77,7 +96,7 @@ pub fn parse_tsv_text(contents: &str) -> Result<Vec<Junction>, String> {
         // them yet; reject explicitly rather than silently dropping signal.
         if fields[2] == fields[3] {
             return Err(format!(
-                "line {line_number}: self-loop {} -> {} is not supported in the basic prototype",
+                "line {line_number}: self-loop {} -> {} is not supported in the basic prototype; remove the row or correct its 'from' and 'to' nodes",
                 fields[2], fields[3]
             ));
         }
@@ -92,7 +111,10 @@ pub fn parse_tsv_text(contents: &str) -> Result<Vec<Junction>, String> {
     }
 
     if rows.is_empty() {
-        return Err("input contains no junction rows".to_owned());
+        return Err(
+            "file contains a header but no junction rows; add at least one observed junction"
+                .to_owned(),
+        );
     }
 
     Ok(rows)

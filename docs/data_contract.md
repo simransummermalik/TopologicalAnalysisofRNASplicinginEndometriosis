@@ -113,7 +113,7 @@ sample_id	gene_id	from	to	count
 sample_1	GENE_1	E1	E2	-1
 ```
 
-Expected error: `count must be finite and nonnegative`.
+Expected error: `column 'count': expected a finite nonnegative number`.
 
 A self-loop is rejected:
 
@@ -246,6 +246,9 @@ The TSVs include the same `run_id` so rows can be joined back to the manifest.
 
 - Every error is printed to standard error as `error: <message>`. Exit code
   is `0` on success and nonzero on any error.
+- Input errors name the file. Row errors also name the line and column when
+  that information is available, show the invalid value when safe, and suggest
+  the next correction.
 - A missing-argument or too-many-argument error prints the full multi-line
   usage/help text as the error body, not a short one-line usage string. This
   is deliberate, not a bug: the full command list stays visible whenever
@@ -253,14 +256,19 @@ The TSVs include the same `run_id` so rows can be joined back to the manifest.
 - `analyze` and `gene` can both print complete, correct output to standard
   output and then still exit with a failure status: `analyze` prints each
   sample/gene's full block before checking that group's `checks.passed`, and
-  `gene` prints the full `included`/`excluded` tables before failing if
-  `included` turned out to be empty. Success on these two commands is not
-  all-or-nothing on standard output; a caller scripting against them must
-  check the exit code, not assume failure means no output was produced.
+  `gene` prints the full `included`/`excluded` tables before failing if every
+  sample was excluded or if no eligible case or control sample remains.
+  Success on these two commands is not all-or-nothing on standard output; a
+  caller scripting against them must check the exit code, not assume failure
+  means no output was produced.
 - `visualize` refuses to overwrite an existing output file and fails with a
   specific error naming the path, rather than silently replacing a figure.
 - `--output` also refuses to use an existing folder. Choose a new run folder
   instead of deleting or silently replacing prior results.
+- `tests/cli_errors.rs` checks missing and empty files, malformed headers,
+  invalid counts and manifests, missing sample metadata, zero-support groups,
+  insufficient comparison groups, protected output folders, and nonzero exit
+  statuses. The matrix unit test separately checks safe solver failure.
 
 ## Future extensions
 

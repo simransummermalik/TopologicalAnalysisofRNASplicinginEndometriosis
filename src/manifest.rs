@@ -33,9 +33,14 @@ pub struct SampleRecord {
 
 /// Reads `path` from disk and parses it as a sample manifest.
 pub fn parse_manifest(path: &Path) -> Result<Vec<SampleRecord>, String> {
-    let contents = fs::read_to_string(path)
-        .map_err(|error| format!("could not read {}: {error}", path.display()))?;
+    let contents = fs::read_to_string(path).map_err(|error| {
+        format!(
+            "could not read sample manifest {}: {error}; check that the path exists, is readable, and points to a UTF-8 text file",
+            path.display()
+        )
+    })?;
     parse_manifest_text(&contents)
+        .map_err(|error| format!("invalid sample manifest {}: {error}", path.display()))
 }
 
 /// Parses already-read TSV text into sample records. Split out from
@@ -43,7 +48,9 @@ pub fn parse_manifest(path: &Path) -> Result<Vec<SampleRecord>, String> {
 /// filesystem.
 pub fn parse_manifest_text(contents: &str) -> Result<Vec<SampleRecord>, String> {
     let mut lines = contents.lines();
-    let header = lines.next().ok_or("manifest is empty")?;
+    let header = lines.next().ok_or(
+        "file is empty; add a tab-separated header containing 'sample_id' and 'condition'",
+    )?;
     let columns: Vec<&str> = header.split('\t').collect();
 
     // Found by name, not a fixed position — see docs/data_contract.md.
@@ -62,7 +69,7 @@ pub fn parse_manifest_text(contents: &str) -> Result<Vec<SampleRecord>, String> 
         let fields: Vec<&str> = line.split('\t').collect();
         if fields.len() != columns.len() {
             return Err(format!(
-                "line {line_number}: expected {} tab-separated fields, found {}",
+                "line {line_number}: expected {} tab-separated fields to match the header, found {}; check for missing values or extra tabs",
                 columns.len(),
                 fields.len()
             ));
@@ -72,7 +79,7 @@ pub fn parse_manifest_text(contents: &str) -> Result<Vec<SampleRecord>, String> 
 
         if !seen_sample_ids.insert(record.sample_id.clone()) {
             return Err(format!(
-                "line {line_number}: duplicate sample_id {}",
+                "line {line_number}, column 'sample_id': duplicate sample_id '{}'; keep exactly one manifest row per sample",
                 record.sample_id
             ));
         }
@@ -81,7 +88,10 @@ pub fn parse_manifest_text(contents: &str) -> Result<Vec<SampleRecord>, String> 
     }
 
     if records.is_empty() {
-        return Err("manifest contains no sample rows".to_owned());
+        return Err(
+            "file contains a header but no sample rows; add at least one sample with condition 'case' or 'control'"
+                .to_owned(),
+        );
     }
 
     Ok(records)
@@ -100,11 +110,13 @@ fn find_required_column(columns: &[&str], name: &str) -> Result<usize, String> {
 
     let Some(index) = matches.next() else {
         return Err(format!(
-            "manifest header is missing required column '{name}'"
+            "header is missing required column '{name}'; add one tab-separated '{name}' column"
         ));
     };
     if matches.next().is_some() {
-        return Err(format!("manifest header has more than one '{name}' column"));
+        return Err(format!(
+            "header has more than one '{name}' column; keep exactly one"
+        ));
     }
     Ok(index)
 }
@@ -118,7 +130,9 @@ fn parse_record(
 ) -> Result<SampleRecord, String> {
     let sample_id = fields[sample_id_index].trim();
     if sample_id.is_empty() {
-        return Err(format!("line {line_number}: sample_id cannot be empty"));
+        return Err(format!(
+            "line {line_number}, column 'sample_id': value cannot be empty; enter the identifier used in the junction TSV"
+        ));
     }
 
     // Condition values are matched case-insensitively (unlike header column
@@ -130,7 +144,7 @@ fn parse_record(
         "control" => Condition::Control,
         other => {
             return Err(format!(
-                "line {line_number}: condition must be 'case' or 'control', found '{other}'"
+                "line {line_number}, column 'condition': condition must be 'case' or 'control', found '{other}'; replace it with one of the accepted labels"
             ));
         }
     };

@@ -60,7 +60,10 @@ pub fn norm(vector: &[f64]) -> f64 {
 pub fn solve(mut matrix: Matrix, mut values: Vec<f64>) -> Result<Vec<f64>, String> {
     let n = values.len();
     if matrix.len() != n || matrix.iter().any(|row| row.len() != n) {
-        return Err("linear system has inconsistent dimensions".to_owned());
+        return Err(
+            "linear system has inconsistent dimensions; check the graph incidence matrix"
+                .to_owned(),
+        );
     }
 
     for pivot in 0..n {
@@ -72,7 +75,10 @@ pub fn solve(mut matrix: Matrix, mut values: Vec<f64>) -> Result<Vec<f64>, Strin
             })
             .expect("pivot range is nonempty");
         if matrix[best][pivot].abs() < 1e-12 {
-            return Err("projection system is singular at the configured tolerance".to_owned());
+            return Err(
+                "projection system is singular at the configured tolerance; check for a degenerate graph or unstable junction weights"
+                    .to_owned(),
+            );
         }
         matrix.swap(pivot, best);
         values.swap(pivot, best);
@@ -97,4 +103,18 @@ pub fn solve(mut matrix: Matrix, mut values: Vec<f64>) -> Result<Vec<f64>, Strin
         solution[row] = (values[row] - known) / matrix[row][row];
     }
     Ok(solution)
+}
+
+#[cfg(test)]
+mod tests {
+    use super::solve;
+
+    #[test]
+    fn singular_system_returns_an_actionable_error() {
+        let error = solve(vec![vec![1.0, 1.0], vec![2.0, 2.0]], vec![1.0, 2.0])
+            .expect_err("a singular system must be rejected");
+
+        assert!(error.contains("singular"));
+        assert!(error.contains("check for a degenerate graph"));
+    }
 }

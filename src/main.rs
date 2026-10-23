@@ -86,6 +86,11 @@ fn run(command: &[String]) -> Result<(), String> {
 
     if first_argument == "gene" {
         let gene_id = arguments.next().ok_or_else(|| usage(&program))?;
+        if gene_id.trim().is_empty() {
+            return Err(
+                "gene ID cannot be empty; provide the gene_id used in the junction TSV".to_owned(),
+            );
+        }
         let junctions_path = arguments.next().ok_or_else(|| usage(&program))?;
         let manifest_path = arguments.next().ok_or_else(|| usage(&program))?;
         let output_dir = parse_optional_output(arguments.collect(), &program)?;
@@ -111,6 +116,12 @@ fn run(command: &[String]) -> Result<(), String> {
     if first_argument == "visualize" {
         let sample_id = arguments.next().ok_or_else(|| usage(&program))?;
         let gene_id = arguments.next().ok_or_else(|| usage(&program))?;
+        if sample_id.trim().is_empty() || gene_id.trim().is_empty() {
+            return Err(
+                "sample ID and gene ID cannot be empty; use values present in the junction TSV"
+                    .to_owned(),
+            );
+        }
         let junctions_path = arguments.next().ok_or_else(|| usage(&program))?;
         let output_path = arguments.next().ok_or_else(|| usage(&program))?;
         if arguments.next().is_some() {
@@ -164,7 +175,12 @@ fn parse_optional_output(
 
 fn analyze_path(path: &Path) -> Result<Vec<splice_girl::GroupResult>, String> {
     let junctions = parse_tsv(path)?;
-    analyze_junctions(junctions)
+    analyze_junctions(junctions).map_err(|error| {
+        format!(
+            "analysis of junction TSV {} failed: {error}",
+            path.display()
+        )
+    })
 }
 
 fn run_gene_comparison(
@@ -461,7 +477,21 @@ fn print_gene_comparison(comparison: &GeneComparison) -> Result<(), String> {
 
     if comparison.included.is_empty() {
         return Err(format!(
-            "no eligible samples for gene {}: every sample was excluded",
+            "no eligible samples for gene {}: every sample was excluded; check that junction sample_id values match the manifest and that this gene has junction rows",
+            comparison.gene_id
+        ));
+    }
+
+    let case_count = comparison
+        .included
+        .iter()
+        .filter(|sample| sample.condition == splice_girl::manifest::Condition::Case)
+        .count();
+    let control_count = comparison.included.len() - case_count;
+    if case_count == 0 || control_count == 0 {
+        let missing_group = if case_count == 0 { "case" } else { "control" };
+        return Err(format!(
+            "cannot compare gene {}: no eligible {missing_group} samples remain; add a matching {missing_group} sample or review the exclusions above",
             comparison.gene_id
         ));
     }

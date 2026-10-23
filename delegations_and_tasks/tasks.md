@@ -108,7 +108,7 @@ has not been met.
 | R11 | In progress | R13 now exports one row per sample/gene; the approved statistics interface and checks are still missing. |
 | R12 | Blocked | Ranking needs approved candidate and statistics rules plus real junction results. |
 | R13 | **Done** | [`src/output.rs`](../src/output.rs) writes metrics, junction components, comparisons, and `run_manifest.json` with checksums and settings; see the [October 22 log](../logs/october_22nd_summer.md). |
-| R14 | In progress | Many parser and overwrite errors are tested; the full listed error audit is incomplete. |
+| R14 | **Done** | [`tests/cli_errors.rs`](../tests/cli_errors.rs) checks missing/empty files, headers, counts, manifests, metadata mismatches, zero support, comparison groups, overwrite protection, corrections, and failure exit codes; solver failure is unit-tested. |
 | R15 | Not started | No saved runtime and memory benchmark note exists. |
 | R16 | In progress | README and demo instructions exist; minimum Rust version, release packaging, and final limitations audit remain. |
 | R17 | Not started | A clean-checkout review by another person has not been recorded. |
@@ -128,7 +128,7 @@ has not been met.
 |---|---|---|
 | U1 | In progress | Cargo builds locally; minimum version and clean-install validation remain. |
 | U2 | **Done** | The input contract includes valid, invalid, and runnable examples in beginner-readable language. |
-| U3 | In progress | Parser and CLI errors are actionable; the complete R14 error review remains. |
+| U3 | **Done** | CLI input failures name the file, relevant line and column, invalid value, expected form, and likely correction; command-level tests confirm nonzero failure statuses. |
 | U4 | **Done** | R13 records run IDs, commands, versions, SHA-256 input checksums, settings, exclusions, and failures. |
 | U5 | Not started | An independent beginner usability review has not been recorded. |
 | V1 | **Done** | The complete pipeline is shown in the main [README](../README.md#what-splice-girl-does). |

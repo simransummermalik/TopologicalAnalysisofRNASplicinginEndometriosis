@@ -100,9 +100,9 @@ an approved analysis rule, and a versioned output file.
 **Status:** Several pieces are already in progress and can be done without real
 data.
 
-- [ ] Finish tests for missing files, empty files, bad columns, invalid values,
+- [x] Finish tests for missing files, empty files, bad columns, invalid values,
   and unsafe output replacement.
-- [ ] Make every failure explain what happened and how to fix it.
+- [x] Make every failure explain what happened and how to fix it.
 - [ ] Record a runtime and peak-memory benchmark.
 - [ ] Record the minimum supported Rust version.
 - [ ] Test `cargo install --path .` from a clean checkout.
