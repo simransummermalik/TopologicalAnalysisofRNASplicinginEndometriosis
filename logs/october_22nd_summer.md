@@ -1,8 +1,18 @@
 # October 22, 2026 — Summer
 
-**Status:** R13 and D4 pushed; reference work prepared for push
+**Status:** Pushed
 
-**Commits:** `a9ed39e` — `adding output.rs`; `ef9a204` — `created the full GSE315857`
+**Commits:** `ed5e78d`, `5f33d8e`, `a9ed39e`, `87efab2`, `ef9a204`,
+`461b4a5`, and `767675a`
+
+## Cleaver pilot and post-cleaning checks
+
+I recorded the first real Cleaver pilot for control sample `SRR36710387`. The
+pilot folder includes the Cleaver/fastp JSON report, the exact input and output
+paths, and a plain-language account of what was run. I then added post-cleaning
+FastQC reports for both read mates and a combined MultiQC report. These checks
+show that the pilot produced usable cleaned paired reads for the alignment
+stage while keeping the raw and cleaned FASTQ files outside Git.
 
 ## Contribution
 

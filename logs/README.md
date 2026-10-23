@@ -5,6 +5,10 @@ member. A log marked **Pushed** corresponds to a commit found in the Git
 history. A log marked **Prepared for push** describes current working-tree
 changes that have not yet been committed.
 
+Summer's complete commit-by-commit audit is in
+[`summer_commit_history.md`](summer_commit_history.md). It covers all 44
+commits authored with Summer's university email through October 22, 2026.
+
 | Date | Contributor | Status | Log |
 |---|---|---|---|
 | September 8, 2026 | Summer | Pushed | [Roadmap and project assets](september_8th_summer.md) |
@@ -21,8 +25,10 @@ changes that have not yet been committed.
 | October 5, 2026 | Summer | Pushed | [Validated E-MTAB sample manifest](october_5th_summer.md) |
 | October 6, 2026 | Summer | Pushed | [README cleanup](october_6th_summer.md) |
 | October 7, 2026 | Summer | Pushed | [Pilot setup and data checklist](october_7th_summer.md) |
-| October 12, 2026 | Summer | Prepared for push | [Task review, data-contract update, and row-order test](october_12th_summer.md) |
+| October 12, 2026 | Summer | Pushed | [Task review, data-contract update, and validation fixtures](october_12th_summer.md) |
+| October 19, 2026 | Summer | Pushed | [Charts and beginner guide](october_19th_summer.md) |
 | October 19, 2026 | Vania | Pushed | [Sample manifest, gene comparison, and CLI wiring (R10)](october_19th_vania.md) |
 | October 19, 2026 | Vania | Pushed | [Runnable demo package for the check-up](october_19th_vania_demo.md) |
+| October 20, 2026 | Summer | Pushed | [Website, graph view, and RNA-seq QC](october_20th_summer.md) |
 | October 20, 2026 | Vania | Pushed | [Froze the Rust CLI interface (R1)](october_20th_vania.md) |
-| October 22, 2026 | Summer | R13 and D4 pushed; reference pair prepared | [Result bundles, GSE315857 manifest, and exact GRCh38 FASTA/GTF](october_22nd_summer.md) |
+| October 22, 2026 | Summer | Pushed | [Cleaver pilot, result bundles, manifest, and exact GRCh38 reference pair](october_22nd_summer.md) |

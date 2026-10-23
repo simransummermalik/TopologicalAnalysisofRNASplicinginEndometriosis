@@ -2,13 +2,17 @@
 
 **Status:** Pushed
 
-**Commit:** `6061d46`
+**Commits:** `dea8b55`, `6061d46`, and `e5a2d3e`
 
 ## Contribution
 
 I prepared the first basic version of **Splice Girl**, the project's Rust
 command-line software. This is the synthetic mathematical foundation, not the
 complete research tool.
+
+I also added Sydney's research PDF to the repository and linked its separate
+credit log. A later cleanup removed extra wording from that log without
+removing the research file or its attribution.
 
 ### Rust project setup
 
