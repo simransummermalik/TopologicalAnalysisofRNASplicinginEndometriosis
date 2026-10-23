@@ -27,5 +27,6 @@ for the GSE315857 analysis.
 
 Raw and cleaned FASTQ files are too large for the repository. Their locations
 are recorded in the manifest; only small metadata and quality-control reports
-belong in Git. Junction files have not been generated yet because the matching
-project genome and annotation must be finalized first.
+belong in Git. The exact GENCODE v50 GRCh38.p14 primary-assembly FASTA is now
+verified locally. Junction files have not been generated because the matching
+GTF and HISAT2 index still need to be completed.

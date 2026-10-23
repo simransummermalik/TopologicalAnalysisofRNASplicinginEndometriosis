@@ -1,8 +1,8 @@
 # October 22, 2026 — Summer
 
-**Status:** R13 pushed; D4 prepared for push
+**Status:** R13 and D4 pushed; reference work prepared for push
 
-**Commit:** `a9ed39e` — `adding output.rs` (R13 portion)
+**Commits:** `a9ed39e` — `adding output.rs`; `ef9a204` — `created the full GSE315857`
 
 ## Contribution
 
@@ -51,3 +51,16 @@ marked as the completed Cleaver pilot, while the other seven are still waiting
 for Cleaver. The genome, annotation, alignment, and junction fields are clearly
 marked as pending instead of being guessed. I checked that the sample IDs and
 accessions are unique and that the table has four cases and four controls.
+
+## Exact human genome FASTA
+
+I selected and downloaded the current GENCODE v50 GRCh38.p14 primary-assembly
+human genome FASTA. The compressed file is stored locally at
+`references/gencode_v50/GRCh38.primary_assembly.genome.fa.gz` and remains
+ignored by Git because it is 845,635,028 bytes. Its MD5 exactly matches the
+official GENCODE value, its gzip integrity check passes, and I recorded both
+MD5 and SHA-256 checksums in `docs/data_methods.md`. I also selected the exact
+matching GENCODE v50 primary-assembly GTF, but correctly left it marked as
+pending because it has not yet been downloaded or checked. The sample manifest
+now records the exact genome build for all eight samples. D5 is in progress
+rather than blocked.
