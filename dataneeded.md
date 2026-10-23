@@ -16,8 +16,9 @@ and checksums belong in the project records.
 - [x] Public-metadata gaps, including unavailable patient IDs and batch, are
   written explicitly instead of guessed.
 - [x] Final project genome build: GENCODE v50 GRCh38.p14 primary assembly.
-- [ ] Matching GENCODE v50 primary-assembly annotation file and final junction
-  coordinate conventions.
+- [x] Matching GENCODE v50 comprehensive primary-assembly GTF downloaded,
+  checksum-verified, and checked against the FASTA sequence names.
+- [ ] Final junction coordinate, node, and strand conventions.
 
 The complete table is [`data/metadata/samples.tsv`](data/metadata/samples.tsv).
 Per-subject ages and original clinical IDs are not available in the public
@@ -40,13 +41,15 @@ are under [`data/galaxy_data/october_20`](data/galaxy_data/october_20).
 
 - [x] Human genome FASTA: checksum-verified GENCODE v50
   `GRCh38.primary_assembly.genome.fa.gz`.
-- [ ] Matching GTF annotation.
-- [x] Exact genome build, URL, sizes, and checksums recorded in the manifest
-  and [`docs/data_methods.md`](docs/data_methods.md).
+- [x] Matching GENCODE v50 comprehensive primary-assembly GTF annotation.
+- [x] Exact genome and annotation versions recorded in the manifest; source
+  URLs, sizes, and checksums recorded in
+  [`docs/data_methods.md`](docs/data_methods.md).
 - [ ] HISAT2 index built from that same genome. HISAT2 is the planned
   splice-aware Bowtie-family aligner; plain Bowtie2 should not be used for
   intron-spanning RNA-seq reads.
-- [ ] Reference-file checksums and software versions.
+- [x] FASTA and GTF source URLs, sizes, checksums, and integrity checks.
+- [ ] HISAT2 version and final index-building command.
 
 ## Alignment and splice junctions
 

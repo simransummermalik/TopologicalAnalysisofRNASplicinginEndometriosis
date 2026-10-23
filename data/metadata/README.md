@@ -35,9 +35,10 @@ alignment, and junction QC are complete.
 - No project alignment or junction table exists yet. These fields say
   `not_started`, `not_generated`, or `pending_D6` instead of pretending the
   missing work is complete.
-- The project genome is now fixed as the checksum-verified GENCODE v50
-  GRCh38.p14 primary assembly. The matching GENCODE v50 primary-assembly GTF is
-  selected but remains pending download and verification.
+- The project genome is fixed as the checksum-verified GENCODE v50 GRCh38.p14
+  primary assembly. Its matching GENCODE v50 comprehensive primary-assembly
+  GTF is also downloaded, checksum-verified, and compatible with the FASTA
+  sequence names.
 
 The GEO record and paper disagree on some library-preparation and source
 processing details: GEO describes an rRNA-depletion workflow and HISAT2, while

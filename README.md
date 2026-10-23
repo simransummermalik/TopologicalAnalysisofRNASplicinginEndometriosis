@@ -144,7 +144,8 @@ In plain language:
 1. Public paired-end sequencing reads are retrieved from NCBI.
 2. The reads are quality-checked and cleaned.
 3. HISAT2 places the reads on the exact GENCODE v50 GRCh38.p14 primary
-   assembly recorded in [`docs/data_methods.md`](docs/data_methods.md).
+   assembly, using its matching comprehensive annotation, as recorded in
+   [`docs/data_methods.md`](docs/data_methods.md).
 4. Junction-spanning reads provide exon-to-exon connection counts.
 5. A project helper converts those counts into Splice Girl's input format.
 6. Splice Girl builds one graph for each sample and gene.

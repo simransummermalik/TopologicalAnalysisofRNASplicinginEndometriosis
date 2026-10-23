@@ -59,8 +59,16 @@ human genome FASTA. The compressed file is stored locally at
 `references/gencode_v50/GRCh38.primary_assembly.genome.fa.gz` and remains
 ignored by Git because it is 845,635,028 bytes. Its MD5 exactly matches the
 official GENCODE value, its gzip integrity check passes, and I recorded both
-MD5 and SHA-256 checksums in `docs/data_methods.md`. I also selected the exact
-matching GENCODE v50 primary-assembly GTF, but correctly left it marked as
-pending because it has not yet been downloaded or checked. The sample manifest
-now records the exact genome build for all eight samples. D5 is in progress
-rather than blocked.
+MD5 and SHA-256 checksums in `docs/data_methods.md`.
+
+## Exact matching annotation
+
+I downloaded the matching GENCODE v50 comprehensive primary-assembly GTF to
+`references/gencode_v50/gencode.v50.primary_assembly.annotation.gtf.gz`. The
+124,650,284-byte file passed its gzip check and its MD5 exactly matches the
+official GENCODE value. I also checked the files together: all 70 sequence
+names used by the GTF occur in the FASTA. The GTF contains 11,254,876 feature
+rows, including 5,087,789 exon rows. I recorded the source, checksums, and
+compatibility results in `docs/data_methods.md`, and updated all eight manifest
+rows with the verified annotation version. D5 remains in progress because the
+coordinate, node, and strand rules and HISAT2 index still need to be completed.

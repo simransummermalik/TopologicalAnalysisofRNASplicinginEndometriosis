@@ -25,4 +25,4 @@ changes that have not yet been committed.
 | October 19, 2026 | Vania | Pushed | [Sample manifest, gene comparison, and CLI wiring (R10)](october_19th_vania.md) |
 | October 19, 2026 | Vania | Pushed | [Runnable demo package for the check-up](october_19th_vania_demo.md) |
 | October 20, 2026 | Vania | Pushed | [Froze the Rust CLI interface (R1)](october_20th_vania.md) |
-| October 22, 2026 | Summer | R13 and D4 pushed; reference prepared | [Result bundles, GSE315857 manifest, and exact GRCh38 FASTA](october_22nd_summer.md) |
+| October 22, 2026 | Summer | R13 and D4 pushed; reference pair prepared | [Result bundles, GSE315857 manifest, and exact GRCh38 FASTA/GTF](october_22nd_summer.md) |

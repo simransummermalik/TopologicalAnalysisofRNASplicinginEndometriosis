@@ -61,7 +61,7 @@ has not been met.
 | D2 | **Done** | GSE315857 and its eight exact run accessions are recorded in [samples.tsv](../endometriosis-splicing/samples.tsv) and the [README](../README.md#the-eight-sample-study). |
 | D3 | In progress | Eight runs were retrieved in Galaxy and one control pilot is local; complete source checksums are still needed. |
 | D4 | **Done** | The standardized [sample manifest](../data/metadata/samples.tsv) records unique run-based sample IDs, internal subject labels, case/control status, tissue, accessions, file locations, QC/Cleaver status, pending reference fields, and eligibility for all eight samples. |
-| D5 | In progress | The exact GENCODE v50 GRCh38.p14 primary-assembly [FASTA is downloaded and checksum-verified](../docs/data_methods.md#human-genome-reference); the matching GTF, coordinate/strand conventions, and HISAT2 index remain. |
+| D5 | In progress | The exact GENCODE v50 GRCh38.p14 primary-assembly [FASTA and matching comprehensive GTF are downloaded, checksum-verified, and sequence-name compatible](../docs/data_methods.md); coordinate/node/strand conventions and the HISAT2 index remain. |
 | D6 | Blocked | Junction derivation requires D5 and splice-aware alignment. |
 | D7 | Not started | Back-splice detection support has not been documented for the selected workflow. |
 | D8 | Blocked | Junction QC requires D6 junction counts. |
