@@ -10,18 +10,28 @@ from collections import defaultdict
 from pathlib import Path
 
 JunctionKey = tuple[str, int, int, str]
+JunctionTarget = tuple[str, str, str]
 
 
-def load_gene_map(path: Path) -> dict[JunctionKey, set[str]]:
-    mapping: dict[JunctionKey, set[str]] = defaultdict(set)
-    required = {"chromosome", "intron_start", "intron_end", "strand", "gene_id"}
+def load_gene_map(path: Path) -> dict[JunctionKey, set[JunctionTarget]]:
+    mapping: dict[JunctionKey, set[JunctionTarget]] = defaultdict(set)
+    required = {
+        "chromosome",
+        "intron_start",
+        "intron_end",
+        "strand",
+        "gene_id",
+        "from_node",
+        "to_node",
+    }
 
     with path.open(encoding="utf-8", newline="") as handle:
         reader = csv.DictReader(handle, delimiter="\t")
         if reader.fieldnames is None or set(reader.fieldnames) != required:
             raise ValueError(
                 f"{path}: expected tab-separated header "
-                "chromosome, intron_start, intron_end, strand, gene_id"
+                "chromosome, intron_start, intron_end, strand, gene_id, "
+                "from_node, to_node"
             )
         for line_number, row in enumerate(reader, start=2):
             try:
@@ -30,30 +40,24 @@ def load_gene_map(path: Path) -> dict[JunctionKey, set[str]]:
                 end = int(row["intron_end"])
                 strand = row["strand"].strip()
                 gene_id = row["gene_id"].strip()
+                from_node = row["from_node"].strip()
+                to_node = row["to_node"].strip()
             except (TypeError, ValueError) as error:
                 raise ValueError(f"{path}:{line_number}: invalid map row") from error
-            if not chromosome or not gene_id or strand not in {"1", "2"}:
+            if (
+                not chromosome
+                or not gene_id
+                or not from_node
+                or not to_node
+                or from_node == to_node
+                or strand not in {"1", "2"}
+            ):
                 raise ValueError(f"{path}:{line_number}: invalid map values")
             if start < 1 or end < start:
                 raise ValueError(f"{path}:{line_number}: invalid coordinates")
-            mapping[(chromosome, start, end, strand)].add(gene_id)
+            mapping[(chromosome, start, end, strand)].add((gene_id, from_node, to_node))
 
     return mapping
-
-
-def directed_nodes(key: JunctionKey) -> tuple[str, str]:
-    chromosome, intron_start, intron_end, strand = key
-    if strand == "1":
-        return (
-            f"{chromosome}:{intron_start - 1}:+",
-            f"{chromosome}:{intron_end + 1}:+",
-        )
-    if strand == "2":
-        return (
-            f"{chromosome}:{intron_end + 1}:-",
-            f"{chromosome}:{intron_start - 1}:-",
-        )
-    raise ValueError(f"unsupported STAR strand code: {strand}")
 
 
 def convert_star_junctions(
@@ -72,7 +76,9 @@ def convert_star_junctions(
         "star_rows": 0,
         "written_rows": 0,
         "below_minimum_unique_reads": 0,
+        "unknown_strand_junctions": 0,
         "unannotated_junctions": 0,
+        "ambiguous_annotation_junctions": 0,
         "ambiguous_gene_junctions": 0,
         "include_multimapping": include_multimapping,
         "minimum_unique_reads": minimum_unique_reads,
@@ -98,26 +104,32 @@ def convert_star_junctions(
                 ) from error
 
             stats["star_rows"] = int(stats["star_rows"]) + 1
+            if strand not in {"1", "2"}:
+                stats["unknown_strand_junctions"] = (
+                    int(stats["unknown_strand_junctions"]) + 1
+                )
+                continue
             if unique_reads < minimum_unique_reads:
                 stats["below_minimum_unique_reads"] = (
                     int(stats["below_minimum_unique_reads"]) + 1
                 )
                 continue
 
-            genes = gene_map.get(key, set())
-            if not genes:
-                stats["unannotated_junctions"] = (
-                    int(stats["unannotated_junctions"]) + 1
-                )
+            targets = gene_map.get(key, set())
+            if not targets:
+                stats["unannotated_junctions"] = int(stats["unannotated_junctions"]) + 1
                 continue
-            if len(genes) != 1:
-                stats["ambiguous_gene_junctions"] = (
-                    int(stats["ambiguous_gene_junctions"]) + 1
+            if len(targets) != 1:
+                stats["ambiguous_annotation_junctions"] = (
+                    int(stats["ambiguous_annotation_junctions"]) + 1
                 )
+                if len({target[0] for target in targets}) != 1:
+                    stats["ambiguous_gene_junctions"] = (
+                        int(stats["ambiguous_gene_junctions"]) + 1
+                    )
                 continue
 
-            gene_id = next(iter(genes))
-            from_node, to_node = directed_nodes(key)
+            gene_id, from_node, to_node = next(iter(targets))
             count = unique_reads
             if include_multimapping:
                 count += multimapping_reads
@@ -178,9 +190,7 @@ def main() -> int:
         )
     except (OSError, ValueError) as error:
         raise SystemExit(str(error)) from error
-    print(
-        f"Wrote {stats['written_rows']} annotated junction rows to {args.output}"
-    )
+    print(f"Wrote {stats['written_rows']} annotated junction rows to {args.output}")
     return 0
 
 

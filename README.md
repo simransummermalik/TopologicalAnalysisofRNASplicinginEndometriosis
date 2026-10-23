@@ -146,7 +146,8 @@ In plain language:
 3. HISAT2 places the reads on the exact GENCODE v50 GRCh38.p14 primary
    assembly, using its matching comprehensive annotation, as recorded in
    [`docs/data_methods.md`](docs/data_methods.md).
-4. Junction-spanning reads provide exon-to-exon connection counts.
+4. Junction-spanning reads are mapped to unique annotated exon pairs, with
+   edges following biological transcript direction on both strands.
 5. A project helper converts those counts into Splice Girl's input format.
 6. Splice Girl builds one graph for each sample and gene.
 7. The program calculates gradient energy, cycle energy, and cycle fraction.

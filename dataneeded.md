@@ -18,7 +18,8 @@ and checksums belong in the project records.
 - [x] Final project genome build: GENCODE v50 GRCh38.p14 primary assembly.
 - [x] Matching GENCODE v50 comprehensive primary-assembly GTF downloaded,
   checksum-verified, and checked against the FASTA sequence names.
-- [ ] Final junction coordinate, node, and strand conventions.
+- [x] Final junction coordinate, exon-node, and strand conventions recorded in
+  [`docs/data_methods.md`](docs/data_methods.md#frozen-junction-and-graph-conventions).
 
 The complete table is [`data/metadata/samples.tsv`](data/metadata/samples.tsv).
 Per-subject ages and original clinical IDs are not available in the public
@@ -56,7 +57,8 @@ are under [`data/galaxy_data/october_20`](data/galaxy_data/october_20).
 - [ ] Align the cleaned paired reads for the pilot sample with HISAT2.
 - [ ] Save the alignment summary, SAM/BAM output, sorted BAM, and BAM index.
 - [ ] Derive splice-junction counts without losing the sample ID.
-- [ ] Map junction coordinates to genes using the matching GTF.
+- [ ] Map junction coordinates to unique gene/exon pairs using the matching
+  GTF and record all unannotated or ambiguous exclusions.
 - [ ] Repeat the approved alignment and junction process for the remaining
   eligible samples.
 - [ ] Run junction QC and record exclusion reasons.

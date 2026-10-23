@@ -72,12 +72,100 @@ Like the FASTA, the compressed GTF is ignored by Git. The checksums, source,
 and compatibility result above are the reproducible record kept in the
 repository.
 
-## Remaining D5 decisions
+## Frozen junction and graph conventions
 
-D5 remains in progress until all of the following are recorded and checked:
+These rules apply to every real GSE315857 sample. They keep the biological
+meaning of a node or edge from changing between samples.
 
-1. Confirm the final exon-versus-splice-site node convention.
-2. Record the conversion from 1-based GTF coordinates to junction endpoints.
-3. Record strand handling.
-4. Build and verify the HISAT2 index and splice-site hints from this exact
-   FASTA/GTF pair.
+### Coordinates
+
+- GENCODE GTF exon coordinates are **1-based and closed**: both `start` and
+  `end` are included in the exon.
+- A raw splice junction is represented as
+  `(sequence, intron_start, intron_end, strand)`, where the two intron
+  coordinates are also 1-based and closed.
+- For a SAM/BAM alignment, `POS` is 1-based. A CIGAR `N` operation consumes
+  the skipped reference interval; its first and last skipped bases become
+  `intron_start` and `intron_end`.
+- STAR `SJ.out.tab` uses the same 1-based, closed intron interval. The existing
+  STAR conversion fixture remains useful for checking the convention even
+  though HISAT2 is the selected aligner for the real pilot.
+- Sequence names are copied exactly from the GENCODE files, including the
+  `chr` prefix. No automatic renaming between `1` and `chr1` is allowed.
+
+The coordinate rules follow the
+[GENCODE GTF format](https://www.gencodegenes.org/pages/data_format.html), the
+[SAM specification](https://samtools.github.io/hts-specs/SAMv1.pdf), and the
+[STAR junction specification](https://github.com/alexdobin/STAR/blob/master/extras/doc-latex/STARmanual.tex).
+
+### Graph nodes
+
+One graph node is one **unique annotated exon interval within a gene**, not a
+single splice-site coordinate. Exact duplicate exon intervals appearing in
+multiple transcripts of the same gene collapse to one node. This convention
+connects consecutive junctions through their shared exon and makes an
+annotated exon-skipping pattern form the intended triangle.
+
+The node identifier is:
+
+```text
+sequence:exon_start-exon_end:strand
+```
+
+For example, `chr1:100-199:+` is a plus-strand exon covering bases 100 through
+199. `exon_number` is not used because it can differ between transcripts.
+`gene_id` is stored separately and preserves the versioned GENCODE identifier,
+such as `ENSG00000123456.7`.
+
+### Directed edges and strand
+
+An edge is directed in biological transcript order, from the upstream exon to
+the downstream exon. Genomic coordinate order alone never determines the
+direction.
+
+| Strand | Source (`from`) | Destination (`to`) | Direction on the reference |
+|---|---|---|---|
+| `+` | Exon whose `end = intron_start - 1` | Exon whose `start = intron_end + 1` | Lower to higher coordinates |
+| `-` | Exon whose `start = intron_end + 1` | Exon whose `end = intron_start - 1` | Higher to lower coordinates |
+
+For plus-strand exons `chr1:100-199:+` and `chr1:300-399:+`, the intron is
+`chr1:200-299:+` and the edge is `chr1:100-199:+` to
+`chr1:300-399:+`. For an otherwise identical minus-strand pair, the edge runs
+from `chr1:300-399:-` to `chr1:100-199:-`.
+
+Junctions with unknown strand are not guessed into a direction. They are
+excluded from the primary graph and counted in conversion QC.
+
+### Annotation mapping and exclusions
+
+The annotation map is built from exon pairs that are adjacent within at least
+one GENCODE transcript. A junction is kept only when its sequence, intron
+coordinates, and strand identify exactly one `(gene_id, from_node, to_node)`
+mapping after duplicate mappings are collapsed.
+
+- No annotation match: record the junction as unannotated and exclude it.
+- More than one gene or exon-pair match: record it as ambiguous and exclude it.
+- Exactly one match: keep it and aggregate supporting reads for that directed
+  edge within the sample.
+- Primary counts use uniquely mapped junction-spanning reads. Multimapping
+  support remains excluded unless a later reviewed rule explicitly changes
+  that setting for every sample.
+
+These exclusions favor a smaller graph with clear biological node identities
+over silently assigning a junction to the wrong exon or gene. The conversion
+QC must report the number of input, unannotated, ambiguous, filtered, and
+written junctions.
+
+### Interpretation boundary
+
+Edge direction records transcript order. The Hodge cycle component measures
+graph cycle-space structure after the edges are assembled; it does not require
+a literal directed return path. Therefore a nonzero cycle component can
+describe alternative paths such as exon skipping and does not by itself prove
+circular RNA or a back-splice junction.
+
+## Remaining D5 work
+
+The genome, annotation, coordinate system, node identity, and strand direction
+are now frozen. D5 remains in progress only until the HISAT2 index and known
+splice-site hints are built and verified from this exact FASTA/GTF pair.

@@ -3,7 +3,7 @@
 **Status:** Pushed
 
 **Commits:** `ed5e78d`, `5f33d8e`, `a9ed39e`, `87efab2`, `ef9a204`,
-`461b4a5`, and `767675a`
+`461b4a5`, `767675a`, and `cbb8a2b`
 
 ## Cleaver pilot and post-cleaning checks
 
@@ -80,5 +80,24 @@ official GENCODE value. I also checked the files together: all 70 sequence
 names used by the GTF occur in the FASTA. The GTF contains 11,254,876 feature
 rows, including 5,087,789 exon rows. I recorded the source, checksums, and
 compatibility results in `docs/data_methods.md`, and updated all eight manifest
-rows with the verified annotation version. D5 remains in progress because the
-coordinate, node, and strand rules and HISAT2 index still need to be completed.
+rows with the verified annotation version. At that point, the coordinate,
+node, strand, and HISAT2-index parts of D5 still needed to be completed.
+
+## Frozen real-data graph rules
+
+I finished the coordinate, node, and strand part of D5. Real graph nodes are
+now full GENCODE exon intervals written as `sequence:start-end:strand`, and
+edges follow transcript order. Plus-strand edges run toward higher coordinates;
+minus-strand edges run toward lower coordinates. The coordinates are 1-based
+and closed. Unannotated junctions, unknown-strand junctions, and junctions with
+more than one possible gene/exon mapping are excluded and counted in QC rather
+than guessed. I updated the annotation helper so consecutive junctions share
+the correct exon node, added compressed-GTF support, and added tests for both
+strands and ambiguous exon mappings. D5 now only needs the HISAT2 index and
+splice-site hints.
+
+## Complete contribution logs
+
+I audited the Git history under both of my recorded author names and added a
+complete commit index plus the missing October 19 and October 20 daily logs.
+Commit `cbb8a2b` records that log work.

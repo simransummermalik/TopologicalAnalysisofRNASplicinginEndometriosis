@@ -1,11 +1,13 @@
 # Splice Girl input data contract
 
-**Contract version:** 0.4 (2026-10-22) — added machine-readable result bundles.
+**Contract version:** 0.5 (2026-10-22) — froze real-data exon-node, coordinate,
+and strand conventions.
 
-This version uses text node identifiers for the synthetic prototype. When real
-STAR junctions are added, the genome build, annotation release, and genomic
-coordinate convention must be recorded in the separate sample/run metadata;
-those reference choices are not silently inferred from this five-column file.
+This version keeps text node identifiers for both synthetic fixtures and real
+RNA-seq data. Real junction files use the exact reference, annotation,
+coordinate, exon-node, and strand conventions recorded in
+[`data_methods.md`](data_methods.md); those choices are not silently inferred
+from this five-column file.
 
 This document defines the small TSV formats accepted by the current Splice
 Girl prototype and the command-line interface built on top of them. It does
@@ -27,14 +29,26 @@ and one gene.
 | Column | Meaning | Rule |
 |---|---|---|
 | `sample_id` | Identifier for one biological sample or library | Required and nonempty; keep samples separate |
-| `gene_id` | Identifier for the gene containing the junction | Required and nonempty; use a stable ID when available |
-| `from` | Start node of the directed junction | Required and nonempty |
-| `to` | End node of the directed junction | Required and nonempty; must differ from `from` |
+| `gene_id` | Identifier for the gene containing the junction | Required and nonempty; real data preserves the versioned GENCODE `gene_id` |
+| `from` | Upstream exon node in biological transcript order | Required and nonempty |
+| `to` | Downstream exon node in biological transcript order | Required and nonempty; must differ from `from` |
 | `count` | Read support for this junction | A finite number greater than or equal to zero |
 
 The prototype accepts numeric decimal values in `count`. Real count data may be
 integers, but the parser also accepts decimals so normalized or simulated
 fixtures can use the same interface.
+
+For real data, each node names the full annotated exon interval:
+
+```text
+sequence:exon_start-exon_end:strand
+```
+
+The exon coordinates are 1-based and closed. A plus-strand edge normally runs
+from lower to higher coordinates; a minus-strand edge runs from higher to lower
+coordinates so both follow 5-prime to 3-prime transcript order. Synthetic
+fixtures may continue to use short labels such as `E1` because they do not
+claim genomic coordinates.
 
 ## Grouping and validation rules
 
@@ -44,7 +58,8 @@ fixtures can use the same interface.
   support is zero is rejected because its normalized signal is undefined.
 - A duplicate directed edge is rejected within one sample/gene group. For
   example, two `E1 -> E2` rows for the same sample and gene are invalid until
-  an aggregation rule is approved.
+  they are aggregated. The preprocessing converter performs this aggregation
+  before writing the final table.
 - Self-loops such as `E1 -> E1` are rejected by the current graph model.
 - Blank lines are ignored, but a file with no junction rows is rejected.
 - Node and edge order is sorted by the text identifiers. Reordering valid input
@@ -77,6 +92,17 @@ sample_linear	GENE_LINEAR	E2	E3	80
 ```
 
 This graph has no cycle space, so its cycle fraction should be near zero.
+
+A real plus-strand row follows the same contract with coordinate-based exon
+nodes:
+
+```text
+sample_id	gene_id	from	to	count
+SRR36710387	ENSG00000123456.7	chr1:100-199:+	chr1:300-399:+	12
+```
+
+On the minus strand, the higher-coordinate exon appears in `from` and the
+lower-coordinate exon appears in `to`.
 
 ## Invalid examples
 

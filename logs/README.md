@@ -6,7 +6,7 @@ history. A log marked **Prepared for push** describes current working-tree
 changes that have not yet been committed.
 
 Summer's complete commit-by-commit audit is in
-[`summer_commit_history.md`](summer_commit_history.md). It covers all 44
+[`summer_commit_history.md`](summer_commit_history.md). It covers all 45
 commits authored with Summer's university email through October 22, 2026.
 
 | Date | Contributor | Status | Log |
@@ -31,4 +31,4 @@ commits authored with Summer's university email through October 22, 2026.
 | October 19, 2026 | Vania | Pushed | [Runnable demo package for the check-up](october_19th_vania_demo.md) |
 | October 20, 2026 | Summer | Pushed | [Website, graph view, and RNA-seq QC](october_20th_summer.md) |
 | October 20, 2026 | Vania | Pushed | [Froze the Rust CLI interface (R1)](october_20th_vania.md) |
-| October 22, 2026 | Summer | Pushed | [Cleaver pilot, result bundles, manifest, and exact GRCh38 reference pair](october_22nd_summer.md) |
+| October 22, 2026 | Summer | Reference work pushed; graph rules prepared | [Cleaver pilot, result bundles, manifest, reference pair, and frozen graph rules](october_22nd_summer.md) |

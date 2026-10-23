@@ -3,6 +3,13 @@
 This folder contains Splice Girl's small workflow for turning one raw FASTQ
 sample into the junction table accepted by the Rust analyzer.
 
+The runnable workflow in this folder is the original **STAR-based prototype**.
+The project has since selected HISAT2 for the real GSE315857 pilot, so this
+runner must not be used for the full cohort as if the aligner decision had not
+changed. Its annotation mapper, junction converter, and tests remain useful
+for enforcing the frozen coordinate and exon-node rules while the HISAT2 pilot
+workflow is prepared.
+
 It uses [Cleaver-X](https://github.com/raw-lab/cleaver-x) as an external
 bioinformatics tool. Cleaver-X supplies the `cleaver fastp` read-cleaning step
 and `cleaver samtools index` BAM-indexing step. The local Python runner is named
@@ -24,10 +31,11 @@ raw FASTQ
   without processing reads.
 - `run_preprocessing.py run` executes one single-end or paired-end sample and
   records the commands, settings, tool versions, and status in a manifest.
-- `build_junction_gene_map.py` builds a junction-to-gene map from adjacent
-  exons in the same GTF transcript.
+- `build_junction_gene_map.py` builds a junction-to-gene-and-exon map from
+  adjacent exons in the same GTF transcript. It reads plain or `.gz` GTF files.
 - `star_junctions.py` converts annotated STAR junctions into Splice Girl's
-  five-column input and writes conversion QC as JSON.
+  five-column input with full exon-interval nodes and writes conversion QC as
+  JSON.
 
 ## Install the command-line tools
 
@@ -74,12 +82,15 @@ The GTF must match the genome build used to create the STAR index.
 
 ```sh
 python3 preprocessing/build_junction_gene_map.py \
-  --gtf references/annotation.gtf \
-  --output references/junction_gene_map.tsv
+  --gtf references/gencode_v50/gencode.v50.primary_assembly.annotation.gtf.gz \
+  --output references/gencode_v50/gencode.v50.junction_exon_map.tsv
 ```
 
-The map uses STAR's one-based intron coordinates. The converter omits
-junctions that map ambiguously to more than one gene.
+The map uses one-based, closed intron and exon coordinates. It directs
+plus-strand exon pairs from lower to higher coordinates and minus-strand pairs
+from higher to lower coordinates. The converter omits junctions that map to no
+annotation or ambiguously to more than one gene/exon pair. The complete rule is
+in [`docs/data_methods.md`](../docs/data_methods.md#frozen-junction-and-graph-conventions).
 
 ## 3. Preview one sample
 
@@ -89,7 +100,7 @@ python3 preprocessing/run_preprocessing.py plan \
   --read1 data/raw/C01_R1.fastq.gz \
   --read2 data/raw/C01_R2.fastq.gz \
   --star-index references/star_index \
-  --gene-map references/junction_gene_map.tsv \
+  --gene-map references/gencode_v50/gencode.v50.junction_exon_map.tsv \
   --output-dir preprocessing/runs/C01
 ```
 
@@ -108,7 +119,7 @@ python3 preprocessing/run_preprocessing.py run \
   --read1 data/raw/C01_R1.fastq.gz \
   --read2 data/raw/C01_R2.fastq.gz \
   --star-index references/star_index \
-  --gene-map references/junction_gene_map.tsv \
+  --gene-map references/gencode_v50/gencode.v50.junction_exon_map.tsv \
   --output-dir preprocessing/runs/C01
 ```
 

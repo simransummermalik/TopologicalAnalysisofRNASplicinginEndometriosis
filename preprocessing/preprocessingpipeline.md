@@ -4,12 +4,18 @@ These notes describe the work before Splice Girl's graph and Hodge analysis.
 The goal is to turn raw sequencing reads into a small, traceable junction table
 that follows the [Splice Girl input contract](../docs/data_contract.md).
 
-The initial one-sample runner is documented in
+The initial STAR-based one-sample prototype is documented in
 [`preprocessing/README.md`](README.md). It uses the existing RAW Lab
 [Cleaver-X](https://github.com/raw-lab/cleaver-x) command-line tool for read
 cleaning and BAM indexing. STAR performs splice-aware alignment, optional
 Bowtie2 filtering removes PhiX when appropriate, and project-specific helpers
 create the final junction table.
+
+The project has selected HISAT2 for the real GSE315857 pilot. The STAR flow
+below records the implemented prototype and is not the final cohort workflow.
+The coordinate, exon-node, strand, and annotation-mapping rules are
+aligner-independent and are frozen in
+[`docs/data_methods.md`](../docs/data_methods.md#frozen-junction-and-graph-conventions).
 
 ## Current flow
 
@@ -54,8 +60,10 @@ quality-controlled junction TSV for Splice Girl
    STAR logs, especially the input-read and mapping counts, before continuing.
 6. **BAM indexing:** STAR creates a coordinate-sorted BAM. The workflow runs
    `cleaver samtools index` so tools can access it by genomic position.
-7. **Feature extraction:** Convert `SJ.out.tab` coordinates and read support to
-   gene-labelled directed junctions using an annotation-derived gene map.
+7. **Feature extraction:** Convert junction coordinates and read support to
+   gene-labelled edges between full annotated exon intervals. Direct edges in
+   transcript order: lower to higher coordinates on `+`, higher to lower on
+   `-`.
 8. **Final QC:** Check unannotated and ambiguous junction counts, support
    thresholds, duplicate rows, sample labels, and missing values.
 9. **Splice Girl export:** Write exactly these tab-separated columns:
@@ -82,14 +90,12 @@ from measured zeros.
 
 ## Decisions still needed
 
-- Which public dataset and tissue design will be used?
-- Which human genome build and annotation release match that dataset?
 - Is PhiX filtering appropriate for these libraries?
 - Which read-cleaning and minimum junction-support thresholds are justified?
 - Does the final question require back-splice detection, which STAR's standard
   `SJ.out.tab` export does not represent as ordinary forward splice junctions?
-- Which aligner setup will be used if STAR reports zero input reads on Apple
-  Silicon?
+- What exact HISAT2 version and index-building command will be used for the
+  real pilot?
 
 Record these choices before processing the full dataset. The current Rust CLI
 starts after this workflow, when it receives the standardized junction TSV.
