@@ -1,3 +1,5 @@
+**[Start here: view the complete Splice Girl project map](mermaid.md)**
+
 # Splice Girl
 
 **Using graphs and Hodge theory to study RNA splicing in endometriosis**
@@ -28,6 +30,7 @@ interpretation.
 
 | If you are interested in... | Read this section |
 |---|---|
+| How every project layer connects | [Complete project map](mermaid.md) |
 | The biological question | [Why study RNA splicing?](#why-study-rna-splicing) |
 | The graph idea | [From RNA connections to a graph](#from-rna-connections-to-a-graph) |
 | The mathematics | [Why Hodge theory?](#why-hodge-theory) |
@@ -271,11 +274,14 @@ self-contained SVG that opens in any web browser:
 cargo run -- visualize case_02 GENE_DEMO examples/demo/junctions.tsv splice-girl-demo.svg
 ```
 
-The graph keeps the biological direction of each junction, and thicker arrows
-have more read support. A small table reports the normalized signal and signed
-cycle component for every junction. The figure uses a plain black-and-white
-academic style and states the main interpretation limit: cycle-space structure
-alone does not prove circular RNA or causation.
+The figure is generated from the sample and gene named in the command. It shows
+the same splice graph three times: the observed normalized signal, the gradient
+component, and the cycle component. Node positions, edge directions, edge IDs,
+and the line-width scale stay fixed across the three panels. Solid lines are
+positive and dashed lines are negative relative to the stored edge direction.
+A table gives the exact value of every junction in every component. The figure
+uses a plain black-and-white academic style and states the main interpretation
+limit: cycle-space structure alone does not prove circular RNA or causation.
 
 ### 5. Save results for later analysis
 

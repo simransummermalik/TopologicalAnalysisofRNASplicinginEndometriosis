@@ -219,10 +219,13 @@ their behavior.
   table (`sample_id`, `condition`, `cycle_fraction`) and an `excluded` table
   (`sample_id`, `reason`).
 - **`visualize`**: not a tabular export — writes an SVG containing the same
-  node/edge counts, cycle fraction, and checks status, the drawn graph, a
-  per-junction table with signed cycle components, and a fixed caveat line
-  stating that cycle-space structure alone does not establish circular RNA.
-  Standard output only confirms the saved path.
+  node/edge counts, cycle fraction, and checks status; aligned observed,
+  gradient, and cycle graph panels; a table with all three values per junction;
+  and a fixed caveat stating that cycle-space structure alone does not
+  establish circular RNA. The panels preserve node positions, edge order,
+  stored direction, and one absolute-value width scale. Solid lines are
+  positive and dashed lines are negative. Standard output only confirms the
+  saved path.
 
 ### Saved result bundle
 

@@ -116,9 +116,9 @@ the written instructions alone.
 ## Priority 7 — Complete the figures and demo
 
 **Task IDs:** V3--V11  
-**Status:** The tiny demo and basic SVG already work.
+**Status:** The tiny demo and three-part Hodge SVG work.
 
-- [ ] Show the original, gradient, and cycle signals with identical graph layouts.
+- [x] Show the original, gradient, and cycle signals with identical graph layouts.
 - [ ] Create one real-gene case/control figure after the pilot is approved.
 - [ ] Create result figures only from versioned tables.
 - [ ] Explain junctions, cycle fraction, and limitations in plain language.
@@ -187,7 +187,7 @@ These are choices for four people, not assigned roles:
 - [x] The one-sample and manifest-driven CLI workflow.
 - [x] Saved result bundles and reproducibility manifests.
 - [x] The synthetic acceptance tests and tiny demo.
-- [x] A basic generated SVG splice-graph view.
+- [x] A generated three-panel observed/gradient/cycle SVG view.
 - [x] The beginner README, input contract, and math specification.
 - [x] The eight-sample manifest and verified human reference pair.
 - [x] Frozen exon-node, coordinate, strand, and annotation-mapping rules.

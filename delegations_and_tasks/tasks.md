@@ -133,7 +133,7 @@ has not been met.
 | U5 | Not started | An independent beginner usability review has not been recorded. |
 | V1 | **Done** | The complete pipeline is shown in the main [README](../README.md#what-splice-girl-does). |
 | V2 | **Done** | `visualize` draws the tested synthetic splice graph with direction and support. |
-| V3 | In progress | The SVG shows signal and cycle components; a full original/gradient/cycle display remains. |
+| V3 | **Done** | `visualize` generates aligned observed, gradient, and cycle graph panels with fixed node/edge layout, signed values, a shared width scale, and a complete junction table; see [`splice-girl-basic.svg`](../splice-girl-basic.svg). |
 | V4–V8 | Not started | Real sample displays, results, explanations, speaking plan, and demo-gene selection remain. |
 | V9 | **Done** | [examples/demo](../examples/demo/README.md) contains tiny inputs, exact commands, expected output, and runtime guidance. |
 | V10–V11 | Not started | Rehearsal, backup recording, and final figure audit remain. |

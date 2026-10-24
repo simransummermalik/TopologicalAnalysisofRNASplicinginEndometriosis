@@ -86,11 +86,15 @@ Create a browser-ready picture of `case_02`'s exon-skipping graph:
 cargo run -- visualize case_02 GENE_DEMO examples/demo/junctions.tsv splice-girl-demo.svg
 ```
 
-Open `splice-girl-demo.svg` in any browser. The plain academic figure shows
-the nodes and directed junctions, uses arrow thickness for read support, and
-reports the graph's cycle fraction and signed components in a small table.
-Splice Girl refuses to overwrite a figure that already exists, so choose a
-new output name or remove the old demo SVG before running the command again.
+Open `splice-girl-demo.svg` in any browser. The plain academic figure shows the
+observed, gradient, and cycle signals in three aligned versions of the same
+graph. Edge IDs and node positions stay fixed, line width uses one shared
+absolute-value scale, and dashed lines mark negative components. The table
+reports the read support and all three mathematical values for each junction.
+Running the command with another valid sample or gene generates a figure from
+that selected result. Splice Girl refuses to overwrite a figure that already
+exists, so choose a new output name or remove the old demo SVG before running
+the command again.
 
 ## Timing
 

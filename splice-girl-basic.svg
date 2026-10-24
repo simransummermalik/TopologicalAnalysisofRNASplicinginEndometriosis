@@ -1,6 +1,6 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="900" height="711" viewBox="0 0 900 711" role="img" aria-labelledby="title description">
-<title id="title">Splice graph for sample case_02 and gene GENE_DEMO</title>
-<desc id="description">A directed splice graph. Line width represents junction read support. The table reports normalized signal and the signed Hodge cycle component.</desc>
+<svg xmlns="http://www.w3.org/2000/svg" width="1224" height="826" viewBox="0 0 1224 826" role="img" aria-labelledby="title description">
+<title id="title">Splice graph decomposition for sample case_02 and gene GENE_DEMO</title>
+<desc id="description">Three aligned directed splice graphs show the observed normalized signal, gradient component, and cycle component. Every panel uses the same nodes, edges, direction, edge IDs, and line-width scale.</desc>
 <defs>
   <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
     <path d="M 0 0 L 10 5 L 0 10 z" fill="#111111"/>
@@ -12,55 +12,107 @@
 </defs>
 <rect width="100%" height="100%" fill="#ffffff"/>
 
-<text class="serif" x="55" y="48" font-size="24" font-weight="700" fill="#111111">Splice graph: GENE_DEMO</text>
-<text class="serif" x="55" y="78" font-size="15" fill="#111111">Sample: case_02</text>
-<line x1="55" y1="96" x2="845.0" y2="96" stroke="#111111" stroke-width="1"/>
-<text class="serif" x="55" y="121" font-size="14" fill="#111111">Nodes: 3   ·   Junctions: 3   ·   Cycle fraction: 0.1111   ·   Mathematical checks: PASS</text>
-
-<text class="serif" x="55" y="164" font-size="17" font-weight="700" fill="#111111">Observed junction graph</text>
-<text class="serif" x="55" y="188" font-size="13" font-style="italic" fill="#333333">Arrow direction follows the junction data; thicker arrows have greater read support.</text>
-<path d="M 155.0 330.0 Q 180.0 251.0 205.0 330.0" fill="none" stroke="#111111" stroke-width="3.00" stroke-linecap="round" marker-end="url(#arrow)"/>
-<rect x="166.0" y="273.5" width="28" height="19" fill="#ffffff" stroke="#111111" stroke-width="0.8"/>
-<text class="serif" x="180.0" y="286.5" text-anchor="middle" font-size="11" fill="#111111">J1</text>
-<path d="M 155.0 330.0 Q 255.0 227.0 355.0 330.0" fill="none" stroke="#111111" stroke-width="3.00" stroke-linecap="round" marker-end="url(#arrow)"/>
-<rect x="241.0" y="261.5" width="28" height="19" fill="#ffffff" stroke="#111111" stroke-width="0.8"/>
-<text class="serif" x="255.0" y="274.5" text-anchor="middle" font-size="11" fill="#111111">J2</text>
-<path d="M 305.0 330.0 Q 330.0 251.0 355.0 330.0" fill="none" stroke="#111111" stroke-width="3.00" stroke-linecap="round" marker-end="url(#arrow)"/>
-<rect x="316.0" y="273.5" width="28" height="19" fill="#ffffff" stroke="#111111" stroke-width="0.8"/>
-<text class="serif" x="330.0" y="286.5" text-anchor="middle" font-size="11" fill="#111111">J3</text>
-<rect x="55.0" y="309.0" width="100.0" height="42.0" fill="#ffffff" stroke="#111111" stroke-width="1.4"/>
-<text class="serif" x="105.0" y="335.0" text-anchor="middle" font-size="14" fill="#111111">E1<title>E1</title></text>
-<rect x="205.0" y="309.0" width="100.0" height="42.0" fill="#ffffff" stroke="#111111" stroke-width="1.4"/>
-<text class="serif" x="255.0" y="335.0" text-anchor="middle" font-size="14" fill="#111111">E2<title>E2</title></text>
-<rect x="355.0" y="309.0" width="100.0" height="42.0" fill="#ffffff" stroke="#111111" stroke-width="1.4"/>
-<text class="serif" x="405.0" y="335.0" text-anchor="middle" font-size="14" fill="#111111">E3<title>E3</title></text>
-<text class="serif" x="55" y="482" font-size="17" font-weight="700" fill="#111111">Junction values</text>
-<line x1="55" y1="497" x2="845.0" y2="497" stroke="#111111" stroke-width="1"/>
-<text class="serif" x="68" y="518" font-size="12" font-weight="700" fill="#111111">ID</text>
-<text class="serif" x="120" y="518" font-size="12" font-weight="700" fill="#111111">Junction</text>
-<text class="serif" x="350" y="518" font-size="12" font-weight="700" fill="#111111">Read support</text>
-<text class="serif" x="500" y="518" font-size="12" font-weight="700" fill="#111111">Normalized signal</text>
-<text class="serif" x="675" y="518" font-size="12" font-weight="700" fill="#111111">Cycle component</text>
-<line x1="55" y1="524" x2="845.0" y2="524" stroke="#777777" stroke-width="0.7"/>
-<text class="serif" x="68" y="535.0" font-size="12" fill="#111111">J1</text>
-<text class="serif" x="120" y="535.0" font-size="12" fill="#111111">E1 → E2</text>
-<text class="mono" x="350" y="535.0" font-size="11" fill="#111111">100</text>
-<text class="mono" x="500" y="535.0" font-size="11" fill="#111111">0.3333</text>
-<text class="mono" x="675" y="535.0" font-size="11" fill="#111111">+0.1111</text>
-<line x1="55" y1="543.0" x2="845.0" y2="543.0" stroke="#cccccc" stroke-width="0.5"/>
-<text class="serif" x="68" y="561.0" font-size="12" fill="#111111">J2</text>
-<text class="serif" x="120" y="561.0" font-size="12" fill="#111111">E1 → E3</text>
-<text class="mono" x="350" y="561.0" font-size="11" fill="#111111">100</text>
-<text class="mono" x="500" y="561.0" font-size="11" fill="#111111">0.3333</text>
-<text class="mono" x="675" y="561.0" font-size="11" fill="#111111">-0.1111</text>
-<line x1="55" y1="569.0" x2="845.0" y2="569.0" stroke="#cccccc" stroke-width="0.5"/>
-<text class="serif" x="68" y="587.0" font-size="12" fill="#111111">J3</text>
-<text class="serif" x="120" y="587.0" font-size="12" fill="#111111">E2 → E3</text>
-<text class="mono" x="350" y="587.0" font-size="11" fill="#111111">100</text>
-<text class="mono" x="500" y="587.0" font-size="11" fill="#111111">0.3333</text>
-<text class="mono" x="675" y="587.0" font-size="11" fill="#111111">+0.1111</text>
-<line x1="55" y1="595.0" x2="845.0" y2="595.0" stroke="#cccccc" stroke-width="0.5"/>
-<line x1="55" y1="635.0" x2="845.0" y2="635.0" stroke="#111111" stroke-width="1"/>
-<text class="serif" x="55" y="663.0" font-size="12" fill="#222222">Cycle fraction = cycle energy / total signal energy. Component signs follow the stored edge direction.</text>
-<text class="serif" x="55" y="685.0" font-size="12" font-style="italic" fill="#444444">Cycle-space structure alone does not establish circular RNA or disease causation.</text>
+<text class="serif" x="48" y="42" font-size="24" font-weight="700" fill="#111111">Splice graph decomposition: GENE_DEMO</text>
+<text class="serif" x="48" y="70" font-size="15" fill="#111111">Sample: case_02</text>
+<line x1="48" y1="88" x2="1176.0" y2="88" stroke="#111111" stroke-width="1"/>
+<text class="serif" x="48" y="113" font-size="14" fill="#111111">Nodes: 3   ·   Junctions: 3   ·   Cycle fraction: 0.1111   ·   Mathematical checks: PASS</text>
+<text class="serif" x="48" y="143" font-size="13" fill="#111111">Same graph layout and edge IDs in every panel. Line width uses one shared absolute-value scale.</text>
+<line x1="48" y1="163" x2="84" y2="163" stroke="#111111" stroke-width="2.2"/>
+<text class="serif" x="92" y="167" font-size="12" fill="#111111">solid = positive</text>
+<line x1="218" y1="163" x2="254" y2="163" stroke="#111111" stroke-width="2.2" stroke-dasharray="7 5"/>
+<text class="serif" x="262" y="167" font-size="12" fill="#111111">dashed = negative</text>
+<text class="serif" x="410" y="167" font-size="12" fill="#111111">Arrows always retain the stored biological junction direction.</text>
+<g aria-label="1. Observed signal">
+<rect x="48.0" y="180.0" width="360.0" height="365.0" fill="#ffffff" stroke="#777777" stroke-width="0.8"/>
+<text class="serif" x="64.0" y="207" font-size="17" font-weight="700" fill="#111111">1. Observed signal</text>
+<text class="serif" x="64.0" y="230" font-size="12" fill="#333333">Normalized junction usage (F)</text>
+<path d="M 140.0 405.0 Q 163.0 327.0 186.0 405.0" fill="none" stroke="#111111" stroke-width="3.60" stroke-dasharray="none" stroke-linecap="round" marker-end="url(#arrow)"/>
+<rect x="126.0" y="332.0" width="74" height="19" fill="#ffffff" stroke="#999999" stroke-width="0.6"/>
+<text class="mono" x="163.0" y="345.0" text-anchor="middle" font-size="10" fill="#111111">J1 +0.333</text>
+<path d="M 140.0 405.0 Q 228.0 309.0 316.0 405.0" fill="none" stroke="#111111" stroke-width="3.60" stroke-dasharray="none" stroke-linecap="round" marker-end="url(#arrow)"/>
+<rect x="191.0" y="314.0" width="74" height="19" fill="#ffffff" stroke="#999999" stroke-width="0.6"/>
+<text class="mono" x="228.0" y="327.0" text-anchor="middle" font-size="10" fill="#111111">J2 +0.333</text>
+<path d="M 270.0 405.0 Q 293.0 327.0 316.0 405.0" fill="none" stroke="#111111" stroke-width="3.60" stroke-dasharray="none" stroke-linecap="round" marker-end="url(#arrow)"/>
+<rect x="256.0" y="332.0" width="74" height="19" fill="#ffffff" stroke="#999999" stroke-width="0.6"/>
+<text class="mono" x="293.0" y="345.0" text-anchor="middle" font-size="10" fill="#111111">J3 +0.333</text>
+<rect x="56.0" y="384.0" width="84.0" height="42.0" fill="#ffffff" stroke="#111111" stroke-width="1.2"/>
+<text class="serif" x="98.0" y="410.0" text-anchor="middle" font-size="13" fill="#111111">E1<title>E1</title></text>
+<rect x="186.0" y="384.0" width="84.0" height="42.0" fill="#ffffff" stroke="#111111" stroke-width="1.2"/>
+<text class="serif" x="228.0" y="410.0" text-anchor="middle" font-size="13" fill="#111111">E2<title>E2</title></text>
+<rect x="316.0" y="384.0" width="84.0" height="42.0" fill="#ffffff" stroke="#111111" stroke-width="1.2"/>
+<text class="serif" x="358.0" y="410.0" text-anchor="middle" font-size="13" fill="#111111">E3<title>E3</title></text>
+</g>
+<g aria-label="2. Gradient component">
+<rect x="432.0" y="180.0" width="360.0" height="365.0" fill="#ffffff" stroke="#777777" stroke-width="0.8"/>
+<text class="serif" x="448.0" y="207" font-size="17" font-weight="700" fill="#111111">2. Gradient component</text>
+<text class="serif" x="448.0" y="230" font-size="12" fill="#333333">Part explained by node values (F_grad)</text>
+<path d="M 524.0 405.0 Q 547.0 327.0 570.0 405.0" fill="none" stroke="#111111" stroke-width="3.12" stroke-dasharray="none" stroke-linecap="round" marker-end="url(#arrow)"/>
+<rect x="510.0" y="332.0" width="74" height="19" fill="#ffffff" stroke="#999999" stroke-width="0.6"/>
+<text class="mono" x="547.0" y="345.0" text-anchor="middle" font-size="10" fill="#111111">J1 +0.222</text>
+<path d="M 524.0 405.0 Q 612.0 309.0 700.0 405.0" fill="none" stroke="#111111" stroke-width="4.00" stroke-dasharray="none" stroke-linecap="round" marker-end="url(#arrow)"/>
+<rect x="575.0" y="314.0" width="74" height="19" fill="#ffffff" stroke="#999999" stroke-width="0.6"/>
+<text class="mono" x="612.0" y="327.0" text-anchor="middle" font-size="10" fill="#111111">J2 +0.444</text>
+<path d="M 654.0 405.0 Q 677.0 327.0 700.0 405.0" fill="none" stroke="#111111" stroke-width="3.12" stroke-dasharray="none" stroke-linecap="round" marker-end="url(#arrow)"/>
+<rect x="640.0" y="332.0" width="74" height="19" fill="#ffffff" stroke="#999999" stroke-width="0.6"/>
+<text class="mono" x="677.0" y="345.0" text-anchor="middle" font-size="10" fill="#111111">J3 +0.222</text>
+<rect x="440.0" y="384.0" width="84.0" height="42.0" fill="#ffffff" stroke="#111111" stroke-width="1.2"/>
+<text class="serif" x="482.0" y="410.0" text-anchor="middle" font-size="13" fill="#111111">E1<title>E1</title></text>
+<rect x="570.0" y="384.0" width="84.0" height="42.0" fill="#ffffff" stroke="#111111" stroke-width="1.2"/>
+<text class="serif" x="612.0" y="410.0" text-anchor="middle" font-size="13" fill="#111111">E2<title>E2</title></text>
+<rect x="700.0" y="384.0" width="84.0" height="42.0" fill="#ffffff" stroke="#111111" stroke-width="1.2"/>
+<text class="serif" x="742.0" y="410.0" text-anchor="middle" font-size="13" fill="#111111">E3<title>E3</title></text>
+</g>
+<g aria-label="3. Cycle component">
+<rect x="816.0" y="180.0" width="360.0" height="365.0" fill="#ffffff" stroke="#777777" stroke-width="0.8"/>
+<text class="serif" x="832.0" y="207" font-size="17" font-weight="700" fill="#111111">3. Cycle component</text>
+<text class="serif" x="832.0" y="230" font-size="12" fill="#333333">Remaining alternative-path structure (F_cycle)</text>
+<path d="M 908.0 405.0 Q 931.0 327.0 954.0 405.0" fill="none" stroke="#111111" stroke-width="2.50" stroke-dasharray="none" stroke-linecap="round" marker-end="url(#arrow)"/>
+<rect x="894.0" y="332.0" width="74" height="19" fill="#ffffff" stroke="#999999" stroke-width="0.6"/>
+<text class="mono" x="931.0" y="345.0" text-anchor="middle" font-size="10" fill="#111111">J1 +0.111</text>
+<path d="M 908.0 405.0 Q 996.0 309.0 1084.0 405.0" fill="none" stroke="#111111" stroke-width="2.50" stroke-dasharray="7 5" stroke-linecap="round" marker-end="url(#arrow)"/>
+<rect x="959.0" y="314.0" width="74" height="19" fill="#ffffff" stroke="#999999" stroke-width="0.6"/>
+<text class="mono" x="996.0" y="327.0" text-anchor="middle" font-size="10" fill="#111111">J2 -0.111</text>
+<path d="M 1038.0 405.0 Q 1061.0 327.0 1084.0 405.0" fill="none" stroke="#111111" stroke-width="2.50" stroke-dasharray="none" stroke-linecap="round" marker-end="url(#arrow)"/>
+<rect x="1024.0" y="332.0" width="74" height="19" fill="#ffffff" stroke="#999999" stroke-width="0.6"/>
+<text class="mono" x="1061.0" y="345.0" text-anchor="middle" font-size="10" fill="#111111">J3 +0.111</text>
+<rect x="824.0" y="384.0" width="84.0" height="42.0" fill="#ffffff" stroke="#111111" stroke-width="1.2"/>
+<text class="serif" x="866.0" y="410.0" text-anchor="middle" font-size="13" fill="#111111">E1<title>E1</title></text>
+<rect x="954.0" y="384.0" width="84.0" height="42.0" fill="#ffffff" stroke="#111111" stroke-width="1.2"/>
+<text class="serif" x="996.0" y="410.0" text-anchor="middle" font-size="13" fill="#111111">E2<title>E2</title></text>
+<rect x="1084.0" y="384.0" width="84.0" height="42.0" fill="#ffffff" stroke="#111111" stroke-width="1.2"/>
+<text class="serif" x="1126.0" y="410.0" text-anchor="middle" font-size="13" fill="#111111">E3<title>E3</title></text>
+</g>
+<text class="serif" x="48" y="585" font-size="17" font-weight="700" fill="#111111">Junction values (same edge order in every panel)</text>
+<line x1="48" y1="601" x2="1176.0" y2="601" stroke="#111111" stroke-width="1"/>
+<text class="serif" x="60" y="628" font-size="12" font-weight="700" fill="#111111">ID</text>
+<text class="serif" x="112" y="628" font-size="12" font-weight="700" fill="#111111">Junction</text>
+<text class="serif" x="477.4" y="628" font-size="12" font-weight="700" fill="#111111">Read support</text>
+<text class="serif" x="673.2" y="628" font-size="12" font-weight="700" fill="#111111">Observed F</text>
+<text class="serif" x="856.8" y="628" font-size="12" font-weight="700" fill="#111111">Gradient F_grad</text>
+<text class="serif" x="1040.4" y="628" font-size="12" font-weight="700" fill="#111111">Cycle F_cycle</text>
+<line x1="48" y1="636" x2="1176.0" y2="636" stroke="#777777" stroke-width="0.7"/>
+<text class="serif" x="60" y="650.0" font-size="12" fill="#111111">J1</text>
+<text class="serif" x="112" y="650.0" font-size="12" fill="#111111">E1 → E2</text>
+<text class="mono" x="477.4" y="650.0" font-size="11" fill="#111111">100</text>
+<text class="mono" x="673.2" y="650.0" font-size="11" fill="#111111">+0.3333</text>
+<text class="mono" x="856.8" y="650.0" font-size="11" fill="#111111">+0.2222</text>
+<text class="mono" x="1040.4" y="650.0" font-size="11" fill="#111111">+0.1111</text>
+<line x1="48" y1="658.0" x2="1176.0" y2="658.0" stroke="#cccccc" stroke-width="0.5"/>
+<text class="serif" x="60" y="676.0" font-size="12" fill="#111111">J2</text>
+<text class="serif" x="112" y="676.0" font-size="12" fill="#111111">E1 → E3</text>
+<text class="mono" x="477.4" y="676.0" font-size="11" fill="#111111">100</text>
+<text class="mono" x="673.2" y="676.0" font-size="11" fill="#111111">+0.3333</text>
+<text class="mono" x="856.8" y="676.0" font-size="11" fill="#111111">+0.4444</text>
+<text class="mono" x="1040.4" y="676.0" font-size="11" fill="#111111">-0.1111</text>
+<line x1="48" y1="684.0" x2="1176.0" y2="684.0" stroke="#cccccc" stroke-width="0.5"/>
+<text class="serif" x="60" y="702.0" font-size="12" fill="#111111">J3</text>
+<text class="serif" x="112" y="702.0" font-size="12" fill="#111111">E2 → E3</text>
+<text class="mono" x="477.4" y="702.0" font-size="11" fill="#111111">100</text>
+<text class="mono" x="673.2" y="702.0" font-size="11" fill="#111111">+0.3333</text>
+<text class="mono" x="856.8" y="702.0" font-size="11" fill="#111111">+0.2222</text>
+<text class="mono" x="1040.4" y="702.0" font-size="11" fill="#111111">+0.1111</text>
+<line x1="48" y1="710.0" x2="1176.0" y2="710.0" stroke="#cccccc" stroke-width="0.5"/>
+<line x1="48" y1="750.0" x2="1176.0" y2="750.0" stroke="#111111" stroke-width="1"/>
+<text class="serif" x="48" y="778.0" font-size="12" fill="#222222">Observed signal = gradient component + cycle component. Signs are relative to the stored edge direction.</text>
+<text class="serif" x="48" y="800.0" font-size="12" font-style="italic" fill="#444444">Cycle-space structure alone does not establish circular RNA or disease causation.</text>
 </svg>
