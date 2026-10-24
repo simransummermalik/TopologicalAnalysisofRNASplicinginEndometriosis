@@ -1,368 +1,530 @@
-# Complete Splice Girl project map
+# Complete Splice Girl project schema
 
-This diagram shows how the biological question, gene research, RNA-seq
-preparation, Rust software, Hodge mathematics, statistics, interpretation, and
-final outputs connect. It also shows which layers are already working and which
-ones still depend on real-data processing or reviewed research.
+This is the whole project drawn like a SQL database schema. Each box is one
+kind of record produced or used by Splice Girl. The rows inside a box are the
+important fields that record carries, and the connecting lines show how one
+record depends on another.
 
 **Status date:** October 24, 2026
 
-| Color | Meaning |
+## How to read it
+
+| Schema notation | Plain meaning |
 |---|---|
-| Green | Implemented, verified, or frozen |
-| Yellow | Active work or partly complete |
-| Gray | Waiting for an earlier dependency |
-| Blue | Planned later work |
-| Purple | Optional or alternate path |
-| Red | Interpretation boundary that must remain visible |
+| `PK` | Primary key: the value that uniquely identifies one record |
+| `FK` | Foreign key: a field that points to a record in another box |
+| `one` | Exactly one connected record |
+| `zero or many` | The connection can produce several records or none yet |
+| `status` | `COMPLETE`, `ACTIVE`, `WAITING`, `PLANNED`, or `OPTIONAL` |
 
 ```mermaid
-flowchart TB
-    classDef complete fill:#e8f3e8,stroke:#2f6b3b,color:#153a1d,stroke-width:1.5px
-    classDef active fill:#fff3cd,stroke:#8a6d1d,color:#4d3b08,stroke-width:1.5px
-    classDef waiting fill:#eeeeee,stroke:#777777,color:#333333,stroke-width:1.2px
-    classDef planned fill:#e8f0fa,stroke:#406a9b,color:#173451,stroke-width:1.2px
-    classDef optional fill:#f1e8f7,stroke:#76508d,color:#3d2350,stroke-width:1.2px
-    classDef caution fill:#fbe9e9,stroke:#9a3d3d,color:#5c1f1f,stroke-width:1.5px
+erDiagram
+    %% LAYER 0: PROJECT SCOPE
+    PROJECT {
+        string project_id PK
+        string name "Splice Girl"
+        string version
+        string status "ACTIVE"
+    }
+    RESEARCH_QUESTION {
+        string question_id PK
+        string project_id FK
+        string case_group "endometriosis"
+        string control_group "control"
+        string tissue "proliferative endometrium"
+        string outcome "splice graph structure"
+        string status "FROZEN"
+    }
+    INPUT_CONTRACT {
+        string contract_id PK
+        string project_id FK
+        string version "v0.5"
+        string required_columns "five columns"
+        string coordinate_rule "1 based closed"
+        string sample_rule "never pool samples"
+        string status "COMPLETE"
+    }
+    PROJECT ||--|| RESEARCH_QUESTION : defines
+    PROJECT ||--|| INPUT_CONTRACT : freezes
 
-    subgraph L0["LAYER 0 - Question, scope, and frozen rules"]
-        direction LR
-        Q["Research question:<br/>Does splice-graph structure differ between<br/>endometriosis and control endometrium?"]
-        TISSUE["Comparison boundary:<br/>same tissue and proliferative phase"]
-        CONTRACT["Input contract v0.5:<br/>sample_id, gene_id, from, to, count"]
-        CONVENTIONS["Frozen graph rules:<br/>1-based closed coordinates;<br/>full exon intervals; transcript direction"]
-        SAMPLE_RULE["Samples remain separate:<br/>one biological sample is never replaced<br/>by pooled junctions"]
-        REPRO_RULE["Reproducibility rules:<br/>versions, commands, checksums,<br/>settings, exclusions, run ID"]
-        Q --> TISSUE
-        TISSUE --> SAMPLE_RULE
-        CONTRACT --> CONVENTIONS
-        CONVENTIONS --> REPRO_RULE
-    end
+    %% LAYER 1: RESEARCH AND CANDIDATE GENES
+    CANDIDATE_GENE {
+        string gene_id PK
+        string stable_gene_id
+        string gene_symbol
+        string category "risk environment overlap"
+        string review_status
+        string status "WAITING"
+    }
+    GENETIC_EVIDENCE {
+        string genetic_evidence_id PK
+        string gene_id FK
+        string evidence_type
+        string source_id
+        string inclusion_reason
+        string status "WAITING"
+    }
+    ENVIRONMENTAL_EVIDENCE {
+        string environment_evidence_id PK
+        string gene_id FK
+        string response_context
+        string source_id
+        string inclusion_reason
+        string status "WAITING"
+    }
+    PROJECT ||--o{ CANDIDATE_GENE : prioritizes
+    CANDIDATE_GENE ||--o{ GENETIC_EVIDENCE : supported_by
+    CANDIDATE_GENE ||--o{ ENVIRONMENTAL_EVIDENCE : supported_by
 
-    subgraph L1["LAYER 1 - Candidate-gene evidence"]
-        direction LR
-        G_RULES["Define genetic-risk<br/>inclusion and exclusion rules"]
-        G_SOURCES["Review genetic sources:<br/>variants, loci, inherited susceptibility"]
-        G_ROWS["Genetic evidence table:<br/>stable ID, symbol, evidence, source"]
-        E_RULES["Define environmental-response<br/>scope and evidence rules"]
-        E_SOURCES["Review environmental sources:<br/>response context and exposure evidence"]
-        E_ROWS["Environmental evidence table:<br/>stable ID, symbol, context, source"]
-        ID_MAP["Normalize gene identifiers<br/>and audit ambiguous mappings"]
-        RISK_ONLY["Risk-only genes"]
-        ENV_ONLY["Environment-only genes"]
-        OVERLAP["Risk + environment overlap"]
-        CANDIDATES["Reviewed candidate-gene set<br/>with provenance for every gene"]
+    %% LAYER 2: STUDY, SAMPLES, AND RAW READS
+    RNA_SEQ_STUDY {
+        string study_id PK
+        string project_id FK
+        string accession "GSE315857"
+        string tissue
+        string library_layout "paired end"
+        int sample_count "8"
+        string status "ACTIVE"
+    }
+    SAMPLE {
+        string sample_id PK
+        string study_id FK
+        string srr_accession
+        string condition "control or endometriosis"
+        string tissue
+        string subject_id
+        string status "ACTIVE"
+    }
+    SAMPLE_MANIFEST_ROW {
+        string manifest_row_id PK
+        string sample_id FK
+        string sample_label
+        string condition
+        string inclusion_status
+        string exclusion_reason
+        string status "COMPLETE"
+    }
+    RAW_FASTQ {
+        string raw_fastq_id PK
+        string sample_id FK
+        string read_mate "R1 or R2"
+        string file_path
+        string checksum
+        int read_count
+        string status "ACTIVE"
+    }
+    PROJECT ||--|| RNA_SEQ_STUDY : analyzes
+    RNA_SEQ_STUDY ||--|{ SAMPLE : contains
+    SAMPLE ||--|| SAMPLE_MANIFEST_ROW : described_by
+    SAMPLE ||--|{ RAW_FASTQ : sequenced_as
 
-        G_RULES --> G_SOURCES --> G_ROWS --> ID_MAP
-        E_RULES --> E_SOURCES --> E_ROWS --> ID_MAP
-        ID_MAP --> RISK_ONLY --> CANDIDATES
-        ID_MAP --> ENV_ONLY --> CANDIDATES
-        ID_MAP --> OVERLAP --> CANDIDATES
-    end
+    %% LAYER 3: EXACT HUMAN REFERENCE
+    REFERENCE_BUILD {
+        string reference_id PK
+        string name "GRCh38 p14"
+        string provider "GENCODE"
+        string release "v50"
+        string fasta_path
+        string fasta_checksum
+        string status "COMPLETE"
+    }
+    GENE_ANNOTATION {
+        string annotation_id PK
+        string reference_id FK
+        string release "GENCODE v50"
+        string gtf_path
+        string gtf_checksum
+        string sequence_names_checked
+        string status "COMPLETE"
+    }
+    ALIGNER_INDEX {
+        string index_id PK
+        string reference_id FK
+        string aligner "HISAT2"
+        string aligner_version
+        string splice_hint_source
+        string status "ACTIVE"
+    }
+    REFERENCE_BUILD ||--|| GENE_ANNOTATION : matched_with
+    REFERENCE_BUILD ||--|| ALIGNER_INDEX : builds
+    GENE_ANNOTATION ||--|| ALIGNER_INDEX : supplies_splice_hints
 
-    subgraph L2["LAYER 2 - Study samples and metadata"]
-        direction LR
-        GEO["Public study:<br/>GEO GSE315857"]
-        CTRL["4 control samples:<br/>SRR36710390-SRR36710387"]
-        CASE["4 endometriosis samples:<br/>SRR36710386-SRR36710383"]
-        SRA["NCBI SRA paired-end runs"]
-        FASTQ["16 raw FASTQ files:<br/>forward + reverse for 8 samples"]
-        META["Sample metadata:<br/>condition, tissue, subject, accession"]
-        MANIFEST["data/metadata/samples.tsv:<br/>one traceable row per sample"]
-        SUITABILITY["Suitability review:<br/>tissue, phase, pairing, replication,<br/>batch information, exclusions"]
+    %% LAYER 4: PREPROCESSING
+    PREPROCESSING_RUN {
+        string preprocessing_id PK
+        string sample_id FK
+        string reference_id FK
+        string cleaning_tool "Cleaver X fastp"
+        string aligner "HISAT2"
+        string command
+        string status "ACTIVE"
+    }
+    QC_REPORT {
+        string qc_report_id PK
+        string preprocessing_id FK
+        string stage "raw clean alignment"
+        string tool "FastQC MultiQC"
+        int input_reads
+        int retained_reads
+        string qc_status
+        string status "ACTIVE"
+    }
+    CLEAN_FASTQ {
+        string clean_fastq_id PK
+        string preprocessing_id FK
+        string read_mate "R1 or R2"
+        string file_path
+        int retained_reads
+        string phix_filter "optional"
+        string status "ACTIVE"
+    }
+    ALIGNMENT_FILE {
+        string alignment_id PK
+        string preprocessing_id FK
+        string index_id FK
+        string bam_path
+        float mapped_fraction
+        float concordant_fraction
+        string status "WAITING"
+    }
+    OBSERVED_JUNCTION {
+        string observed_junction_id PK
+        string alignment_id FK
+        string chromosome
+        int intron_start
+        int intron_end
+        string strand
+        int supporting_reads
+        string status "WAITING"
+    }
+    JUNCTION_FILTER_EVENT {
+        string filter_event_id PK
+        string observed_junction_id FK
+        string decision "keep or exclude"
+        string reason
+        int threshold
+        string status "WAITING"
+    }
+    SAMPLE ||--o{ PREPROCESSING_RUN : processed_by
+    REFERENCE_BUILD ||--o{ PREPROCESSING_RUN : anchors
+    GENE_ANNOTATION ||--o{ PREPROCESSING_RUN : annotates
+    RAW_FASTQ ||--o{ PREPROCESSING_RUN : enters
+    PREPROCESSING_RUN ||--o{ QC_REPORT : records
+    PREPROCESSING_RUN ||--|{ CLEAN_FASTQ : creates
+    PREPROCESSING_RUN ||--o| ALIGNMENT_FILE : creates
+    ALIGNER_INDEX ||--o{ ALIGNMENT_FILE : used_by
+    ALIGNMENT_FILE ||--o{ OBSERVED_JUNCTION : yields
+    GENE_ANNOTATION ||--o{ OBSERVED_JUNCTION : maps
+    OBSERVED_JUNCTION ||--|| JUNCTION_FILTER_EVENT : receives
 
-        GEO --> CTRL --> SRA
-        GEO --> CASE --> SRA
-        SRA --> FASTQ
-        GEO --> META --> MANIFEST --> SUITABILITY
-    end
+    %% LAYER 5: STANDARD INPUT AND SAFE CLI
+    JUNCTION_INPUT_ROW {
+        string input_row_id PK
+        string sample_id FK
+        string gene_id FK
+        string from_node
+        string to_node
+        int count
+        string validation_status
+        string status "WAITING"
+    }
+    SOFTWARE_BUILD {
+        string build_id PK
+        string project_id FK
+        string language "Rust"
+        string executable "splice-girl"
+        string version
+        int automated_tests "46"
+        string status "COMPLETE"
+    }
+    ANALYSIS_RUN {
+        string run_id PK
+        string build_id FK
+        string contract_id FK
+        string command
+        string input_checksum
+        string started_at
+        string status "COMPLETE"
+    }
+    VALIDATION_ERROR {
+        string error_id PK
+        string run_id FK
+        string file_name
+        int line_number
+        string column_name
+        string bad_value
+        string suggested_fix
+        string status "COMPLETE"
+    }
+    JUNCTION_FILTER_EVENT ||--o| JUNCTION_INPUT_ROW : converts_to
+    SAMPLE ||--o{ JUNCTION_INPUT_ROW : keeps_separate
+    CANDIDATE_GENE ||--o{ JUNCTION_INPUT_ROW : identifies
+    PROJECT ||--|| SOFTWARE_BUILD : implements
+    SOFTWARE_BUILD ||--o{ ANALYSIS_RUN : executes
+    INPUT_CONTRACT ||--o{ ANALYSIS_RUN : validates
+    ANALYSIS_RUN ||--o{ VALIDATION_ERROR : may_stop_with
 
-    subgraph L3["LAYER 3 - Exact human reference"]
-        direction LR
-        FASTA["GENCODE v50 GRCh38.p14<br/>primary-assembly FASTA"]
-        GTF["Matching GENCODE v50<br/>comprehensive primary-assembly GTF"]
-        REF_CHECK["Checksum and sequence-name<br/>compatibility checks"]
-        HISAT_INDEX["HISAT2 genome index"]
-        SPLICE_HINTS["Known splice-site hints<br/>from the matching GTF"]
-        EXON_MAP["Annotation map:<br/>intron coordinates -> unique gene<br/>and adjacent exon intervals"]
+    %% LAYER 6: GRAPH CONSTRUCTION
+    GENE_GRAPH {
+        string graph_id PK
+        string run_id FK
+        string sample_id FK
+        string gene_id FK
+        int node_count
+        int edge_count
+        float total_support
+        string status "COMPLETE"
+    }
+    EXON_NODE {
+        string node_id PK
+        string graph_id FK
+        string chromosome
+        int exon_start
+        int exon_end
+        string strand
+        int deterministic_order
+        string status "COMPLETE"
+    }
+    JUNCTION_EDGE {
+        string edge_id PK
+        string graph_id FK
+        string input_row_id FK
+        string source_node_id FK
+        string target_node_id FK
+        int read_support
+        float normalized_signal
+        string status "COMPLETE"
+    }
+    ANALYSIS_RUN ||--o{ GENE_GRAPH : groups_by_sample_gene
+    SAMPLE ||--o{ GENE_GRAPH : owns
+    CANDIDATE_GENE ||--o{ GENE_GRAPH : represents
+    GENE_GRAPH ||--|{ EXON_NODE : contains
+    GENE_GRAPH ||--|{ JUNCTION_EDGE : contains
+    JUNCTION_INPUT_ROW ||--o| JUNCTION_EDGE : becomes
+    EXON_NODE ||--o{ JUNCTION_EDGE : connects
 
-        FASTA --> REF_CHECK
-        GTF --> REF_CHECK
-        REF_CHECK --> HISAT_INDEX
-        GTF --> SPLICE_HINTS
-        GTF --> EXON_MAP
-    end
+    %% LAYER 7: HODGE MATHEMATICS
+    HODGE_RESULT {
+        string hodge_result_id PK
+        string graph_id FK
+        float observed_energy
+        float gradient_energy
+        float cycle_energy
+        float cycle_fraction
+        float tolerance "1e-9"
+        string status "COMPLETE"
+    }
+    EDGE_COMPONENT {
+        string edge_component_id PK
+        string hodge_result_id FK
+        string edge_id FK
+        float observed_signal
+        float gradient_component
+        float cycle_component
+        string status "COMPLETE"
+    }
+    MATH_CHECK {
+        string math_check_id PK
+        string hodge_result_id FK
+        string check_type "reconstruction kernel orthogonality"
+        float residual
+        float tolerance
+        boolean passed
+        string status "COMPLETE"
+    }
+    GENE_GRAPH ||--|| HODGE_RESULT : decomposes_into
+    HODGE_RESULT ||--|{ EDGE_COMPONENT : explains_each_edge
+    JUNCTION_EDGE ||--|| EDGE_COMPONENT : receives_components
+    HODGE_RESULT ||--|{ MATH_CHECK : must_pass
 
-    subgraph L4["LAYER 4 - RNA-seq preprocessing, one sample at a time"]
-        direction TB
-        RAW_QC["FastQC on raw read pairs"]
-        MULTIQC["MultiQC summary across samples"]
-        CLEAVER["Cleaver-X / fastp:<br/>adapter trimming, filtering, JSON QC"]
-        PHIX_DECISION{"PhiX contamination<br/>supported by experiment or QC?"}
-        PHIX["Optional Bowtie2 PhiX removal"]
-        CLEAN_READS["Clean paired FASTQ reads"]
-        HISAT["HISAT2 splice-aware alignment<br/>with one frozen command"]
-        BAM["Coordinate-sorted SAM/BAM<br/>kept per sample"]
-        ALIGN_QC["Alignment QC:<br/>input reads, mapped reads,<br/>unique mapping, concordant pairs"]
-        JUNCTIONS["Extract junction-spanning reads<br/>with unique-mapping support"]
-        ANNOTATE["Map each junction to one unique<br/>gene and adjacent exon pair"]
-        FILTER["Exclude unannotated, ambiguous,<br/>unknown-strand, and low-support rows"]
-        STANDARD["Standard Splice Girl TSV:<br/>sample_id, gene_id, from, to, count"]
-        CONVERT_QC["Conversion QC:<br/>kept and excluded junction counts"]
-        STAR["Legacy STAR prototype<br/>for development only"]
+    %% LAYER 8: SYNTHETIC VALIDATION
+    TEST_CASE {
+        string test_id PK
+        string build_id FK
+        string test_name
+        string graph_shape "chain branch triangle cycle noise"
+        float expected_cycle_fraction
+        float observed_cycle_fraction
+        boolean passed
+        string status "COMPLETE"
+    }
+    ACCEPTANCE_RUN {
+        string acceptance_id PK
+        string build_id FK
+        int tests_passed "46"
+        int tests_failed "0"
+        boolean release_gate
+        string status "COMPLETE"
+    }
+    SOFTWARE_BUILD ||--|{ TEST_CASE : checked_by
+    SOFTWARE_BUILD ||--o{ ACCEPTANCE_RUN : qualifies_through
+    ACCEPTANCE_RUN ||--|{ TEST_CASE : summarizes
 
-        FASTQ --> RAW_QC --> MULTIQC
-        FASTQ --> CLEAVER --> PHIX_DECISION
-        PHIX_DECISION -- "yes" --> PHIX --> CLEAN_READS
-        PHIX_DECISION -- "no" --> CLEAN_READS
-        CLEAN_READS --> HISAT --> BAM --> ALIGN_QC --> JUNCTIONS
-        JUNCTIONS --> ANNOTATE --> FILTER --> STANDARD
-        FILTER --> CONVERT_QC
-        CLEAN_READS -.->|legacy prototype| STAR
-        STAR -.-> JUNCTIONS
-    end
+    %% LAYER 9: SAMPLE PRESERVING COMPARISON
+    SAMPLE_GENE_METRIC {
+        string metric_id PK
+        string hodge_result_id FK
+        string sample_id FK
+        string gene_id FK
+        string condition
+        float cycle_fraction
+        boolean math_checks_passed
+        string status "COMPLETE"
+    }
+    GENE_COMPARISON {
+        string comparison_id PK
+        string gene_id FK
+        int eligible_cases
+        int eligible_controls
+        float case_summary
+        float control_summary
+        float effect_size
+        string inference_status
+        string status "COMPLETE"
+    }
+    COMPARISON_MEMBER {
+        string member_id PK
+        string comparison_id FK
+        string metric_id FK
+        boolean included
+        string exclusion_reason
+        string status "COMPLETE"
+    }
+    HODGE_RESULT ||--|| SAMPLE_GENE_METRIC : summarizes
+    SAMPLE ||--o{ SAMPLE_GENE_METRIC : contributes
+    CANDIDATE_GENE ||--o{ SAMPLE_GENE_METRIC : measured_for
+    CANDIDATE_GENE ||--o{ GENE_COMPARISON : compared_as
+    GENE_COMPARISON ||--|{ COMPARISON_MEMBER : preserves_samples
+    SAMPLE_GENE_METRIC ||--o{ COMPARISON_MEMBER : joins
 
-    subgraph L5["LAYER 5 - Splice Girl input and safety checks"]
-        direction LR
-        CLI["splice-girl CLI:<br/>analyze, gene, visualize, --start"]
-        TSV_PARSER["Junction parser validates:<br/>file, header, fields, IDs, counts"]
-        MANIFEST_PARSER["Manifest parser validates:<br/>sample_id and case/control label"]
-        ERROR_STOP["Safe failure:<br/>filename, line, column, bad value,<br/>likely correction, nonzero exit"]
-        GROUP["Group rows by<br/>(sample_id, gene_id)"]
-        NO_POOL["Preserve each sample;<br/>never pool patients"]
-        OUTPUT_GUARD["Refuse to overwrite an existing<br/>result folder or SVG"]
+    %% LAYER 10: STATISTICS AND BASELINES
+    STATISTICAL_RESULT {
+        string statistic_id PK
+        string comparison_id FK
+        float effect_size
+        float p_value
+        float q_value
+        int permutation_seed
+        int permutation_count
+        string inference_status
+        string status "WAITING"
+    }
+    BASELINE_RESULT {
+        string baseline_id PK
+        string comparison_id FK
+        string method "junction usage or cycle rank"
+        float effect_size
+        string result
+        string status "WAITING"
+    }
+    SENSITIVITY_RESULT {
+        string sensitivity_id PK
+        string statistic_id FK
+        string changed_setting
+        string approved_value
+        float resulting_effect
+        string status "PLANNED"
+    }
+    GENE_COMPARISON ||--o| STATISTICAL_RESULT : tested_by
+    GENE_COMPARISON ||--o{ BASELINE_RESULT : compared_against
+    STATISTICAL_RESULT ||--o{ SENSITIVITY_RESULT : challenged_by
 
-        CLI --> TSV_PARSER
-        CLI --> MANIFEST_PARSER
-        TSV_PARSER -- "invalid" --> ERROR_STOP
-        MANIFEST_PARSER -- "invalid" --> ERROR_STOP
-        TSV_PARSER -- "valid" --> GROUP --> NO_POOL
-        CLI --> OUTPUT_GUARD
-    end
+    %% LAYER 11: INTERPRETATION AND SCIENTIFIC LIMITS
+    GENE_INTERPRETATION {
+        string interpretation_id PK
+        string gene_id FK
+        string statistic_id FK
+        string evidence_category
+        string junction_explanation
+        string conclusion
+        string review_status
+        string status "WAITING"
+    }
+    SCIENTIFIC_LIMITATION {
+        string limitation_id PK
+        string limitation_type
+        string statement
+        string required_wording
+        string status "FROZEN"
+    }
+    CANDIDATE_GENE ||--o| GENE_INTERPRETATION : receives
+    STATISTICAL_RESULT ||--o| GENE_INTERPRETATION : supports
+    GENETIC_EVIDENCE ||--o{ GENE_INTERPRETATION : informs
+    ENVIRONMENTAL_EVIDENCE ||--o{ GENE_INTERPRETATION : informs
+    GENE_INTERPRETATION }o--o{ SCIENTIFIC_LIMITATION : constrained_by
 
-    subgraph L6["LAYER 6 - Deterministic splice-graph construction"]
-        direction LR
-        GRAPH["Build one directed graph<br/>for one sample and one gene"]
-        NODES["Nodes:<br/>unique annotated exon intervals"]
-        EDGES["Edges:<br/>observed directed splice junctions"]
-        COUNTS["Raw edge weights:<br/>junction-spanning read counts"]
-        DUPLICATES["Reject duplicate directed edges,<br/>self-loops, and zero-total groups"]
-        ORDER["Sort node and edge IDs<br/>for deterministic order"]
-        NORM["Normalize within sample/gene:<br/>F_e = count_e / total support"]
-        GRAPH_OUT["Validated weighted graph<br/>and normalized edge signal F"]
-
-        GROUP --> GRAPH
-        GRAPH --> NODES
-        GRAPH --> EDGES
-        GRAPH --> COUNTS
-        NODES --> ORDER
-        EDGES --> ORDER
-        COUNTS --> DUPLICATES
-        DUPLICATES --> NORM
-        ORDER --> GRAPH_OUT
-        NORM --> GRAPH_OUT
-    end
-
-    subgraph L7["LAYER 7 - Hodge decomposition on each graph"]
-        direction LR
-        INCIDENCE["Incidence matrix B1:<br/>-1 at source, +1 at destination"]
-        POTENTIAL["Fit node potential phi:<br/>minimize ||F - B1^T phi||^2"]
-        SOLVER["Dense solver:<br/>one pinned node per component,<br/>partial pivoting, f64"]
-        GRAD["Gradient component:<br/>F_grad = B1^T phi"]
-        CYCLE["Cycle component:<br/>F_cycle = F - F_grad"]
-        ENERGY["Energies:<br/>||F||^2, ||F_grad||^2, ||F_cycle||^2"]
-        FRACTION["Cycle fraction:<br/>||F_cycle||^2 / ||F||^2"]
-        RECON["Check 1:<br/>F approximately F_grad + F_cycle"]
-        KERNEL["Check 2:<br/>B1 F_cycle approximately 0"]
-        ORTHO["Check 3:<br/>F_grad dot F_cycle approximately 0"]
-        MATH_GATE{"All mathematical checks<br/>pass at tolerance 1e-9?"}
-        GROUP_RESULT["Per-sample, per-gene result:<br/>metrics + signed edge components"]
-        MATH_STOP["Stop and report the<br/>sample/gene math failure"]
-
-        GRAPH_OUT --> INCIDENCE --> POTENTIAL --> SOLVER --> GRAD
-        GRAPH_OUT --> CYCLE
-        GRAD --> CYCLE
-        GRAPH_OUT --> ENERGY
-        GRAD --> ENERGY
-        CYCLE --> ENERGY --> FRACTION
-        GRAPH_OUT --> RECON
-        GRAD --> RECON
-        CYCLE --> RECON
-        INCIDENCE --> KERNEL
-        CYCLE --> KERNEL
-        GRAD --> ORTHO
-        CYCLE --> ORTHO
-        RECON --> MATH_GATE
-        KERNEL --> MATH_GATE
-        ORTHO --> MATH_GATE
-        MATH_GATE -- "yes" --> GROUP_RESULT
-        MATH_GATE -- "no" --> MATH_STOP
-    end
-
-    subgraph L8["LAYER 8 - Synthetic validation and software testing"]
-        direction LR
-        LINEAR["Linear chain:<br/>expected cycle fraction 0"]
-        BRANCH["Branching tree:<br/>expected cycle fraction 0"]
-        SKIP["Exon-skipping triangle:<br/>expected cycle fraction 1/9"]
-        PURE_CYCLE["Equal directed cycle:<br/>expected cycle fraction 1"]
-        NOISE["Fixed-noise example:<br/>reviewed exact expectation"]
-        SWEEP["Back-splice weight sweep:<br/>five reviewed answers"]
-        EDGE_CASES["Zero support, duplicate edge,<br/>self-loop, disconnected, row order"]
-        ERROR_TESTS["CLI error suite:<br/>nine real command failures"]
-        ACCEPTANCE["Automated acceptance suite:<br/>math, parser, CLI, output, SVG"]
-
-        LINEAR --> ACCEPTANCE
-        BRANCH --> ACCEPTANCE
-        SKIP --> ACCEPTANCE
-        PURE_CYCLE --> ACCEPTANCE
-        NOISE --> ACCEPTANCE
-        SWEEP --> ACCEPTANCE
-        EDGE_CASES --> ACCEPTANCE
-        ERROR_TESTS --> ACCEPTANCE
-    end
-
-    subgraph L9["LAYER 9 - Sample-preserving case/control comparison"]
-        direction LR
-        JOIN_MANIFEST["Join per-sample gene results<br/>to the case/control manifest"]
-        INCLUDE["Include:<br/>sample exists in both inputs<br/>and mathematical checks pass"]
-        EXCLUDE["Exclude with reason:<br/>missing metadata, missing gene data,<br/>or failed checks"]
-        GROUP_GATE{"At least one eligible case<br/>and one eligible control?"}
-        SAMPLE_TABLE["One row per sample/gene:<br/>condition, cycle fraction,<br/>status, exclusion reason"]
-        CASE_VALUES["Endometriosis sample values"]
-        CONTROL_VALUES["Control sample values"]
-
-        GROUP_RESULT --> JOIN_MANIFEST
-        MANIFEST_PARSER --> JOIN_MANIFEST
-        JOIN_MANIFEST --> INCLUDE --> GROUP_GATE
-        JOIN_MANIFEST --> EXCLUDE --> SAMPLE_TABLE
-        GROUP_GATE -- "yes" --> SAMPLE_TABLE
-        GROUP_GATE -- "no" --> ERROR_STOP
-        SAMPLE_TABLE --> CASE_VALUES
-        SAMPLE_TABLE --> CONTROL_VALUES
-    end
-
-    subgraph L10["LAYER 10 - Statistical design, baselines, and ranking"]
-        direction LR
-        STAT_SPEC["Freeze statistics specification:<br/>biological unit, eligibility,<br/>missing values, graph comparability"]
-        EFFECT["Primary effect:<br/>case summary - control summary"]
-        PERMUTE["Permutation test only when<br/>sample design permits label exchange"]
-        SEED["Saved random seed and<br/>exact or sampled permutations"]
-        FDR["Multiple-testing correction:<br/>defined gene family + q-values"]
-        BASE_JUNCTION["Baseline 1:<br/>junction-usage differences"]
-        BASE_RANK["Baseline 2:<br/>graph cycle rank"]
-        BASE_EXPR["Optional baseline 3:<br/>expression, if compatible"]
-        SENSITIVITY["Sensitivity checks:<br/>approved alternate thresholds"]
-        RANK["Deterministic ranking:<br/>effect, inference status,<br/>candidate category, junction explanation"]
-        STAT_REPORT["Statistics report:<br/>effects, sample counts, p/q status,<br/>baselines, settings, limitations"]
-
-        CASE_VALUES --> EFFECT
-        CONTROL_VALUES --> EFFECT
-        STAT_SPEC --> EFFECT
-        STAT_SPEC --> PERMUTE --> SEED --> FDR
-        EFFECT --> PERMUTE
-        SAMPLE_TABLE --> BASE_JUNCTION
-        SAMPLE_TABLE --> BASE_RANK
-        SAMPLE_TABLE --> BASE_EXPR
-        EFFECT --> SENSITIVITY
-        FDR --> RANK
-        EFFECT --> RANK
-        BASE_JUNCTION --> RANK
-        BASE_RANK --> RANK
-        BASE_EXPR --> RANK
-        SENSITIVITY --> RANK --> STAT_REPORT
-    end
-
-    subgraph L11["LAYER 11 - Evidence-linked biological interpretation"]
-        direction LR
-        PROVENANCE_JOIN["Join results to candidate-gene<br/>provenance by stable gene ID"]
-        CATEGORY_COMPARE["Compare risk-only,<br/>environment-only, and overlap groups"]
-        JUNCTION_EXPLAIN["Trace each result back to<br/>samples, graph edges, and junction values"]
-        NULL_OK["A null or no-advantage result<br/>is still a valid result"]
-        INTERPRET["Reviewed gene summaries<br/>with evidence and limitations"]
-        CIRC_LIMIT["Cycle-space signal<br/>does not prove circular RNA"]
-        CAUSE_LIMIT["Group difference<br/>does not prove disease causation"]
-        EXPOSURE_LIMIT["Environmental-response gene<br/>does not prove exposure causation"]
-        STUDY_LIMIT["Report tissue, sample-size,<br/>batch, alignment, and coverage limits"]
-
-        RANK --> PROVENANCE_JOIN
-        CANDIDATES --> PROVENANCE_JOIN
-        PROVENANCE_JOIN --> CATEGORY_COMPARE --> INTERPRET
-        STAT_REPORT --> JUNCTION_EXPLAIN --> INTERPRET
-        NULL_OK --> INTERPRET
-        CIRC_LIMIT --> INTERPRET
-        CAUSE_LIMIT --> INTERPRET
-        EXPOSURE_LIMIT --> INTERPRET
-        STUDY_LIMIT --> INTERPRET
-    end
-
-    subgraph L12["LAYER 12 - Reproducible outputs and audience-facing products"]
-        direction LR
-        METRICS_TSV["sample_metrics.tsv:<br/>one row per sample/gene"]
-        COMPONENTS_TSV["junction_components.tsv:<br/>observed, gradient, cycle per edge"]
-        COMPARISONS_TSV["comparisons.tsv:<br/>included and excluded samples"]
-        RUN_JSON["run_manifest.json:<br/>command, version, checksums,<br/>settings, exclusions, failures"]
-        THREE_PANEL["Generated academic SVG:<br/>observed | gradient | cycle"]
-        DEMO["Tiny synthetic CLI demo<br/>with known answers"]
-        README_OUT["Beginner README,<br/>dictionary, troubleshooting"]
-        REPORT["Final methods + results<br/>with versioned tables"]
-        SLIDES["Presentation figures,<br/>speaking plan, live demo, backup"]
-        RELEASE["Reusable Splice Girl release:<br/>source, tests, examples, version"]
-
-        GROUP_RESULT --> METRICS_TSV
-        GROUP_RESULT --> COMPONENTS_TSV
-        SAMPLE_TABLE --> COMPARISONS_TSV
-        REPRO_RULE --> RUN_JSON
-        METRICS_TSV --> RUN_JSON
-        COMPONENTS_TSV --> RUN_JSON
-        COMPARISONS_TSV --> RUN_JSON
-        GROUP_RESULT --> THREE_PANEL
-        ACCEPTANCE --> DEMO
-        ERROR_TESTS --> README_OUT
-        STAT_REPORT --> REPORT
-        INTERPRET --> REPORT
-        THREE_PANEL --> SLIDES
-        INTERPRET --> SLIDES
-        DEMO --> SLIDES
-        ACCEPTANCE --> RELEASE
-        README_OUT --> RELEASE
-    end
-
-    %% Cross-layer dependencies that join separate workstreams.
-    SAMPLE_RULE --> MANIFEST
-    MANIFEST --> MANIFEST_PARSER
-    SUITABILITY --> RAW_QC
-    HISAT_INDEX --> HISAT
-    SPLICE_HINTS --> HISAT
-    EXON_MAP --> ANNOTATE
-    CONVENTIONS --> EXON_MAP
-    CONTRACT --> STANDARD
-    STANDARD --> CLI
-    CONVERT_QC --> CLI
-    CANDIDATES --> STAT_SPEC
-    TISSUE --> STAT_SPEC
-    class Q,TISSUE,CONTRACT,CONVENTIONS,SAMPLE_RULE,REPRO_RULE,MANIFEST,FASTA,GTF,REF_CHECK,EXON_MAP,CLI,TSV_PARSER,MANIFEST_PARSER,ERROR_STOP,GROUP,NO_POOL,OUTPUT_GUARD,GRAPH,NODES,EDGES,COUNTS,DUPLICATES,ORDER,NORM,GRAPH_OUT,INCIDENCE,POTENTIAL,SOLVER,GRAD,CYCLE,ENERGY,FRACTION,RECON,KERNEL,ORTHO,MATH_GATE,GROUP_RESULT,MATH_STOP,LINEAR,BRANCH,SKIP,PURE_CYCLE,NOISE,SWEEP,EDGE_CASES,ERROR_TESTS,ACCEPTANCE,JOIN_MANIFEST,INCLUDE,EXCLUDE,GROUP_GATE,SAMPLE_TABLE,CASE_VALUES,CONTROL_VALUES,METRICS_TSV,COMPONENTS_TSV,COMPARISONS_TSV,RUN_JSON,THREE_PANEL,DEMO,README_OUT complete
-    class GEO,CTRL,CASE,SRA,FASTQ,META,SUITABILITY,RAW_QC,MULTIQC,CLEAVER,CLEAN_READS,HISAT_INDEX,SPLICE_HINTS active
-    class G_RULES,G_SOURCES,G_ROWS,E_RULES,E_SOURCES,E_ROWS,ID_MAP,RISK_ONLY,ENV_ONLY,OVERLAP,CANDIDATES,HISAT,BAM,ALIGN_QC,JUNCTIONS,ANNOTATE,FILTER,STANDARD,CONVERT_QC,STAT_SPEC,EFFECT,PERMUTE,SEED,FDR,BASE_JUNCTION,BASE_RANK,SENSITIVITY,RANK,STAT_REPORT,PROVENANCE_JOIN,CATEGORY_COMPARE,JUNCTION_EXPLAIN,NULL_OK,INTERPRET,REPORT,SLIDES,RELEASE waiting
-    class BASE_EXPR planned
-    class PHIX_DECISION,PHIX,STAR optional
-    class CIRC_LIMIT,CAUSE_LIMIT,EXPOSURE_LIMIT,STUDY_LIMIT caution
+    %% LAYER 12: FILES, FIGURES, REPORTS, AND RELEASES
+    OUTPUT_BUNDLE {
+        string output_id PK
+        string run_id FK
+        string output_directory
+        string metrics_tsv
+        string components_tsv
+        string comparisons_tsv
+        string status "COMPLETE"
+    }
+    RUN_MANIFEST {
+        string run_manifest_id PK
+        string output_id FK
+        string command
+        string software_version
+        string input_checksums
+        string settings
+        string exclusions
+        string status "COMPLETE"
+    }
+    GRAPH_FIGURE {
+        string figure_id PK
+        string hodge_result_id FK
+        string output_id FK
+        string format "SVG"
+        string panels "observed gradient cycle"
+        string generated_from_data
+        string status "COMPLETE"
+    }
+    FINAL_REPORT {
+        string report_id PK
+        string project_id FK
+        string methods_version
+        string result_tables
+        string limitation_section
+        string review_status
+        string status "WAITING"
+    }
+    SOFTWARE_RELEASE {
+        string release_id PK
+        string build_id FK
+        string acceptance_id FK
+        string version
+        string source_archive
+        string example_data
+        string status "WAITING"
+    }
+    ANALYSIS_RUN ||--o{ OUTPUT_BUNDLE : writes
+    OUTPUT_BUNDLE ||--|| RUN_MANIFEST : documents
+    OUTPUT_BUNDLE ||--o{ GRAPH_FIGURE : includes
+    HODGE_RESULT ||--o| GRAPH_FIGURE : visualized_as
+    PROJECT ||--o| FINAL_REPORT : concludes_with
+    GENE_INTERPRETATION ||--o{ FINAL_REPORT : summarized_in
+    STATISTICAL_RESULT ||--o{ FINAL_REPORT : reported_in
+    SOFTWARE_BUILD ||--o{ SOFTWARE_RELEASE : packaged_as
+    ACCEPTANCE_RUN ||--o| SOFTWARE_RELEASE : unlocks
+    OUTPUT_BUNDLE ||--o{ SOFTWARE_RELEASE : demonstrates
 ```
 
-## The main handoffs
+## The shortest path through the schema
 
-1. **Research to analysis:** reviewed gene evidence becomes the candidate set
-   used for filtering, annotation, and later interpretation.
-2. **Raw reads to Splice Girl:** each sample becomes one checked five-column
-   junction table; raw FASTQ, BAM, and reference files do not enter the Rust
-   graph engine directly.
-3. **Graph to mathematics:** deterministic nodes, edges, and normalized values
-   become the incidence matrix and Hodge decomposition.
-4. **Mathematics to comparison:** every sample keeps its identity and produces
-   one gene-level value before case/control comparison.
-5. **Statistics to interpretation:** effects and any valid inference are joined
-   back to gene provenance and individual junction explanations.
-6. **Every layer to reproducibility:** versions, commands, checksums, settings,
-   exclusions, and failures are preserved with the output.
+Follow these boxes to understand the main analysis:
+
+`RNA_SEQ_STUDY` -> `SAMPLE` -> `RAW_FASTQ` -> `PREPROCESSING_RUN` ->
+`OBSERVED_JUNCTION` -> `JUNCTION_INPUT_ROW` -> `GENE_GRAPH` -> `HODGE_RESULT`
+-> `SAMPLE_GENE_METRIC` -> `GENE_COMPARISON` -> `STATISTICAL_RESULT` ->
+`GENE_INTERPRETATION` -> `FINAL_REPORT`
+
+The side branches are still necessary. The reference boxes make coordinates
+reproducible, the evidence boxes explain why genes were selected, the test
+boxes verify the software and mathematics, and the limitation boxes prevent
+the final report from claiming more than the data supports.
 
 ## Detailed documents
 
