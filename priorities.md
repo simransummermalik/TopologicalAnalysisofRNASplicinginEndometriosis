@@ -1,6 +1,6 @@
 # Splice Girl project priorities
 
-Updated October 22, 2026.
+Updated October 28, 2026.
 
 This is the short, ordered version of the full
 [task guide](delegations_and_tasks/tasks.md). It covers the entire project.
@@ -97,16 +97,16 @@ an approved analysis rule, and a versioned output file.
 ## Priority 6 — Finish and harden the software
 
 **Task IDs:** R14--R17 and U1, U3, and U5  
-**Status:** Several pieces are already in progress and can be done without real
-data.
+**Status:** The developer-run installation, compatibility, benchmark, and CLI
+checks are complete; an independent beginner review remains.
 
 - [x] Finish tests for missing files, empty files, bad columns, invalid values,
   and unsafe output replacement.
 - [x] Make every failure explain what happened and how to fix it.
-- [ ] Record a runtime and peak-memory benchmark.
-- [ ] Record the minimum supported Rust version.
-- [ ] Test `cargo install --path .` from a clean checkout.
-- [ ] Test `splice-girl --help`, `splice-girl --version`, and
+- [x] Record a runtime and peak-memory benchmark.
+- [x] Record the minimum supported Rust version.
+- [x] Test `cargo install --path .` from an isolated clean source copy.
+- [x] Test `splice-girl --help`, `splice-girl --version`, and
   `splice-girl --start` after installation.
 - [ ] Ask a beginner to run a clean copy and fix anything that confuses them.
 
@@ -186,6 +186,8 @@ These are choices for four people, not assigned roles:
 - [x] The Rust parser, graph construction, normalization, and decomposition.
 - [x] The one-sample and manifest-driven CLI workflow.
 - [x] Saved result bundles and reproducibility manifests.
+- [x] Compact input/manifest validation through the real graph and math path.
+- [x] Sample-preserving descriptive comparison across every observed gene.
 - [x] The synthetic acceptance tests and tiny demo.
 - [x] A generated three-panel observed/gradient/cycle SVG view.
 - [x] The beginner README, input contract, and math specification.

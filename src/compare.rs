@@ -1,9 +1,9 @@
 //! Joins a parsed sample manifest (`manifest.rs`) against the per-sample
 //! decomposition results (`analyze_junctions` in `lib.rs`) for one gene,
-//! producing a sample-preserving case/control comparison. This is the R10
-//! layer: it adds no new math and does not touch `graph.rs`/`hodge.rs` —
-//! it only decides which already-computed samples are eligible for one
-//! gene's comparison and reports why any sample was left out.
+//! producing sample-preserving case/control comparisons. This layer adds no
+//! inferential statistics and does not touch `graph.rs`/`hodge.rs`: it decides
+//! which already-computed samples are eligible, reports every exclusion, and
+//! can calculate transparent descriptive summaries for every observed gene.
 use std::collections::{BTreeMap, BTreeSet};
 
 use crate::GroupResult;
@@ -36,6 +36,52 @@ pub struct GeneComparison {
     pub gene_id: String,
     pub included: Vec<IncludedSample>,
     pub excluded: Vec<ExcludedSample>,
+}
+
+/// Descriptive cycle-fraction values for one condition. These values keep the
+/// biological sample as the unit: `n` is the number of eligible samples, not
+/// the number of junctions.
+#[derive(Clone, Debug, PartialEq)]
+pub struct ConditionSummary {
+    pub n: usize,
+    pub mean: f64,
+    pub median: f64,
+    pub minimum: f64,
+    pub maximum: f64,
+}
+
+/// Whether a gene has enough eligible data for a descriptive case/control
+/// effect. Missing groups remain visible rather than being treated as zeros.
+#[derive(Clone, Copy, Debug, PartialEq, Eq)]
+pub enum ComparisonStatus {
+    Complete,
+    NoEligibleSamples,
+    MissingCase,
+    MissingControl,
+}
+
+impl std::fmt::Display for ComparisonStatus {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        let text = match self {
+            Self::Complete => "complete",
+            Self::NoEligibleSamples => "no_eligible_samples",
+            Self::MissingCase => "missing_case",
+            Self::MissingControl => "missing_control",
+        };
+        write!(f, "{text}")
+    }
+}
+
+/// One gene's sample-preserving comparison plus descriptive group summaries.
+/// `mean_difference` is defined only when both groups contain an eligible
+/// sample and is always case mean minus control mean.
+#[derive(Debug)]
+pub struct GeneComparisonSummary {
+    pub comparison: GeneComparison,
+    pub case: Option<ConditionSummary>,
+    pub control: Option<ConditionSummary>,
+    pub mean_difference: Option<f64>,
+    pub status: ComparisonStatus,
 }
 
 /// Compares one gene across samples, preserving sample identity throughout.
@@ -108,6 +154,81 @@ pub fn compare_gene(
         included,
         excluded,
     }
+}
+
+/// Compares every gene represented in `results`, returning genes in stable
+/// lexical order. This is descriptive by design: it does not assign p-values,
+/// q-values, or biological importance before those rules are approved.
+pub fn compare_all_genes(
+    manifest: &[SampleRecord],
+    results: &[GroupResult],
+) -> Vec<GeneComparisonSummary> {
+    let gene_ids: BTreeSet<&str> = results
+        .iter()
+        .map(|result| result.gene_id.as_str())
+        .collect();
+
+    gene_ids
+        .into_iter()
+        .map(|gene_id| summarize_comparison(compare_gene(manifest, results, gene_id)))
+        .collect()
+}
+
+/// Adds descriptive case/control summaries to an existing per-gene
+/// comparison without changing its inclusion or exclusion decisions.
+pub fn summarize_comparison(comparison: GeneComparison) -> GeneComparisonSummary {
+    let case_values: Vec<f64> = comparison
+        .included
+        .iter()
+        .filter(|sample| sample.condition == Condition::Case)
+        .map(|sample| sample.cycle_fraction)
+        .collect();
+    let control_values: Vec<f64> = comparison
+        .included
+        .iter()
+        .filter(|sample| sample.condition == Condition::Control)
+        .map(|sample| sample.cycle_fraction)
+        .collect();
+
+    let case = descriptive_summary(&case_values);
+    let control = descriptive_summary(&control_values);
+    let (status, mean_difference) = match (&case, &control) {
+        (Some(case), Some(control)) => (ComparisonStatus::Complete, Some(case.mean - control.mean)),
+        (None, Some(_)) => (ComparisonStatus::MissingCase, None),
+        (Some(_), None) => (ComparisonStatus::MissingControl, None),
+        (None, None) => (ComparisonStatus::NoEligibleSamples, None),
+    };
+
+    GeneComparisonSummary {
+        comparison,
+        case,
+        control,
+        mean_difference,
+        status,
+    }
+}
+
+fn descriptive_summary(values: &[f64]) -> Option<ConditionSummary> {
+    if values.is_empty() {
+        return None;
+    }
+
+    let mut ordered = values.to_vec();
+    ordered.sort_by(f64::total_cmp);
+    let n = ordered.len();
+    let median = if n % 2 == 0 {
+        (ordered[n / 2 - 1] + ordered[n / 2]) / 2.0
+    } else {
+        ordered[n / 2]
+    };
+
+    Some(ConditionSummary {
+        n,
+        mean: ordered.iter().sum::<f64>() / n as f64,
+        median,
+        minimum: ordered[0],
+        maximum: ordered[n - 1],
+    })
 }
 
 #[cfg(test)]
@@ -247,5 +368,79 @@ mod tests {
         // is irrelevant to this comparison and must not appear anywhere.
         assert_eq!(comparison.included.len(), 2);
         assert!(comparison.excluded.is_empty());
+    }
+
+    #[test]
+    fn summarizes_case_control_values_without_pooling_samples() {
+        let comparison = GeneComparison {
+            gene_id: "GENE_A".to_owned(),
+            included: vec![
+                IncludedSample {
+                    sample_id: "case_1".to_owned(),
+                    condition: Condition::Case,
+                    cycle_fraction: 0.2,
+                },
+                IncludedSample {
+                    sample_id: "case_2".to_owned(),
+                    condition: Condition::Case,
+                    cycle_fraction: 0.8,
+                },
+                IncludedSample {
+                    sample_id: "control_1".to_owned(),
+                    condition: Condition::Control,
+                    cycle_fraction: 0.1,
+                },
+            ],
+            excluded: Vec::new(),
+        };
+
+        let summary = summarize_comparison(comparison);
+
+        assert_eq!(summary.status, ComparisonStatus::Complete);
+        assert_eq!(summary.case.as_ref().unwrap().n, 2);
+        assert!((summary.case.as_ref().unwrap().mean - 0.5).abs() < 1e-12);
+        assert!((summary.case.as_ref().unwrap().median - 0.5).abs() < 1e-12);
+        assert!((summary.mean_difference.unwrap() - 0.4).abs() < 1e-12);
+    }
+
+    #[test]
+    fn missing_group_is_explicit_and_has_no_effect_value() {
+        let comparison = GeneComparison {
+            gene_id: "GENE_A".to_owned(),
+            included: vec![IncludedSample {
+                sample_id: "case_1".to_owned(),
+                condition: Condition::Case,
+                cycle_fraction: 0.2,
+            }],
+            excluded: Vec::new(),
+        };
+
+        let summary = summarize_comparison(comparison);
+
+        assert_eq!(summary.status, ComparisonStatus::MissingControl);
+        assert!(summary.control.is_none());
+        assert!(summary.mean_difference.is_none());
+    }
+
+    #[test]
+    fn all_gene_comparisons_are_sorted_and_keep_exclusions() {
+        let manifest = vec![
+            sample("case1", Condition::Case),
+            sample("control1", Condition::Control),
+        ];
+        let results = vec![
+            fake_result("case1", "GENE_Z", 0.7, true),
+            fake_result("control1", "GENE_Z", 0.2, true),
+            fake_result("case1", "GENE_A", 0.3, true),
+        ];
+
+        let summaries = compare_all_genes(&manifest, &results);
+
+        assert_eq!(summaries.len(), 2);
+        assert_eq!(summaries[0].comparison.gene_id, "GENE_A");
+        assert_eq!(summaries[0].status, ComparisonStatus::MissingControl);
+        assert_eq!(summaries[0].comparison.excluded.len(), 1);
+        assert_eq!(summaries[1].comparison.gene_id, "GENE_Z");
+        assert_eq!(summaries[1].status, ComparisonStatus::Complete);
     }
 }

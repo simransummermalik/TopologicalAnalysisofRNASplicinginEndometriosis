@@ -234,7 +234,7 @@ erDiagram
         string language "Rust"
         string executable "splice-girl"
         string version
-        int automated_tests "46"
+        int automated_tests "56"
         string status "COMPLETE"
     }
     ANALYSIS_RUN {
@@ -256,6 +256,16 @@ erDiagram
         string suggested_fix
         string status "COMPLETE"
     }
+    VALIDATION_AUDIT {
+        string audit_id PK
+        string run_id FK
+        int junction_rows
+        int sample_count
+        int gene_count
+        int math_checks_failed
+        string sample_mismatches
+        string status "COMPLETE"
+    }
     JUNCTION_FILTER_EVENT ||--o| JUNCTION_INPUT_ROW : converts_to
     SAMPLE ||--o{ JUNCTION_INPUT_ROW : keeps_separate
     CANDIDATE_GENE ||--o{ JUNCTION_INPUT_ROW : identifies
@@ -263,6 +273,7 @@ erDiagram
     SOFTWARE_BUILD ||--o{ ANALYSIS_RUN : executes
     INPUT_CONTRACT ||--o{ ANALYSIS_RUN : validates
     ANALYSIS_RUN ||--o{ VALIDATION_ERROR : may_stop_with
+    ANALYSIS_RUN ||--o| VALIDATION_AUDIT : audits
 
     %% LAYER 6: GRAPH CONSTRUCTION
     GENE_GRAPH {
@@ -351,7 +362,7 @@ erDiagram
     ACCEPTANCE_RUN {
         string acceptance_id PK
         string build_id FK
-        int tests_passed "46"
+        int tests_passed "56"
         int tests_failed "0"
         boolean release_gate
         string status "COMPLETE"
@@ -376,10 +387,12 @@ erDiagram
         string gene_id FK
         int eligible_cases
         int eligible_controls
-        float case_summary
-        float control_summary
-        float effect_size
-        string inference_status
+        float case_mean
+        float control_mean
+        float case_median
+        float control_median
+        float mean_difference
+        string inference_status "descriptive only"
         string status "COMPLETE"
     }
     COMPARISON_MEMBER {

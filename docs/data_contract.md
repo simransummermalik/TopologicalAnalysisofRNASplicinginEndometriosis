@@ -178,9 +178,9 @@ junction table passed to a comparison.
 ## Rust command-line interface
 
 The package and command name are settled: `splice-girl`. This section records
-the commands that exist today as frozen interface; the multi-gene `compare`
-and `rank` commands sketched in ROADMAP.md remain future work and are listed
-separately below so the two are never confused.
+the commands that exist today as frozen interface. Multi-gene descriptive
+comparison is implemented; inferential statistics and ranking remain separate
+future work so they cannot be confused with the current summaries.
 
 ### Implemented commands
 
@@ -188,9 +188,11 @@ separately below so the two are never confused.
 |---|---|
 | `splice-girl <junctions.tsv> [--output <folder>]` | direct-mode shorthand for `analyze` |
 | `splice-girl analyze <junctions.tsv> [--output <folder>]` | analyzes every sample/gene group and optionally saves a result bundle |
+| `splice-girl validate <junctions.tsv> [manifest.tsv]` | audits row, sample, gene, support, manifest-matching, graph, and mathematical-check status without printing every edge |
 | `splice-girl gene <GENE_ID> <junctions.tsv> <manifest.tsv> [--output <folder>]` | compares one gene across case/control samples and optionally saves a result bundle |
+| `splice-girl compare <junctions.tsv> <manifest.tsv> [--output <folder>]` | compares every observed gene using sample-level descriptive summaries and optionally saves a result bundle |
 | `splice-girl visualize <SAMPLE_ID> <GENE_ID> <junctions.tsv> <output.svg>` | renders one sample/gene's splice graph as a standalone SVG |
-| `splice-girl --start` | interactive menu wrapping the three commands above |
+| `splice-girl --start` | interactive menu wrapping analysis, validation, one-gene comparison, all-gene comparison, and visualization |
 | `splice-girl --help`, `-h`, `help` | prints usage and the command list |
 | `splice-girl --version`, `-V` | prints the Cargo package version |
 
@@ -201,11 +203,11 @@ above, matching the formats this tool actually parses.
 
 ### Not yet implemented
 
-- A multi-gene `compare` across case/control sample directories.
-- A `rank` command applying candidate-gene membership and a ranking rule.
+- Inferential p-values or multiple-testing correction.
+- A `rank` command applying approved candidate-gene and ranking rules.
 
-Neither exists yet; nothing in this document should be read as describing
-their behavior.
+The implemented `compare` command is descriptive. It does not claim statistical
+significance or rank biological importance.
 
 ### Output fields, per command
 
@@ -215,9 +217,17 @@ their behavior.
   table (`from`, `to`, `signal`, `gradient`, `cycle`), and a
   `checks: PASS|FAIL` line reporting the reconstruction, kernel, and
   orthogonality error magnitudes.
+- **`validate`**: compact counts for rows, samples, genes, sample/gene groups,
+  total support, group-support range, and mathematical checks. If a manifest
+  is supplied it also reports case/control counts and sample IDs missing from
+  either input. A mismatch produces a failure exit code.
 - **`gene`**: `gene_id`, the included/excluded sample counts, an `included`
   table (`sample_id`, `condition`, `cycle_fraction`) and an `excluded` table
   (`sample_id`, `reason`).
+- **`compare`**: one deterministic row per observed gene containing status,
+  case/control sample counts, group means, group medians, case-minus-control
+  mean difference, and exclusion count. Missing groups are `NA`; they are
+  never converted to zero. No p-value, q-value, or ranking is calculated.
 - **`visualize`**: not a tabular export — writes an SVG containing the same
   node/edge counts, cycle fraction, and checks status; aligned observed,
   gradient, and cycle graph panels; a table with all three values per junction;
@@ -229,8 +239,9 @@ their behavior.
 
 ### Saved result bundle
 
-The `analyze` and `gene` commands keep their terminal output by default. Add
-`--output <folder>` (or `-o <folder>`) to also save machine-readable files.
+The `analyze`, `gene`, and `compare` commands keep their terminal output by
+default. Add `--output <folder>` (or `-o <folder>`) to also save
+machine-readable files.
 The folder must not already exist; Splice Girl refuses to overwrite a previous
 run.
 
@@ -238,7 +249,8 @@ run.
 |---|---|
 | `sample_metrics.tsv` | One row per analyzed sample/gene, including graph size, raw total support, energies, cycle fraction, and numerical-check errors |
 | `junction_components.tsv` | One row per junction, including raw count, normalized signal, gradient component, and signed cycle component |
-| `comparisons.tsv` | `gene` only: one row per included or excluded sample, with condition, cycle fraction, status, and exclusion reason |
+| `comparisons.tsv` | `gene` and `compare`: one row per included or excluded sample/gene decision, with condition, cycle fraction, status, and exclusion reason |
+| `gene_summaries.tsv` | `compare` only: one descriptive row per gene with group sizes, means, medians, ranges, case-minus-control effect, status, and interpretation note |
 | `run_manifest.json` | Run ID, exact command arguments, tool version, input paths and SHA-256 checksums, solver settings, tolerance, output filenames, counts, exclusions, and failures |
 
 The manifest records `random_seed` as `null` because the current commands do
@@ -256,12 +268,14 @@ The TSVs include the same `run_id` so rows can be joined back to the manifest.
   usage/help text as the error body, not a short one-line usage string. This
   is deliberate, not a bug: the full command list stays visible whenever
   invocation fails.
-- `analyze` and `gene` can both print complete, correct output to standard
+- `analyze`, `gene`, `validate`, and `compare` can print useful output to standard
   output and then still exit with a failure status: `analyze` prints each
   sample/gene's full block before checking that group's `checks.passed`, and
   `gene` prints the full `included`/`excluded` tables before failing if every
   sample was excluded or if no eligible case or control sample remains.
-  Success on these two commands is not all-or-nothing on standard output; a
+  `validate` prints its audit before failing on a mismatch, and `compare`
+  prints every gene before failing when no gene has both groups. Success on
+  these commands is not all-or-nothing on standard output; a
   caller scripting against them must check the exit code, not assume failure
   means no output was produced.
 - `visualize` refuses to overwrite an existing output file and fails with a

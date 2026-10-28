@@ -29,7 +29,7 @@ means Rust task 5.
 Split task IDs according to available time and interest. A task can be completed
 alone or worked on together. A simple shared table is enough:
 
-This status board was checked against the repository on **October 22, 2026**.
+This status board was checked against the repository on **October 28, 2026**.
 **Done** is used only when the task's requested output and acceptance evidence
 exist. **In progress** means useful work exists but the full “Done when” rule
 has not been met.
@@ -105,12 +105,12 @@ has not been met.
 | R8 | **Done** | One-sample analysis prints graph metrics and signed edge components. |
 | R9 | **Done** | The complete synthetic acceptance suite passes. |
 | R10 | **Done** | Manifest parsing and one-gene case/control inclusion and exclusion are implemented. |
-| R11 | In progress | R13 now exports one row per sample/gene; the approved statistics interface and checks are still missing. |
+| R11 | In progress | The new all-gene `compare` command exports descriptive sample-preserving effects and explicit missing-group statuses; the approved inferential statistics interface is still missing. |
 | R12 | Blocked | Ranking needs approved candidate and statistics rules plus real junction results. |
 | R13 | **Done** | [`src/output.rs`](../src/output.rs) writes metrics, junction components, comparisons, and `run_manifest.json` with checksums and settings; see the [October 22 log](../logs/october_22nd_summer.md). |
 | R14 | **Done** | [`tests/cli_errors.rs`](../tests/cli_errors.rs) checks missing/empty files, headers, counts, manifests, metadata mismatches, zero support, comparison groups, overwrite protection, corrections, and failure exit codes; solver failure is unit-tested. |
-| R15 | Not started | No saved runtime and memory benchmark note exists. |
-| R16 | In progress | README and demo instructions exist; minimum Rust version, release packaging, and final limitations audit remain. |
+| R15 | In progress | [Software validation](../docs/software_validation.md) records a 100-run synthetic benchmark and peak memory; a candidate-sized real-data benchmark remains. |
+| R16 | **Done** | README/demo installation instructions, Rust 1.85 minimum, isolated `cargo install --path .`, installed command checks, examples, and limitations are recorded in [software validation](../docs/software_validation.md). |
 | R17 | Not started | A clean-checkout review by another person has not been recorded. |
 
 ### Real-data integration and comparison status
@@ -126,7 +126,7 @@ has not been met.
 
 | Task ID | Status | Evidence or next requirement |
 |---|---|---|
-| U1 | In progress | Cargo builds locally; minimum version and clean-install validation remain. |
+| U1 | **Done** | Rust 1.85 and current Rust both pass; an isolated source install successfully runs help, version, menu, validation, comparison, export, and visualization workflows. |
 | U2 | **Done** | The input contract includes valid, invalid, and runnable examples in beginner-readable language. |
 | U3 | **Done** | CLI input failures name the file, relevant line and column, invalid value, expected form, and likely correction; command-level tests confirm nonzero failure statuses. |
 | U4 | **Done** | R13 records run IDs, commands, versions, SHA-256 input checksums, settings, exclusions, and failures. |

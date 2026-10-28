@@ -168,12 +168,14 @@ In plain language:
 | Mathematical acceptance checks | Reconstruction, cycle-space membership, and orthogonality are checked automatically. |
 | Synthetic validation examples | Linear, branching, exon-skipping, cyclic, noisy, and edge-case graphs are tested. |
 | Sample manifest support | Samples remain separate and are assigned to case or control groups. |
+| Input audit command | `validate` checks samples, genes, support, manifest matching, graph construction, and mathematical checks before a full run. |
 | Gene comparison command | One gene's cycle fractions can be reported across eligible samples. |
+| All-gene comparison command | Every observed gene can be summarized with case/control sample counts, means, medians, ranges, exclusions, and a descriptive case-minus-control effect. |
 | Reproducible result bundles | Metrics, junction components, comparisons, checksums, and run settings can be saved as TSV and JSON files. |
 | Preprocessing design | The path from FASTQ reads to Splice Girl junction tables is documented and scripted. |
 | Public dataset selection | Four control and four endometriosis RNA-seq samples have been identified. |
 
-The Rust project currently passes **46 automated tests**. Real-data
+The Rust project currently passes **56 automated tests**. Real-data
 preprocessing is the next active stage, and the large raw-read files remain
 outside Git.
 
@@ -245,6 +247,20 @@ cargo --version
 If those commands are missing, install Rust from
 [rustup.rs](https://rustup.rs/).
 
+Splice Girl requires **Rust 1.85 or newer**. To install the command from this
+repository, run:
+
+```sh
+cargo install --path .
+splice-girl --version
+splice-girl --help
+```
+
+Cargo normally places installed commands in `$HOME/.cargo/bin`. If the install
+succeeds but `splice-girl` is not found, add that directory to your shell's
+`PATH`, restart the terminal, and try `splice-girl --version` again. You can
+also use every example below with `cargo run --` without installing globally.
+
 ### 2. Open the interactive menu
 
 From the repository folder, run:
@@ -265,7 +281,36 @@ tests/fixtures/cycle.tsv
 cargo run -- tests/fixtures/exon_skip.tsv
 ```
 
-### 4. Draw the splice graph
+### 4. Audit an input before analysis
+
+Run a compact validation report through the real parser, graph builder, Hodge
+solver, and mathematical checks:
+
+```sh
+cargo run -- validate examples/demo/junctions.tsv
+```
+
+Add a manifest to check whether sample IDs match in both directions:
+
+```sh
+cargo run -- validate examples/demo/junctions.tsv examples/demo/manifest.tsv
+```
+
+The second command intentionally reports the demo's `control_03` and
+`orphan_01` mismatch. This proves missing metadata and missing junction data
+are visible instead of silently discarded.
+
+### 5. Compare every observed gene
+
+```sh
+cargo run -- compare examples/demo/all_genes.tsv examples/demo/manifest.tsv
+```
+
+This reports sample-level case/control counts, means, medians, ranges, and the
+case-minus-control mean difference. It does not calculate p-values, q-values,
+or rankings before those statistical rules are approved.
+
+### 6. Draw the splice graph
 
 The visualization uses the synthetic case/control demo data and creates a
 self-contained SVG that opens in any web browser:
@@ -283,7 +328,7 @@ A table gives the exact value of every junction in every component. The figure
 uses a plain black-and-white academic style and states the main interpretation
 limit: cycle-space structure alone does not prove circular RNA or causation.
 
-### 5. Save results for later analysis
+### 7. Save results for later analysis
 
 Add `--output` followed by a new folder name:
 
@@ -298,7 +343,16 @@ version, input checksums, and numerical settings so another person can trace
 the result back to its inputs. Splice Girl will not overwrite an existing
 results folder.
 
-### 6. Run the automated checks
+For all-gene descriptive results, use a different new folder:
+
+```sh
+cargo run -- compare examples/demo/all_genes.tsv examples/demo/manifest.tsv \
+  --output demo_all_genes
+```
+
+That bundle also includes `gene_summaries.tsv`.
+
+### 8. Run the automated checks
 
 ```sh
 cargo test
@@ -380,11 +434,11 @@ than treated as a black box.
 
 ## Important limitations
 
-Splice Girl is a research prototype, not a clinical diagnostic tool. The
-current command performs per-sample graph analysis and a basic gene-level
-sample comparison. Final group statistics, multiple-testing correction,
-gene ranking, baseline comparisons, and biological interpretation remain
-future stages of the study.
+Splice Girl is research software, not a clinical diagnostic tool. It performs
+validated per-sample graph analysis, one-gene and all-gene descriptive group
+comparison, reproducible exports, and generated graph figures. Inferential
+statistics, multiple-testing correction, approved gene ranking, baseline
+comparisons, and biological interpretation remain future stages of the study.
 
 Real RNA-seq results will depend on consistent preprocessing, the selected
 reference and annotation, tissue and sample comparability, sequencing quality,
@@ -397,6 +451,7 @@ Audience members who want more detail can continue with:
 
 - [Math specification](docs/math_spec.md) — equations and numerical checks
 - [Data contract](docs/data_contract.md) — accepted TSV formats and the frozen Rust CLI interface
+- [Software validation](docs/software_validation.md) — installation, Rust compatibility, tests, and benchmark evidence
 - [Preprocessing guide](preprocessing/README.md) — FASTQ-to-junction workflow
 - [Execution roadmap](ROADMAP.md) — detailed implementation plan
 - [Beginner task guide](delegations_and_tasks/tasks.md) — team work breakdown

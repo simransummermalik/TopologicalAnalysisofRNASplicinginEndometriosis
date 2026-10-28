@@ -96,6 +96,50 @@ that selected result. Splice Girl refuses to overwrite a figure that already
 exists, so choose a new output name or remove the old demo SVG before running
 the command again.
 
+## Part 5 — compact validation audit
+
+Validate the junction file through the same parser, graph construction, Hodge
+solver, and mathematical checks used by the analysis:
+
+```sh
+cargo run -- validate examples/demo/junctions.tsv
+```
+
+That command passes. Adding the manifest intentionally produces a failed audit
+because this demo contains two visible mismatch examples:
+
+```sh
+cargo run -- validate examples/demo/junctions.tsv examples/demo/manifest.tsv
+```
+
+The report names `orphan_01` as junction data without metadata and
+`control_03` as metadata without junction data. A failed validation command
+returns a nonzero exit code after printing the audit.
+
+## Part 6 — all-gene descriptive comparison
+
+`all_genes.tsv` contains two synthetic genes with opposite group patterns.
+Compare every gene in one command:
+
+```sh
+cargo run -- compare examples/demo/all_genes.tsv examples/demo/manifest.tsv
+```
+
+`GENE_HIGH_CYCLE` has a case-minus-control mean difference of `+0.5555555556`.
+`GENE_LOW_CYCLE` reverses the same graph shapes and has a difference of
+`-0.5555555556`. This demonstrates deterministic multi-gene output and effect
+direction. Neither value is a p-value or a claim of biological significance.
+
+Save the full five-file result bundle with:
+
+```sh
+cargo run -- compare examples/demo/all_genes.tsv examples/demo/manifest.tsv \
+  --output demo_all_genes
+```
+
+The bundle adds `gene_summaries.tsv` to the sample metrics, junction
+components, inclusion/exclusion table, and reproducibility manifest.
+
 ## Timing
 
 All demo commands run in well under a second on a development machine (the
@@ -104,6 +148,6 @@ startup ASCII banner printing accounts for most of the visible delay).
 ## Scope
 
 This is an illustrative demo package for showing the tool working end to end.
-It is not the real-data demo described in `ROADMAP.md` Phase 11 (which uses
-an actual candidate gene and real GSE179640/E-MTAB-15117 samples) — that
-remains a separate, later milestone.
+It is not the real-data demo described in `ROADMAP.md` Phase 11, which will use
+an approved candidate gene and the selected GSE315857 samples. That remains a
+separate, later milestone.

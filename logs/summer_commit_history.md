@@ -157,7 +157,17 @@ Detailed log: [Cleaver pilot, saved results, manifest, and reference pair](octob
 | `767675a` | `genecode v50 is dowloaded, all 70 gtf names exist in fasta and 8 samples are recorded and verified` | Recorded the matching verified GTF, FASTA/GTF name compatibility, and annotation version for all eight samples. |
 | `cbb8a2b` | `logs` | Added the complete Summer commit index, created the missing October 19 and October 20 logs, and corrected older log statuses. |
 
+## October 24, 2026
+
+Detailed log: [Three-panel graph view and SQL-style project map](october_24th_summer.md)
+
+| Commit | Original subject | What changed |
+|---|---|---|
+| `6a6fb87` | `graph visualization updates` | Added aligned observed, gradient, and cycle graph panels and updated their documentation and task status. |
+| `7d22a2e` | `added mermaid charts` | Added the complete project Mermaid map and linked it first in the README. |
+| `cea7764` | `i wanted an sql shchema type of look so I am fixing this, i changed my mind` | Rebuilt the project map as a SQL-style entity relationship schema. |
+
 ## Audit result
 
-This index contains **45 commits across 15 dates**. It includes every commit
-returned by Git for `smalik12@charlotte.edu` through commit `cbb8a2b`.
+This index contains **48 commits across 16 dates**. It includes every commit
+returned by Git for `smalik12@charlotte.edu` through commit `cea7764`.

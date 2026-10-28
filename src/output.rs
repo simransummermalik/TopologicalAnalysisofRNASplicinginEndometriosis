@@ -10,12 +10,13 @@ use std::path::{Path, PathBuf};
 use std::time::{SystemTime, UNIX_EPOCH};
 
 use crate::GroupResult;
-use crate::compare::GeneComparison;
+use crate::compare::{GeneComparison, GeneComparisonSummary};
 use crate::hodge::TOLERANCE;
 
 const SAMPLE_METRICS: &str = "sample_metrics.tsv";
 const JUNCTION_COMPONENTS: &str = "junction_components.tsv";
 const COMPARISONS: &str = "comparisons.tsv";
+const GENE_SUMMARIES: &str = "gene_summaries.tsv";
 const RUN_MANIFEST: &str = "run_manifest.json";
 
 /// Identifies the files written by one export operation.
@@ -106,6 +107,7 @@ pub fn write_gene_bundle(
         .excluded
         .iter()
         .map(|sample| ExclusionRecord {
+            gene_id: comparison.gene_id.clone(),
             sample_id: sample.sample_id.clone(),
             reason: sample.reason.clone(),
         })
@@ -133,6 +135,83 @@ pub fn write_gene_bundle(
             (SAMPLE_METRICS, metrics),
             (JUNCTION_COMPONENTS, components),
             (COMPARISONS, comparisons),
+            (RUN_MANIFEST, manifest),
+        ],
+    )
+}
+
+/// Writes a sample-preserving, descriptive comparison for every gene. The
+/// bundle deliberately contains no p-values or ranking because those require
+/// a separately approved statistical specification.
+pub fn write_compare_bundle(
+    output_dir: &Path,
+    junctions_path: &Path,
+    sample_manifest_path: &Path,
+    results: &[GroupResult],
+    summaries: &[GeneComparisonSummary],
+    command: &[String],
+) -> Result<ExportSummary, String> {
+    let metadata = RunMetadata::new(
+        "compare",
+        command,
+        &[
+            ("junctions", junctions_path),
+            ("sample_manifest", sample_manifest_path),
+        ],
+    )?;
+    let result_refs: Vec<&GroupResult> = results.iter().collect();
+    let metrics = sample_metrics_tsv(&metadata.run_id, &result_refs);
+    let components = junction_components_tsv(&metadata.run_id, &result_refs);
+    let comparisons = all_comparisons_tsv(&metadata.run_id, summaries);
+    let gene_summaries = gene_summaries_tsv(&metadata.run_id, summaries);
+    let failures = failed_checks(results);
+    let exclusions: Vec<ExclusionRecord> = summaries
+        .iter()
+        .flat_map(|summary| {
+            summary
+                .comparison
+                .excluded
+                .iter()
+                .map(|sample| ExclusionRecord {
+                    gene_id: summary.comparison.gene_id.clone(),
+                    sample_id: sample.sample_id.clone(),
+                    reason: sample.reason.clone(),
+                })
+        })
+        .collect();
+    let included_samples: usize = summaries
+        .iter()
+        .map(|summary| summary.comparison.included.len())
+        .sum();
+    let excluded_samples: usize = summaries
+        .iter()
+        .map(|summary| summary.comparison.excluded.len())
+        .sum();
+    let manifest = run_manifest_json(
+        &metadata,
+        &[
+            SAMPLE_METRICS,
+            JUNCTION_COMPONENTS,
+            COMPARISONS,
+            GENE_SUMMARIES,
+            RUN_MANIFEST,
+        ],
+        results.len(),
+        results.iter().map(|result| result.graph.edges.len()).sum(),
+        included_samples,
+        excluded_samples,
+        &exclusions,
+        &failures,
+    );
+
+    write_bundle(
+        output_dir,
+        &metadata.run_id,
+        &[
+            (SAMPLE_METRICS, metrics),
+            (JUNCTION_COMPONENTS, components),
+            (COMPARISONS, comparisons),
+            (GENE_SUMMARIES, gene_summaries),
             (RUN_MANIFEST, manifest),
         ],
     )
@@ -272,6 +351,21 @@ fn comparisons_tsv(run_id: &str, comparison: &GeneComparison) -> String {
     let mut output = String::from(
         "run_id\tgene_id\tsample_id\tcondition\tstatus\tcycle_fraction\texclusion_reason\n",
     );
+    append_comparison_rows(&mut output, run_id, comparison);
+    output
+}
+
+fn all_comparisons_tsv(run_id: &str, summaries: &[GeneComparisonSummary]) -> String {
+    let mut output = String::from(
+        "run_id\tgene_id\tsample_id\tcondition\tstatus\tcycle_fraction\texclusion_reason\n",
+    );
+    for summary in summaries {
+        append_comparison_rows(&mut output, run_id, &summary.comparison);
+    }
+    output
+}
+
+fn append_comparison_rows(output: &mut String, run_id: &str, comparison: &GeneComparison) {
     for sample in &comparison.included {
         output.push_str(&format!(
             "{}\t{}\t{}\t{}\tincluded\t{:.10}\t\n",
@@ -295,11 +389,59 @@ fn comparisons_tsv(run_id: &str, comparison: &GeneComparison) -> String {
             tsv(&sample.reason),
         ));
     }
+}
+
+fn gene_summaries_tsv(run_id: &str, summaries: &[GeneComparisonSummary]) -> String {
+    let mut output = String::from(
+        "run_id\tgene_id\tstatus\tcase_n\tcontrol_n\tcase_mean\tcontrol_mean\tmean_difference_case_minus_control\tcase_median\tcontrol_median\tcase_min\tcase_max\tcontrol_min\tcontrol_max\texcluded_count\tnote\n",
+    );
+    for summary in summaries {
+        let note = match summary.status {
+            crate::compare::ComparisonStatus::Complete => {
+                "descriptive effect only; no p-value or q-value calculated"
+            }
+            crate::compare::ComparisonStatus::NoEligibleSamples => {
+                "no sample was eligible for this gene"
+            }
+            crate::compare::ComparisonStatus::MissingCase => {
+                "no eligible case sample; effect not calculated"
+            }
+            crate::compare::ComparisonStatus::MissingControl => {
+                "no eligible control sample; effect not calculated"
+            }
+        };
+        output.push_str(&format!(
+            "{}\t{}\t{}\t{}\t{}\t{}\t{}\t{}\t{}\t{}\t{}\t{}\t{}\t{}\t{}\t{}\n",
+            tsv(run_id),
+            tsv(&summary.comparison.gene_id),
+            summary.status,
+            summary.case.as_ref().map_or(0, |group| group.n),
+            summary.control.as_ref().map_or(0, |group| group.n),
+            optional_number(summary.case.as_ref().map(|group| group.mean)),
+            optional_number(summary.control.as_ref().map(|group| group.mean)),
+            optional_number(summary.mean_difference),
+            optional_number(summary.case.as_ref().map(|group| group.median)),
+            optional_number(summary.control.as_ref().map(|group| group.median)),
+            optional_number(summary.case.as_ref().map(|group| group.minimum)),
+            optional_number(summary.case.as_ref().map(|group| group.maximum)),
+            optional_number(summary.control.as_ref().map(|group| group.minimum)),
+            optional_number(summary.control.as_ref().map(|group| group.maximum)),
+            summary.comparison.excluded.len(),
+            note,
+        ));
+    }
     output
+}
+
+fn optional_number(value: Option<f64>) -> String {
+    value
+        .map(|number| format!("{number:.10}"))
+        .unwrap_or_default()
 }
 
 #[derive(Debug)]
 struct ExclusionRecord {
+    gene_id: String,
     sample_id: String,
     reason: String,
 }
@@ -362,7 +504,8 @@ fn run_manifest_json(
         .iter()
         .map(|record| {
             format!(
-                "    {{\"sample_id\": {}, \"reason\": {}}}",
+                "    {{\"gene_id\": {}, \"sample_id\": {}, \"reason\": {}}}",
+                json_string(&record.gene_id),
                 json_string(&record.sample_id),
                 json_string(&record.reason)
             )
@@ -590,7 +733,7 @@ impl Sha256 {
 mod tests {
     use super::*;
     use crate::analyze_junctions;
-    use crate::compare::compare_gene;
+    use crate::compare::{compare_all_genes, compare_gene};
     use crate::manifest::parse_manifest_text;
     use crate::parser::parse_tsv_text;
 
@@ -682,6 +825,41 @@ mod tests {
         let manifest = fs::read_to_string(output.join(RUN_MANIFEST)).unwrap();
         assert!(manifest.contains("\"included_samples\": 4"));
         assert!(manifest.contains("\"excluded_samples\": 2"));
+
+        fs::remove_dir_all(output).unwrap();
+    }
+
+    #[test]
+    fn all_gene_bundle_records_descriptive_effects_and_no_inference() {
+        let junction_text = fs::read_to_string("examples/demo/all_genes.tsv").unwrap();
+        let manifest_text = fs::read_to_string("examples/demo/manifest.tsv").unwrap();
+        let results = analyze_junctions(parse_tsv_text(&junction_text).unwrap()).unwrap();
+        let manifest = parse_manifest_text(&manifest_text).unwrap();
+        let summaries = compare_all_genes(&manifest, &results);
+        let output = temporary_output("compare-export");
+        let command = vec!["splice-girl".to_owned(), "compare".to_owned()];
+
+        let summary = write_compare_bundle(
+            &output,
+            Path::new("examples/demo/all_genes.tsv"),
+            Path::new("examples/demo/manifest.tsv"),
+            &results,
+            &summaries,
+            &command,
+        )
+        .expect("all-gene export should succeed");
+
+        assert_eq!(summary.files.len(), 5);
+        let genes = fs::read_to_string(output.join(GENE_SUMMARIES)).unwrap();
+        assert!(genes.contains("mean_difference_case_minus_control"));
+        assert!(genes.contains("GENE_HIGH_CYCLE\tcomplete\t2\t2"));
+        assert!(genes.contains("GENE_LOW_CYCLE\tcomplete\t2\t2"));
+        assert!(genes.contains("0.5555555556"));
+        assert!(genes.contains("-0.5555555556"));
+        assert!(genes.contains("no p-value or q-value calculated"));
+        let manifest = fs::read_to_string(output.join(RUN_MANIFEST)).unwrap();
+        assert!(manifest.contains("\"mode\": \"compare\""));
+        assert!(manifest.contains("gene_summaries.tsv"));
 
         fs::remove_dir_all(output).unwrap();
     }
