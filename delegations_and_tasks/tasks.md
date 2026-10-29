@@ -119,7 +119,10 @@ has not been met.
 |---|---|---|
 | D/R6.1–D/R6.2 | Blocked | Real junction counts and the matching reference are required. |
 | C1–C4 | Blocked | Eligible samples and per-sample real gene metrics do not exist yet. |
-| S1–S12 | Not started | The statistical specification and real analysis outputs do not exist yet. |
+| S1 | **Done** | Biological unit, independence, and permutation restrictions are recorded in [statistics_spec.md](../docs/statistics_spec.md) from the real eight-sample manifest (one sample per subject, unpaired, 4 control vs. 4 case). |
+| S4 | **Done** | The primary effect (case mean minus control mean cycle fraction) is recorded in [statistics_spec.md](../docs/statistics_spec.md) as the `compare` command's existing, frozen definition. |
+| S5 | **Done** | The exact 70-permutation design, its p-value floor, and a numbered procedure are recorded in [statistics_spec.md](../docs/statistics_spec.md); one-sided versus two-sided testing remains an explicitly open decision. |
+| S2, S3, S6–S12 | Not started | Eligibility/support-threshold freezing, per-sample input validation, implementation testing, FDR correction, baselines, sensitivity checks, and the exported report still require real per-sample junction data or further team decisions that do not exist yet. |
 | I1–I3 | Blocked | Biological interpretation must wait for reviewed real results and provenance tables. |
 
 ### Usability, presentation, and final work status

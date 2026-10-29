@@ -34,3 +34,4 @@ commits authored with Summer's university email through October 24, 2026.
 | October 22, 2026 | Summer | Reference work pushed; graph rules prepared | [Cleaver pilot, result bundles, manifest, reference pair, and frozen graph rules](october_22nd_summer.md) |
 | October 24, 2026 | Summer | Pushed | [Three-panel graph view and SQL-style project map](october_24th_summer.md) |
 | October 28, 2026 | Summer | Prepared for push | [Input audit, all-gene comparison, installation validation, and expanded tests](october_28th_summer.md) |
+| October 29, 2026 | Vania | Pushed | [Statistics spec: biological unit, primary effect, permutation design (S1/S4/S5)](october_29th_vania.md) |
