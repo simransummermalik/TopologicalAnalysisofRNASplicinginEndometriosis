@@ -4,25 +4,25 @@ Topological Analysis of RNA Splicing in Endometriosis: Integrating Genetic Susce
 
 | Phase | What We Are Doing | Main Output | Depends On | Priority | Status |
 |-------|-------------------|-------------|------------|----------|--------|
-| 1 | Organize documents, owners, and interfaces | Source map, task assignments, draft schemas | Available proposal | MUST HAVE | Ready |
+| 1 | Organize documents, owners, and interfaces | Source map, task assignments, draft schemas | Available proposal | MUST HAVE | In Progress |
 | 2 | Assemble genetics and environmental gene evidence | Risk, environment, overlap, and candidate TSVs | 1 | MUST HAVE | Not Started |
 | 3 | Prepare endometriosis/control junction data | Metadata, junction tables, QC report | 1; dataset decision | MUST HAVE | Not Started |
-| 4 | Specify and validate graph mathematics | Math specification, synthetic fixtures, expected answers | 1; graph contract | MUST HAVE | In Progress |
-| 5 | Build Rust MVP | Synthetic input-to-output CLI | 1, 4; stable schema | MUST HAVE | In Progress |
+| 4 | Specify and validate graph mathematics | Math specification, synthetic fixtures, expected answers | 1; graph contract | MUST HAVE | Complete |
+| 5 | Build Rust MVP | Synthetic input-to-output CLI | 1, 4; stable schema | MUST HAVE | Complete |
 | 6 | Integrate real splice data | Validated real-data tool run | 2, 3, 5 | MUST HAVE | Not Started |
 | 7 | Produce disease/control comparisons | Per-sample values and gene differences | 6 | MUST HAVE | Not Started |
 | 8 | Test differences and compare baselines | Effects, permutation results, FDR, baseline report | 7; valid sample design | MUST HAVE | Not Started |
 | 9 | Interpret validated findings | Evidence-linked gene summaries and limitations | 2, 8 | MUST HAVE | Not Started |
-| 10 | Finish reusable tool and documentation | Tested Rust CLI release and example | 5–8; starts alongside integration | MUST HAVE | Not Started |
+| 10 | Finish reusable tool and documentation | Tested Rust CLI release and example | 5–8; starts alongside integration | MUST HAVE | In Progress |
 | 11 | Rehearse a small live demonstration | Synthetic and real-gene demo; backup | 9, 10 | MUST HAVE | Not Started |
 | 12 | Assemble final report and presentation | Figures, slides, report, reproducibility record | 8–11 | MUST HAVE | Not Started |
 | 13 | Pursue proposal extensions if time permits | Separately documented extension | Core final milestone | STRETCH | Not Started |
 
-Status vocabulary: **Not Started**, **Ready**, **In Progress**, **Blocked**, **Complete**. Ready means prerequisites permit starting; it does not mean work has been performed. A basic Rust implementation and two synthetic checks now exist; the remaining synthetic validation, gene selection, dataset acquisition, real-data analysis, statistics, ranking, and final tool work have not been performed.
+Status vocabulary: **Not Started**, **Ready**, **In Progress**, **Blocked**, **Complete**. Ready means prerequisites permit starting; it does not mean work has been performed. The Rust CLI, synthetic acceptance suite, comparison exports, source map, and developer checks now exist. Real-data processing, reviewed gene evidence, inferential statistics, ranking, and final documents remain open.
 
 ## Authority and scope
 
-The source is [hodgetheorynew.pdf](assets/hodgetheorynew.pdf), the complete 24-page proposal dated September 2, 2026. Repository inspection found no `.tex` source, no existing `sections/` folder, and no existing implementation. Consequently the PDF supplies the scientific commitments; exact Overleaf preamble compatibility must be checked when the source is restored. The separate `roadmap.tex` is an include-only section for `\input{roadmap}`. It does not replace or rewrite the proposal.
+The source is [hodgetheorynew.pdf](assets/hodgetheorynew.pdf), the complete 24-page proposal dated September 2, 2026. The repository contains the include-only [roadmap.tex](roadmap.tex), but the parent Overleaf `.tex` source and preamble are not present in this checkout. Consequently the PDF supplies the scientific commitments; exact Overleaf preamble compatibility must be checked when the source is restored. The separate `roadmap.tex` is an include-only section for `\input{roadmap}`. It does not replace or rewrite the proposal.
 
 The approved question is whether genes associated with endometriosis differ in RNA-splicing topology between endometriosis and normal endometrial tissue. Genetic susceptibility and environmental response prioritize genes. Graph-level Hodge decomposition separates normalized junction signals into gradient and cycle-space components. The study is the first application of a reusable tool written primarily in Rust.
 
@@ -41,20 +41,24 @@ The detailed file contracts, task assignments, acceptance gates, and sequencing 
 | 27–28 (19–20) | Fast one-gene demonstration; per-sample permutation comparison | Statistics; phases 8, 11 |
 | 29–30, 33–36 (20, 22–24) | Success criteria, limitations, final computational biology product | Phases 9, 12; final gate |
 
-## Who is doing what
+## Shared workstreams
 
-Fill in names and update current tasks at each team meeting. One student can hold multiple roles; for four or five students, biology/environment and statistics/presentation can share owners. Every artifact still needs one accountable owner and a reviewer from the receiving workstream.
+There are no permanent leads in this project. The table names the work that
+needs to be covered, so any of the four students can pick up a row and leave a
+dated handoff in the task guide. Each artifact still needs a reviewer before it
+is used in a final result. The phase descriptions below retain the original
+"Lead" wording as a workstream label; it does not assign a permanent role to a
+person.
 
-| Person / Role | Primary responsibility | Secondary responsibility | Current task to assign | Next task | Blocked by | Deliverable |
-|---|---|---|---|---|---|---|
-| ___ / Coordinator | Task board, source recovery, handoffs | Release checklist | Restore Overleaf source and assign owners | Record interface decisions | Source availability for original-document compilation | `docs/source_map.md`, task board |
-| ___ / Biology Lead | Endometriosis genetic evidence | Interpretation | Extract proposal-aligned inclusion criteria | Assemble evidence rows | Criteria review | `data/gene_sets/endometriosis_risk.tsv` |
-| ___ / Environment Lead | Exposure-response evidence | Candidate merging | Specify exposure scope and context fields | Assemble environmental evidence | Exposure scope | `data/gene_sets/environment_response.tsv` |
-| ___ / Data Lead | Dataset, metadata, junction preparation | Demo data | Assess dataset suitability and access | Prepare comparable sample manifest | Dataset decision/access | Standardized junction TSVs and QC |
-| ___ / Math Lead | Projection specification and validation | Numerical review | Fix orientation and synthetic expected answers | Review solver behavior | Graph contract | `docs/math_spec.md`, fixture expectations |
-| ___ / Rust Lead | CLI and reusable analysis modules | Integration and packaging | Draft input/output interfaces | Implement parser and graph construction | Schema agreement | Rust CLI and tests |
-| ___ / Stats Lead | Sample comparisons, FDR, baselines | Results review | Specify output fields and sample-design checks | Implement comparison validation | Real inference requires sample output | `docs/statistics_spec.md`, validated comparison outputs |
-| ___ / Presentation Lead | Figures, narrative, live demo | Usability review | Sketch pipeline and demo storyboard | Prepare example run instructions | Results needed only for final figures | Figures, slides, demo script |
+| Workstream | Shared responsibility | Current task | Next dependency | Deliverable |
+|---|---|---|---|---|
+| Project organization | Task board, source recovery, and handoffs | Keep [`docs/source_map.md`](docs/source_map.md) and [`docs/decisions.md`](docs/decisions.md) current | Parent Overleaf source for final compilation | Source map, decisions, task board |
+| Biology evidence | Risk and environmental evidence with stable gene IDs | Record inclusion criteria before collecting evidence rows | Criteria review | Reviewed gene evidence tables |
+| Data preparation | Dataset, metadata, QC, and standardized junction tables | Finish the small checked integration subset | Splice-aware alignment and junction QC | Junction TSVs and QC record |
+| Mathematics | Projection specification and numerical review | Maintain synthetic expected answers and checks | Graph contract changes | [`docs/math_spec.md`](docs/math_spec.md), fixtures |
+| Rust software | CLI, graph engine, comparison, exports, and packaging | Keep CI and release checks green | Real-data interface decisions | Rust CLI, tests, release candidate |
+| Statistics | Sample comparisons, permutation choice, FDR, and baselines | Resolve the open inferential decisions | Validated per-sample real outputs | [`docs/statistics_spec.md`](docs/statistics_spec.md), statistics outputs |
+| Presentation | Figures, explanations, and live demo | Prepare the synthetic fallback while real results are pending | Reviewed real results for final figures | Figures, slides, and demo script |
 
 ## Dependencies and simultaneous work
 
@@ -96,7 +100,11 @@ The graph contract connects data identifiers, orientation, matrix indexing, and 
 
 ## Shared deliverable contracts
 
-All paths below are **future deliverables**, not files created by this documentation task. Record schemas in `docs/data_contract.md`, including required columns, allowed values, missing-value rules, and schema version. TSV is the initial interface proposed here; confirm it at phase 1. Keep raw evidence separate from deduplicated gene membership.
+Paths below are a mix of existing contracts and future deliverables. Record
+schemas in `docs/data_contract.md`, including required columns, allowed values,
+missing-value rules, and schema version. TSV is the initial interface; confirm
+any change in `docs/decisions.md`. Keep raw evidence separate from deduplicated
+gene membership.
 
 | Future artifact | Required content | Handoff check |
 |---|---|---|

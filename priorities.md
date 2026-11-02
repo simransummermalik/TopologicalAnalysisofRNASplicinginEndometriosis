@@ -1,6 +1,6 @@
 # Splice Girl project priorities
 
-Updated October 28, 2026.
+Updated November 2, 2026.
 
 This is the short, ordered version of the full
 [task guide](delegations_and_tasks/tasks.md). It covers the entire project.
@@ -20,6 +20,9 @@ careful case-versus-control result.
 
 - [ ] Finish the dataset suitability review and raw-file checksum record.
 - [ ] Build the HISAT2 index and splice-site hints from the verified reference.
+- [ ] Resolve the production aligner choice in `docs/decisions.md`; the current
+  helper plans STAR, while the frozen methods name HISAT2. Bowtie2 is only the
+  optional cleanup filter unless the team changes the method.
 - [ ] Run read QC and Cleaver cleaning for every sample.
 - [ ] Align the cleaned paired reads with the frozen settings.
 - [ ] Extract uniquely mapped splice-junction counts.
@@ -97,13 +100,15 @@ an approved analysis rule, and a versioned output file.
 ## Priority 6 — Finish and harden the software
 
 **Task IDs:** R14--R17 and U1, U3, and U5  
-**Status:** The developer-run installation, compatibility, benchmark, and CLI
-checks are complete; an independent beginner review remains.
+**Status:** The developer-run installation, compatibility, candidate-sized
+synthetic benchmark, CI checks, and CLI checks are complete; an independent
+beginner review and a real-data benchmark remain.
 
 - [x] Finish tests for missing files, empty files, bad columns, invalid values,
   and unsafe output replacement.
 - [x] Make every failure explain what happened and how to fix it.
-- [x] Record a runtime and peak-memory benchmark.
+- [x] Record runtime and peak-memory checks, including a repeatable
+  candidate-sized synthetic benchmark.
 - [x] Record the minimum supported Rust version.
 - [x] Test `cargo install --path .` from an isolated clean source copy.
 - [x] Test `splice-girl --help`, `splice-girl --version`, and
@@ -163,8 +168,9 @@ results agree with one another.
 **Task IDs:** P1.2, P1.3, and P1.5--P1.7
 
 - [ ] Record course deadlines and internal checkpoints.
-- [ ] Record where the main Overleaf source lives.
-- [ ] Create `docs/decisions.md` and add dated decisions without deleting history.
+- [ ] Record where the main Overleaf source lives. The source map now records
+  that the parent `.tex` file is still in Overleaf and not in this checkout.
+- [x] Create `docs/decisions.md` and add dated decisions without deleting history.
 - [ ] Add dependencies and target dates to the shared task board.
 - [ ] Keep file-naming, large-file, and output-location rules in the decisions log.
 

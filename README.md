@@ -452,6 +452,9 @@ Audience members who want more detail can continue with:
 - [Math specification](docs/math_spec.md) — equations and numerical checks
 - [Data contract](docs/data_contract.md) — accepted TSV formats and the frozen Rust CLI interface
 - [Software validation](docs/software_validation.md) — installation, Rust compatibility, tests, and benchmark evidence
+- [Source map](docs/source_map.md) — where the proposal, roadmap, and specifications live
+- [Decisions log](docs/decisions.md) — dated project choices and open questions
+- [Release checklist](docs/release_checklist.md) — what is included and what remains before tagging
 - [Preprocessing guide](preprocessing/README.md) — FASTQ-to-junction workflow
 - [Execution roadmap](ROADMAP.md) — detailed implementation plan
 - [Beginner task guide](delegations_and_tasks/tasks.md) — team work breakdown
@@ -470,3 +473,27 @@ Audience members who want more detail can continue with:
 | `research/` | Background research and source material |
 | `logs/` | Dated contribution records |
 | `assets/` | Proposal and terminal artwork |
+
+## Developer checks
+
+The repository runs the same Rust and preprocessing checks locally and in
+GitHub Actions. From the project folder:
+
+```sh
+cargo fmt --all -- --check
+cargo test --all-targets
+cargo clippy --all-targets -- -D warnings
+python3 -m unittest discover -s preprocessing/tests
+```
+
+For a repeatable software-only scale check, build the optimized binary and run
+the candidate-sized synthetic benchmark:
+
+```sh
+cargo build --release
+python3 scripts/benchmark_candidate.py
+```
+
+The benchmark creates temporary synthetic data, reports its size and timing,
+and deletes the temporary files when it finishes. It is a performance check,
+not biological evidence.

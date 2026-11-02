@@ -2,8 +2,8 @@
 
 This directory records the main repository contributions by date and team
 member. A log marked **Pushed** corresponds to a commit found in the Git
-history. A log marked **Prepared for push** describes current working-tree
-changes that have not yet been committed.
+history. A log marked **Prepared for push** or **Prepared locally** describes
+working-tree changes that have not yet been committed.
 
 Summer's complete commit-by-commit audit is in
 [`summer_commit_history.md`](summer_commit_history.md). It covers all 48
@@ -35,3 +35,4 @@ commits authored with Summer's university email through October 24, 2026.
 | October 24, 2026 | Summer | Pushed | [Three-panel graph view and SQL-style project map](october_24th_summer.md) |
 | October 28, 2026 | Summer | Prepared for push | [Input audit, all-gene comparison, installation validation, and expanded tests](october_28th_summer.md) |
 | October 29, 2026 | Vania | Pushed | [Statistics spec: biological unit, primary effect, permutation design (S1/S4/S5)](october_29th_vania.md) |
+| November 2, 2026 | Summer | Prepared locally | [Project source map, decisions, CI, release checklist, and candidate benchmark](november_2nd_summer.md) |

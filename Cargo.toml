@@ -3,5 +3,8 @@ name = "splice-girl"
 version = "0.1.0"
 edition = "2024"
 rust-version = "1.85"
+description = "Graph and Hodge analysis of RNA splice-junction data"
+repository = "https://github.com/simransummermalik/TopologicalAnalysisofRNASplicinginEndometriosis"
+readme = "README.md"
 
 [dependencies]

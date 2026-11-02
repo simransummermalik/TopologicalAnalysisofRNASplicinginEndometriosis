@@ -29,7 +29,7 @@ means Rust task 5.
 Split task IDs according to available time and interest. A task can be completed
 alone or worked on together. A simple shared table is enough:
 
-This status board was checked against the repository on **October 28, 2026**.
+This status board was checked against the repository on **November 2, 2026**.
 **Done** is used only when the task's requested output and acceptance evidence
 exist. **In progress** means useful work exists but the full “Done when” rule
 has not been met.
@@ -40,11 +40,11 @@ has not been met.
 |---|---|---|
 | P1.1 | **Done** | This file now contains a visible status entry for every task group. |
 | P1.2 | Not started | Course checkpoints and final dates still need to be recorded. |
-| P1.3 | Not started | `docs/source_map.md` does not exist yet. |
+| P1.3 | **Done** | [`docs/source_map.md`](../docs/source_map.md) records the local roadmap section and the missing parent Overleaf source. |
 | P1.4 | **Done** | [Data contract](../docs/data_contract.md), version 0.4. |
-| P1.5 | Not started | `docs/decisions.md` does not exist yet. |
+| P1.5 | **Done** | [`docs/decisions.md`](../docs/decisions.md) records dated choices and open questions without deleting history. |
 | P1.6 | In progress | Statuses are visible here; dependencies and team due dates still need to be added. |
-| P1.7 | In progress | Large-file rules exist in `.gitignore`; the decisions record is still missing. |
+| P1.7 | **Done** | Large-file rules are in `.gitignore`, the release checklist records staging checks, and CI runs the Rust/Python checks. |
 
 ### Biology research status
 
@@ -61,7 +61,7 @@ has not been met.
 | D2 | **Done** | GSE315857 and its eight exact run accessions are recorded in [samples.tsv](../endometriosis-splicing/samples.tsv) and the [README](../README.md#the-eight-sample-study). |
 | D3 | In progress | Eight runs were retrieved in Galaxy and one control pilot is local; complete source checksums are still needed. |
 | D4 | **Done** | The standardized [sample manifest](../data/metadata/samples.tsv) records unique run-based sample IDs, internal subject labels, case/control status, tissue, accessions, file locations, QC/Cleaver status, pending reference fields, and eligibility for all eight samples. |
-| D5 | In progress | The exact GENCODE v50 GRCh38.p14 [FASTA/GTF pair is verified and the exon-node, 1-based coordinate, annotation-mapping, and transcript-direction rules are frozen](../docs/data_methods.md#frozen-junction-and-graph-conventions); only the HISAT2 index and splice-site hints remain. |
+| D5 | In progress | The exact GENCODE v50 GRCh38.p14 [FASTA/GTF pair is verified and the exon-node, 1-based coordinate, annotation-mapping, and transcript-direction rules are frozen](../docs/data_methods.md#frozen-junction-and-graph-conventions); the production aligner still needs to be resolved because the helper plans STAR while the frozen methods name HISAT2. |
 | D6 | Blocked | Junction derivation requires D5 and splice-aware alignment. |
 | D7 | Not started | Back-splice detection support has not been documented for the selected workflow. |
 | D8 | Blocked | Junction QC requires D6 junction counts. |
@@ -109,7 +109,7 @@ has not been met.
 | R12 | Blocked | Ranking needs approved candidate and statistics rules plus real junction results. |
 | R13 | **Done** | [`src/output.rs`](../src/output.rs) writes metrics, junction components, comparisons, and `run_manifest.json` with checksums and settings; see the [October 22 log](../logs/october_22nd_summer.md). |
 | R14 | **Done** | [`tests/cli_errors.rs`](../tests/cli_errors.rs) checks missing/empty files, headers, counts, manifests, metadata mismatches, zero support, comparison groups, overwrite protection, corrections, and failure exit codes; solver failure is unit-tested. |
-| R15 | In progress | [Software validation](../docs/software_validation.md) records a 100-run synthetic benchmark and peak memory; a candidate-sized real-data benchmark remains. |
+| R15 | In progress | [Software validation](../docs/software_validation.md) records small and candidate-sized synthetic timing plus peak memory; a real-data benchmark remains after D12. |
 | R16 | **Done** | README/demo installation instructions, Rust 1.85 minimum, isolated `cargo install --path .`, installed command checks, examples, and limitations are recorded in [software validation](../docs/software_validation.md). |
 | R17 | Not started | A clean-checkout review by another person has not been recorded. |
 
@@ -140,7 +140,7 @@ has not been met.
 | V4–V8 | Not started | Real sample displays, results, explanations, speaking plan, and demo-gene selection remain. |
 | V9 | **Done** | [examples/demo](../examples/demo/README.md) contains tiny inputs, exact commands, expected output, and runtime guidance. |
 | V10–V11 | Not started | Rehearsal, backup recording, and final figure audit remain. |
-| F1–F5 | Not started | Final methods, results, release, compiled documents, and acceptance review remain. |
+| F1–F5 | Not started | Final methods, results, release, compiled documents, and acceptance review remain; the software release checklist is now prepared. |
 | X1–X4 | Not started | These are optional extensions after the required workflow works. |
 
 When a task changes, update its status and link the concrete output. Mark a

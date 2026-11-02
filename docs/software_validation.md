@@ -1,6 +1,6 @@
 # Splice Girl software validation
 
-**Validation date:** October 28, 2026  
+**Validation date:** November 2, 2026
 **Package version:** `0.1.0`
 
 This note records installation, compatibility, workflow, test, and performance
@@ -86,10 +86,42 @@ The maximum reflects a single startup outlier. On this tiny input, performance
 is not a blocker and there is no evidence that parallel or sparse processing
 is currently needed.
 
+## Candidate-sized synthetic performance
+
+The repository also includes `scripts/benchmark_candidate.py`. It generates a
+temporary, deterministic table with **200 genes, 8 samples, and 4,800 junction
+rows**, then runs the same all-gene `compare` command ten times. The table is
+synthetic and is used only to check software scale; it is not a substitute for
+a real junction table.
+
+The command is:
+
+```sh
+cargo build --release
+python3 scripts/benchmark_candidate.py
+```
+
+On the validation machine listed above, the ten-run output was:
+
+| Measurement | Result |
+|---|---:|
+| Input | 200 genes × 8 samples × 3 junctions |
+| Junction rows | 4,800 |
+| Median runtime | 14.229 ms |
+| Mean runtime | 62.101 ms |
+| Minimum runtime | 10.773 ms |
+| Maximum runtime | 504.079 ms |
+
+The maximum is a startup or system-scheduling outlier; the median is the more
+useful summary for this small benchmark. The benchmark is intentionally
+rerunnable because runtime depends on the computer and compiler. A real-data
+benchmark should be added after the first checked candidate junction table
+exists.
+
 ## Limits of this validation
 
-- The performance measurement uses synthetic demonstration data. A second
-  benchmark is required after a candidate-sized real junction table exists.
+- The performance measurements use synthetic data. A real-data benchmark is
+  required after a candidate-sized checked junction table exists.
 - The independent beginner clean-checkout review in task R17 is still pending.
 - Successful software validation does not validate RNA-seq preprocessing,
   biological comparability, statistical inference, or gene interpretation.
