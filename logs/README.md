@@ -37,3 +37,4 @@ commits authored with Summer's university email through October 24, 2026.
 | October 29, 2026 | Vania | Pushed | [Statistics spec: biological unit, primary effect, permutation design (S1/S4/S5)](october_29th_vania.md) |
 | November 2, 2026 | Summer | Prepared locally | [Project source map, decisions, CI, release checklist, and candidate benchmark](november_2nd_summer.md) |
 | November 3, 2026 | Vania | Pushed | [Exact permutation testing (S5 implementation)](november_3rd_vania.md) |
+| November 3, 2026 | Vania | Prepared for push | [Pilot-sample data verification pass](november_3rd_vania_data_verification.md) |
