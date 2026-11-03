@@ -105,7 +105,7 @@ has not been met.
 | R8 | **Done** | One-sample analysis prints graph metrics and signed edge components. |
 | R9 | **Done** | The complete synthetic acceptance suite passes. |
 | R10 | **Done** | Manifest parsing and one-gene case/control inclusion and exclusion are implemented. |
-| R11 | In progress | The new all-gene `compare` command exports descriptive sample-preserving effects and explicit missing-group statuses; the approved inferential statistics interface is still missing. |
+| R11 | In progress | The `compare` command exports descriptive sample-preserving effects and explicit missing-group statuses; the exact permutation test now exists in [`src/permutation.rs`](../src/permutation.rs) but is not yet wired into the CLI, pending the one-sided/two-sided decision below. |
 | R12 | Blocked | Ranking needs approved candidate and statistics rules plus real junction results. |
 | R13 | **Done** | [`src/output.rs`](../src/output.rs) writes metrics, junction components, comparisons, and `run_manifest.json` with checksums and settings; see the [October 22 log](../logs/october_22nd_summer.md). |
 | R14 | **Done** | [`tests/cli_errors.rs`](../tests/cli_errors.rs) checks missing/empty files, headers, counts, manifests, metadata mismatches, zero support, comparison groups, overwrite protection, corrections, and failure exit codes; solver failure is unit-tested. |
@@ -121,8 +121,9 @@ has not been met.
 | C1–C4 | Blocked | Eligible samples and per-sample real gene metrics do not exist yet. |
 | S1 | **Done** | Biological unit, independence, and permutation restrictions are recorded in [statistics_spec.md](../docs/statistics_spec.md) from the real eight-sample manifest (one sample per subject, unpaired, 4 control vs. 4 case). |
 | S4 | **Done** | The primary effect (case mean minus control mean cycle fraction) is recorded in [statistics_spec.md](../docs/statistics_spec.md) as the `compare` command's existing, frozen definition. |
-| S5 | **Done** | The exact 70-permutation design, its p-value floor, and a numbered procedure are recorded in [statistics_spec.md](../docs/statistics_spec.md); one-sided versus two-sided testing remains an explicitly open decision. |
-| S2, S3, S6–S12 | Not started | Eligibility/support-threshold freezing, per-sample input validation, implementation testing, FDR correction, baselines, sensitivity checks, and the exported report still require real per-sample junction data or further team decisions that do not exist yet. |
+| S5 | **Done** | The exact 70-permutation design, its p-value floor, and a numbered procedure are recorded in [statistics_spec.md](../docs/statistics_spec.md) and implemented in [`src/permutation.rs`](../src/permutation.rs) ([November 3 log](../logs/november_3rd_vania.md)); one-sided versus two-sided testing remains an explicitly open decision. |
+| S6 | **Done** | No-difference, known-difference, and fully hand-enumerable (`C(4,2) = 6`) fixtures are tested in `src/permutation.rs`, including one that independently rederives S5's documented `1/70`/`2/70` p-value floor rather than asserting a copied number; the code cannot report `p = 0` because the observed labeling is always counted. "Compare exact and sampled results" and "check the saved seed" do not apply — S5 deliberately chose exhaustive enumeration over sampling, so there is no seed to check. |
+| S2, S3, S7–S12 | Not started | Eligibility/support-threshold freezing, per-sample input validation, the exchangeability/replication gate, FDR correction, baselines, sensitivity checks, and the exported report still require real per-sample junction data or further team decisions that do not exist yet. |
 | I1–I3 | Blocked | Biological interpretation must wait for reviewed real results and provenance tables. |
 
 ### Usability, presentation, and final work status
