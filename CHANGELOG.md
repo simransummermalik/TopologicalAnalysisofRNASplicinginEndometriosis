@@ -1,5 +1,15 @@
 # Changelog
 
+## Unreleased
+
+- Added `report <junctions.tsv> <manifest.tsv> --output <folder>` and menu
+  option 6: an offline academic report, sample-level comparison plots,
+  exclusions, and links to each sample/gene's Hodge decomposition SVG.
+- Kept report and comparison exports numerically identical and recorded all
+  report files in the run manifest. Existing output folders remain protected.
+- Added workflow checks for report/table agreement, missing groups, escaped
+  input identifiers, figure links, and interactive report generation.
+
 ## 0.1.0 — release candidate
 
 The first release candidate contains the reusable Splice Girl Rust prototype.

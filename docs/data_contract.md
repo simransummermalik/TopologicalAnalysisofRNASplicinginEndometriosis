@@ -1,7 +1,8 @@
 # Splice Girl input data contract
 
-**Contract version:** 0.5 (2026-10-22) — froze real-data exon-node, coordinate,
-and strand conventions.
+**Contract version:** 0.6 (2026-11-03) — added the offline comparison-report
+command. Junction and manifest input schemas and the frozen real-data exon-node,
+coordinate, and strand conventions are unchanged.
 
 This version keeps text node identifiers for both synthetic fixtures and real
 RNA-seq data. Real junction files use the exact reference, annotation,
@@ -191,8 +192,9 @@ future work so they cannot be confused with the current summaries.
 | `splice-girl validate <junctions.tsv> [manifest.tsv]` | audits row, sample, gene, support, manifest-matching, graph, and mathematical-check status without printing every edge |
 | `splice-girl gene <GENE_ID> <junctions.tsv> <manifest.tsv> [--output <folder>]` | compares one gene across case/control samples and optionally saves a result bundle |
 | `splice-girl compare <junctions.tsv> <manifest.tsv> [--output <folder>]` | compares every observed gene using sample-level descriptive summaries and optionally saves a result bundle |
+| `splice-girl report <junctions.tsv> <manifest.tsv> --output <folder>` | saves the comparison bundle, an offline HTML report, individual sample plots, and one SVG per mathematically valid sample/gene |
 | `splice-girl visualize <SAMPLE_ID> <GENE_ID> <junctions.tsv> <output.svg>` | renders one sample/gene's splice graph as a standalone SVG |
-| `splice-girl --start` | interactive menu wrapping analysis, validation, one-gene comparison, all-gene comparison, and visualization |
+| `splice-girl --start` | interactive menu wrapping analysis, validation, one-gene comparison, all-gene comparison, visualization, and report generation (option 6) |
 | `splice-girl --help`, `-h`, `help` | prints usage and the command list |
 | `splice-girl --version`, `-V` | prints the Cargo package version |
 
@@ -228,6 +230,10 @@ significance or rank biological importance.
   case/control sample counts, group means, group medians, case-minus-control
   mean difference, and exclusion count. Missing groups are `NA`; they are
   never converted to zero. No p-value, q-value, or ranking is calculated.
+- **`report`**: the same comparison values as `compare`, plus `report.html`
+  with individual sample plots on a fixed 0–1 cycle-fraction scale, included
+  sample tables, missing-group statuses, exclusions, and links to graphs.
+  It requires `--output`. No browser server or network access is required.
 - **`visualize`**: not a tabular export — writes an SVG containing the same
   node/edge counts, cycle fraction, and checks status; aligned observed,
   gradient, and cycle graph panels; a table with all three values per junction;
@@ -250,12 +256,19 @@ run.
 | `sample_metrics.tsv` | One row per analyzed sample/gene, including graph size, raw total support, energies, cycle fraction, and numerical-check errors |
 | `junction_components.tsv` | One row per junction, including raw count, normalized signal, gradient component, and signed cycle component |
 | `comparisons.tsv` | `gene` and `compare`: one row per included or excluded sample/gene decision, with condition, cycle fraction, status, and exclusion reason |
-| `gene_summaries.tsv` | `compare` only: one descriptive row per gene with group sizes, means, medians, ranges, case-minus-control effect, status, and interpretation note |
+| `gene_summaries.tsv` | `compare` and `report`: one descriptive row per gene with group sizes, means, medians, ranges, case-minus-control effect, status, and interpretation note |
+| `report.html` | `report` only: a plain offline overview with each sample's value, gene summary, exclusions, and links to figures and result files |
+| `graphs/graph-NNNNNN.svg` | `report` only: three aligned decomposition panels for each mathematically valid sample/gene; filenames use numeric indices rather than user-supplied IDs |
 | `run_manifest.json` | Run ID, exact command arguments, tool version, input paths and SHA-256 checksums, solver settings, tolerance, output filenames, counts, exclusions, and failures |
 
 The manifest records `random_seed` as `null` because the current commands do
 not use randomness. A later statistics command must record its actual seed.
 The TSVs include the same `run_id` so rows can be joined back to the manifest.
+Report mode uses `"mode": "report"` and lists the report and every generated
+graph in the manifest's `outputs`. Keep the report folder together to preserve
+relative links. The existing `included_samples` and `excluded_samples` summary
+fields count sample/gene decisions across all genes, rather than distinct
+biological subjects.
 
 ### Errors and exit codes
 
@@ -278,6 +291,10 @@ The TSVs include the same `run_id` so rows can be joined back to the manifest.
   these commands is not all-or-nothing on standard output; a
   caller scripting against them must check the exit code, not assume failure
   means no output was produced.
+- `report` follows the same exit rule as `compare`: if no gene has both groups,
+  it saves a diagnostic report with missing-group statuses and `NA` effects,
+  then exits with a failure code. A written report is not proof of a valid
+  case/control comparison.
 - `visualize` refuses to overwrite an existing output file and fails with a
   specific error naming the path, rather than silently replacing a figure.
 - `--output` also refuses to use an existing folder. Choose a new run folder

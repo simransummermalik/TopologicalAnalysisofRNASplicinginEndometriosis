@@ -171,11 +171,12 @@ In plain language:
 | Input audit command | `validate` checks samples, genes, support, manifest matching, graph construction, and mathematical checks before a full run. |
 | Gene comparison command | One gene's cycle fractions can be reported across eligible samples. |
 | All-gene comparison command | Every observed gene can be summarized with case/control sample counts, means, medians, ranges, exclusions, and a descriptive case-minus-control effect. |
+| Offline comparison report | A plain report shows each sample's cycle fraction, excluded samples, exact values, and links to its three-panel Hodge graph. |
 | Reproducible result bundles | Metrics, junction components, comparisons, checksums, and run settings can be saved as TSV and JSON files. |
 | Preprocessing design | The path from FASTQ reads to Splice Girl junction tables is documented and scripted. |
 | Public dataset selection | Four control and four endometriosis RNA-seq samples have been identified. |
 
-The Rust project currently passes **56 automated tests**. Real-data
+The Rust project currently passes **62 automated tests**. Real-data
 preprocessing is the next active stage, and the large raw-read files remain
 outside Git.
 
@@ -362,6 +363,26 @@ The linear and branching examples should have a cycle fraction near `0`. The
 equal-weight directed cycle should have a cycle fraction near `1`. The
 exon-skipping example should have a smaller nonzero cycle fraction because it
 contains an alternative path.
+
+### 9. Open a complete comparison report
+
+```sh
+cargo run -- report examples/demo/all_genes.tsv examples/demo/manifest.tsv \
+  --output target/demo-report
+```
+
+Open `target/demo-report/report.html` in your browser. Each gene has a plot
+with one point per eligible sample, the exact cycle fractions, the
+case-minus-control difference, and an expandable list of excluded samples.
+Click **View decomposition** beside a sample to inspect its observed,
+gradient, and cycle graph panels. The figures come from that run's data.
+
+The report uses a plain black-and-white academic style and works offline.
+It includes the same five TSV/JSON files as `compare --output` plus the report
+and a `graphs/` folder. Keep the entire folder together when sharing it. Use a
+new destination for another run. You can also choose **6** in `--start`.
+The included demo is synthetic; it demonstrates the software rather than a
+biological result.
 
 ### If a command fails
 

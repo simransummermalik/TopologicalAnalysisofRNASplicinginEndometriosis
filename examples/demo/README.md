@@ -5,6 +5,25 @@ Nothing here is real biological data — see `docs/data_contract.md` and
 `tests/fixtures/expected.md` for the reviewed synthetic fixtures this demo
 reuses the shapes of.
 
+## Quick browser demonstration
+
+From the repository root:
+
+```sh
+cargo run -- report examples/demo/all_genes.tsv examples/demo/manifest.tsv \
+  --output target/demo-report
+```
+
+Open `target/demo-report/report.html` in your browser. Click a gene in the
+summary, inspect each sample's point and exact value, expand **Excluded
+samples**, then follow **View decomposition** to its observed/gradient/cycle
+graph. No local server is needed. Use a new output-folder name for a second run.
+
+The two synthetic effects should remain `+0.5555555556` and `-0.5555555556`.
+These are illustrative values, not evidence about endometriosis. The report,
+all graphs, and all five machine-readable exports share one run folder and
+provenance record.
+
 ## Part 1 — core math on known shapes
 
 These already live in `tests/fixtures/` and are covered by `cargo test`; running

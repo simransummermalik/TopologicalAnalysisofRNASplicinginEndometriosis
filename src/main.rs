@@ -1,6 +1,7 @@
 //! CLI entry point for `splice-girl`. The direct command accepts a junction
 //! TSV, `gene` compares one gene, `compare` summarizes every observed gene,
-//! `validate` audits inputs, and `--start` opens an interactive menu. ROADMAP.md's
+//! `report` saves an offline comparison report, `validate` audits inputs, and
+//! `--start` opens an interactive menu. ROADMAP.md's
 //! `gene` syntax is directory-based (`--case dir/ --control dir/`); this
 //! implementation instead takes one junction TSV (already carrying
 //! `sample_id`) plus a separate manifest TSV, matching the formats this
@@ -20,6 +21,7 @@ use splice_girl::compare::{
 use splice_girl::manifest::parse_manifest;
 use splice_girl::output::{
     ExportSummary, write_analysis_bundle, write_compare_bundle, write_gene_bundle,
+    write_report_bundle,
 };
 use splice_girl::parser::parse_tsv;
 use splice_girl::visualize::write_svg;
@@ -57,12 +59,14 @@ usage:\n  \
   {program} validate <junctions.tsv> [manifest.tsv]\n  \
   {program} gene <GENE_ID> <junctions.tsv> <manifest.tsv> [--output <folder>]\n  \
   {program} compare <junctions.tsv> <manifest.tsv> [--output <folder>]\n  \
+  {program} report <junctions.tsv> <manifest.tsv> --output <folder>\n  \
   {program} visualize <SAMPLE_ID> <GENE_ID> <junctions.tsv> <output.svg>\n\n\
 commands:\n  \
   analyze     calculate graph and Hodge measurements\n  \
   validate    audit inputs, sample matching, graphs, and math checks\n  \
   gene        compare one gene across case/control samples\n  \
   compare     descriptively compare every observed gene across groups\n  \
+  report      save comparison tables, an offline report, and graph figures\n  \
   visualize   save one sample/gene graph as a browser-ready SVG\n  \
   --start     open the interactive menu"
     )
@@ -134,14 +138,22 @@ fn run(command: &[String]) -> Result<(), String> {
         return print_validation_summary(&summary);
     }
 
-    if first_argument == "compare" {
+    if matches!(first_argument.as_str(), "compare" | "report") {
         let junctions_path = arguments.next().ok_or_else(|| usage(&program))?;
         let manifest_path = arguments.next().ok_or_else(|| usage(&program))?;
         let output_dir = parse_optional_output(arguments.collect(), &program)?;
+        if first_argument == "report" && output_dir.is_none() {
+            return Err("report needs --output <new-folder>; open report.html inside that folder after the command finishes".to_owned());
+        }
         let (results, summaries) =
             run_all_gene_comparisons(Path::new(&junctions_path), Path::new(&manifest_path))?;
         if let Some(output_dir) = output_dir {
-            let summary = write_compare_bundle(
+            let writer = if first_argument == "report" {
+                write_report_bundle
+            } else {
+                write_compare_bundle
+            };
+            let summary = writer(
                 &output_dir,
                 Path::new(&junctions_path),
                 Path::new(&manifest_path),
@@ -150,6 +162,12 @@ fn run(command: &[String]) -> Result<(), String> {
                 command,
             )?;
             print_export_summary(&summary);
+            if first_argument == "report" {
+                println!(
+                    "Open in your browser: {}",
+                    output_dir.join("report.html").display()
+                );
+            }
         }
         return print_all_gene_comparisons(&summaries);
     }
@@ -274,6 +292,7 @@ fn run_start_menu() -> Result<(), String> {
         println!("  [3] Save one splice graph as an SVG");
         println!("  [4] Validate inputs and mathematical checks");
         println!("  [5] Compare every observed gene");
+        println!("  [6] Save a comparison report and graph figures");
         println!("  [q] Quit");
         println!();
 
@@ -440,7 +459,8 @@ fn run_start_menu() -> Result<(), String> {
                     Err(error) => println!("  error: {error}"),
                 }
             }
-            "5" => {
+            "5" | "6" => {
+                let with_report = choice.trim() == "6";
                 let Some(junctions_path) = prompt("  Junction TSV path: ")? else {
                     return Ok(());
                 };
@@ -454,18 +474,31 @@ fn run_start_menu() -> Result<(), String> {
                     continue;
                 }
 
-                let output_dir = prompt("  Output folder (leave blank for terminal only): ")?;
+                let output_dir = prompt(if with_report {
+                    "  New report folder: "
+                } else {
+                    "  Output folder (leave blank for terminal only): "
+                })?;
                 let output_dir = output_dir
                     .as_deref()
                     .map(str::trim)
                     .filter(|value| !value.is_empty())
                     .map(std::path::PathBuf::from);
+                if with_report && output_dir.is_none() {
+                    println!("  Please enter a new folder for the report.");
+                    continue;
+                }
                 let menu_command = vec!["splice-girl".to_owned(), "--start".to_owned()];
                 let outcome =
                     run_all_gene_comparisons(Path::new(junctions_path), Path::new(manifest_path))
                         .and_then(|(results, summaries)| {
                             if let Some(output_dir) = &output_dir {
-                                let summary = write_compare_bundle(
+                                let writer = if with_report {
+                                    write_report_bundle
+                                } else {
+                                    write_compare_bundle
+                                };
+                                let summary = writer(
                                     output_dir,
                                     Path::new(junctions_path),
                                     Path::new(manifest_path),
@@ -474,6 +507,12 @@ fn run_start_menu() -> Result<(), String> {
                                     &menu_command,
                                 )?;
                                 print_export_summary(&summary);
+                                if with_report {
+                                    println!(
+                                        "  Open in your browser: {}",
+                                        output_dir.join("report.html").display()
+                                    );
+                                }
                             }
                             print_all_gene_comparisons(&summaries)
                         });
@@ -488,7 +527,7 @@ fn run_start_menu() -> Result<(), String> {
             }
             "q" => return Ok(()),
             "" => {}
-            _ => println!("  Please choose 1, 2, 3, 4, 5, or q."),
+            _ => println!("  Please choose 1, 2, 3, 4, 5, 6, or q."),
         }
     }
 }

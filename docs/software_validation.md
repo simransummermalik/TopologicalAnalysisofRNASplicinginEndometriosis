@@ -1,6 +1,6 @@
 # Splice Girl software validation
 
-**Validation date:** November 2, 2026
+**Validation date:** November 3, 2026
 **Package version:** `0.1.0`
 
 This note records installation, compatibility, workflow, test, and performance
@@ -16,10 +16,15 @@ benchmark.
 - External Rust dependencies: none
 
 Rust 1.85 is the minimum because it is the first stable release supporting the
-Rust 2024 edition used by this package. The full test suite was compiled and
-run with both Rust 1.85.0 and Rust 1.97.1.
+Rust 2024 edition used by this package. The October 28 suite of 56 tests was
+compiled and run with both Rust 1.85.0 and Rust 1.97.1. The expanded report
+suite was tested locally on Rust 1.97.1; the CI matrix retains Rust 1.85.0
+as well as stable.
 
 ## Isolated installation check
+
+The installation record below is from October 28, before the report command
+was added. The November 3 report tests execute the current Cargo-built binary.
 
 The Cargo files, `src/`, and `assets/` were copied into a new temporary source
 directory. The following installation completed successfully without editing
@@ -50,12 +55,13 @@ The all-gene export contained all five expected files:
 
 ## Automated verification
 
-The current suite contains **56 passing tests**:
+The current suite contains **62 passing tests**:
 
-- 31 library tests for parsing, manifests, graph math, comparisons, outputs,
-  validation summaries, and SVG generation
+- 32 library tests for parsing, manifests, graph math, comparisons, outputs,
+  validation summaries, SVG generation, and report escaping/missing values
 - 9 command-level error tests
-- 4 command-level workflow tests
+- 9 command-level workflow tests, including report/table agreement, links,
+  overwrite protection, missing groups, unsafe identifiers, and menu execution
 - 12 independent synthetic-math tests
 
 The following checks pass:
@@ -65,6 +71,27 @@ cargo fmt --all -- --check
 cargo test
 cargo clippy --all-targets -- -D warnings
 ```
+
+## Offline report workflow
+
+The `report` command uses the same analysis and descriptive comparisons as
+`compare`. The command-level acceptance test checks that all four TSV exports
+match `compare` after removing their intentionally different run IDs. The demo
+report has two genes, eight sample/gene figures, explicit exclusions, and
+case-minus-control effects of `+0.5555555556` and `-0.5555555556`.
+
+The report and standalone graphs were checked in headless Chrome. All local
+links, manifest output paths, input checksums, inline plot SVGs, and graph SVGs
+were also inspected. These are synthetic software acceptance checks; real
+biological comparability remains a separate review.
+
+A single release-build report run with 200 synthetic genes, eight samples,
+and 4,800 junction rows completed in **3.428 seconds**, producing 1,600 SVGs
+and 1,606 total output files. This checks the complete report-writing path,
+including figures and filesystem work. It is a single measurement on tiny
+three-junction graphs, rather than a general runtime guarantee. Temporary
+benchmark inputs and results were removed by the benchmark's temporary-folder
+context manager.
 
 ## Small-demo performance
 

@@ -1,6 +1,6 @@
 # Splice Girl project priorities
 
-Updated November 2, 2026.
+Updated November 3, 2026.
 
 This is the short, ordered version of the full
 [task guide](delegations_and_tasks/tasks.md). It covers the entire project.
@@ -121,9 +121,12 @@ the written instructions alone.
 ## Priority 7 — Complete the figures and demo
 
 **Task IDs:** V3--V11  
-**Status:** The tiny demo and three-part Hodge SVG work.
+**Status:** The tiny demo, three-part Hodge SVG, and offline comparison report
+with sample-level plots work.
 
 - [x] Show the original, gradient, and cycle signals with identical graph layouts.
+- [x] Generate a plain offline comparison report with each sample's value,
+  exclusions, provenance links, and Hodge graph figures from the same run.
 - [ ] Create one real-gene case/control figure after the pilot is approved.
 - [ ] Create result figures only from versioned tables.
 - [ ] Explain junctions, cycle fraction, and limitations in plain language.

@@ -12,12 +12,15 @@ use std::time::{SystemTime, UNIX_EPOCH};
 use crate::GroupResult;
 use crate::compare::{GeneComparison, GeneComparisonSummary};
 use crate::hodge::TOLERANCE;
+use crate::report::{graph_filename, render_report};
+use crate::visualize::render_svg;
 
 const SAMPLE_METRICS: &str = "sample_metrics.tsv";
 const JUNCTION_COMPONENTS: &str = "junction_components.tsv";
 const COMPARISONS: &str = "comparisons.tsv";
 const GENE_SUMMARIES: &str = "gene_summaries.tsv";
 const RUN_MANIFEST: &str = "run_manifest.json";
+const REPORT: &str = "report.html";
 
 /// Identifies the files written by one export operation.
 #[derive(Debug)]
@@ -151,8 +154,51 @@ pub fn write_compare_bundle(
     summaries: &[GeneComparisonSummary],
     command: &[String],
 ) -> Result<ExportSummary, String> {
+    write_comparison_bundle(
+        output_dir,
+        junctions_path,
+        sample_manifest_path,
+        results,
+        summaries,
+        command,
+        false,
+    )
+}
+
+/// Save the comparison tables, an offline HTML report, and one SVG per
+/// mathematically valid sample/gene. Numeric filenames protect identifiers
+/// containing path separators without changing their displayed text.
+pub fn write_report_bundle(
+    output_dir: &Path,
+    junctions_path: &Path,
+    sample_manifest_path: &Path,
+    results: &[GroupResult],
+    summaries: &[GeneComparisonSummary],
+    command: &[String],
+) -> Result<ExportSummary, String> {
+    write_comparison_bundle(
+        output_dir,
+        junctions_path,
+        sample_manifest_path,
+        results,
+        summaries,
+        command,
+        true,
+    )
+}
+
+#[allow(clippy::too_many_arguments)]
+fn write_comparison_bundle(
+    output_dir: &Path,
+    junctions_path: &Path,
+    sample_manifest_path: &Path,
+    results: &[GroupResult],
+    summaries: &[GeneComparisonSummary],
+    command: &[String],
+    include_report: bool,
+) -> Result<ExportSummary, String> {
     let metadata = RunMetadata::new(
-        "compare",
+        if include_report { "report" } else { "compare" },
         command,
         &[
             ("junctions", junctions_path),
@@ -187,15 +233,28 @@ pub fn write_compare_bundle(
         .iter()
         .map(|summary| summary.comparison.excluded.len())
         .sum();
+    let mut files = vec![
+        (SAMPLE_METRICS.to_owned(), metrics),
+        (JUNCTION_COMPONENTS.to_owned(), components),
+        (COMPARISONS.to_owned(), comparisons),
+        (GENE_SUMMARIES.to_owned(), gene_summaries),
+    ];
+    if include_report {
+        files.push((
+            REPORT.to_owned(),
+            render_report(&metadata.run_id, results, summaries),
+        ));
+        for (index, result) in results.iter().enumerate() {
+            if result.decomposition.checks.passed {
+                files.push((graph_filename(index), render_svg(result)));
+            }
+        }
+    }
+    let mut output_names: Vec<&str> = files.iter().map(|(name, _)| name.as_str()).collect();
+    output_names.push(RUN_MANIFEST);
     let manifest = run_manifest_json(
         &metadata,
-        &[
-            SAMPLE_METRICS,
-            JUNCTION_COMPONENTS,
-            COMPARISONS,
-            GENE_SUMMARIES,
-            RUN_MANIFEST,
-        ],
+        &output_names,
         results.len(),
         results.iter().map(|result| result.graph.edges.len()).sum(),
         included_samples,
@@ -204,17 +263,8 @@ pub fn write_compare_bundle(
         &failures,
     );
 
-    write_bundle(
-        output_dir,
-        &metadata.run_id,
-        &[
-            (SAMPLE_METRICS, metrics),
-            (JUNCTION_COMPONENTS, components),
-            (COMPARISONS, comparisons),
-            (GENE_SUMMARIES, gene_summaries),
-            (RUN_MANIFEST, manifest),
-        ],
-    )
+    files.push((RUN_MANIFEST.to_owned(), manifest));
+    write_bundle(output_dir, &metadata.run_id, &files)
 }
 
 struct RunMetadata {
@@ -257,10 +307,10 @@ impl RunMetadata {
     }
 }
 
-fn write_bundle(
+fn write_bundle<S: AsRef<str>>(
     output_dir: &Path,
     run_id: &str,
-    files: &[(&str, String)],
+    files: &[(S, String)],
 ) -> Result<ExportSummary, String> {
     if output_dir.exists() {
         return Err(format!(
@@ -268,7 +318,20 @@ fn write_bundle(
             output_dir.display()
         ));
     }
-    fs::create_dir_all(output_dir).map_err(|error| {
+    if let Some(parent) = output_dir
+        .parent()
+        .filter(|parent| !parent.as_os_str().is_empty())
+    {
+        fs::create_dir_all(parent).map_err(|error| {
+            format!(
+                "could not create output parent {}: {error}",
+                parent.display()
+            )
+        })?;
+    }
+    // Atomically claim the final directory: an existence check followed by
+    // create_dir_all could let two runs write into the same destination.
+    fs::create_dir(output_dir).map_err(|error| {
         format!(
             "could not create output folder {}: {error}",
             output_dir.display()
@@ -277,7 +340,15 @@ fn write_bundle(
 
     let mut written = Vec::with_capacity(files.len());
     for (name, contents) in files {
-        let path = output_dir.join(name);
+        let path = output_dir.join(name.as_ref());
+        if let Some(parent) = path.parent().filter(|parent| *parent != output_dir) {
+            fs::create_dir_all(parent).map_err(|error| {
+                format!(
+                    "could not create graph folder {}: {error}",
+                    parent.display()
+                )
+            })?;
+        }
         fs::write(&path, contents)
             .map_err(|error| format!("could not write {}: {error}", path.display()))?;
         written.push(path);

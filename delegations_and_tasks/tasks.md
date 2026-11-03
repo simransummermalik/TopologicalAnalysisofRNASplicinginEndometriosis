@@ -29,7 +29,7 @@ means Rust task 5.
 Split task IDs according to available time and interest. A task can be completed
 alone or worked on together. A simple shared table is enough:
 
-This status board was checked against the repository on **November 2, 2026**.
+This status board was checked against the repository on **November 3, 2026**.
 **Done** is used only when the task's requested output and acceptance evidence
 exist. **In progress** means useful work exists but the full “Done when” rule
 has not been met.
@@ -41,7 +41,7 @@ has not been met.
 | P1.1 | **Done** | This file now contains a visible status entry for every task group. |
 | P1.2 | Not started | Course checkpoints and final dates still need to be recorded. |
 | P1.3 | **Done** | [`docs/source_map.md`](../docs/source_map.md) records the local roadmap section and the missing parent Overleaf source. |
-| P1.4 | **Done** | [Data contract](../docs/data_contract.md), version 0.4. |
+| P1.4 | **Done** | [Data contract](../docs/data_contract.md), version 0.6, including the offline report interface. |
 | P1.5 | **Done** | [`docs/decisions.md`](../docs/decisions.md) records dated choices and open questions without deleting history. |
 | P1.6 | In progress | Statuses are visible here; dependencies and team due dates still need to be added. |
 | P1.7 | **Done** | Large-file rules are in `.gitignore`, the release checklist records staging checks, and CI runs the Rust/Python checks. |
@@ -138,7 +138,8 @@ has not been met.
 | V1 | **Done** | The complete pipeline is shown in the main [README](../README.md#what-splice-girl-does). |
 | V2 | **Done** | `visualize` draws the tested synthetic splice graph with direction and support. |
 | V3 | **Done** | `visualize` generates aligned observed, gradient, and cycle graph panels with fixed node/edge layout, signed values, a shared width scale, and a complete junction table; see [`splice-girl-basic.svg`](../splice-girl-basic.svg). |
-| V4–V8 | Not started | Real sample displays, results, explanations, speaking plan, and demo-gene selection remain. |
+| V4 | In progress | The `report` command draws sample-level case/control plots with linked Hodge graphs and exclusions; the real-gene pilot is still pending. |
+| V5–V8 | Not started | Real results, biological explanations, speaking plan, and demo-gene selection remain. |
 | V9 | **Done** | [examples/demo](../examples/demo/README.md) contains tiny inputs, exact commands, expected output, and runtime guidance. |
 | V10–V11 | Not started | Rehearsal, backup recording, and final figure audit remain. |
 | F1–F5 | Not started | Final methods, results, release, compiled documents, and acceptance review remain; the software release checklist is now prepared. |
