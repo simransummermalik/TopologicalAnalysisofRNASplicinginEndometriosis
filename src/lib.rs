@@ -9,6 +9,7 @@ pub mod manifest;
 pub mod matrix;
 pub mod output;
 pub mod parser;
+pub mod permutation;
 pub mod visualize;
 
 use std::collections::BTreeMap;
