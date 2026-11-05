@@ -4,6 +4,7 @@
 //! module turns completed in-memory results into a small output bundle without
 //! changing the graph construction or Hodge calculations.
 
+use std::fmt::Write as _;
 use std::fs::{self, File};
 use std::io::Read;
 use std::path::{Path, PathBuf};
@@ -735,10 +736,11 @@ impl Sha256 {
         let block = self.buffer;
         self.compress(&block);
 
-        self.state
-            .iter()
-            .map(|word| format!("{word:08x}"))
-            .collect()
+        let mut hex = String::with_capacity(64);
+        for word in self.state {
+            write!(&mut hex, "{word:08x}").expect("formatting into a String cannot fail");
+        }
+        hex
     }
 
     fn compress(&mut self, block: &[u8; 64]) {

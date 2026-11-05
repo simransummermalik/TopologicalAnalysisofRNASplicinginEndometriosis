@@ -1,6 +1,6 @@
 # Splice Girl software validation
 
-**Validation date:** November 3, 2026
+**Validation date:** November 5, 2026
 **Package version:** `0.1.0`
 
 This note records installation, compatibility, workflow, test, and performance
@@ -17,9 +17,9 @@ benchmark.
 
 Rust 1.85 is the minimum because it is the first stable release supporting the
 Rust 2024 edition used by this package. The October 28 suite of 56 tests was
-compiled and run with both Rust 1.85.0 and Rust 1.97.1. The expanded report
-suite was tested locally on Rust 1.97.1; the CI matrix retains Rust 1.85.0
-as well as stable.
+compiled and run with both Rust 1.85.0 and Rust 1.97.1. The current 71-test
+suite, including reports and permutation testing, also passes on both versions.
+The CI matrix retains Rust 1.85.0 as well as stable.
 
 ## Isolated installation check
 
@@ -55,10 +55,11 @@ The all-gene export contained all five expected files:
 
 ## Automated verification
 
-The current suite contains **62 passing tests**:
+The current suite contains **71 passing tests**:
 
-- 32 library tests for parsing, manifests, graph math, comparisons, outputs,
-  validation summaries, SVG generation, and report escaping/missing values
+- 41 library tests for parsing, manifests, graph math, comparisons, outputs,
+  validation summaries, SVG generation, report escaping/missing values, and
+  permutation testing
 - 9 command-level error tests
 - 9 command-level workflow tests, including report/table agreement, links,
   overwrite protection, missing groups, unsafe identifiers, and menu execution
@@ -71,6 +72,20 @@ cargo fmt --all -- --check
 cargo test
 cargo clippy --all-targets -- -D warnings
 ```
+
+## November 5 — Rust 1.85 CI correction
+
+The November 3 [GitHub run](https://github.com/simransummermalik/TopologicalAnalysisofRNASplicinginEndometriosis/actions/runs/41695189578)
+passed formatting and all 71 tests on Rust 1.85.0, then failed strict Clippy on
+`clippy::format_collect` in the SHA-256 hex formatter in `src/output.rs`.
+The failure was reproduced locally with that exact toolchain. The formatter
+now writes the eight zero-padded words into one preallocated string. The known
+SHA-256 test vectors still match, and no lint checks were suppressed.
+
+After the change, formatting, all tests, strict Clippy, release builds, and the
+three-run candidate benchmark pass locally on Rust 1.85.0 and Rust 1.97.1.
+The GitHub check can verify the fix after the updated code is committed and
+pushed; the old run remains a record of the pre-fix commit.
 
 ## Offline report workflow
 
