@@ -176,7 +176,7 @@ In plain language:
 | Preprocessing design | The path from FASTQ reads to Splice Girl junction tables is documented and scripted. |
 | Public dataset selection | Four control and four endometriosis RNA-seq samples have been identified. |
 
-The Rust project currently passes **71 automated tests**. Real-data
+The Rust project currently passes **79 automated tests**. Real-data
 preprocessing is the next active stage, and the large raw-read files remain
 outside Git.
 

@@ -17,8 +17,8 @@ benchmark.
 
 Rust 1.85 is the minimum because it is the first stable release supporting the
 Rust 2024 edition used by this package. The October 28 suite of 56 tests was
-compiled and run with both Rust 1.85.0 and Rust 1.97.1. The current 71-test
-suite, including reports and permutation testing, also passes on both versions.
+compiled and run with both Rust 1.85.0 and Rust 1.97.1. The current 79-test
+suite, including reports, permutation testing, and BH correction, also passes on both versions.
 The CI matrix retains Rust 1.85.0 as well as stable.
 
 ## Isolated installation check
@@ -55,11 +55,12 @@ The all-gene export contained all five expected files:
 
 ## Automated verification
 
-The current suite contains **71 passing tests**:
+The current suite contains **79 passing tests**:
 
-- 41 library tests for parsing, manifests, graph math, comparisons, outputs,
+- 49 library tests for parsing, manifests, graph math, comparisons, outputs,
   validation summaries, SVG generation, report escaping/missing values, and
-  permutation testing
+  permutation testing, and BH correction (the four toy adjustment vectors
+  were independently checked with R's `p.adjust`)
 - 9 command-level error tests
 - 9 command-level workflow tests, including report/table agreement, links,
   overwrite protection, missing groups, unsafe identifiers, and menu execution

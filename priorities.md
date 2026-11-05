@@ -1,6 +1,6 @@
 # Splice Girl project priorities
 
-Updated November 3, 2026.
+Updated November 5, 2026.
 
 This is the short, ordered version of the full
 [task guide](delegations_and_tasks/tasks.md). It covers the entire project.
@@ -68,13 +68,16 @@ reproducible Splice Girl result.
 ## Priority 4 — Freeze and validate the statistics
 
 **Task IDs:** S1--S8 and R11  
-**Status:** Not started.
+**Status:** In progress: the primary effect, exact permutation code, and
+multiple-testing correction helper exist with synthetic tests. Final
+eligibility, testing-family, and inference rules remain open.
 
-- [ ] Confirm the biological unit and whether samples are independent or paired.
+- [x] Record the biological unit and unpaired cohort design in the statistics specification.
 - [ ] Freeze eligible samples, genes, thresholds, and missing-value rules.
-- [ ] Define the main case-minus-control effect size.
-- [ ] Specify the permutation test, random seed, and when inference is allowed.
-- [ ] Test the calculations on tiny known examples.
+- [x] Define the main case-minus-control effect size.
+- [x] Implement the exact permutation calculation; exhaustive enumeration uses no random seed.
+- [x] Test permutation and BH correction calculations on tiny known examples.
+- [ ] Freeze when inference is allowed and the final test direction.
 - [ ] Define the multiple-testing correction and its gene family.
 - [ ] Connect approved statistics fields to the saved CLI output.
 

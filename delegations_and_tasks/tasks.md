@@ -29,7 +29,7 @@ means Rust task 5.
 Split task IDs according to available time and interest. A task can be completed
 alone or worked on together. A simple shared table is enough:
 
-This status board was checked against the repository on **November 3, 2026**.
+This status board was checked against the repository on **November 5, 2026**.
 **Done** is used only when the task's requested output and acceptance evidence
 exist. **In progress** means useful work exists but the full “Done when” rule
 has not been met.
@@ -123,7 +123,8 @@ has not been met.
 | S4 | **Done** | The primary effect (case mean minus control mean cycle fraction) is recorded in [statistics_spec.md](../docs/statistics_spec.md) as the `compare` command's existing, frozen definition. |
 | S5 | **Done** | The exact 70-permutation design, its p-value floor, and a numbered procedure are recorded in [statistics_spec.md](../docs/statistics_spec.md) and implemented in [`src/permutation.rs`](../src/permutation.rs) ([November 3 log](../logs/november_3rd_vania.md)); one-sided versus two-sided testing remains an explicitly open decision. |
 | S6 | **Done** | No-difference, known-difference, and fully hand-enumerable (`C(4,2) = 6`) fixtures are tested in `src/permutation.rs`, including one that independently rederives S5's documented `1/70`/`2/70` p-value floor rather than asserting a copied number; the code cannot report `p = 0` because the observed labeling is always counted. "Compare exact and sampled results" and "check the saved seed" do not apply — S5 deliberately chose exhaustive enumeration over sampling, so there is no seed to check. |
-| S2, S3, S7–S12 | Not started | Eligibility/support-threshold freezing, per-sample input validation, the exchangeability/replication gate, FDR correction, baselines, sensitivity checks, and the exported report still require real per-sample junction data or further team decisions that do not exist yet. |
+| S8 | In progress | [`src/fdr.rs`](../src/fdr.rs) implements BH correction with explicit family metadata, raw/adjusted values, preserved untested rows, and eight tests checked against R; final biological family/policy approval and statistics export remain. |
+| S2, S3, S7, S9–S12 | Not started | Eligibility/support-threshold freezing, per-sample input validation, the exchangeability/replication gate, baselines, sensitivity checks, and the exported report still require real per-sample junction data or further team decisions that do not exist yet. |
 | I1–I3 | Blocked | Biological interpretation must wait for reviewed real results and provenance tables. |
 
 ### Usability, presentation, and final work status

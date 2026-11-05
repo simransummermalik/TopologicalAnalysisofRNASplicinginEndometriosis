@@ -3,6 +3,7 @@
 //! CLI wrapper around `analyze_junctions`.
 pub mod audit;
 pub mod compare;
+pub mod fdr;
 pub mod graph;
 pub mod hodge;
 pub mod manifest;

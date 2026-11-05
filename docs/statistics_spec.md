@@ -1,16 +1,16 @@
 # Splice Girl statistics specification
 
-**Spec version:** 0.1 (2026-10-29) — covers S1 (biological unit), S4 (primary
-effect), and S5 (permutation design) for the fixed eight-sample GSE315857
-cohort recorded in [`data/metadata/samples.tsv`](../data/metadata/samples.tsv).
+**Spec version:** 0.2 (2026-11-05) — records S1 (biological unit), S4 (primary
+effect), S5/S6 (exact permutation design and validation), and the S8 correction
+library for the eight-sample GSE315857 study in
+[`data/metadata/samples.tsv`](../data/metadata/samples.tsv).
 
-S2 (freezing eligible samples/genes and support rules), S3 (validating real
-per-sample input), and S6–S12 (implementation validation, FDR, baselines,
-sensitivity, and export) are deferred. They need real per-sample
-`cycle_fraction` values to work against, and every sample's `junction_path`
-is still `pending_D6` — there is no real per-sample output yet to validate,
-baseline, or export. Writing those sections now would mean guessing at data
-that doesn't exist.
+The exact permutation code is tested on synthetic examples. The S8 correction
+helper is also implemented and tested; its biological testing family and final
+workflow policy remain open. S2/S3 (eligible real inputs), S7 (whether inference
+is allowed), and S9–S12 (baselines, sensitivity, and final export) are still
+pending. Synthetic tests establish software behavior while real-data QC and
+scientific decisions are completed.
 
 ## S1 — Biological unit and permutation restrictions
 
@@ -136,3 +136,44 @@ instructions. Met:
    least as extreme as the observed effect, in the direction(s) specified by
    the one-/two-sided decision above.
 6. Report `p = count / 70`.
+
+## S8 — Multiple-testing correction core (in progress)
+
+**Implementation:** [`src/fdr.rs`](../src/fdr.rs), using the
+Benjamini–Hochberg method proposed in `ROADMAP.md`. The calculations were
+checked against [R's `p.adjust` documentation](https://stat.ethz.ch/R-manual/R-devel/library/stats/html/p.adjust.html)
+and local R `p.adjust(..., method = "BH")` fixture answers.
+
+`fdr::benjamini_hochberg(family_id, tests)` accepts named gene rows with raw
+p-values and returns the family label, method, tested/untested counts, and a
+row per gene containing both the original and adjusted p-value. It preserves
+input order and gene IDs. Untested rows use `None` for both p-values; the
+correction denominator counts only supplied valid tests. Missing rows are
+never treated as measured zeros. Empty IDs, duplicate genes, and nonfinite or
+out-of-range p-values are rejected with an explanation.
+
+The numerical operation sorts the tested p-values, multiplies each by the
+number of tests divided by its rank, applies a reverse cumulative minimum,
+and caps the answers at one. That final cumulative minimum matters: simply
+multiplying each p-value by its rank factor can give incorrectly ordered
+adjustments.
+
+| Gene | Raw p-value | BH-adjusted p-value |
+|---|---:|---:|
+| Toy A | 0.010 | 0.020 |
+| Toy B | 0.040 | 0.040 |
+| Toy C | 0.030 | 0.040 |
+| Toy D | 0.002 | 0.008 |
+
+Eight tests cover these hand-calculated values, reverse-minimum behavior,
+ties and row order, untested genes, invalid inputs, empty/singleton families,
+boundary values, and an example consuming the exact permutation module's
+output. The field is called `adjusted_p_value`: it is a BH adjustment rather
+than a probability that an individual gene is a false discovery.
+
+**Still required before S8 is complete:** freeze the eligible tested-gene
+family and missing-test policy before examining results; review whether BH's
+assumptions fit that family; and connect the approved procedure to saved
+statistics outputs. The helper does not choose biological genes, a test
+direction, or a significance cutoff. Current `compare` and `report` commands
+continue to provide descriptive results.
