@@ -50,8 +50,8 @@ has not been met.
 
 | Task IDs | Status | Evidence or next requirement |
 |---|---|---|
-| G1–G10 | Not started | The reviewed risk-gene criteria, evidence table, normalized IDs, and audited export do not exist yet. |
-| E1–E11 | Not started | The reviewed exposure scope, evidence table, normalized IDs, overlap, and interpretation boundary do not exist yet. |
+| G1–G10 | In progress | *Checked November 12, 2026.* G2 and G3 are **done**: approved, verified sources in [`docs/gene_set_methods.md`](../docs/gene_set_methods.md) and the [`risk_evidence.tsv`](../data/gene_sets/risk_evidence.tsv) template. G1 criteria are written and recorded as decisions but still need an independent cold read (step 7). Tooling for G6, G8, and G10 exists in [`gene_sets/gene_sets.py`](../gene_sets/gene_sets.py) and was tested on real data. Extraction (G4–G5), ambiguity review (G7), and the audit (G9) have not started. |
+| E1–E11 | In progress | *Checked November 12, 2026.* E1 and E2 are **done**: the dioxin-like AhR scope, the approved CTD source and filters, the 21-chemical ID list, and the [`environment_evidence.tsv`](../data/gene_sets/environment_evidence.tsv) template. Tooling for E5 and E7–E10 exists and was tested on real data. Extraction (E3–E4), context review (E6), the audit (E8), final overlap counts, and the interpretation boundary (E11) have not started. |
 
 ### RNA-seq data status
 

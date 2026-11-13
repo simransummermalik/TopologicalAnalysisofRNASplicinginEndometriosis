@@ -1,6 +1,6 @@
 # Splice Girl project priorities
 
-Updated November 5, 2026.
+Updated November 12, 2026.
 
 This is the short, ordered version of the full
 [task guide](delegations_and_tasks/tasks.md). It covers the entire project.
@@ -37,11 +37,15 @@ table that Splice Girl can read without manual editing.
 ## Priority 2 — Finish the candidate-gene evidence
 
 **Task IDs:** G1--G10 and E1--E11  
-**Status:** Research work has not been formally completed.
+**Status:** In progress. The rules, verified sources, dioxin-like chemical
+list, evidence templates, and the tested `gene_sets/gene_sets.py` tooling
+exist; see [`docs/gene_set_methods.md`](docs/gene_set_methods.md). Evidence
+extraction, review, and audit have not started.
 
-- [ ] Freeze rules for genetic-risk evidence.
+- [ ] Freeze rules for genetic-risk evidence. *(Drafted and recorded in
+  `docs/decisions.md`; waiting for a teammate's cold read, G1 step 7.)*
 - [ ] Build the genetic-risk evidence table with stable gene IDs and sources.
-- [ ] Freeze rules for environmental-response evidence.
+- [x] Freeze rules for environmental-response evidence.
 - [ ] Build the environmental evidence table with stable gene IDs and sources.
 - [ ] Review duplicate, outdated, and ambiguous gene names.
 - [ ] Create risk-only, environment-only, and overlap gene lists.
