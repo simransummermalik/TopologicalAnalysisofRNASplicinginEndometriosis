@@ -72,6 +72,35 @@ Like the FASTA, the compressed GTF is ignored by Git. The checksums, source,
 and compatibility result above are the reproducible record kept in the
 repository.
 
+## HGNC symbol reference
+
+The candidate-gene mapping in [`gene_sets/gene_sets.py`](../gene_sets/gene_sets.py)
+uses the HGNC complete set for approved, previous, and alias symbols. It is
+used together with the GENCODE v50 GTF above, which remains the source of the
+versioned `gene_id`.
+
+| Field | Recorded value |
+|---|---|
+| Provider | HUGO Gene Nomenclature Committee (HGNC) |
+| Filename | `hgnc_complete_set.txt` |
+| Local path | `references/hgnc/hgnc_complete_set.txt` |
+| Download date | November 12, 2026 |
+| Latest `date_modified` in file | 2026-11-09 |
+| Size | 17,006,236 bytes; 45,388 lines including header |
+| MD5 | `7c69fba9cf96520ccbeead1ada4ca1bd` |
+| SHA-256 | `86cc190fcae1abcd77a13ddba9a34327150477f4e3c6bcadd7f445b26dd31246` |
+
+Exact download URL:
+
+```text
+https://storage.googleapis.com/public-download-files/hgnc/tsv/tsv/hgnc_complete_set.txt
+```
+
+HGNC replaces this file regularly and the URL keeps no versions, so the
+checksum above identifies the copy actually used. Keep the same copy for the
+whole extraction. If a newer copy is downloaded, record it here and re-run the
+mapping.
+
 ## Frozen junction and graph conventions
 
 These rules apply to every real GSE315857 sample. They keep the biological

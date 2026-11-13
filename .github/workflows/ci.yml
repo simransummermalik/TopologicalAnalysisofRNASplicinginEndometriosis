@@ -33,3 +33,4 @@ jobs:
         with:
           python-version: "3.x"
       - run: python -m unittest discover -s preprocessing/tests
+      - run: python -m unittest discover -s gene_sets/tests
