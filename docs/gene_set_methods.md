@@ -9,8 +9,11 @@ Status:
 
 - **Genetic-risk rules:** draft recorded 2026-11-12, awaiting an independent
   read-through (G1 step 7).
-- **Environmental side (E1–E8, E11):** complete as of 2026-11-17, with the
-  publication rule still provisional.
+- **Environmental side (E1–E11):** complete as of 2026-11-17. The
+  publication rule was finalized the same day; see "Publication rule decision"
+  below.
+- **Genetic-risk set (G4–G10) and overlap (E9–E10):** built and audited
+  2026-11-17.
 
 ## Stable identifiers
 
@@ -402,6 +405,8 @@ requires a new dated decision.
    protein, or activity. Binding-only or co-mention interactions are excluded.
 4. **Support (provisional).** At least 2 distinct supporting publications per
    gene–chemical pair. Confirm or revise after the E10 category counts.
+   *Revised 2026-11-17:* at least 2 publications, at least 1 of them not a
+   large screen. See "Publication rule decision" below.
 
 ### Dioxin-like chemical list
 
@@ -767,6 +772,10 @@ against the GENCODE v50 annotation.
 
 ## Deduplication (E7)
 
+*Superseded counts.* This section records the build under the provisional
+2-publication rule. The current environmental set uses the final rule; see
+"Publication rule decision" below.
+
 Built 2026-11-17 with `gene_sets.py dedupe --kind environment
 --min-publications 2`, using the provisional publication rule. Output:
 [`data/gene_sets/environment_response.tsv`](../data/gene_sets/environment_response.tsv).
@@ -909,6 +918,11 @@ The audit passes; these steps make it independent.
 
 ## Overlap and categories (E9–E10)
 
+*Superseded counts.* This section records the overlap under the provisional
+2-publication rule. The current files use the final rule; see "Publication
+rule decision" below. The sensitivity table here is the evidence the decision
+was based on.
+
 Built 2026-11-17 with `gene_sets.py overlap`, from `endometriosis_risk.tsv`
 (103 genes) and `environment_response.tsv` (1,640 genes, provisional
 2-publication rule). Outputs:
@@ -1004,6 +1018,123 @@ endometrial studies.
 genome-wide risk association and dioxin-response evidence, mostly from
 non-endometrial cells. That is not a demonstrated gene–environment
 interaction.
+
+## Publication rule decision (2026-11-17)
+
+Decided 2026-11-17 by Vania Zeledon, replacing the provisional rule of
+2026-11-12. It is recorded in [`docs/decisions.md`](decisions.md).
+
+**Rule.** A gene–chemical pair enters the environmental set when it has at
+least 2 distinct supporting publications, at least 1 of which is not a large
+screen. A *large screen* is a publication cited by 100 or more mapped evidence
+rows in the CTD extraction. The screens are computed from the evidence table
+by `dedupe --min-targeted 1 --screen-rows 100`, so the rule is reproducible.
+The 2026-10-29 release has 17:
+
+PMID 11007951, 17101203, 19619570, 19684285, 20106945, 21296121, 21632981,
+21802500, 22298810, 22574217, 22903824, 23146750, 23152189, 26159488,
+26238291, 29704546, 30096437.
+
+**Why.** The provisional rule mostly measured "appears in two genome-wide
+screens": 64% of qualifying pairs had no other support (E3 record). The final
+rule keeps the replication requirement and removes screen-only support. It
+keeps every gene with endometrial evidence that the provisional rule kept
+(14 of 21; 13 of them in endometrium-tagged membership rows).
+
+Stricter rules were considered:
+
+- ≥2 targeted publications: 241 genes.
+- ≥5 publications: 136 genes.
+
+They keep only the 4 strongest overlap genes and discard targeted findings.
+The rule was chosen on evidence quality, before any real splicing result
+existed. Statistics family size is a separate Priority 4 decision.
+
+**Options considered.**
+
+| Rule | Environmental genes | Candidates | Overlap |
+|---|---|---|---|
+| ≥1 publication | 4,230 | 4,310 | 23 |
+| ≥2 (provisional) | 1,640 | 1,732 | 11 |
+| ≥3 | 679 | 775 | 7 |
+| ≥5 | 136 | 235 | 4 |
+| **≥2, at least 1 targeted (chosen)** | **565** | **661** | **7** |
+| ≥2 targeted | 241 | 340 | 4 |
+
+### Current environmental set (E7, rebuilt)
+
+`environment_response.tsv` now has 888 membership rows: 565 genes and 621
+gene–chemical pairs, with 2,333 supporting evidence IDs. 4,586 mapped rows
+fall below the rule.
+
+| Context | Rows |
+|---|---|
+| `direct` | 660 |
+| `dioxin_effect_modified` | 166 |
+| `dioxin_modifies_other` | 62 |
+
+| Tissue tag | Rows |
+|---|---|
+| `endometrium_uterus` | 24 |
+| `other_female_reproductive` | 41 |
+| `other_or_unstated` | 823 |
+
+**Genes per chemical.** TCDD 546; PCB 126, 49; PCB 118, 11;
+2,3,4,7,8-PeCDF, 4; 1,2,3,7,8-PeCDD, 3; PCB 77, 3; 2,3,7,8-TCDF, 2;
+1,2,3,6,7,8-HxCDD, 1; PCB 105, 1; PCB 156, 1.
+
+**Endometrial genes kept (13 with endometrium-tagged rows).** AHR, CCL5,
+CDH1, CTNNB1, CXCL8, CYP1A1, CYP1B1, IL1B, MMP2, MMP9, PGR, SERPINB2, TNF.
+These are unchanged from the provisional build.
+
+### Current overlap and categories (E9–E10, rebuilt)
+
+| Category | Genes |
+|---|---|
+| `risk_only` | 96 |
+| `environment_only` | 558 |
+| `overlap` | 7 |
+| Union | 661 |
+
+The counts reconcile: 96 + 7 = 103 risk genes; 558 + 7 = 565 environmental
+genes; 661 unique IDs.
+
+**The 7 overlap genes.** Each has at least one targeted dioxin study.
+
+| Gene | Environmental support |
+|---|---|
+| PGR | Includes endometrial studies |
+| ESR1 | ≥2 targeted studies |
+| IL1A | ≥2 targeted studies |
+| FN1 | ≥2 targeted studies |
+| TMOD1 | 1 targeted study |
+| IGF1R | 1 targeted study |
+| GREB1 | 1 targeted study |
+
+TFPI, KDR, CD109, and C2 are no longer overlap genes, because their dioxin
+support came only from screens. They remain risk genes.
+
+### Checks after the rebuild
+
+- **Schema.** All three files pass `check` against GENCODE v50.
+- **Audit.** `audit_environment.py`, rerun with `--min-publications 2
+  --min-targeted 1 --screen-rows 100`, passes every check. Its F check
+  rebuilds the membership with its own implementation of the rule and finds
+  the same 17 screens. The evidence table is unchanged, so the recorded E8
+  sample of evidence rows still stands.
+- **Joining.** `splice-girl stats` reads the new `candidate_genes.tsv` (661
+  genes) as a `--genes` family and saves an exact copy.
+
+**Checksums (SHA-256).**
+
+| File | Data rows | SHA-256 |
+|---|---|---|
+| `environment_response.tsv` | 888 | `58edf2535eb5812cae06bb6281e326814c5bfd3ec1ef50efe70c075156ec92c1` |
+| `overlap.tsv` | 7 | `e2082c4a765c68139c505ea02cdc6e80aa3963ef709896dfd21b63f96e78fa32` |
+| `candidate_genes.tsv` | 661 | `0aacc70364351a8d28189410a0c24111958a219c13daad4614f8c73b42b787c0` |
+
+The evidence tables and the risk set are unchanged; their checksums are in
+the earlier sections.
 
 ## Literature-context list
 

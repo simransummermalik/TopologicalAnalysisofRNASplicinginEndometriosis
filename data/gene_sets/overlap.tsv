@@ -1,12 +1,8 @@
 gene_id	gene_symbol	risk_source	environment_source
-ENSG00000003436.18	TFPI	Koller 2026 Supplementary Table 4	CTD
 ENSG00000082175.17	PGR	GWAS Catalog|Koller 2026 Supplementary Table 4	CTD
 ENSG00000091831.27	ESR1	GWAS Catalog	CTD
 ENSG00000115008.8	IL1A	GWAS Catalog|Koller 2026 Supplementary Table 4	CTD
 ENSG00000115414.23	FN1	GWAS Catalog|Koller 2026 Supplementary Table 4	CTD
-ENSG00000128052.12	KDR	GWAS Catalog|Koller 2026 Supplementary Table 4	CTD
 ENSG00000136842.16	TMOD1	GWAS Catalog|Koller 2026 Supplementary Table 4	CTD
 ENSG00000140443.15	IGF1R	GWAS Catalog|Koller 2026 Supplementary Table 4	CTD
-ENSG00000156535.16	CD109	GWAS Catalog|Koller 2026 Supplementary Table 4	CTD
-ENSG00000166278.18	C2	GWAS Catalog	CTD
 ENSG00000196208.16	GREB1	GWAS Catalog|Koller 2026 Supplementary Table 4	CTD

@@ -353,6 +353,25 @@ class DedupeTests(GeneSetTestCase):
         everything, _ = gs.dedupe_environment(rows, min_publications=1)
         self.assertEqual(len({r["gene_id"] for r in everything}), 3)
 
+    def test_targeted_publication_rule(self) -> None:
+        # PMID:8 and PMID:9 are "screens": each is cited by 3 mapped rows
+        # (screen_rows=3 here). WNT4 has 2 publications, both screens.
+        rows = [
+            env_row("S1", "ENSG00000000001.5", "WNT4", "PMID:9|PMID:8"),   # WNT4: two screens -> dropped
+            env_row("S2", "ENSG00000000004.2", "KDR", "PMID:9|PMID:7"),    # KDR: screen + 1 targeted -> kept
+            env_row("S3", "ENSG00000000003.1", "GREB1", "PMID:9"),          # GREB1: 1 publication -> dropped
+            env_row("S4", "ENSG00000000008.4", "IL15", "PMID:5|PMID:6"),    # IL15: 2 targeted -> kept
+            env_row("S5", "ENSG00000000001.5", "WNT4", "PMID:8"),
+            env_row("S6", "ENSG00000000002.3", "BCL2L11", "PMID:8"),        # BCL2L11: 1 publication -> dropped
+        ]
+        self.assertEqual(gs.screening_publications(rows, 3), {"PMID:8", "PMID:9"})
+        membership, stats = gs.dedupe_environment(rows, min_publications=2, min_targeted=1, screen_rows=3)
+        self.assertEqual(sorted({r["gene_symbol"] for r in membership}), ["IL15", "KDR"])
+        self.assertEqual(stats["screening_publications"], ["PMID:8", "PMID:9"])
+        # Without the targeted requirement WNT4 (two screens) would pass.
+        loose, _ = gs.dedupe_environment(rows, min_publications=2)
+        self.assertEqual(sorted({r["gene_symbol"] for r in loose}), ["IL15", "KDR", "WNT4"])
+
 
 class CheckTests(GeneSetTestCase):
     def problems(self, kind: str, rows: list[dict[str, str]]) -> list[str]:

@@ -28,14 +28,14 @@ the overlap. It never decides whether a gene counts.
 `risk_evidence.tsv` holds the GWAS Catalog and Koller Supplementary Table 4
 extraction from November 17, 2026 after the G7 review (1,119 rows; 228 mapped
 to 103 genes, the rest excluded with reasons). `endometriosis_risk.tsv` is the
-audited G8–G10 membership. `overlap.tsv` (11 genes) and `candidate_genes.tsv`
-(1,732 genes) are the E9 outputs; `candidate_genes.tsv` is the one-row-per-gene
+audited G8–G10 membership. `overlap.tsv` (7 genes) and `candidate_genes.tsv`
+(661 genes) are the E9 outputs; `candidate_genes.tsv` is the one-row-per-gene
 file to pass to `splice-girl stats --genes`. `environment_evidence.tsv`
 holds the CTD extraction from November 17, 2026 (7,958 rows) after the E6
 context review: 1,028 co-treatment rows are `excluded` with a reason, and
 every row has a paper-level tissue tag. The 12 labels `map` could not
 resolve were reviewed by hand (1 mapped, 11 excluded). `environment_response.tsv`
-is the E7 membership under the provisional 2-publication rule. See
+is the E7 membership under the final publication rule (decision 2026-11-17). See
 `docs/gene_set_methods.md`. Do not add example
 rows to either file.
 
@@ -137,9 +137,12 @@ python3 gene_sets/gene_sets.py dedupe --kind risk \
   --evidence data/gene_sets/risk_evidence.tsv \
   --output data/gene_sets/endometriosis_risk.tsv
 
-# Environment: same steps with --kind environment. The provisional
-# publication rule is applied here:
+# Environment: same steps with --kind environment. The final publication
+# rule (decision 2026-11-17) is applied here: at least 2 publications per
+# gene-chemical pair, at least 1 of them not a large screen (a publication
+# cited by 100+ mapped rows):
 python3 gene_sets/gene_sets.py dedupe --kind environment --min-publications 2 \
+  --min-targeted 1 --screen-rows 100 \
   --evidence data/gene_sets/environment_evidence.tsv \
   --output data/gene_sets/environment_response.tsv
 
@@ -166,7 +169,7 @@ python3 gene_sets/audit_environment.py \
   --ctd /path/to/CTD_chem_gene_ixns.tsv.gz \
   --gtf references/gencode_v50/gencode.v50.primary_assembly.annotation.gtf.gz \
   --hgnc references/hgnc/hgnc_complete_set.txt \
-  --min-publications 2 \
+  --min-publications 2 --min-targeted 1 --screen-rows 100 \
   --sample-output data/gene_sets/environment_audit_sample.tsv
 
 # 4. Overlap and category counts (E9–E10):

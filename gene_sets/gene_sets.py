@@ -625,13 +625,32 @@ def _publications(row: dict[str, str]) -> set[str]:
     return {p.strip() for p in value.split(LIST_SEPARATOR) if p.strip() and p.strip() != MISSING}
 
 
+def screening_publications(rows: list[dict[str, str]], screen_rows: int) -> set[str]:
+    """Publications cited by at least ``screen_rows`` mapped evidence rows.
+
+    These are the large genome-wide screens; counting is over distinct
+    publications per row, using only mapped rows.
+    """
+    counts: dict[str, int] = defaultdict(int)
+    for row in rows:
+        if row.get("mapping_status") == "mapped":
+            for publication in _publications(row):
+                counts[publication] += 1
+    return {p for p, n in counts.items() if n >= screen_rows}
+
+
 def dedupe_environment(
-    rows: list[dict[str, str]], min_publications: int
+    rows: list[dict[str, str]],
+    min_publications: int,
+    min_targeted: int = 0,
+    screen_rows: int = 100,
 ) -> tuple[list[dict[str, str]], dict[str, int]]:
     """One membership row per (gene, exposure, tissue, context).
 
-    The publication threshold is applied per gene-chemical pair (gene_id,
-    exposure_id), counting distinct publications across all its rows.
+    The publication rule is applied per gene-chemical pair (gene_id,
+    exposure_id), counting distinct publications across all its rows: at
+    least ``min_publications`` in all, of which at least ``min_targeted`` are
+    not large screens (see ``screening_publications``).
     """
     skipped = 0
     mapped: list[dict[str, str]] = []
@@ -641,15 +660,16 @@ def dedupe_environment(
         else:
             mapped.append(row)
 
+    screens = screening_publications(mapped, screen_rows) if min_targeted else set()
     pair_pubs: dict[tuple[str, str], set[str]] = defaultdict(set)
     for row in mapped:
         pair_pubs[(row["gene_id"], row["exposure_id"])] |= _publications(row)
 
-    kept = [
-        row
-        for row in mapped
-        if len(pair_pubs[(row["gene_id"], row["exposure_id"])]) >= min_publications
-    ]
+    def passes(pair: tuple[str, str]) -> bool:
+        pubs = pair_pubs[pair]
+        return len(pubs) >= min_publications and len(pubs - screens) >= min_targeted
+
+    kept = [row for row in mapped if passes((row["gene_id"], row["exposure_id"]))]
 
     groups: dict[tuple[str, str, str, str], list[dict[str, str]]] = defaultdict(list)
     for row in kept:
@@ -683,6 +703,9 @@ def dedupe_environment(
         "rows_not_mapped": skipped,
         "rows_below_publication_threshold": len(mapped) - len(kept),
         "min_publications": min_publications,
+        "min_targeted": min_targeted,
+        "screen_rows": screen_rows if min_targeted else None,
+        "screening_publications": sorted(screens),
         "membership_rows": len(membership),
         "genes": len({row["gene_id"] for row in membership}),
     }
@@ -699,7 +722,9 @@ def command_dedupe(args: argparse.Namespace) -> int:
         membership, stats = dedupe_risk(rows)
         columns = RISK_MEMBERSHIP_COLUMNS
     else:
-        membership, stats = dedupe_environment(rows, args.min_publications)
+        membership, stats = dedupe_environment(
+            rows, args.min_publications, args.min_targeted, args.screen_rows
+        )
         columns = ENVIRONMENT_MEMBERSHIP_COLUMNS
     write_tsv(args.output, columns, membership)
     print(json.dumps(stats, indent=2))
@@ -949,6 +974,10 @@ def build_parser() -> argparse.ArgumentParser:
     p.add_argument("--output", type=Path, required=True)
     p.add_argument("--min-publications", type=int, default=1,
                    help="environment only: distinct publications required per gene-chemical pair")
+    p.add_argument("--min-targeted", type=int, default=0,
+                   help="environment only: how many of those must not be large screens")
+    p.add_argument("--screen-rows", type=int, default=100,
+                   help="environment only: a publication cited by this many mapped rows is a large screen")
     p.set_defaults(func=command_dedupe)
 
     p = sub.add_parser("check", help="schema-check a gene-set table")

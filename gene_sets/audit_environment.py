@@ -97,6 +97,10 @@ def main(argv: list[str] | None = None) -> int:
     parser.add_argument("--gtf", type=Path, required=True)
     parser.add_argument("--hgnc", type=Path, required=True)
     parser.add_argument("--min-publications", type=int, required=True)
+    parser.add_argument("--min-targeted", type=int, default=0,
+                        help="publications per pair that must not be large screens")
+    parser.add_argument("--screen-rows", type=int, default=100,
+                        help="mapped rows citing a publication that make it a large screen")
     parser.add_argument("--sample-size", type=int, default=20)
     parser.add_argument("--seed", type=int, default=20261117)
     parser.add_argument("--sample-output", type=Path, required=True)
@@ -212,9 +216,12 @@ def main(argv: list[str] | None = None) -> int:
     pair_pubs = defaultdict(set)
     for r in mapped:
         pair_pubs[(r["gene_id"], r["exposure_id"])].update(r["publications"].split("|"))
+    cites = Counter(p for r in mapped for p in set(r["publications"].split("|")))
+    screens = {p for p, n in cites.items() if n >= args.screen_rows} if args.min_targeted else set()
     expected = defaultdict(lambda: {"ids": set(), "pubs": set()})
     for r in mapped:
-        if len(pair_pubs[(r["gene_id"], r["exposure_id"])]) >= args.min_publications:
+        pubs = pair_pubs[(r["gene_id"], r["exposure_id"])]
+        if len(pubs) >= args.min_publications and len(pubs - screens) >= args.min_targeted:
             key = (r["gene_id"], r["exposure_id"], r["tissue"], r["context"])
             expected[key]["ids"].add(r["evidence_id"])
             expected[key]["pubs"].update(r["publications"].split("|"))
@@ -236,7 +243,8 @@ def main(argv: list[str] | None = None) -> int:
             problems.append(f"{key}: counts differ")
     problems += [f"expected membership row {k} missing" for k in sorted(set(expected) - actual_keys)]
     problems += [f"evidence {i} in {n} membership rows" for i, n in seen_ids.items() if n > 1]
-    audit.record("F_dedupe", problems, membership_rows=len(membership),
+    audit.record("F_dedupe", problems, screening_publications=len(screens),
+                 membership_rows=len(membership),
                  genes=len({m["gene_id"] for m in membership}),
                  gene_chemical_pairs=len({(m["gene_id"], m["exposure_id"]) for m in membership}))
 
