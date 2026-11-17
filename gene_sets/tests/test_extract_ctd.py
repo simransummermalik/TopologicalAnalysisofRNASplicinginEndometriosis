@@ -75,6 +75,10 @@ CTD = "\n".join(
         # line 17: secretion only, not a measured response under the rule
         row("TCDD", "D013749", "WNT4", "1", "protein", HUMAN,
             "TCDD results in increased secretion of WNT4 protein", "increases^secretion", "22"),
+        # line 18: kept, the dioxin alters another agent's effect
+        row("PCB 126", "C023035", "KDR", "4", "protein", HUMAN,
+            "PCB 126 inhibits the reaction [Metribolone results in increased activity of KDR protein]",
+            "decreases^reaction|increases^activity", "23"),
     ]
 ) + "\n"
 
@@ -89,9 +93,9 @@ class ExtractTests(unittest.TestCase):
     def test_filter_counts_in_order(self):
         self.assertEqual(
             self.counts["rows_after_each_filter"],
-            {"input": 11, "chemical": 10, "species": 9, "measured": 7, "target": 6},
+            {"input": 12, "chemical": 11, "species": 10, "measured": 8, "target": 7},
         )
-        self.assertEqual(self.counts["per_chemical"]["MESH:C023035 (PCB 126)"]["target"], 1)
+        self.assertEqual(self.counts["per_chemical"]["MESH:C023035 (PCB 126)"]["target"], 2)
         self.assertEqual(self.counts["source_version"], "Thu Oct 29 12:43:06 EDT 2026")
 
     def test_direct_row_fields(self):
@@ -109,7 +113,8 @@ class ExtractTests(unittest.TestCase):
         self.assertFalse(any(r["original_id"] == "AHR" for r in self.rows))
 
     def test_contexts_and_response_types(self):
-        self.assertEqual(self.by_id["CTD:12:protein"]["context"], "modulated_reaction")
+        self.assertEqual(self.by_id["CTD:12:protein"]["context"], "dioxin_effect_modified")
+        self.assertEqual(self.by_id["CTD:18:activity"]["context"], "dioxin_modifies_other")
         self.assertEqual(self.by_id["CTD:13:activity"]["context"], "cotreatment")
         self.assertEqual(self.by_id["CTD:16:protein"]["original_id"], "KDR")
         self.assertIn("does not state mRNA or protein", self.by_id["CTD:14:expression"]["notes"])

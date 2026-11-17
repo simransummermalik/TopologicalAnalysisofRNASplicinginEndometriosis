@@ -13,7 +13,8 @@ the overlap. It never decides whether a gene counts.
 |---|---|---|
 | `risk_evidence.tsv` | People (G4–G5), then `map` | One evidence assertion from one source |
 | `dioxin_like_chemicals.tsv` | People (E1), frozen | One dioxin-like chemical with its exact CTD ID |
-| `environment_evidence.tsv` | `extract_ctd.py` (E3–E4), then `map`, then people (E6) | One measured response to one chemical in one context |
+| `environment_evidence.tsv` | `extract_ctd.py` (E3–E4), `map`, then `review_ctd_context.py apply` (E6) | One measured response to one chemical in one context |
+| `ctd_publication_tissue.tsv` | `review_ctd_context.py tag-publications` (E6) | One cited PubMed paper with its tissue tag and the terms that decided it |
 | `endometriosis_risk.tsv` | `dedupe --kind risk` | One gene |
 | `environment_response.tsv` | `dedupe --kind environment` | One gene × chemical × tissue × context |
 | `overlap.tsv` | `overlap` | One gene in both sets |
@@ -21,8 +22,9 @@ the overlap. It never decides whether a gene counts.
 | `*_mapping.tsv` | `map` | One original label and its candidate IDs, for G7 review |
 
 `risk_evidence.tsv` holds only its header row. `environment_evidence.tsv`
-holds the CTD draft from November 17, 2026 (7,958 rows, still unreviewed;
-see the extraction record in `docs/gene_set_methods.md`). Do not add example
+holds the CTD extraction from November 17, 2026 (7,958 rows) after the E6
+context review: 1,028 co-treatment rows are `excluded` with a reason, and
+every row has a paper-level tissue tag. See `docs/gene_set_methods.md`. Do not add example
 rows to either file.
 
 ## Shared rules
@@ -76,7 +78,16 @@ python3 gene_sets/extract_ctd.py \
   --chemicals data/gene_sets/dioxin_like_chemicals.tsv \
   --output data/gene_sets/environment_evidence.tsv
 
-# 1. People enter rows with mapping_status = pending. Then map identifiers:
+# 1. People enter rows with mapping_status = pending. Then map identifiers.
+#    For environment, follow map with the E6 review step:
+#      python3 gene_sets/review_ctd_context.py tag-publications \
+#        --evidence data/gene_sets/environment_evidence.tsv \
+#        --pubmed-dir /path/to/pubmed_xml --fetch \
+#        --output data/gene_sets/ctd_publication_tissue.tsv
+#      python3 gene_sets/review_ctd_context.py apply \
+#        --evidence data/gene_sets/environment_evidence.tsv \
+#        --publications data/gene_sets/ctd_publication_tissue.tsv \
+#        --output data/gene_sets/environment_evidence.tsv
 python3 gene_sets/gene_sets.py map --kind risk \
   --evidence data/gene_sets/risk_evidence.tsv \
   --gtf references/gencode_v50/gencode.v50.primary_assembly.annotation.gtf.gz \

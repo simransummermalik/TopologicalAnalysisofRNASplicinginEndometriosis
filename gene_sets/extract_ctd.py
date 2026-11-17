@@ -20,10 +20,12 @@ Filters, in order:
 
 Kept rows get a ``context`` label:
 
-    direct              the chemical alone changes the gene
-    cotreatment         the chemical is part of a co-treatment (mixture)
-    modulated_reaction  another agent alters the chemical's effect, or the
-                        chemical alters another agent's effect
+    direct                  the chemical alone changes the gene
+    cotreatment             the chemical is part of a co-treatment (mixture)
+    dioxin_effect_modified  another agent alters the chemical's own effect
+    dioxin_modifies_other   the chemical alters another agent's effect
+
+Labels combine with "|" (for example "cotreatment|dioxin_effect_modified").
 
 CTD does not record tissue, dose, duration, or assay, so those are NA and the
 note points to the interaction text and cited publications.
@@ -111,13 +113,21 @@ def measured_responses(symbol: str, interaction: str) -> list[tuple[str, bool]]:
     return sorted(found.items())
 
 
-def classify_context(actions: list[str]) -> str:
+def classify_context(actions: list[str], chemical: str, interaction: str) -> str:
+    """Label how the chemical relates to the measured change.
+
+    A reaction is split by where the chemical sits: outside the brackets it
+    alters another agent's effect ("TCDD inhibits [estradiol increases X]");
+    inside, its own effect is altered by another agent ("AHR affects [TCDD
+    increases X]").
+    """
     kinds = {action.split("^", 1)[-1] for action in actions}
     labels = []
     if "cotreatment" in kinds:
         labels.append("cotreatment")
     if "reaction" in kinds:
-        labels.append("modulated_reaction")
+        outer = re.sub(r"\[.*\]", "[...]", interaction)
+        labels.append("dioxin_modifies_other" if chemical in outer else "dioxin_effect_modified")
     return gs.LIST_SEPARATOR.join(labels) if labels else "direct"
 
 
@@ -173,7 +183,7 @@ def extract(lines, chemicals: dict[str, str], source_name: str):
         step_counts["target"] += 1
         per_chemical[chemical_id]["target"] += 1
 
-        context = classify_context(actions)
+        context = classify_context(actions, record["ChemicalName"], record["Interaction"])
         by_context[context] += 1
         pmids = [p for p in record["PubMedIDs"].split("|") if p]
         publications = gs.LIST_SEPARATOR.join(f"PMID:{p}" for p in pmids) or gs.MISSING

@@ -40,7 +40,8 @@ table that Splice Girl can read without manual editing.
 **Status:** In progress. The rules, verified sources, dioxin-like chemical
 list, evidence templates, and the tested `gene_sets/gene_sets.py` tooling
 exist; see [`docs/gene_set_methods.md`](docs/gene_set_methods.md). The
-environmental (CTD) evidence table is drafted and awaiting review and audit;
+environmental (CTD) evidence table is extracted and context-reviewed (E6),
+awaiting unmapped-row review and audit;
 genetic-risk extraction, both reviews, and both audits have not started.
 
 - [ ] Freeze rules for genetic-risk evidence. *(Drafted and recorded in

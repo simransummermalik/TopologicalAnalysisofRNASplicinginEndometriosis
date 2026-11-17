@@ -272,21 +272,22 @@ Each kept row records:
 - **`context`.** One of:
   - `direct`: the chemical alone changes the gene.
   - `cotreatment`: the chemical is part of a mixture or co-exposure.
-  - `modulated_reaction`: another agent alters the chemical's effect, or the
-    chemical alters another agent's effect, for example "TCDD inhibits
-    [estradiol increases BRCA1]".
-  - `cotreatment|modulated_reaction`: both.
+  - `dioxin_effect_modified`: another agent alters the chemical's own
+    effect, for example "AHR knockdown affects [TCDD increases CYP1A1]".
+  - `dioxin_modifies_other`: the chemical alters another agent's effect, for
+    example "TCDD inhibits [estradiol increases BRCA1]".
+  - Labels combine with `|`, for example `cotreatment|dioxin_effect_modified`.
 - **Missing fields.** CTD records no tissue, dose, duration, or assay, so
-  `tissue`, `dose_duration`, and `assay` are `NA`. The note on each row gives
-  CTD's interaction text and NCBI GeneID; the cited PubMed IDs hold the
+  `dose_duration` and `assay` are `NA`. `tissue` is filled at E6 with a
+  label for the cited paper (see the E6 review below). The note on each row
+  gives CTD's interaction text and NCBI GeneID; the cited PubMed IDs hold the
   details.
 
-**Choices for E6 to confirm.** These choices are not covered by the frozen
-wording:
+These choices are not covered by the frozen wording. They were confirmed or
+decided in the E6 review below:
 
 - the measured-gene check
-- keeping `cotreatment` and `modulated_reaction` rows, labeled rather than
-  dropped
+- how each context is handled
 - reading form-less interactions as `expression`
 
 ### Counts
@@ -325,14 +326,16 @@ Rows kept per chemical:
 
 As expected, TCDD dominates: 91% of kept rows.
 
-Kept rows by context:
+Kept rows by context, before E6:
 
 | Context | Rows |
 |---|---|
 | `direct` | 5,548 |
-| `modulated_reaction` | 1,382 |
+| `dioxin_effect_modified` | 1,191 |
+| `dioxin_modifies_other` | 191 |
 | `cotreatment` | 964 |
-| `cotreatment\|modulated_reaction` | 64 |
+| `cotreatment\|dioxin_effect_modified` | 45 |
+| `cotreatment\|dioxin_modifies_other` | 19 |
 
 Kept rows by response type:
 
@@ -354,6 +357,8 @@ Kept rows by response type:
   `SOS`, `TRK-TTT3-5`, and `WNT5` have no match.
 
 These 15 rows need E7/G7-style review, using the CTD GeneID in each note.
+Three of them (`HGC6.3`, `TRK-TTT3-5`, and one `LINC00312` row) were later
+excluded at E6 as co-treatment rows, so 12 remain to review.
 
 **Independent check.** Each mapped row was also checked through a separate
 route: CTD's NCBI GeneID, then HGNC `entrez_id`, then Ensembl ID. Result:
@@ -382,6 +387,95 @@ So at this size, "2 publications" mostly means "appears in two genome-wide
 screens", not "independently replicated". The team should weigh this when the
 provisional rule is confirmed or revised. The draft genetic-risk set from the
 November 12 test run had 102 genes.
+
+These counts are from before E6. The post-E6 counts are in the next section.
+
+## E6 context review
+
+Reviewed 2026-11-17; decisions recorded by Vania Zeledon. The reproductive
+tissue tags were checked against every title, and two against their
+abstracts.
+
+The study tissue is human endometrium (GSE315857). The table below compares
+each CTD row with it and records the E1 ruling.
+
+| Dimension | What the rows contain | Allowed by E1? | Handling |
+|---|---|---|---|
+| Species | *Homo sapiens* only (filter 2) | Yes | No mismatch |
+| Context: `direct` | 5,548 rows | Yes | Kept |
+| Context: `dioxin_effect_modified` | 1,191 rows. The dioxin causes the change; another agent (inhibitor, knockdown, antioxidant) alters its size | Yes. The response is still to the dioxin | Kept, labeled |
+| Context: `dioxin_modifies_other` | 191 rows. The dioxin alters another agent's effect, e.g. "PCB 126 inhibits [testosterone analog increases AR activity]" | Yes. A measured change caused by the dioxin, conditional on another agent | Kept, labeled as indirect |
+| Context: `cotreatment` (with or without a reaction) | 1,028 rows. Mainly estradiol (441), the AhR antagonist CH-223191 (200), endosulfan (125), and cycloheximide (76) | **No.** A mixture response cannot be credited to the dioxin-like compound alone | **Excluded** |
+| Tissue | Not recorded by CTD | Yes. E1 does not restrict tissue | Labeled at paper level (below) |
+| Dose, duration, assay | Not recorded by CTD | Yes | `NA`; details are in the cited papers |
+| Response form | 8 interactions do not say mRNA or protein | Yes | `expression`, with a note |
+| Measured gene | CTD also lists genes that only take part in an interaction | No: the gene's own response was not measured | Removed at extraction (384 rows) |
+
+**How exclusion is recorded.** An excluded row stays in
+`environment_evidence.tsv` with `mapping_status = excluded`. Its note gives
+the E6 reason and the gene it had been mapped to, so the audit can count
+and trace it, and `dedupe` ignores it.
+
+**Paper-level tissue tags.** Each cited paper is labeled from its PubMed MeSH
+headings and title:
+
+| Tag | Papers |
+|---|---|
+| `endometrium_uterus` | 15 |
+| `other_female_reproductive` | 15 (ovary, granulosa cells, placenta, trophoblast, amnion) |
+| `other_or_unstated` | 598 |
+
+The terms that decided each tag are listed in
+[`data/gene_sets/ctd_publication_tissue.tsv`](../data/gene_sets/ctd_publication_tissue.tsv).
+A row with several papers takes the most study-relevant tag, and `tissue`
+holds it with a `cited_paper:` prefix. The tag describes the paper, not the
+measurement: a paper indexed under Endometrium can also report liver cells.
+
+The first pass was checked by hand against every reproductive-tissue title,
+and this led to three changes:
+
+- MeSH `Pregnancy` and `Oocytes` were dropped. In this corpus they tagged
+  eye, palate, allergy, and *Xenopus*-oocyte ion-channel studies.
+- PMID 16327978 was moved to `other_female_reproductive`: it uses BeWo
+  choriocarcinoma cells.
+- PMID 16489053 was moved to `other_or_unstated`: its human work used MCF-7
+  breast cells; the uterus work was in mice.
+
+**Result after E6.** Of the 7,958 rows, 6,918 are kept and mapped, 1,028 are
+excluded as co-treatment, and 12 are still unmapped (E7).
+
+Kept rows by tissue tag:
+
+| Tag | Rows |
+|---|---|
+| `endometrium_uterus` | 50 |
+| `other_female_reproductive` | 73 |
+| `other_or_unstated` | 6,795 |
+
+Genes with at least *n* distinct publications for some gene–chemical pair:
+
+| n ≥ 1 | n ≥ 2 | n ≥ 3 | n ≥ 5 |
+|---|---|---|---|
+| 4,229 | 1,640 | 679 | 136 |
+
+Genes with endometrium/uterus evidence (21): AHR, CCL5, CCR2, CD82, CDH1,
+CTNNB1, CXCL8, CXCR1, CYP1A1, CYP1B1, HSD17B1, HSD17B7, IL1B, MMP2, MMP9,
+PAEP, PGR, SERPINB2, SOD1, SULT1E1, TNF.
+
+**Why context matters for interpretation.** 98% of the kept rows come from
+papers that are not about endometrial or other reproductive tissue. Most come
+from liver, breast-cancer, and other cell lines. An environmental-response
+gene in this project therefore means "a gene that responds to dioxin-like
+compounds in some human cells". It does not mean "a gene that responds in
+endometrium". Captions and the discussion should say so. Where a result is
+discussed for a specific gene, its `tissue` tag shows whether
+endometrium-specific evidence exists. This note feeds the E11 interpretation
+boundary.
+
+**Rebuild.** After extraction and `map`, run
+`gene_sets/review_ctd_context.py tag-publications` (with `--fetch` to
+download the PubMed records), then `apply`. Rerunning `apply` on its own
+output changes nothing.
 
 ## Literature-context list
 
