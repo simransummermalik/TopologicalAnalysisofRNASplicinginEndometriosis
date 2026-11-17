@@ -172,11 +172,12 @@ In plain language:
 | Gene comparison command | One gene's cycle fractions can be reported across eligible samples. |
 | All-gene comparison command | Every observed gene can be summarized with case/control sample counts, means, medians, ranges, exclusions, and a descriptive case-minus-control effect. |
 | Offline comparison report | A plain report shows each sample's cycle fraction, excluded samples, exact values, and links to its three-panel Hodge graph. |
+| Configurable statistics workflow | `stats` connects exact permutation tests and BH correction to an explicit gene family, direction, sample minimum, and independent-sample declaration, with tables and an offline report. |
 | Reproducible result bundles | Metrics, junction components, comparisons, checksums, and run settings can be saved as TSV and JSON files. |
 | Preprocessing design | The path from FASTQ reads to Splice Girl junction tables is documented and scripted. |
 | Public dataset selection | Four control and four endometriosis RNA-seq samples have been identified. |
 
-The Rust project currently passes **79 automated tests**. Real-data
+The Rust project currently passes **89 automated tests**. Real-data
 preprocessing is the next active stage, and the large raw-read files remain
 outside Git.
 
@@ -384,6 +385,25 @@ new destination for another run. You can also choose **6** in `--start`.
 The included demo is synthetic; it demonstrates the software rather than a
 biological result.
 
+### 10. Run statistical tests for an explicit gene family
+
+```sh
+cargo run -- stats examples/demo/all_genes.tsv examples/demo/manifest.tsv \
+  --genes examples/demo/stats_genes.tsv --family demo-two-genes \
+  --alternative two-sided --design independent --min-per-group 2 \
+  --output target/demo-stats
+```
+
+Open `target/demo-stats/report.html` to see raw and BH-adjusted p-values along
+with the sample plots and graph links. `statistics.tsv` records each gene's
+effect, group sizes, permutation counts, and any untested reason. The same
+workflow is available as menu option **7**.
+
+These inputs are synthetic. The flags make the scientific choices explicit;
+the tool does not verify tissue matching, batch effects, or exchangeability.
+Choose the real study's family, direction, and eligibility rules before looking
+at results. Paired or repeated-subject designs need a different procedure.
+
 ### If a command fails
 
 Splice Girl returns a failure code and explains what to inspect. It does not
@@ -457,9 +477,11 @@ than treated as a black box.
 
 Splice Girl is research software, not a clinical diagnostic tool. It performs
 validated per-sample graph analysis, one-gene and all-gene descriptive group
-comparison, reproducible exports, and generated graph figures. Inferential
-statistics, multiple-testing correction, approved gene ranking, baseline
-comparisons, and biological interpretation remain future stages of the study.
+comparison, reproducible exports, and generated graph figures. The `stats`
+command adds exact unpaired permutation tests and BH correction under explicit
+caller-supplied choices. Final real-data eligibility, test-family approval,
+gene ranking, baseline comparisons, and biological interpretation remain
+study work requiring review.
 
 Real RNA-seq results will depend on consistent preprocessing, the selected
 reference and annotation, tissue and sample comparability, sequencing quality,

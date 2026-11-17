@@ -1,16 +1,16 @@
 # Splice Girl statistics specification
 
-**Spec version:** 0.2 (2026-11-05) — records S1 (biological unit), S4 (primary
-effect), S5/S6 (exact permutation design and validation), and the S8 correction
-library for the eight-sample GSE315857 study in
+**Spec version:** 0.3 (2026-11-16) — records S1 (biological unit), S4 (primary
+effect), S5/S6 (exact permutation design and validation), and the configured
+statistics CLI connecting permutation testing and S8 correction for the study in
 [`data/metadata/samples.tsv`](../data/metadata/samples.tsv).
 
-The exact permutation code is tested on synthetic examples. The S8 correction
-helper is also implemented and tested; its biological testing family and final
-workflow policy remain open. S2/S3 (eligible real inputs), S7 (whether inference
-is allowed), and S9–S12 (baselines, sensitivity, and final export) are still
-pending. Synthetic tests establish software behavior while real-data QC and
-scientific decisions are completed.
+The exact permutation and S8 correction code is connected to the `stats`
+command, exports, and offline report. Its biological testing family and final
+workflow policy remain open. S2/S3 (eligible real inputs), scientific review of
+S7 (whether inference is allowed), and S9–S12 (baselines, sensitivity, and final
+study results) are still pending. Synthetic tests establish software behavior
+while real-data QC and scientific decisions are completed.
 
 ## S1 — Biological unit and permutation restrictions
 
@@ -105,8 +105,8 @@ already is, by `compare`'s existing output.
   committed direction — cycle fraction could plausibly be higher or lower in
   cases. A two-sided test is the more defensible default given that, but this
   is a scientific judgment call, not a mechanical one, and should be
-  confirmed with whoever owns the statistics decision before S6 is
-  implemented. For reference: two-sided extremity is counted symmetrically,
+  confirmed by the group before real testing. The CLI requires the choice
+  explicitly. For reference: two-sided extremity is counted symmetrically,
   since every permutation's exact complement (swap which 4 subjects are
   "case") produces the exact negation of its effect — extremes always come
   in matched pairs under this design.
@@ -173,7 +173,44 @@ than a probability that an individual gene is a false discovery.
 
 **Still required before S8 is complete:** freeze the eligible tested-gene
 family and missing-test policy before examining results; review whether BH's
-assumptions fit that family; and connect the approved procedure to saved
-statistics outputs. The helper does not choose biological genes, a test
+assumptions fit that family; and review the configured outputs before a real
+study run. The helper does not choose biological genes, a test
 direction, or a significance cutoff. Current `compare` and `report` commands
 continue to provide descriptive results.
+
+## Configured statistics workflow (R11 and software parts of S7/S12)
+
+```sh
+cargo run -- stats examples/demo/all_genes.tsv examples/demo/manifest.tsv \
+  --genes examples/demo/stats_genes.tsv --family demo-two-genes \
+  --alternative two-sided --design independent --min-per-group 2 \
+  --output target/demo-stats
+```
+
+The command requires a TSV with a `gene_id` column, a family label, an explicit
+alternative, an independent-sample declaration, a minimum eligible sample
+count per group (at least two), and a new output directory. It keeps every
+requested gene, including absent or untestable ones, and records a reason for
+every untested row. Genes with a successful exact test form the BH denominator;
+this handling of untested genes must be accepted before the real study run.
+
+Per-gene exclusions remain in `comparisons.tsv`. `statistics.tsv` records raw
+and adjusted p-values, the effect, group sizes, extreme/total permutation
+counts, tested family size, and reasons. The manifest records settings and
+checksums for the junction, sample-manifest, and gene-family inputs. The
+offline report displays statistics alongside the existing sample plots and
+decomposition figures. If no gene is testable, diagnostic files are saved and
+the command exits with a failure code.
+
+The independent-design flag is a caller declaration, not proof that conditions
+are exchangeable. Known duplicate subject IDs are rejected when that metadata
+column exists. The code does not infer paired or blocked designs, remove batch
+confounding, validate tissue matching, apply extra metadata eligibility/QC
+fields, or approve biological coverage thresholds. Supply reviewed inputs.
+
+The eight-subject CLI fixture has four cases with cycle fraction 1 and four
+controls with fraction 0 for one gene, and a second no-difference gene.
+Two-sided raw p-values are `2/70` and `1`; their BH-adjusted values are `4/70`
+and `1`. Additional absent/undersampled genes remain untested and do not change
+that denominator. Other tests verify both one-sided alternatives, required
+configuration, repeated subjects, enumeration limits, and interactive execution.

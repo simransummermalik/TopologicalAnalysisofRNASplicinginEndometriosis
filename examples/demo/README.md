@@ -5,6 +5,36 @@ Nothing here is real biological data — see `docs/data_contract.md` and
 `tests/fixtures/expected.md` for the reviewed synthetic fixtures this demo
 reuses the shapes of.
 
+## Statistical demonstration
+
+This command connects the exact permutation and multiple-testing correction
+modules to the same graphs and samples used in the comparison demo:
+
+```sh
+cargo run -- stats examples/demo/all_genes.tsv examples/demo/manifest.tsv \
+  --genes examples/demo/stats_genes.tsv --family demo-two-genes \
+  --alternative two-sided --design independent --min-per-group 2 \
+  --output target/demo-stats
+```
+
+Open `target/demo-stats/report.html`. It includes statistical results, sample
+plots, exclusions, and links to the Hodge graph figures. You can also choose
+option **7** in the startup menu. Use a new destination if the folder exists.
+
+Both genes have two eligible cases and two eligible controls, giving six
+possible label assignments. In this synthetic example, both two-sided raw
+p-values are `0.3333333333`, and both BH-adjusted values are also
+`0.3333333333`. Their opposite effects are still `+0.5555555556` and
+`-0.5555555556`. Large-looking effects in tiny samples do not imply small
+p-values. `control_03` remains excluded because it has no junction data.
+
+The gene list, direction, independence declaration, and sample minimum must
+all be specified. These demo choices do not approve the real study's rules.
+`statistics.tsv` keeps every requested gene, including untested genes with a
+reason and empty p-value fields. The run manifest records all three input
+checksums and the test settings. The existing `compare` and `report` commands
+continue to produce descriptive results.
+
 ## Quick browser demonstration
 
 From the repository root:

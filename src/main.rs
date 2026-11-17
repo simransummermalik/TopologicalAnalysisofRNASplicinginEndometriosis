@@ -6,8 +6,9 @@
 //! implementation instead takes one junction TSV (already carrying
 //! `sample_id`) plus a separate manifest TSV, matching the formats this
 //! tool actually parses. `analyze` is also available as an explicit alias
-//! for the direct command. Inferential statistics and ranking remain future
-//! work until their rules are approved.
+//! for the direct command. `stats` runs an explicitly configured unpaired
+//! permutation/BH analysis. Biological eligibility and ranking need review.
+use std::collections::{BTreeMap, BTreeSet};
 use std::env;
 use std::io::{self, IsTerminal, Write};
 use std::path::Path;
@@ -21,9 +22,13 @@ use splice_girl::compare::{
 use splice_girl::manifest::parse_manifest;
 use splice_girl::output::{
     ExportSummary, write_analysis_bundle, write_compare_bundle, write_gene_bundle,
-    write_report_bundle,
+    write_report_bundle, write_stats_bundle,
 };
 use splice_girl::parser::parse_tsv;
+use splice_girl::statistics::{
+    StatsOptions, alternative_name, parse_alternative, parse_gene_family, test_gene_family,
+    validate_independent_metadata,
+};
 use splice_girl::visualize::write_svg;
 
 fn main() -> ExitCode {
@@ -60,6 +65,7 @@ usage:\n  \
   {program} gene <GENE_ID> <junctions.tsv> <manifest.tsv> [--output <folder>]\n  \
   {program} compare <junctions.tsv> <manifest.tsv> [--output <folder>]\n  \
   {program} report <junctions.tsv> <manifest.tsv> --output <folder>\n  \
+  {program} stats <junctions.tsv> <manifest.tsv> --genes <family.tsv> --family <label> --alternative <two-sided|case-greater|case-less> --design independent --min-per-group <n> --output <folder>\n  \
   {program} visualize <SAMPLE_ID> <GENE_ID> <junctions.tsv> <output.svg>\n\n\
 commands:\n  \
   analyze     calculate graph and Hodge measurements\n  \
@@ -67,6 +73,7 @@ commands:\n  \
   gene        compare one gene across case/control samples\n  \
   compare     descriptively compare every observed gene across groups\n  \
   report      save comparison tables, an offline report, and graph figures\n  \
+  stats       run explicit-family exact permutation tests and BH correction\n  \
   visualize   save one sample/gene graph as a browser-ready SVG\n  \
   --start     open the interactive menu"
     )
@@ -95,6 +102,10 @@ fn run(command: &[String]) -> Result<(), String> {
             return Err(usage(&program));
         }
         return run_start_menu();
+    }
+
+    if first_argument == "stats" {
+        return run_stats_command(arguments.collect(), command);
     }
 
     if first_argument == "gene" {
@@ -217,6 +228,116 @@ fn run(command: &[String]) -> Result<(), String> {
     print_results(&results)
 }
 
+fn run_stats_command(arguments: Vec<String>, command: &[String]) -> Result<(), String> {
+    if arguments.as_slice() == ["--help"] {
+        println!("{}", usage("splice-girl"));
+        return Ok(());
+    }
+    let [junctions_path, manifest_path, rest @ ..] = arguments.as_slice() else {
+        return Err(usage("splice-girl"));
+    };
+    if rest.len() % 2 != 0 {
+        return Err("each stats option needs a value; use splice-girl stats --help".to_owned());
+    }
+    let mut flags = BTreeMap::new();
+    for pair in rest.chunks_exact(2) {
+        if !matches!(
+            pair[0].as_str(),
+            "--genes" | "--family" | "--alternative" | "--design" | "--min-per-group" | "--output"
+        ) {
+            return Err(format!(
+                "unknown stats option '{}'; use splice-girl stats --help",
+                pair[0]
+            ));
+        }
+        if pair[1].trim().is_empty() {
+            return Err(format!("{} needs a nonempty value", pair[0]));
+        }
+        if flags.insert(pair[0].as_str(), pair[1].as_str()).is_some() {
+            return Err(format!("duplicate stats option '{}'", pair[0]));
+        }
+    }
+    let required = |name: &str| {
+        flags.get(name).copied().ok_or_else(|| format!("stats requires {name}; choose the gene family, alternative, design, replication threshold, and output explicitly"))
+    };
+    let gene_path = Path::new(required("--genes")?);
+    let family_id = required("--family")?.to_owned();
+    let alternative = parse_alternative(required("--alternative")?)?;
+    if required("--design")? != "independent" {
+        return Err("stats supports only --design independent; paired, repeated-subject, or blocked designs require a different permutation procedure".to_owned());
+    }
+    let min_per_group = required("--min-per-group")?
+        .parse::<usize>()
+        .map_err(|_| "--min-per-group must be an integer of at least 2".to_owned())?;
+    if min_per_group < 2 {
+        return Err(
+            "--min-per-group must be at least 2; one sample per group is descriptive only"
+                .to_owned(),
+        );
+    }
+    let output_dir = Path::new(required("--output")?);
+    let gene_ids = parse_gene_family(gene_path)?;
+    let selected: BTreeSet<&str> = gene_ids.iter().map(String::as_str).collect();
+    let manifest = parse_manifest(Path::new(manifest_path))?;
+    validate_independent_metadata(Path::new(manifest_path))?;
+    let junctions = parse_tsv(Path::new(junctions_path))?;
+    let results = analyze_junctions(
+        junctions
+            .into_iter()
+            .filter(|row| selected.contains(row.gene_id.as_str()))
+            .collect(),
+    )?;
+    let statistics = test_gene_family(
+        &manifest,
+        &results,
+        &gene_ids,
+        StatsOptions {
+            family_id,
+            alternative,
+            min_per_group,
+        },
+    )?;
+    let saved = write_stats_bundle(
+        output_dir,
+        Path::new(junctions_path),
+        Path::new(manifest_path),
+        gene_path,
+        &results,
+        &statistics,
+        command,
+    )?;
+    print_export_summary(&saved);
+    println!(
+        "statistics: exact independent-sample permutations; alternative={}; family={}; tested={}; untested={}",
+        alternative_name(alternative),
+        statistics.family.family_id,
+        statistics.family.tested_count,
+        statistics.family.untested_count
+    );
+    println!(
+        "gene_id\tstatus\teffect_case_minus_control\tp_value\tadjusted_p_value\tuntested_reason"
+    );
+    for (row, summary) in statistics.genes.iter().zip(&statistics.comparisons) {
+        println!(
+            "{}\t{}\t{}\t{}\t{}\t{}",
+            row.gene_id,
+            row.status,
+            terminal_number(summary.mean_difference),
+            terminal_number(row.permutation.as_ref().map(|test| test.p_value)),
+            terminal_number(row.adjusted_p_value),
+            row.reason
+        );
+    }
+    println!(
+        "Open in your browser: {}",
+        output_dir.join("report.html").display()
+    );
+    if statistics.family.tested_count == 0 {
+        return Err("no requested gene was testable; diagnostic results were saved; review statistics.tsv and comparisons.tsv".to_owned());
+    }
+    Ok(())
+}
+
 fn parse_optional_output(
     arguments: Vec<String>,
     program: &str,
@@ -293,6 +414,7 @@ fn run_start_menu() -> Result<(), String> {
         println!("  [4] Validate inputs and mathematical checks");
         println!("  [5] Compare every observed gene");
         println!("  [6] Save a comparison report and graph figures");
+        println!("  [7] Run exact statistical tests and save a report");
         println!("  [q] Quit");
         println!();
 
@@ -525,9 +647,48 @@ fn run_start_menu() -> Result<(), String> {
                     Err(error) => println!("  error: {error}"),
                 }
             }
+            "7" => {
+                let prompts = [
+                    ("", "  Junction TSV path: "),
+                    ("", "  Sample manifest TSV path: "),
+                    ("--genes", "  Gene family TSV path: "),
+                    ("--family", "  Family label: "),
+                    (
+                        "--alternative",
+                        "  Alternative (two-sided / case-greater / case-less): ",
+                    ),
+                    (
+                        "--design",
+                        "  Design (enter independent only for independent, unpaired subjects): ",
+                    ),
+                    (
+                        "--min-per-group",
+                        "  Minimum eligible samples per group (at least 2): ",
+                    ),
+                    ("--output", "  New statistics output folder: "),
+                ];
+                let mut arguments = Vec::new();
+                for (flag, question) in prompts {
+                    let Some(value) = prompt(question)? else {
+                        return Ok(());
+                    };
+                    if !flag.is_empty() {
+                        arguments.push(flag.to_owned());
+                    }
+                    arguments.push(value.trim().to_owned());
+                }
+                let mut command = vec!["splice-girl".to_owned(), "stats".to_owned()];
+                command.extend(arguments.clone());
+                if let Err(error) = run_stats_command(arguments, &command) {
+                    println!("  error: {error}");
+                }
+                if prompt("  Press Enter to return to the menu...")?.is_none() {
+                    return Ok(());
+                }
+            }
             "q" => return Ok(()),
             "" => {}
-            _ => println!("  Please choose 1, 2, 3, 4, 5, 6, or q."),
+            _ => println!("  Please choose 1, 2, 3, 4, 5, 6, 7, or q."),
         }
     }
 }

@@ -12,6 +12,7 @@ pub mod output;
 pub mod parser;
 pub mod permutation;
 pub mod report;
+pub mod statistics;
 pub mod visualize;
 
 use std::collections::BTreeMap;

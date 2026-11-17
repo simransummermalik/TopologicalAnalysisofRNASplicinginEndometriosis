@@ -1,8 +1,8 @@
 # Splice Girl input data contract
 
-**Contract version:** 0.6 (2026-11-03) — added the offline comparison-report
-command. Junction and manifest input schemas and the frozen real-data exon-node,
-coordinate, and strand conventions are unchanged.
+**Contract version:** 0.7 (2026-11-16) — added the explicit-family `stats`
+command and statistics exports. Junction and manifest input schemas and frozen
+exon-node, coordinate, and strand conventions are unchanged.
 
 This version keeps text node identifiers for both synthetic fixtures and real
 RNA-seq data. Real junction files use the exact reference, annotation,
@@ -180,8 +180,9 @@ junction table passed to a comparison.
 
 The package and command name are settled: `splice-girl`. This section records
 the commands that exist today as frozen interface. Multi-gene descriptive
-comparison is implemented; inferential statistics and ranking remain separate
-future work so they cannot be confused with the current summaries.
+comparison is implemented. Exact unpaired permutation tests and BH correction
+are available through a separate, explicitly configured `stats` command;
+biological study approval and ranking remain separate work.
 
 ### Implemented commands
 
@@ -193,8 +194,9 @@ future work so they cannot be confused with the current summaries.
 | `splice-girl gene <GENE_ID> <junctions.tsv> <manifest.tsv> [--output <folder>]` | compares one gene across case/control samples and optionally saves a result bundle |
 | `splice-girl compare <junctions.tsv> <manifest.tsv> [--output <folder>]` | compares every observed gene using sample-level descriptive summaries and optionally saves a result bundle |
 | `splice-girl report <junctions.tsv> <manifest.tsv> --output <folder>` | saves the comparison bundle, an offline HTML report, individual sample plots, and one SVG per mathematically valid sample/gene |
+| `splice-girl stats <junctions.tsv> <manifest.tsv> --genes <family.tsv> --family <label> --alternative <direction> --design independent --min-per-group <n> --output <folder>` | runs selected-family exact permutation tests and BH adjustment, preserving untested genes and producing an offline statistics report |
 | `splice-girl visualize <SAMPLE_ID> <GENE_ID> <junctions.tsv> <output.svg>` | renders one sample/gene's splice graph as a standalone SVG |
-| `splice-girl --start` | interactive menu wrapping analysis, validation, one-gene comparison, all-gene comparison, visualization, and report generation (option 6) |
+| `splice-girl --start` | interactive menu wrapping analysis, validation, comparisons, visualization, report generation (option 6), and statistics (option 7) |
 | `splice-girl --help`, `-h`, `help` | prints usage and the command list |
 | `splice-girl --version`, `-V` | prints the Cargo package version |
 
@@ -205,11 +207,44 @@ above, matching the formats this tool actually parses.
 
 ### Not yet implemented
 
-- Inferential p-values or multiple-testing correction.
+- Paired, blocked, repeated-measures, or sampled-permutation inference.
 - A `rank` command applying approved candidate-gene and ranking rules.
 
 The implemented `compare` command is descriptive. It does not claim statistical
 significance or rank biological importance.
+
+### Statistics configuration and gene-family input
+
+All six flags in the `stats` example above are mandatory; flags can appear in
+any order and duplicates are rejected. `--alternative` accepts `two-sided`,
+`case-greater`, or `case-less`, always using the case-minus-control effect.
+`--min-per-group` must be an integer of at least two. Choose these settings and
+the gene family before inspecting results. `--family` labels the family for
+the provenance record; `--genes` supplies its actual membership.
+
+The family file is a TSV with exactly one `gene_id` column and at least one
+row. Additional columns are allowed, so a reviewed candidate-gene table can be
+used directly. Empty, whitespace-padded, or duplicate gene IDs are rejected.
+Requested genes appear in lexical identifier order, including requested genes
+with no junction data. Only selected genes are decomposed; unselected graphs
+do not enter the analysis or correction denominator.
+
+`--design independent` explicitly declares an unpaired, exchangeable design.
+When `subject_id` is present in the manifest, it must be nonmissing and unique;
+known repeated subjects are rejected. Without that column, independence is
+still a caller declaration rather than something the program established.
+Paired/blocked designs, tissue matching, batch confounding, coverage, and graph
+comparability require review. Extra metadata eligibility/QC fields are not
+applied automatically: supply the approved sample manifest and junction table.
+
+For each requested gene, the command preserves the descriptive comparison and
+all sample inclusion/exclusion decisions. Tests require the specified sample
+minimum in each group and passing decomposition checks. Missing genes,
+insufficient groups, and permutation spaces exceeding 1,000,000 assignments
+are recorded as `untested` with a reason and blank p-values. Missing values are
+not replaced with zeros. BH correction uses successfully tested genes only;
+that denominator policy must be reviewed for the real study. The exact
+permutation includes the observed assignment and needs no random seed.
 
 ### Output fields, per command
 
@@ -234,6 +269,9 @@ significance or rank biological importance.
   with individual sample plots on a fixed 0–1 cycle-fraction scale, included
   sample tables, missing-group statuses, exclusions, and links to graphs.
   It requires `--output`. No browser server or network access is required.
+- **`stats`**: one terminal row per requested gene with status, descriptive
+  effect, raw p-value, BH-adjusted p-value, and untested reason, followed by
+  the saved report path. Exact assignment counts and group sizes are exported.
 - **`visualize`**: not a tabular export — writes an SVG containing the same
   node/edge counts, cycle fraction, and checks status; aligned observed,
   gradient, and cycle graph panels; a table with all three values per junction;
@@ -255,11 +293,27 @@ run.
 |---|---|
 | `sample_metrics.tsv` | One row per analyzed sample/gene, including graph size, raw total support, energies, cycle fraction, and numerical-check errors |
 | `junction_components.tsv` | One row per junction, including raw count, normalized signal, gradient component, and signed cycle component |
-| `comparisons.tsv` | `gene` and `compare`: one row per included or excluded sample/gene decision, with condition, cycle fraction, status, and exclusion reason |
-| `gene_summaries.tsv` | `compare` and `report`: one descriptive row per gene with group sizes, means, medians, ranges, case-minus-control effect, status, and interpretation note |
-| `report.html` | `report` only: a plain offline overview with each sample's value, gene summary, exclusions, and links to figures and result files |
-| `graphs/graph-NNNNNN.svg` | `report` only: three aligned decomposition panels for each mathematically valid sample/gene; filenames use numeric indices rather than user-supplied IDs |
+| `comparisons.tsv` | `gene`, `compare`, `report`, and `stats`: one row per included or excluded sample/gene decision, with condition, cycle fraction, status, and exclusion reason |
+| `gene_summaries.tsv` | `compare`, `report`, and `stats`: one descriptive row per gene with group sizes, means, medians, ranges, case-minus-control effect, status, and interpretation note |
+| `report.html` | `report` and `stats`: a plain offline overview with each sample's value, gene summary, exclusions, and links to figures and result files |
+| `graphs/graph-NNNNNN.svg` | `report` and `stats`: three aligned decomposition panels for each mathematically valid sample/gene; filenames use numeric indices rather than user-supplied IDs |
 | `run_manifest.json` | Run ID, exact command arguments, tool version, input paths and SHA-256 checksums, solver settings, tolerance, output filenames, counts, exclusions, and failures |
+
+`stats` always saves the comparison/report files above plus `statistics.tsv`.
+The latter includes `run_id`, `family_id`, `gene_id`, `status`, `case_n`,
+`control_n`, `mean_difference_case_minus_control`, `alternative`, `p_value`,
+`adjusted_p_value`, `permutations_considered`, `extreme_count`,
+`tested_family_size`, `excluded_samples`, and `untested_reason`.
+Adjusted values are BH-adjusted p-values, not estimates of the probability
+that an individual gene is a false discovery. No cutoff or ranking is selected.
+
+Stats mode records `mode: stats`, the gene-family input checksum, and a
+`statistics` object containing the declared design, alternative, family label,
+requested/tested/untested counts, replication threshold, correction and
+denominator policy, exact enumeration method/limit, tolerance, and null seed.
+Non-stats bundles have `statistics: null`. Every output shares the same run ID.
+The HTML report includes a statistics section alongside the sample plots and
+linked graphs. Exclusion details remain in `comparisons.tsv` and the manifest.
 
 The manifest records `random_seed` as `null` because the current commands do
 not use randomness. A later statistics command must record its actual seed.
@@ -295,6 +349,10 @@ biological subjects.
   it saves a diagnostic report with missing-group statuses and `NA` effects,
   then exits with a failure code. A written report is not proof of a valid
   case/control comparison.
+- `stats` saves diagnostic results and exits nonzero if no requested gene is
+  testable. If some genes are tested, it exits successfully while retaining
+  every untested row and reason. Malformed inputs/configuration fail before
+  output creation. Existing output folders are never overwritten.
 - `visualize` refuses to overwrite an existing output file and fails with a
   specific error naming the path, rather than silently replacing a figure.
 - `--output` also refuses to use an existing folder. Choose a new run folder

@@ -1,6 +1,6 @@
 # Splice Girl software validation
 
-**Validation date:** November 5, 2026
+**Validation date:** November 16, 2026
 **Package version:** `0.1.0`
 
 This note records installation, compatibility, workflow, test, and performance
@@ -17,8 +17,9 @@ benchmark.
 
 Rust 1.85 is the minimum because it is the first stable release supporting the
 Rust 2024 edition used by this package. The October 28 suite of 56 tests was
-compiled and run with both Rust 1.85.0 and Rust 1.97.1. The current 79-test
-suite, including reports, permutation testing, and BH correction, also passes on both versions.
+compiled and run with both Rust 1.85.0 and Rust 1.97.1. The current 89-test
+suite, including reports and the full configured statistics workflow, passes
+on both versions.
 The CI matrix retains Rust 1.85.0 as well as stable.
 
 ## Isolated installation check
@@ -55,15 +56,18 @@ The all-gene export contained all five expected files:
 
 ## Automated verification
 
-The current suite contains **79 passing tests**:
+The current suite contains **89 passing tests**:
 
-- 49 library tests for parsing, manifests, graph math, comparisons, outputs,
+- 51 library tests for parsing, manifests, graph math, comparisons, outputs,
   validation summaries, SVG generation, report escaping/missing values, and
   permutation testing, and BH correction (the four toy adjustment vectors
   were independently checked with R's `p.adjust`)
 - 9 command-level error tests
 - 9 command-level workflow tests, including report/table agreement, links,
   overwrite protection, missing groups, unsafe identifiers, and menu execution
+- 8 statistics CLI acceptance tests covering independently known p-values,
+  BH correction, one-sided alternatives, required options, untested rows,
+  repeated subjects, enumeration limits, provenance, reports, and menu option 7
 - 12 independent synthetic-math tests
 
 The following checks pass:
@@ -89,6 +93,13 @@ The GitHub check can verify the fix after the updated code is committed and
 pushed; the old run remains a record of the pre-fix commit.
 
 ## Offline report workflow
+
+The November 16 `stats` workflow adds `statistics.tsv` and a statistical
+section to the same offline report. The eight-subject acceptance fixture
+reproduces raw p-values `2/70` and `1`, adjusted values `4/70` and `1`, and
+keeps absent/undersampled genes untested. The two-gene shipped demo produces
+two raw and adjusted values of `1/3` from six exact assignments per gene.
+Settings and all three input checksums are retained in the manifest.
 
 The `report` command uses the same analysis and descriptive comparisons as
 `compare`. The command-level acceptance test checks that all four TSV exports

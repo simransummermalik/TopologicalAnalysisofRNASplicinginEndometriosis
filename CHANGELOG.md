@@ -2,6 +2,13 @@
 
 ## Unreleased
 
+- Added `stats` and menu option 7: explicit-family exact permutation tests,
+  BH correction, per-gene statistics TSV, and a statistical section in the
+  offline report. Test direction, independent design, sample minimum, family
+  input/label, and output destination are required.
+- Recorded untested genes and their reasons, repeated-subject rejection,
+  assignment counts, family sizes, and gene-list checksums/settings.
+
 - Added `report <junctions.tsv> <manifest.tsv> --output <folder>` and menu
   option 6: an offline academic report, sample-level comparison plots,
   exclusions, and links to each sample/gene's Hodge decomposition SVG.

@@ -29,7 +29,7 @@ means Rust task 5.
 Split task IDs according to available time and interest. A task can be completed
 alone or worked on together. A simple shared table is enough:
 
-This status board was checked against the repository on **November 5, 2026**.
+This status board was checked against the repository on **November 16, 2026**.
 **Done** is used only when the task's requested output and acceptance evidence
 exist. **In progress** means useful work exists but the full “Done when” rule
 has not been met.
@@ -41,7 +41,7 @@ has not been met.
 | P1.1 | **Done** | This file now contains a visible status entry for every task group. |
 | P1.2 | Not started | Course checkpoints and final dates still need to be recorded. |
 | P1.3 | **Done** | [`docs/source_map.md`](../docs/source_map.md) records the local roadmap section and the missing parent Overleaf source. |
-| P1.4 | **Done** | [Data contract](../docs/data_contract.md), version 0.6, including the offline report interface. |
+| P1.4 | **Done** | [Data contract](../docs/data_contract.md), version 0.7, including configured statistics and offline reporting. |
 | P1.5 | **Done** | [`docs/decisions.md`](../docs/decisions.md) records dated choices and open questions without deleting history. |
 | P1.6 | In progress | Statuses are visible here; dependencies and team due dates still need to be added. |
 | P1.7 | **Done** | Large-file rules are in `.gitignore`, the release checklist records staging checks, and CI runs the Rust/Python checks. |
@@ -105,7 +105,7 @@ has not been met.
 | R8 | **Done** | One-sample analysis prints graph metrics and signed edge components. |
 | R9 | **Done** | The complete synthetic acceptance suite passes. |
 | R10 | **Done** | Manifest parsing and one-gene case/control inclusion and exclusion are implemented. |
-| R11 | In progress | The `compare` command exports descriptive sample-preserving effects and explicit missing-group statuses; the exact permutation test now exists in [`src/permutation.rs`](../src/permutation.rs) but is not yet wired into the CLI, pending the one-sided/two-sided decision below. |
+| R11 | **Done** | `stats` connects the exact permutation and BH modules to explicit gene-family, sidedness, design, and sample-minimum inputs; [`tests/cli_stats.rs`](../tests/cli_stats.rs) validates saved statistics, exclusions, provenance, and report integration without parsing terminal text. Real-study scientific choices remain subject to review. |
 | R12 | Blocked | Ranking needs approved candidate and statistics rules plus real junction results. |
 | R13 | **Done** | [`src/output.rs`](../src/output.rs) writes metrics, junction components, comparisons, and `run_manifest.json` with checksums and settings; see the [October 22 log](../logs/october_22nd_summer.md). |
 | R14 | **Done** | [`tests/cli_errors.rs`](../tests/cli_errors.rs) checks missing/empty files, headers, counts, manifests, metadata mismatches, zero support, comparison groups, overwrite protection, corrections, and failure exit codes; solver failure is unit-tested. |
@@ -123,8 +123,10 @@ has not been met.
 | S4 | **Done** | The primary effect (case mean minus control mean cycle fraction) is recorded in [statistics_spec.md](../docs/statistics_spec.md) as the `compare` command's existing, frozen definition. |
 | S5 | **Done** | The exact 70-permutation design, its p-value floor, and a numbered procedure are recorded in [statistics_spec.md](../docs/statistics_spec.md) and implemented in [`src/permutation.rs`](../src/permutation.rs) ([November 3 log](../logs/november_3rd_vania.md)); one-sided versus two-sided testing remains an explicitly open decision. |
 | S6 | **Done** | No-difference, known-difference, and fully hand-enumerable (`C(4,2) = 6`) fixtures are tested in `src/permutation.rs`, including one that independently rederives S5's documented `1/70`/`2/70` p-value floor rather than asserting a copied number; the code cannot report `p = 0` because the observed labeling is always counted. "Compare exact and sampled results" and "check the saved seed" do not apply — S5 deliberately chose exhaustive enumeration over sampling, so there is no seed to check. |
-| S8 | In progress | [`src/fdr.rs`](../src/fdr.rs) implements BH correction with explicit family metadata, raw/adjusted values, preserved untested rows, and eight tests checked against R; final biological family/policy approval and statistics export remain. |
-| S2, S3, S7, S9–S12 | Not started | Eligibility/support-threshold freezing, per-sample input validation, the exchangeability/replication gate, baselines, sensitivity checks, and the exported report still require real per-sample junction data or further team decisions that do not exist yet. |
+| S7 | In progress | `stats` requires an independent-design declaration and an explicit replication minimum, rejects known repeated subjects, and records untestable genes. Real exchangeability, confounding, QC, and study-design review remain. |
+| S8 | In progress | BH correction now runs in `stats`, preserving raw/adjusted values, untested reasons, and family counts in TSV/JSON/HTML; final biological family and missing-test policy approval remain. |
+| S12 | In progress | The generic statistics TSV, run manifest, sample decisions, and report are implemented and tested; the final real-study report and baseline/sensitivity results remain. |
+| S2, S3, S9–S11 | Not started | Eligibility/support-threshold freezing, per-sample real-input validation, baselines, method comparisons, and sensitivity checks still require reviewed inputs and scientific decisions. |
 | I1–I3 | Blocked | Biological interpretation must wait for reviewed real results and provenance tables. |
 
 ### Usability, presentation, and final work status

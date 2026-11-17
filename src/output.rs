@@ -13,7 +13,9 @@ use std::time::{SystemTime, UNIX_EPOCH};
 use crate::GroupResult;
 use crate::compare::{GeneComparison, GeneComparisonSummary};
 use crate::hodge::TOLERANCE;
-use crate::report::{graph_filename, render_report};
+use crate::permutation::MAX_PERMUTATIONS;
+use crate::report::{graph_filename, render_report, render_stats_report};
+use crate::statistics::{StatisticsRun, alternative_name};
 use crate::visualize::render_svg;
 
 const SAMPLE_METRICS: &str = "sample_metrics.tsv";
@@ -22,6 +24,7 @@ const COMPARISONS: &str = "comparisons.tsv";
 const GENE_SUMMARIES: &str = "gene_summaries.tsv";
 const RUN_MANIFEST: &str = "run_manifest.json";
 const REPORT: &str = "report.html";
+const STATISTICS: &str = "statistics.tsv";
 
 /// Identifies the files written by one export operation.
 #[derive(Debug)]
@@ -163,6 +166,7 @@ pub fn write_compare_bundle(
         summaries,
         command,
         false,
+        None,
     )
 }
 
@@ -185,6 +189,29 @@ pub fn write_report_bundle(
         summaries,
         command,
         true,
+        None,
+    )
+}
+
+/// Save the selected-family statistics and the full offline result bundle.
+pub fn write_stats_bundle(
+    output_dir: &Path,
+    junctions_path: &Path,
+    sample_manifest_path: &Path,
+    gene_family_path: &Path,
+    results: &[GroupResult],
+    statistics: &StatisticsRun,
+    command: &[String],
+) -> Result<ExportSummary, String> {
+    write_comparison_bundle(
+        output_dir,
+        junctions_path,
+        sample_manifest_path,
+        results,
+        &statistics.comparisons,
+        command,
+        true,
+        Some((gene_family_path, statistics)),
     )
 }
 
@@ -197,20 +224,32 @@ fn write_comparison_bundle(
     summaries: &[GeneComparisonSummary],
     command: &[String],
     include_report: bool,
+    statistics: Option<(&Path, &StatisticsRun)>,
 ) -> Result<ExportSummary, String> {
-    let metadata = RunMetadata::new(
-        if include_report { "report" } else { "compare" },
+    let mut inputs = vec![
+        ("junctions", junctions_path),
+        ("sample_manifest", sample_manifest_path),
+    ];
+    if let Some((path, _)) = statistics {
+        inputs.push(("gene_family", path));
+    }
+    let mut metadata = RunMetadata::new(
+        if statistics.is_some() {
+            "stats"
+        } else if include_report {
+            "report"
+        } else {
+            "compare"
+        },
         command,
-        &[
-            ("junctions", junctions_path),
-            ("sample_manifest", sample_manifest_path),
-        ],
+        &inputs,
     )?;
+    metadata.statistics = statistics.map(|(_, run)| statistics_settings_json(run));
     let result_refs: Vec<&GroupResult> = results.iter().collect();
     let metrics = sample_metrics_tsv(&metadata.run_id, &result_refs);
     let components = junction_components_tsv(&metadata.run_id, &result_refs);
     let comparisons = all_comparisons_tsv(&metadata.run_id, summaries);
-    let gene_summaries = gene_summaries_tsv(&metadata.run_id, summaries);
+    let gene_summaries = gene_summaries_tsv(&metadata.run_id, summaries, statistics.is_some());
     let failures = failed_checks(results);
     let exclusions: Vec<ExclusionRecord> = summaries
         .iter()
@@ -240,10 +279,17 @@ fn write_comparison_bundle(
         (COMPARISONS.to_owned(), comparisons),
         (GENE_SUMMARIES.to_owned(), gene_summaries),
     ];
+    if let Some((_, run)) = statistics {
+        files.push((STATISTICS.to_owned(), statistics_tsv(&metadata.run_id, run)));
+    }
     if include_report {
         files.push((
             REPORT.to_owned(),
-            render_report(&metadata.run_id, results, summaries),
+            if let Some((_, run)) = statistics {
+                render_stats_report(&metadata.run_id, results, run)
+            } else {
+                render_report(&metadata.run_id, results, summaries)
+            },
         ));
         for (index, result) in results.iter().enumerate() {
             if result.decomposition.checks.passed {
@@ -274,6 +320,7 @@ struct RunMetadata {
     mode: &'static str,
     command: Vec<String>,
     inputs: Vec<InputRecord>,
+    statistics: Option<String>,
 }
 
 impl RunMetadata {
@@ -304,8 +351,58 @@ impl RunMetadata {
             mode,
             command: command.to_vec(),
             inputs: input_records,
+            statistics: None,
         })
     }
+}
+
+fn statistics_settings_json(run: &StatisticsRun) -> String {
+    format!(
+        "{{\"design\": \"independent (caller-declared)\", \"alternative\": {}, \"family_id\": {}, \"requested_genes\": {}, \"tested_genes\": {}, \"untested_genes\": {}, \"correction\": \"Benjamini-Hochberg\", \"correction_denominator\": \"successfully tested genes only\", \"minimum_samples_per_group\": {}, \"permutation_method\": \"exhaustive label enumeration including observed assignment\", \"extremity_tolerance\": {:.1e}, \"maximum_permutations\": {MAX_PERMUTATIONS}, \"random_seed\": null}}",
+        json_string(alternative_name(run.options.alternative)),
+        json_string(&run.family.family_id),
+        run.genes.len(),
+        run.family.tested_count,
+        run.family.untested_count,
+        run.options.min_per_group,
+        TOLERANCE,
+    )
+}
+
+fn statistics_tsv(run_id: &str, run: &StatisticsRun) -> String {
+    use std::fmt::Write as _;
+    let mut table = String::from(
+        "run_id\tfamily_id\tgene_id\tstatus\tcase_n\tcontrol_n\tmean_difference_case_minus_control\talternative\tp_value\tadjusted_p_value\tpermutations_considered\textreme_count\ttested_family_size\texcluded_samples\tuntested_reason\n",
+    );
+    for (row, summary) in run.genes.iter().zip(&run.comparisons) {
+        writeln!(
+            table,
+            "{}\t{}\t{}\t{}\t{}\t{}\t{}\t{}\t{}\t{}\t{}\t{}\t{}\t{}\t{}",
+            tsv(run_id),
+            tsv(&run.family.family_id),
+            tsv(&row.gene_id),
+            row.status,
+            summary.case.as_ref().map_or(0, |group| group.n),
+            summary.control.as_ref().map_or(0, |group| group.n),
+            optional_number(summary.mean_difference),
+            alternative_name(run.options.alternative),
+            optional_number(row.permutation.as_ref().map(|test| test.p_value)),
+            optional_number(row.adjusted_p_value),
+            row.permutation
+                .as_ref()
+                .map(|test| test.permutations_considered.to_string())
+                .unwrap_or_default(),
+            row.permutation
+                .as_ref()
+                .map(|test| test.extreme_count.to_string())
+                .unwrap_or_default(),
+            run.family.tested_count,
+            summary.comparison.excluded.len(),
+            tsv(&row.reason),
+        )
+        .unwrap();
+    }
+    table
 }
 
 fn write_bundle<S: AsRef<str>>(
@@ -463,12 +560,19 @@ fn append_comparison_rows(output: &mut String, run_id: &str, comparison: &GeneCo
     }
 }
 
-fn gene_summaries_tsv(run_id: &str, summaries: &[GeneComparisonSummary]) -> String {
+fn gene_summaries_tsv(
+    run_id: &str,
+    summaries: &[GeneComparisonSummary],
+    with_statistics: bool,
+) -> String {
     let mut output = String::from(
         "run_id\tgene_id\tstatus\tcase_n\tcontrol_n\tcase_mean\tcontrol_mean\tmean_difference_case_minus_control\tcase_median\tcontrol_median\tcase_min\tcase_max\tcontrol_min\tcontrol_max\texcluded_count\tnote\n",
     );
     for summary in summaries {
         let note = match summary.status {
+            crate::compare::ComparisonStatus::Complete if with_statistics => {
+                "descriptive effect; test status and p-values are in statistics.tsv"
+            }
             crate::compare::ComparisonStatus::Complete => {
                 "descriptive effect only; no p-value or q-value calculated"
             }
@@ -598,7 +702,7 @@ fn run_manifest_json(
         .join(",\n");
 
     format!(
-        "{{\n  \"schema_version\": \"1.0\",\n  \"run_id\": {},\n  \"created_unix_seconds\": {},\n  \"tool\": {{\"name\": \"splice-girl\", \"version\": {}}},\n  \"mode\": {},\n  \"command\": [{}],\n  \"inputs\": [\n{}\n  ],\n  \"outputs\": [{}],\n  \"settings\": {{\n    \"normalization\": \"count / total_gene_support\",\n    \"solver\": \"dense normal equations with one pinned node per connected component and partial pivoting\",\n    \"precision\": \"f64\",\n    \"acceptance_tolerance\": {:.1e},\n    \"minimum_total_support\": \"greater than zero\",\n    \"random_seed\": null\n  }},\n  \"summary\": {{\n    \"sample_gene_groups\": {},\n    \"junction_rows\": {},\n    \"included_samples\": {},\n    \"excluded_samples\": {},\n    \"failure_count\": {}\n  }},\n  \"exclusions\": [\n{}\n  ],\n  \"failures\": [\n{}\n  ]\n}}\n",
+        "{{\n  \"schema_version\": \"1.0\",\n  \"run_id\": {},\n  \"created_unix_seconds\": {},\n  \"tool\": {{\"name\": \"splice-girl\", \"version\": {}}},\n  \"mode\": {},\n  \"command\": [{}],\n  \"inputs\": [\n{}\n  ],\n  \"outputs\": [{}],\n  \"settings\": {{\n    \"normalization\": \"count / total_gene_support\",\n    \"solver\": \"dense normal equations with one pinned node per connected component and partial pivoting\",\n    \"precision\": \"f64\",\n    \"acceptance_tolerance\": {:.1e},\n    \"minimum_total_support\": \"greater than zero\",\n    \"random_seed\": null\n  }},\n  \"summary\": {{\n    \"sample_gene_groups\": {},\n    \"junction_rows\": {},\n    \"included_samples\": {},\n    \"excluded_samples\": {},\n    \"failure_count\": {}\n  }},\n  \"exclusions\": [\n{}\n  ],\n  \"failures\": [\n{}\n  ],\n  \"statistics\": {}\n}}\n",
         json_string(&metadata.run_id),
         metadata.unix_time_seconds,
         json_string(env!("CARGO_PKG_VERSION")),
@@ -614,6 +718,7 @@ fn run_manifest_json(
         failures.len(),
         exclusions_json,
         failures_json,
+        metadata.statistics.as_deref().unwrap_or("null"),
     )
 }
 

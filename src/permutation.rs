@@ -22,7 +22,7 @@ use crate::manifest::Condition;
 /// revised to add a sampling procedure and a saved seed; this is where that
 /// revision would need to happen, rather than letting enumeration run
 /// unbounded.
-const MAX_PERMUTATIONS: u128 = 1_000_000;
+pub const MAX_PERMUTATIONS: u128 = 1_000_000;
 
 /// Which direction(s) count as "at least as extreme" as the observed effect.
 /// `docs/statistics_spec.md` S5 leaves the choice between these open as a

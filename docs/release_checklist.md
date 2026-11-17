@@ -29,7 +29,8 @@ claim that the biological study is finished.
 
 ## Current scope boundary
 
-The current release candidate supports validated synthetic analysis and
-descriptive sample-preserving comparisons. It does not claim completed
-splice-aware alignment, final real-data junction tables, approved inferential
-statistics, multiple-testing correction, or biological interpretation.
+The current release candidate supports validated synthetic analysis,
+descriptive comparisons, and explicitly configured exact unpaired permutation
+tests with BH correction and reporting. The real study still needs completed
+splice-aware alignment, checked junction tables, approved eligibility/design
+and testing-family rules, baseline comparisons, and biological interpretation.
