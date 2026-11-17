@@ -5,8 +5,12 @@ A reader should be able to classify a new evidence row using only these rules.
 Dated decisions are mirrored in [`docs/decisions.md`](decisions.md). Do not
 rewrite a rule silently; add a dated revision instead.
 
-Status: **draft rules recorded 2026-11-12; awaiting independent read-through
-(G1 step 7).**
+Status:
+
+- **Genetic-risk rules:** draft recorded 2026-11-12, awaiting an independent
+  read-through (G1 step 7).
+- **Environmental side (E1–E8, E11):** complete as of 2026-11-17, with the
+  publication rule still provisional.
 
 ## Stable identifiers
 
@@ -649,6 +653,53 @@ calculation.
 
 ## Interpretation boundary (E11)
 
-*To be written.* It must state that environmental evidence only prioritizes
-genes, and that without patient-level exposure data no exposure causation can
-be claimed.
+Written 2026-11-17 by Vania Zeledon.
+
+**Methods paragraph.**
+
+> Environmental-response evidence was used only to prioritize genes for
+> analysis. A gene entered the environmental set when curated human studies
+> in the Comparative Toxicogenomics Database reported a measured change in its
+> expression or activity after exposure to a dioxin-like compound (Methods,
+> E1–E8). These studies were done almost entirely in cell lines and other
+> non-endometrial tissue. Only 50 of the 6,919 retained evidence rows cite
+> papers about endometrium or uterus. The study cohort (GSE315857; four women
+> with and four without endometriosis, proliferative-phase eutopic
+> endometrium) has no exposure measurements: no serum or tissue dioxin
+> levels, exposure questionnaires, or occupational histories. We therefore
+> cannot relate any participant's exposure to her splicing pattern. A
+> difference in splice-graph structure in an environmental-response or
+> overlap gene shows that a gene known to respond to dioxin-like compounds
+> in other human cells also differs between groups. It does not show that
+> dioxin exposure caused the difference, that participants were exposed, or
+> that the gene responds to dioxin in endometrium.
+
+**What exists in the data.** Checked 2026-11-17 against
+[`data/metadata/samples.tsv`](../data/metadata/samples.tsv) and the GEO
+series record for GSE315857. The only sample characteristics are diagnosis,
+tissue (eutopic endometrium), and menstrual phase (proliferative). No
+patient-level exposure data exist for this cohort. A patient-level exposure
+analysis remains an optional extension (ROADMAP Phase 13) and needs a
+different dataset.
+
+**Wording rules for results, figures, captions, and talks.**
+
+| Use | Do not use |
+|---|---|
+| "dioxin-responsive gene" or "gene in the environmental-response set" | "dioxin-affected gene in these patients", "exposure-driven change" |
+| "differs between endometriosis and control samples" | "caused by", "due to", or "explained by" exposure |
+| "overlap gene: has both genetic-risk and dioxin-response evidence" | "gene–environment interaction", or saying exposure modifies genetic risk |
+| "environmental evidence comes mostly from non-endometrial cells" | implying the response was measured in endometrium (unless the gene's `tissue` tag is `cited_paper:endometrium_uterus`, and then say "in published endometrial studies") |
+
+**Checked against current outputs (2026-11-17).** No figure or caption
+currently implies exposure causation:
+
+- The Rust report and graph SVGs do not mention environmental evidence.
+- [`docs/running_the_tool.md`](running_the_tool.md) states that no disease or
+  exposure claim follows from the demo.
+
+Any future result figure that labels genes by category must follow the
+wording rules above. That check belongs to the caption audit (V11).
+
+The same boundary, in presentation form, is in
+[`docs/presentation_notes.md`](presentation_notes.md).
