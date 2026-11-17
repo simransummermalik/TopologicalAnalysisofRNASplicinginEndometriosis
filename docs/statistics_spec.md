@@ -1,6 +1,6 @@
 # Splice Girl statistics specification
 
-**Spec version:** 0.3 (2026-11-16) — records S1 (biological unit), S4 (primary
+**Spec version:** 0.4 (2026-11-17) — records S1 (biological unit), S4 (primary
 effect), S5/S6 (exact permutation design and validation), and the configured
 statistics CLI connecting permutation testing and S8 correction for the study in
 [`data/metadata/samples.tsv`](../data/metadata/samples.tsv).
@@ -11,6 +11,13 @@ workflow policy remain open. S2/S3 (eligible real inputs), scientific review of
 S7 (whether inference is allowed), and S9–S12 (baselines, sensitivity, and final
 study results) are still pending. Synthetic tests establish software behavior
 while real-data QC and scientific decisions are completed.
+
+Software update: `stats` now exports same-sample descriptive baselines and
+optional, explicitly requested rankings, preserving original evidence columns
+in `gene_family.tsv`. `scripts/sensitivity.py` reruns descriptive Hodge effects
+across an explicit support/coverage grid, saving every attempted setting and
+missing outcome. These implementations do not approve the real-study grid,
+family, cutoff, or interpretation. See [running_the_tool.md](running_the_tool.md).
 
 ## S1 — Biological unit and permutation restrictions
 

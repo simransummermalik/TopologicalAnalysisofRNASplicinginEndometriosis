@@ -124,3 +124,20 @@ support, duplicate edges, and self-loops, is recorded in
 This basic solver uses normal equations and dense Gaussian elimination. It is
 appropriate for the tiny validation fixtures, but the numerical method must be
 reviewed before large or ill-conditioned biological graphs are analyzed.
+
+## Preprocessing and back-splice detection
+
+The current Cleaver/HISAT2 adapter supplies ordinary annotated splice
+junctions. It counts primary uniquely mapped alignments with transcript-strand
+tags, excludes supplementary/chimeric records, and requires an exact match to
+the annotated adjacent-exon map. It is not a back-splice detector. Therefore,
+an absent back-splice edge in its output cannot establish that a sample lacks
+circular RNA. Alignment and strand details are retained in SAM/BAM; exclusion
+counts are retained in junction QC.
+
+Hodge cycle-space signal can still arise from ordinary exon-skipping paths,
+as the acyclic exon-skipping fixture above shows. The synthetic back-splice
+fixtures test the mathematics on supplied edges; they do not validate a
+biological detector. A circular-RNA study would require a separately reviewed
+detector and adapter. See the [preprocessing counting rules](../preprocessing/HISAT2_GUIDE.md#counting-rules-and-limits)
+for the presentation-ready detection limitation.

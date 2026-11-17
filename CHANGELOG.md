@@ -2,6 +2,14 @@
 
 ## Unreleased
 
+- Added the runnable Cleaver/HISAT2 reference and sample adapter, SAM junction
+  counting, sequential batch processing, QC and checksummed provenance.
+- Added same-sample baselines, topology flags, optional deterministic ranking,
+  preserved gene-family annotations, and descriptive support-grid sensitivity.
+- Added `scripts/check_project.py`, paired-read external-tool smoke testing,
+  sensitivity CI checks, and beginner workflow guides. Fixed a parallel-test
+  temporary-directory collision.
+
 - Added `stats` and menu option 7: explicit-family exact permutation tests,
   BH correction, per-gene statistics TSV, and a statistical section in the
   offline report. Test direction, independent design, sample minimum, family

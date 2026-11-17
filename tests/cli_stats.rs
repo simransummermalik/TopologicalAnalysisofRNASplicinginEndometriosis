@@ -3,9 +3,11 @@ use std::fs;
 use std::io::Write;
 use std::path::{Path, PathBuf};
 use std::process::{Command, Output, Stdio};
+use std::sync::atomic::{AtomicUsize, Ordering};
 use std::time::{SystemTime, UNIX_EPOCH};
 
 struct Fixture(PathBuf);
+static NEXT_FIXTURE: AtomicUsize = AtomicUsize::new(0);
 
 impl Fixture {
     fn new() -> Self {
@@ -13,8 +15,11 @@ impl Fixture {
             .duration_since(UNIX_EPOCH)
             .unwrap()
             .as_nanos();
-        let root =
-            std::env::temp_dir().join(format!("splice-girl-stats-{}-{stamp}", std::process::id()));
+        let sequence = NEXT_FIXTURE.fetch_add(1, Ordering::Relaxed);
+        let root = std::env::temp_dir().join(format!(
+            "splice-girl-stats-{}-{stamp}-{sequence}",
+            std::process::id()
+        ));
         fs::create_dir(&root).unwrap();
         let mut junctions = "sample_id\tgene_id\tfrom\tto\tcount\n".to_owned();
         let mut manifest = "sample_id\tcondition\tsubject_id\n".to_owned();

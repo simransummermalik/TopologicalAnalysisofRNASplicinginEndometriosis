@@ -305,13 +305,30 @@ The latter includes `run_id`, `family_id`, `gene_id`, `status`, `case_n`,
 `adjusted_p_value`, `permutations_considered`, `extreme_count`,
 `tested_family_size`, `excluded_samples`, and `untested_reason`.
 Adjusted values are BH-adjusted p-values, not estimates of the probability
-that an individual gene is a false discovery. No cutoff or ranking is selected.
+that an individual gene is a false discovery. No cutoff is selected.
+
+Stats bundles also save `baseline_metrics.tsv`, `baseline_comparisons.tsv`,
+and an exact copy of the supplied `gene_family.tsv`, including any evidence
+columns. Baselines use exactly the comparison's included samples and retain
+missing means as blank fields. Measurements are total junction support,
+observed nodes, junctions and cycle rank (edges minus nodes plus connected
+components). Different node/edge signatures are flagged
+`different_review_required`; no implicit topology harmonization occurs.
+
+Optional `--rank-by absolute-effect|adjusted-p` writes `rankings.tsv` and orders
+the report's statistics table. Tested genes come first, ordered by the requested
+metric; adjusted-p ties use absolute effect, then gene ID. Absolute-effect ties
+use gene ID. Untested genes follow alphabetically with blank ranks/p-values.
+Omitting the option creates no ranking file. Ranking does not establish
+significance or approve candidate evidence.
 
 Stats mode records `mode: stats`, the gene-family input checksum, and a
 `statistics` object containing the declared design, alternative, family label,
 requested/tested/untested counts, replication threshold, correction and
-denominator policy, exact enumeration method/limit, tolerance, and null seed.
-Non-stats bundles have `statistics: null`. Every output shares the same run ID.
+denominator policy, exact enumeration method/limit, tolerance, null seed,
+optional ranking rule and baseline sample policy.
+Non-stats bundles have `statistics: null`. Generated result TSVs share the same
+run ID; the preserved original gene-family table retains its input schema.
 The HTML report includes a statistics section alongside the sample plots and
 linked graphs. Exclusion details remain in `comparisons.tsv` and the manifest.
 

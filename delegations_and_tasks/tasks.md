@@ -61,9 +61,9 @@ has not been met.
 | D2 | **Done** | GSE315857 and its eight exact run accessions are recorded in [samples.tsv](../endometriosis-splicing/samples.tsv) and the [README](../README.md#the-eight-sample-study). |
 | D3 | In progress | Eight runs were retrieved in Galaxy and one control pilot is local; complete source checksums are still needed. |
 | D4 | **Done** | The standardized [sample manifest](../data/metadata/samples.tsv) records unique run-based sample IDs, internal subject labels, case/control status, tissue, accessions, file locations, QC/Cleaver status, pending reference fields, and eligibility for all eight samples. |
-| D5 | In progress | The exact GENCODE v50 GRCh38.p14 [FASTA/GTF pair is verified and the exon-node, 1-based coordinate, annotation-mapping, and transcript-direction rules are frozen](../docs/data_methods.md#frozen-junction-and-graph-conventions); the production aligner still needs to be resolved because the helper plans STAR while the frozen methods name HISAT2. |
-| D6 | Blocked | Junction derivation requires D5 and splice-aware alignment. |
-| D7 | Not started | Back-splice detection support has not been documented for the selected workflow. |
+| D5 | In progress | The verified GENCODE v50 reference and graph conventions are documented in [data_methods.md](../docs/data_methods.md). The [Cleaver/HISAT2 adapter](../preprocessing/HISAT2_GUIDE.md) prepares indexes/maps/hints and passes a tiny actual paired-read test. Full human index and pilot review remain. |
+| D6 | In progress | Annotated SAM junction counting, strand/uniqueness/anchor filters and sequential batch export are implemented and tested. Real cohort alignments and QC remain. |
+| D7 | **Done** | The [HISAT2 detection note](../preprocessing/HISAT2_GUIDE.md#counting-rules-and-limits) and [math limitation](../docs/math_spec.md#preprocessing-and-back-splice-detection) document strand availability, excluded alignment classes, and why missing back-splices do not prove biological absence. |
 | D8 | Blocked | Junction QC requires D6 junction counts. |
 | D9 | Blocked | Count and coverage rules require D8. |
 | D10 | Blocked | Standard node/junction tables require D6 and D9. |
@@ -106,7 +106,7 @@ has not been met.
 | R9 | **Done** | The complete synthetic acceptance suite passes. |
 | R10 | **Done** | Manifest parsing and one-gene case/control inclusion and exclusion are implemented. |
 | R11 | **Done** | `stats` connects the exact permutation and BH modules to explicit gene-family, sidedness, design, and sample-minimum inputs; [`tests/cli_stats.rs`](../tests/cli_stats.rs) validates saved statistics, exclusions, provenance, and report integration without parsing terminal text. Real-study scientific choices remain subject to review. |
-| R12 | Blocked | Ranking needs approved candidate and statistics rules plus real junction results. |
+| R12 | In progress | Optional explicit-rule ranking, deterministic ties, signed junction exports and preservation of the evidence-annotated gene list are implemented and tested. Final candidate category integration and real-study rule review remain. |
 | R13 | **Done** | [`src/output.rs`](../src/output.rs) writes metrics, junction components, comparisons, and `run_manifest.json` with checksums and settings; see the [October 22 log](../logs/october_22nd_summer.md). |
 | R14 | **Done** | [`tests/cli_errors.rs`](../tests/cli_errors.rs) checks missing/empty files, headers, counts, manifests, metadata mismatches, zero support, comparison groups, overwrite protection, corrections, and failure exit codes; solver failure is unit-tested. |
 | R15 | In progress | [Software validation](../docs/software_validation.md) records small and candidate-sized synthetic timing plus peak memory; a real-data benchmark remains after D12. |
@@ -126,7 +126,8 @@ has not been met.
 | S7 | In progress | `stats` requires an independent-design declaration and an explicit replication minimum, rejects known repeated subjects, and records untestable genes. Real exchangeability, confounding, QC, and study-design review remain. |
 | S8 | In progress | BH correction now runs in `stats`, preserving raw/adjusted values, untested reasons, and family counts in TSV/JSON/HTML; final biological family and missing-test policy approval remain. |
 | S12 | In progress | The generic statistics TSV, run manifest, sample decisions, and report are implemented and tested; the final real-study report and baseline/sensitivity results remain. |
-| S2, S3, S9–S11 | Not started | Eligibility/support-threshold freezing, per-sample real-input validation, baselines, method comparisons, and sensitivity checks still require reviewed inputs and scientific decisions. |
+| S2, S3 | Not started | Real eligibility and support/coverage thresholds still require scientific review. |
+| S9–S11 | In progress | Same-sample graph/count baselines and the [support-grid runner](../scripts/sensitivity.py) are implemented and tested. Real-input validation, approved alternate thresholds and biological method comparisons remain. |
 | I1–I3 | Blocked | Biological interpretation must wait for reviewed real results and provenance tables. |
 
 ### Usability, presentation, and final work status

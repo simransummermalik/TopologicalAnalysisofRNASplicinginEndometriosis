@@ -29,10 +29,16 @@ the team records an owner and a reasoned choice.
 
 ## Open decisions that still need a team answer
 
+Implementation note, 2026-11-17: `preprocessing/hisat2_pipeline.py` now implements
+the HISAT2 path already named in the data methods; a tiny actual paired-read
+Cleaver/HISAT2-to-Rust-report test passes. The STAR prototype is retained as
+legacy code. This resolves the implementation mismatch without treating a
+synthetic smoke test as approval of the full human pilot or its thresholds.
+
 | Question | Why it matters | What must be recorded before implementation |
 |---|---|---|
 | Which exact support and coverage thresholds define an eligible junction? | Thresholds change which graphs and samples enter the analysis. | Threshold values, rationale, and a small sensitivity plan. |
-| Which splice-aware aligner is final for production junction extraction? | The helper script currently plans STAR, while the frozen data methods name HISAT2; Bowtie2 is currently documented only for optional PhiX cleanup. | One chosen aligner, version, index command, splice-site options, and a checked pilot before D6 is marked done. |
+| Does the real HISAT2 pilot pass the production-method review? | The implemented adapter now matches the data methods; full-cohort suitability remains unverified. Bowtie2 alone is not the splice-junction extractor. | Reviewed human alignment/QC, frozen tool versions and thresholds, and a checked real gene before D6 is marked done. |
 | Will the final permutation test be one-sided or two-sided? | The direction of a cycle-fraction change is not known in advance. | The chosen alternative and the person approving it. |
 | Which reviewed candidate-gene table is final? | Ranking and interpretation must use a frozen, source-linked set. | Stable gene IDs, evidence sources, and inclusion rules. |
 | What are the course midpoint and final deadlines? | The task board cannot assign realistic due dates without them. | Dates, owner, and the required artifact at each checkpoint. |

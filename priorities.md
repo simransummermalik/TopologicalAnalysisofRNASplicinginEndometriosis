@@ -1,6 +1,6 @@
 # Splice Girl project priorities
 
-Updated November 16, 2026.
+Updated November 17, 2026.
 
 This is the short, ordered version of the full
 [task guide](delegations_and_tasks/tasks.md). It covers the entire project.
@@ -20,9 +20,9 @@ careful case-versus-control result.
 
 - [ ] Finish the dataset suitability review and raw-file checksum record.
 - [ ] Build the HISAT2 index and splice-site hints from the verified reference.
-- [ ] Resolve the production aligner choice in `docs/decisions.md`; the current
-  helper plans STAR, while the frozen methods name HISAT2. Bowtie2 is only the
-  optional cleanup filter unless the team changes the method.
+- [x] Implement and test the Cleaver/HISAT2 adapter matching the current data
+  methods, including a sequential batch command. The legacy STAR prototype
+  remains separate. Full-cohort use still needs the checked human pilot.
 - [ ] Run read QC and Cleaver cleaning for every sample.
 - [ ] Align the cleaned paired reads with the frozen settings.
 - [ ] Extract uniquely mapped splice-junction counts.
@@ -97,10 +97,13 @@ every statistics column without guessing.
 - [ ] Create one sample-by-gene result table.
 - [ ] Check group labels, graph comparability, missingness, and exclusions.
 - [ ] Calculate effect sizes and valid statistical results.
-- [ ] Compare Hodge results with simpler baseline measurements.
-- [ ] Run the approved sensitivity checks.
-- [ ] Rank results with deterministic tie-breaking.
-- [ ] Export statistics, baselines, rankings, and junction explanations.
+- [x] Implement same-sample baseline exports alongside Hodge results.
+- [x] Implement an explicit support/coverage sensitivity-grid runner.
+- [x] Implement optional ranking with deterministic tie-breaking.
+- [x] Export configured statistics, baselines, optional rankings, and signed
+  junction components, retaining the original evidence-annotated gene family.
+- [ ] Apply these tools to reviewed real inputs, compare methods, and interpret
+  the approved sensitivity grid and rankings.
 
 **Finished when:** every reported difference is traceable to individual samples,
 an approved analysis rule, and a versioned output file.
@@ -121,6 +124,8 @@ beginner review and a real-data benchmark remain.
 - [x] Test `cargo install --path .` from an isolated clean source copy.
 - [x] Test `splice-girl --help`, `splice-girl --version`, and
   `splice-girl --start` after installation.
+- [x] Provide one complete software check command, including an optional actual
+  Cleaver/HISAT2 paired-read batch-to-report smoke test.
 - [ ] Ask a beginner to run a clean copy and fix anything that confuses them.
 
 **Finished when:** a new user can install, run, and troubleshoot the tool from
@@ -210,6 +215,8 @@ These are choices for four people, not assigned roles:
 - [x] The beginner README, input contract, and math specification.
 - [x] The eight-sample manifest and verified human reference pair.
 - [x] Frozen exon-node, coordinate, strand, and annotation-mapping rules.
+- [x] Documented that the current HISAT2 annotated-junction workflow cannot
+  establish back-splice absence or circular RNA.
 
 ## Later, only if the required project is complete
 

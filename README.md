@@ -38,6 +38,8 @@ interpretation.
 | Our progress | [What we have built](#what-we-have-built) |
 | The public data | [The eight-sample study](#the-eight-sample-study) |
 | A live demonstration | [Try Splice Girl](#try-splice-girl) |
+| Running the complete software workflow | [Step-by-step software guide](docs/running_the_tool.md) |
+| Processing local FASTQ samples | [Cleaver/HISAT2 guide](preprocessing/HISAT2_GUIDE.md) |
 | An unfamiliar word | [Beginner dictionary](#beginner-dictionary) |
 | Scientific cautions | [How to interpret the results](#how-to-interpret-the-results) |
 
@@ -174,10 +176,12 @@ In plain language:
 | Offline comparison report | A plain report shows each sample's cycle fraction, excluded samples, exact values, and links to its three-panel Hodge graph. |
 | Configurable statistics workflow | `stats` connects exact permutation tests and BH correction to an explicit gene family, direction, sample minimum, and independent-sample declaration, with tables and an offline report. |
 | Reproducible result bundles | Metrics, junction components, comparisons, checksums, and run settings can be saved as TSV and JSON files. |
-| Preprocessing design | The path from FASTQ reads to Splice Girl junction tables is documented and scripted. |
+| Cleaver/HISAT2 preprocessing | Reference preparation, read cleaning, alignment, annotated-junction counting, and sequential multi-sample runs are implemented and tested on synthetic reads. |
+| Baselines and optional ordering | The same eligible samples are compared using simpler graph/count measurements; tested genes can be ordered with deterministic ties. |
+| Support sensitivity | An explicit threshold grid reruns the Rust analysis and keeps disappearing genes visible. |
 | Public dataset selection | Four control and four endometriosis RNA-seq samples have been identified. |
 
-The Rust project currently passes **89 automated tests**. Real-data
+The Rust project currently has **91 automated tests**. Real-data
 preprocessing is the next active stage, and the large raw-read files remain
 outside Git.
 

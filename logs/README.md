@@ -41,3 +41,4 @@ commits authored with Summer's university email through October 24, 2026.
 | November 12, 2026 | Vania | Pushed | [Candidate-gene rules, verified sources, and gene-set tooling (Priority 2)](november_12th_vania.md) |
 | November 3, 2026 | Summer | Prepared locally | [Offline comparison report and linked Hodge graphs](november_3rd_summer.md) |
 | November 16, 2026 | Summer | Prepared locally | [Configured statistics CLI, exports, and report integration](november_16th_summer.md) |
+| November 17, 2026 | Summer | Prepared locally | [Connected preprocessing, baselines, ranking, sensitivity and project checks](november_17th_summer.md) |

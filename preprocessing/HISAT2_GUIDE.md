@@ -1,0 +1,154 @@
+# Cleaver and HISAT2: the runnable preprocessing workflow
+
+This adapter implements the HISAT2 method already named in the project's data
+methods. Cleaver is the external RAW Lab tool, not the name of our pipeline.
+The old `run_preprocessing.py` remains a separate STAR prototype.
+
+```text
+one sample's FASTQ file(s)
+  -> cleaver fastp: clean reads and save QC
+  -> HISAT2: align reads using the matching genome and annotated splice sites
+  -> sam_junctions.py: count eligible annotated junctions
+  -> cleaver samtools: sort and index the alignment
+  -> junctions.tsv: Splice Girl's five-column input
+```
+
+## 1. Install and check tools
+
+From the repository root, with Cargo and Conda installed:
+
+```sh
+cargo install cleaver
+conda env create -f preprocessing/environment.yml
+conda activate splice-girl-preprocessing
+python3 preprocessing/hisat2_pipeline.py check
+```
+
+The environment supplies HISAT2 2.2.3 and samtools. Cleaver must also be on
+`PATH`. This guide does not require Galaxy or download any reads automatically.
+
+## 2. Test the complete workflow without human data
+
+```sh
+python3 scripts/check_project.py --with-tools
+```
+
+This runs the Rust and Python checks and an actual external-tool smoke test.
+The test builds a tiny synthetic reference, processes two separate synthetic
+paired-end samples, merges their junction tables without pooling their counts, and
+generates a Rust comparison report. Temporary outputs are removed afterward.
+Its anchor/support choices are test settings, not approved study thresholds.
+
+## 3. Prepare the real reference once
+
+Use the verified matching GENCODE v50 primary-assembly FASTA and GTF recorded
+in [data_methods.md](../docs/data_methods.md). Building the full human index
+requires substantially more resources than the smoke test.
+
+```sh
+python3 preprocessing/hisat2_pipeline.py plan-reference \
+  --fasta references/gencode_v50/GRCh38.primary_assembly.genome.fa.gz \
+  --gtf references/gencode_v50/gencode.v50.primary_assembly.annotation.gtf.gz \
+  --output-dir references/hisat2_v50 --threads 2
+```
+
+Inspect the plan, then replace `plan-reference` with `prepare-reference` to
+execute it. The new folder contains the eight-part index (`genome` is its
+prefix), exon map, splice-site hints, log, and checksummed reference manifest.
+An existing output folder is never overwritten. Use a new folder for a retry.
+
+## 4. Write a local sample sheet
+
+Make a tab-separated file with these four columns. The paths below are
+examples: replace them with files you actually have. Paths are resolved
+relative to the sheet's folder. Keep one row per biological sample.
+
+```text
+sample_id	condition	read1	read2
+SRR36710390	control	raw/SRR36710390_R1.fastq.gz	raw/SRR36710390_R2.fastq.gz
+SRR36710386	case	raw/SRR36710386_R1.fastq.gz	raw/SRR36710386_R2.fastq.gz
+```
+
+Add all eight rows when their files are available. `condition` must be `case`
+or `control`; leave `read2` blank only for genuinely single-end data. A file
+cannot be reused as another sample or mate. The rich study metadata remains
+in `data/metadata/samples.tsv`; a batch sheet does not establish study eligibility.
+
+## 5. Plan and run the batch
+
+Choose the RNA strandedness from the library protocol and the count/anchor
+thresholds through the group's methods review. Do not infer these from
+whether an example happens to run. `FR`/`RF` describe paired library
+strandedness; `unstranded` is an explicit choice, not an automatic guess.
+
+Use `python3 preprocessing/batch_preprocessing.py --help` for all arguments.
+For example, the command structure is:
+
+```text
+python3 preprocessing/batch_preprocessing.py plan
+  --samples LOCAL_SAMPLE_SHEET.tsv
+  --index references/hisat2_v50/genome
+  --gene-map references/hisat2_v50/junction_exon_map.tsv
+  --splice-sites references/hisat2_v50/splice_sites.tsv
+  --strandedness APPROVED_LIBRARY_STRANDEDNESS
+  --min-anchor APPROVED_ANCHOR_LENGTH
+  --min-unique APPROVED_JUNCTION_SUPPORT
+  --output-dir preprocessing/runs/cohort_run_01
+  --threads 2
+```
+
+Join those lines with shell continuation backslashes when running. Replace
+the capitalized placeholders first. `plan` checks every input and prints
+commands without starting jobs; change it to `run` to execute the batch.
+Samples run sequentially to avoid starting eight alignments at once.
+For already cleaned reads, use a separate sheet of cleaned paths and pass
+`--skip-cleaning`; the manifest records that choice.
+
+Every sample gets its own logs, QC, BAM/index, junction table and manifest.
+The batch publishes a combined `junctions.tsv` and `samples.tsv` only after
+every sample completes. A failure stops the batch, records the failed and
+unstarted samples, and leaves existing completed results for inspection.
+The combined table preserves sample IDs and does not manufacture missing zeros.
+
+## 6. Analyze the combined output
+
+```sh
+cargo run --release -- report \
+  preprocessing/runs/cohort_run_01/junctions.tsv \
+  preprocessing/runs/cohort_run_01/samples.tsv \
+  --output target/cohort_report_01
+```
+
+Open `target/cohort_report_01/report.html`. Use `stats` only with a reviewed
+gene family and explicit statistical settings; see the
+[software guide](../docs/running_the_tool.md). A successful command is not a
+substitute for alignment, read-quality, coverage, or cohort review.
+
+## Counting rules and limits
+
+- CIGAR `N` yields intron boundaries in 1-based closed coordinates. Insertions
+  and clipping do not consume reference positions; deletions do.
+- A junction needs the requested contiguous aligned anchor on each side.
+- Only primary, non-QC-failed alignments with `NH:i:1` are counted. Transcript
+  direction comes from `XS:A:+/-`, not the read's reverse-complement flag.
+- HISAT2 runs with `--dta-cufflinks` and known splice-site hints. Unknown-strand,
+  nonunique, ambiguous and unannotated observations are excluded with QC counts.
+  This deliberately restricts the output to the frozen annotation map.
+- The count unit is supporting read alignments. Two mates supporting the same
+  junction can contribute two observations; these are not deduplicated
+  fragment or molecule counts. Duplicate-flagged records are retained unless
+  `--exclude-duplicates` is requested; this does not mark duplicates itself.
+  Proper-pair status is not an additional filter.
+- This workflow does **not** detect back-splice junctions or establish circular
+  RNA. It can still supply alternative-path graphs for Hodge analysis. D7's
+  detection limitation is documented; a circular-RNA analysis would need a
+  separate reviewed detector and input adapter.
+  A missing back-splice in these outputs is therefore not evidence that the
+  biological sample lacks back-splicing.
+- SAM is retained alongside BAM for auditability, so reserve disk space for
+  both. FASTQs, references, indexes, BAMs and run folders stay outside Git.
+- Reference preparation does not certify that arbitrary FASTA/GTF files match;
+  use the verified pair. Index/map/hint hashes record exactly what was used.
+
+Coordinate and tag definitions follow the [HISAT2 manual](https://daehwankimlab.github.io/hisat2/manual/)
+and [SAM specification](https://samtools.github.io/hts-specs/SAMv1.pdf).

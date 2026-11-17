@@ -1,6 +1,6 @@
 # Splice Girl software validation
 
-**Validation date:** November 16, 2026
+**Validation date:** November 17, 2026
 **Package version:** `0.1.0`
 
 This note records installation, compatibility, workflow, test, and performance
@@ -17,7 +17,7 @@ benchmark.
 
 Rust 1.85 is the minimum because it is the first stable release supporting the
 Rust 2024 edition used by this package. The October 28 suite of 56 tests was
-compiled and run with both Rust 1.85.0 and Rust 1.97.1. The current 89-test
+compiled and run with both Rust 1.85.0 and Rust 1.97.1. The current 91-test
 suite, including reports and the full configured statistics workflow, passes
 on both versions.
 The CI matrix retains Rust 1.85.0 as well as stable.
@@ -56,7 +56,7 @@ The all-gene export contained all five expected files:
 
 ## Automated verification
 
-The current suite contains **89 passing tests**:
+The current Rust suite contains **91 passing tests**:
 
 - 51 library tests for parsing, manifests, graph math, comparisons, outputs,
   validation summaries, SVG generation, report escaping/missing values, and
@@ -65,9 +65,10 @@ The current suite contains **89 passing tests**:
 - 9 command-level error tests
 - 9 command-level workflow tests, including report/table agreement, links,
   overwrite protection, missing groups, unsafe identifiers, and menu execution
-- 8 statistics CLI acceptance tests covering independently known p-values,
+- 10 statistics CLI acceptance tests covering independently known p-values,
   BH correction, one-sided alternatives, required options, untested rows,
-  repeated subjects, enumeration limits, provenance, reports, and menu option 7
+  repeated subjects, enumeration limits, provenance, reports, menu option 7,
+  baseline/sample agreement, topology flags, optional rankings and tie handling
 - 12 independent synthetic-math tests
 
 The following checks pass:
@@ -179,3 +180,29 @@ exists.
 - The independent beginner clean-checkout review in task R17 is still pending.
 - Successful software validation does not validate RNA-seq preprocessing,
   biological comparability, statistical inference, or gene interpretation.
+
+## November 17 — connected software acceptance check
+
+`python3 scripts/check_project.py --with-tools` runs the complete local check.
+The default check needs only Cargo/Python; the extra smoke test requires
+Cleaver and HISAT2 on `PATH`. The source test helpers use unique temporary
+folders even when tests start simultaneously.
+
+- Rust: 91 tests, formatting, strict Clippy and release build pass on stable
+  Rust 1.97.1 and the declared minimum 1.85.0.
+- Python: 17 preprocessing tests, 22 gene-evidence helper tests and 2 support
+  sensitivity tests pass. Total automated Rust/Python tests: **132**.
+- The actual Cleaver 1.0.1 / HISAT2 2.2.3 smoke test builds the tiny reference,
+  cleans and aligns two synthetic paired samples, counts annotated junctions,
+  sorts/indexes BAMs through Cleaver, merges samples, and generates the Rust
+  report. An initial single-end smoke test passed too. This checks executable
+  interoperability rather than only printed command plans.
+- The support-grid test reruns the real Rust executable and verifies that
+  disappearing genes retain blank effects rather than zero effects.
+- The 200-gene, eight-sample, 4,800-row synthetic comparison benchmark completed
+  three runs with a median of 21.817 ms on this machine. Runtime varies.
+
+No full human-reference alignment or final cohort result is implied by these
+checks. The tiny reference's intron was corrected to canonical GT/AG for the
+splice-aware alignment fixture; its exonic sequence and expected mapping
+remain synthetic.

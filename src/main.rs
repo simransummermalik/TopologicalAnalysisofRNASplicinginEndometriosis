@@ -66,7 +66,7 @@ usage:\n  \
   {program} gene <GENE_ID> <junctions.tsv> <manifest.tsv> [--output <folder>]\n  \
   {program} compare <junctions.tsv> <manifest.tsv> [--output <folder>]\n  \
   {program} report <junctions.tsv> <manifest.tsv> --output <folder>\n  \
-  {program} stats <junctions.tsv> <manifest.tsv> --genes <family.tsv> --family <label> --alternative <two-sided|case-greater|case-less> --design independent --min-per-group <n> --output <folder>\n  \
+  {program} stats <junctions.tsv> <manifest.tsv> --genes <family.tsv> --family <label> --alternative <two-sided|case-greater|case-less> --design independent --min-per-group <n> --output <folder> [--rank-by <absolute-effect|adjusted-p>]\n  \
   {program} visualize <SAMPLE_ID> <GENE_ID> <junctions.tsv> <output.svg>\n\n\
 commands:\n  \
   analyze     calculate graph and Hodge measurements\n  \

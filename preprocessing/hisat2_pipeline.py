@@ -58,6 +58,8 @@ def versions(names):
         call = subprocess.run(
             [name, "--version"], capture_output=True, text=True, check=False, timeout=15
         )
+        if call.returncode:
+            raise ValueError(f"{name} --version failed; check the installed executable and environment")
         lines = (call.stdout + call.stderr).strip().splitlines()
         result[name] = {
             "path": shutil.which(name),
@@ -118,11 +120,12 @@ def reference(args):
         "method": "HISAT2 reference preparation",
         "inputs": [],
         "commands": [command],
-        "tools": versions(["hisat2-build"]),
+        "tools": {},
     }
     manifest = output / "reference_manifest.json"
     save(manifest, record)
     try:
+        record["tools"] = versions(["hisat2-build"])
         record["inputs"] = [checksum(args.fasta), checksum(args.gtf)]
         opener = gzip.open if args.fasta.suffix == ".gz" else open
         with opener(args.fasta, "rb") as source, fasta.open("xb") as dest:
@@ -270,11 +273,12 @@ def run(args):
             "cleaning_skipped": args.skip_cleaning,
             "count_unit": "primary uniquely mapped read alignments with NH:i:1 and XS strand",
         },
-        "tools": versions(["cleaver", "hisat2"]),
+        "tools": {},
     }
     manifest = output / "run_manifest.json"
     save(manifest, record)
     try:
+        record["tools"] = versions(["cleaver", "hisat2"])
         paths = [
             args.read1,
             args.gene_map,

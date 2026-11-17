@@ -1,14 +1,20 @@
 # RNA-seq preprocessing
 
+**Start with the working [Cleaver/HISAT2 guide](HISAT2_GUIDE.md).**
+It covers reference preparation, single-sample and sequential batch execution,
+junction QC, provenance, and the actual external-tool smoke test. The notes
+below describe the retained **legacy STAR prototype**, not the production adapter.
+
 This folder contains Splice Girl's small workflow for turning one raw FASTQ
 sample into the junction table accepted by the Rust analyzer.
 
-The runnable workflow in this folder is the original **STAR-based prototype**.
+The original workflow described below is the **STAR-based prototype**.
 The project has since selected HISAT2 for the real GSE315857 pilot, so this
 runner must not be used for the full cohort as if the aligner decision had not
 changed. Its annotation mapper, junction converter, and tests remain useful
 for enforcing the frozen coordinate and exon-node rules while the HISAT2 pilot
-workflow is prepared.
+workflow is maintained separately in `hisat2_pipeline.py` and
+`batch_preprocessing.py`.
 
 It uses [Cleaver-X](https://github.com/raw-lab/cleaver-x) as an external
 bioinformatics tool. Cleaver-X supplies the `cleaver fastp` read-cleaning step
@@ -46,7 +52,8 @@ cargo install cleaver
 cleaver doctor
 ```
 
-The remaining dependencies are listed in `environment.yml`:
+The production dependencies are listed in `environment.yml` (HISAT2). Install
+STAR separately only if deliberately reproducing this legacy prototype:
 
 ```sh
 conda env create -f preprocessing/environment.yml
@@ -59,8 +66,8 @@ when `--phix-index` is used.
 On Apple Silicon, STAR 2.7.11b may complete while reading zero input sequences.
 Check STAR's `Log.final.out` before trusting an alignment. This upstream issue
 is tracked at <https://github.com/alexdobin/STAR/issues/2632>. The project has
-not yet validated a replacement aligner, so a zero-read STAR run must be
-treated as failed preprocessing.
+validated the HISAT2 adapter on a tiny synthetic integration fixture; a
+zero-read STAR run must still be treated as failed preprocessing.
 
 ## 1. Check the computer
 

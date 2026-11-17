@@ -43,9 +43,16 @@ def smoke():
             (root / f"{name}.fastq").write_bytes(
                 (fixtures / "tiny_reads_R1.fastq").read_bytes()
             )
+            # A reverse-complement mate spans the same synthetic junction.
+            # Both mates count as supporting read alignments, not one fragment.
+            read = (fixtures / "tiny_reads_R1.fastq").read_text().splitlines()
+            reverse = read[1].translate(str.maketrans("ACGT", "TGCA"))[::-1]
+            (root / f"{name}_R2.fastq").write_text(
+                f"{read[0]}\n{reverse}\n+\n{read[3][::-1]}\n"
+            )
         sheet = root / "input.tsv"
         sheet.write_text(
-            "sample_id\tcondition\tread1\tread2\nCASE\tcase\tcase.fastq\t\nCONTROL\tcontrol\tcontrol.fastq\t\n"
+            "sample_id\tcondition\tread1\tread2\nCASE\tcase\tcase.fastq\tcase_R2.fastq\nCONTROL\tcontrol\tcontrol.fastq\tcontrol_R2.fastq\n"
         )
         output = root / "batch"
         call(
@@ -90,7 +97,7 @@ def smoke():
         with (output / "junctions.tsv").open() as handle:
             rows = list(csv.DictReader(handle, delimiter="\t"))
         assert {row["sample_id"] for row in rows} == {"CASE", "CONTROL"}
-        assert len(rows) == 2 and all(row["count"] == "1" for row in rows), rows
+        assert len(rows) == 2 and all(row["count"] == "2" for row in rows), rows
         assert (
             json.loads((output / "batch_manifest.json").read_text())["status"]
             == "complete"
@@ -114,6 +121,16 @@ def main():
         ["cargo", "build", "--release"],
         [sys.executable, "-m", "unittest", "discover", "-s", "preprocessing/tests"],
         [sys.executable, "-m", "unittest", "discover", "-s", "gene_sets/tests"],
+        [
+            sys.executable,
+            "-m",
+            "unittest",
+            "discover",
+            "-s",
+            "scripts",
+            "-p",
+            "test_*.py",
+        ],
         [sys.executable, "scripts/benchmark_candidate.py", "--runs", "3"],
     ]
     try:
