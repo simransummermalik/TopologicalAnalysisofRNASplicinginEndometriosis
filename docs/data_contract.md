@@ -194,7 +194,7 @@ biological study approval and ranking remain separate work.
 | `splice-girl gene <GENE_ID> <junctions.tsv> <manifest.tsv> [--output <folder>]` | compares one gene across case/control samples and optionally saves a result bundle |
 | `splice-girl compare <junctions.tsv> <manifest.tsv> [--output <folder>]` | compares every observed gene using sample-level descriptive summaries and optionally saves a result bundle |
 | `splice-girl report <junctions.tsv> <manifest.tsv> --output <folder>` | saves the comparison bundle, an offline HTML report, individual sample plots, and one SVG per mathematically valid sample/gene |
-| `splice-girl stats <junctions.tsv> <manifest.tsv> --genes <family.tsv> --family <label> --alternative <direction> --design independent --min-per-group <n> --output <folder>` | runs selected-family exact permutation tests and BH adjustment, preserving untested genes and producing an offline statistics report |
+| `splice-girl stats <junctions.tsv> <manifest.tsv> --genes <family.tsv> --family <label> --alternative <direction> --design independent --min-per-group <n> --output <folder> [--rank-by <absolute-effect|adjusted-p>]` | runs selected-family exact permutation tests and BH adjustment, preserving untested genes and producing an offline statistics report with baselines and optional ordering |
 | `splice-girl visualize <SAMPLE_ID> <GENE_ID> <junctions.tsv> <output.svg>` | renders one sample/gene's splice graph as a standalone SVG |
 | `splice-girl --start` | interactive menu wrapping analysis, validation, comparisons, visualization, report generation (option 6), and statistics (option 7) |
 | `splice-girl --help`, `-h`, `help` | prints usage and the command list |

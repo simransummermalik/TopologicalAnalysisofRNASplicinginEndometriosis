@@ -54,6 +54,13 @@ The all-gene export contained all five expected files:
 4. `gene_summaries.tsv`
 5. `run_manifest.json`
 
+On November 17 the current source was copied again into a fresh temporary
+source folder and installed with `cargo install --path ... --root ... --locked
+--offline`. The installed executable passed version/help/menu checks and a
+complete `stats --rank-by adjusted-p` demo, producing its ranking table and
+offline report. Installation and output folders were isolated and removed
+after the check; the user's installed executable was not replaced.
+
 ## Automated verification
 
 The current Rust suite contains **91 passing tests**:
@@ -199,6 +206,9 @@ folders even when tests start simultaneously.
   interoperability rather than only printed command plans.
 - The support-grid test reruns the real Rust executable and verifies that
   disappearing genes retain blank effects rather than zero effects.
+- The complete ranked demo report was inspected in headless Chrome. Input
+  hashes, table run IDs, graph SVGs, preserved gene-family contents, and all
+  report file links and section anchors were checked.
 - The 200-gene, eight-sample, 4,800-row synthetic comparison benchmark completed
   three runs with a median of 21.817 ms on this machine. Runtime varies.
 
