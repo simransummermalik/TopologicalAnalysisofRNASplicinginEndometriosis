@@ -45,7 +45,8 @@ fully mapped, deduplicated (E7), and audited (E8). The genetic-risk set is
 extracted, reviewed, deduplicated, audited, and exported (G4–G10; 103 genes).
 Overlap and categories are built (E9–E10) under the final publication rule
 (decided 2026-11-17): 96 risk-only, 558 environment-only, 7 overlap, 661
-candidates. Remaining: team sign-offs (G1 cold read, independent spot checks).
+candidates. Remaining: team sign-offs (G1 cold read, independent spot checks in
+[`docs/spot_checks.md`](docs/spot_checks.md)).
 
 - [ ] Freeze rules for genetic-risk evidence. *(Drafted and recorded in
   `docs/decisions.md`; waiting for a teammate's cold read, G1 step 7.)*
