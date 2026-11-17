@@ -153,8 +153,10 @@ OPTIONAL_COLUMNS: dict[str, set[str]] = {
 GENE_ID_PATTERN = re.compile(r"^ENSG\d{11}\.\d+(_PAR_Y)?$")
 UNVERSIONED_ENSG = re.compile(r"^ENSG\d{11}$")
 LIST_SEPARATOR = "|"
-# A source label naming more than one gene, e.g. "GREB1, KDR" or "WNT4/CDC42".
-MULTI_GENE_SPLIT = re.compile(r"\s*[,;/]\s*")
+# A source label naming more than one gene, e.g. "GREB1, KDR", "WNT4/CDC42", or
+# "RP11-176D17.3:PTPN14" (Koller Supplementary Table 4). Gene symbols never
+# contain these characters.
+MULTI_GENE_SPLIT = re.compile(r"\s*[,;/:]\s*")
 
 
 # ---------------------------------------------------------------------------

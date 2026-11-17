@@ -56,8 +56,8 @@ non-human studies are excluded with a reason in the notes column.
 
 | Source | Access location | Version / release | Accessed | Status |
 |---|---|---|---|---|
-| GWAS Catalog, endometriosis trait | https://www.ebi.ac.uk/gwas/ | Record release date at extraction | — | Approved, not yet extracted |
-| Largest endometriosis GWAS meta-analysis: Koller, Cormand et al., *Nat Genet* 2026, doi:10.1038/s41588-026-02582-2 | Supplementary Table 4 (cross-ancestry combined definition only) | *Nat Genet* 58(5):1051–1061, 2026; record supplement version at extraction | — | Approved 2026-11-12; full-text checks done (below) |
+| GWAS Catalog, endometriosis trait | https://www.ebi.ac.uk/gwas/rest/api/v2 | Release 2026-10-29 (Ensembl 116, dbSNP 156) | 2026-11-17 | Extracted as a draft (G4–G5 record below); G7 review pending |
+| Largest endometriosis GWAS meta-analysis: Koller, Cormand et al., *Nat Genet* 2026, doi:10.1038/s41588-026-02582-2 | Supplementary Table 4 (cross-ancestry combined definition only) | *Nat Genet* 58(5):1051–1061, 2026; `41588_2026_2582_MOESM4_ESM.xlsx` | 2026-11-17 | Extracted as a draft (G4–G5 record below); G7 review pending |
 
 **Meta-analysis candidates (checked 2026-11-12).**
 
@@ -101,6 +101,145 @@ the superseded comparison and is not an extraction source.
 4. **Summary statistics.** Zenodo, doi:10.5281/zenodo.18983492.
 
 A source is described as used only after its evidence rows are saved.
+
+## Genetic-risk extraction record (G4–G5)
+
+Drafted 2026-11-17 by Vania Zeledon. The draft was written before the G1
+cold read (G1 step 7). If the read-through changes a rule, rerun the
+extraction; no row was edited by hand. The rows are not reviewed evidence
+until G7 and G9 are done.
+
+| Field | GWAS Catalog | Koller 2026 Supplementary Table 4 |
+|---|---|---|
+| Location | REST API v2, `associations?efo_trait=endometriosis`, plus each study and locus record | https://static-content.springer.com/esm/art%3A10.1038%2Fs41588-026-02582-2/MediaObjects/41588_2026_2582_MOESM4_ESM.xlsx (sheet "Supplementary Table 4") |
+| Version | Release 2026-10-29 (Ensembl 116, dbSNP 156, GRCh38.p14) | SHA-256 `c021b6c20c668644939fd83381307a2c8cf08f18d95156b33e65fb0301997815` (25,743,840 bytes) |
+| Accessed | 2026-11-17 | 2026-11-17 |
+| Script | [`gene_sets/extract_gwas.py`](../gene_sets/extract_gwas.py), then `gene_sets.py map` | same |
+
+Neither download is kept in Git. The script caches the Catalog responses and
+reads the workbook with the Python standard library only.
+
+### Finding Koller's cross-ancestry analysis
+
+The Catalog files Koller et al. under 9 study accessions, one per analysis.
+**GCST90841381** is the cross-ancestry combined-definition analysis. Its
+sample sizes sum to exactly the paper's 105,869 cases and 1,282,731 controls
+(AFR 2,481/54,671, AMR 1,752/37,871, EAS 2,044/87,723, EUR
+99,407/1,093,534, Central/South Asian or Middle Eastern 185/8,932), and
+exactly 80 of its 89 associations reach p < 5×10⁻⁸.
+
+The other 8 accessions are the analyses excluded on 2026-11-12. Five of them
+have genome-wide significant rows under the endometriosis trait, 139 rows in
+all:
+
+| Accession | Analysis | Significant rows |
+|---|---|---|
+| GCST90841385 | EUR combined | 65 |
+| GCST90841386 | clinical | 45 |
+| GCST90841387 | self-reported | 24 |
+| GCST90841389 | without adenomyosis | 4 |
+| GCST90841384 | EAS | 1 |
+
+The adenomyosis analysis (GCST90841388) is not filed under the endometriosis
+trait.
+
+### Rules applied
+
+**GWAS Catalog.** All 1,029 endometriosis-trait associations are written.
+Rows failing G1 stay in the table as `excluded`, with the reason in `notes`.
+The checks are applied in this order (decisions dated 2026-11-17):
+
+1. p ≥ 5×10⁻⁸.
+2. Cross-trait (pleiotropy) analysis, recognized by an EFO trait other than
+   endometriosis (asthma, major depressive disorder, endometrial carcinoma,
+   or migraine).
+3. MTAG analysis.
+4. A Koller et al. analysis other than GCST90841381.
+
+Endometriosis subtype analyses from other papers (stage 3 or 4; deep
+ovarian/rectovaginal disease) are kept, with the subtype shown in
+`population`.
+
+For included rows, `original_id` is the Catalog's mapped genes, joined with
+", ". A locus between two genes is therefore marked ambiguous by `map`, never
+assigned to one. The Catalog's author-reported genes go in `notes` for G7.
+Only 38 of the 229 included rows have any. The Catalog has none for Koller's
+loci, and some entries are curator placeholders (`NR`, `intergenic`).
+
+**Supplementary Table 4.** Only the first section is read: the 80
+cross-ancestry loci, all p < 5×10⁻⁸ (largest 4.68×10⁻⁸), 43 previously
+reported and 37 novel, matching the paper. The second section, "Novel hits in
+other than cross-ancestry GWAS" (6 loci), comes from excluded analyses and is
+not read.
+
+`original_id` is the authors' "Nearest gene" exactly as printed:
+- 8 values join several genes with `:`, for example `RP11-176D17.3:PTPN14`.
+  `map` now treats `:` as a multi-gene separator, as it already did `,`,
+  `;`, and `/`. Gene symbols never contain these characters.
+- 27 values use retired GENCODE clone names such as `RP11-…` and `AC0…`.
+
+`p_value` is the cross-ancestry p-value.
+
+### Counts
+
+GWAS Catalog associations by outcome:
+
+| Outcome | Rows |
+|---|---|
+| Included (17 studies) | 229 |
+| Excluded: p ≥ 5×10⁻⁸ | 494 |
+| Excluded: cross-trait analysis | 75 |
+| Excluded: MTAG | 92 |
+| Excluded: other Koller analyses | 139 |
+| Total | 1,029 |
+
+Supplementary Table 4 contributes 80 included rows. In total there are
+1,109 evidence rows, 309 of them included.
+
+**Comparing the two copies of Koller.** GCST90841381 and Supplementary
+Table 4 share 76 of their 80 lead SNPs. At the other 4 loci the Catalog
+curated a different association:
+
+| Only in the Catalog | Only in Supplementary Table 4 |
+|---|---|
+| rs74713348 and rs111930025 (both ESR1) | rs2290358 (CALD1) |
+| rs17437251 (HOXA-AS2/HOXA3) | rs800880 (TRPS1) |
+| rs703593 (IGF1/LINC00485) | rs2306022 (ITGA11) |
+| | rs200262212 (C12orf42) |
+
+Both versions are kept, because they are separate sources. Catalog p-values
+are rounded to one significant figure, so the two copies differ only in
+rounding.
+
+### Mapping (G6)
+
+`gene_sets.py map` results for the 309 included rows:
+
+| Source | Mapped | Ambiguous (multi-gene) | Unresolved |
+|---|---|---|---|
+| GWAS Catalog | 136 | 72 | 21 (no mapped gene) |
+| Supplementary Table 4 | 56 | 8 | 16 (retired clone names) |
+| Total | **192** | 80 | 37 |
+
+The 192 mapped rows cover **76 genes**: 63 from the Catalog and 56 from
+Supplementary Table 4. Six Supplementary Table 4 labels mapped through HGNC
+previous or alias symbols:
+
+- RP4-663N10.1 → NGF-AS1
+- AC003090.1 → LINC03007
+- RP1-65P5.1 → THEM7P
+- TMEM194A → NEMP1
+- SRP14-AS1 → SRP14-DT
+- C20orf112 → NOL4L
+
+Each agrees with the Catalog's mapped gene for the same SNP. The table
+passes `check` against the GENCODE v50 annotation.
+
+**Open for G7.** 117 rows (67 distinct labels) are ambiguous or unresolved.
+They are listed in `data/gene_sets/risk_mapping.tsv` with every candidate. By
+G1 none may be assigned by proximity. A row can be resolved only from the
+source's own report: author-reported genes in the notes, or the paper.
+Otherwise it is excluded with a reason, using `gene_sets.py review`.
 
 ## Environmental-response scope (E1)
 

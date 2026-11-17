@@ -41,8 +41,9 @@ table that Splice Girl can read without manual editing.
 list, evidence templates, and the tested `gene_sets/gene_sets.py` tooling
 exist; see [`docs/gene_set_methods.md`](docs/gene_set_methods.md). The
 environmental (CTD) evidence table is extracted, context-reviewed (E6),
-fully mapped, deduplicated (E7), and audited (E8). Genetic-risk extraction,
-review, and audit have not started.
+fully mapped, deduplicated (E7), and audited (E8). The genetic-risk table is
+drafted from both approved sources and mapped (G4–G6); its ambiguity review
+(G7) and audit have not started.
 
 - [ ] Freeze rules for genetic-risk evidence. *(Drafted and recorded in
   `docs/decisions.md`; waiting for a teammate's cold read, G1 step 7.)*

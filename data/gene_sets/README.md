@@ -11,7 +11,7 @@ the overlap. It never decides whether a gene counts.
 
 | File | Made by | One row means |
 |---|---|---|
-| `risk_evidence.tsv` | People (G4–G5), then `map` | One evidence assertion from one source |
+| `risk_evidence.tsv` | `extract_gwas.py` (G4–G5), then `map`, then people (G7) | One evidence assertion from one source |
 | `dioxin_like_chemicals.tsv` | People (E1), frozen | One dioxin-like chemical with its exact CTD ID |
 | `environment_evidence.tsv` | `extract_ctd.py` (E3–E4), `map`, then `review_ctd_context.py apply` (E6) | One measured response to one chemical in one context |
 | `environment_mapping_review.tsv` | People (E5 step 6), applied by `review` | One reviewed label: mapped by hand or excluded, with a reason |
@@ -23,7 +23,9 @@ the overlap. It never decides whether a gene counts.
 | `candidate_genes.tsv` | `overlap` | One gene in either set, with category flags |
 | `*_mapping.tsv` | `map` | One original label and its candidate IDs, for G7 review |
 
-`risk_evidence.tsv` holds only its header row. `environment_evidence.tsv`
+`risk_evidence.tsv` holds the GWAS Catalog and Koller Supplementary Table 4
+draft from November 17, 2026 (1,109 rows, 309 included, 117 still ambiguous or
+unresolved for G7). `environment_evidence.tsv`
 holds the CTD extraction from November 17, 2026 (7,958 rows) after the E6
 context review: 1,028 co-treatment rows are `excluded` with a reason, and
 every row has a paper-level tissue tag. The 12 labels `map` could not
@@ -74,7 +76,16 @@ Run from the repository root. `references/` is the ignored local folder named
 in [`docs/data_methods.md`](../../docs/data_methods.md).
 
 ```sh
-# 0. Environment only: draft rows from the CTD release recorded in
+# 0a. Risk: draft rows from the GWAS Catalog release and Koller et al. 2026
+#     Supplementary Table 4 recorded in docs/gene_set_methods.md. --fetch
+#     downloads Catalog responses into the cache folder. This overwrites
+#     risk_evidence.tsv, so run it only before any review edits.
+python3 gene_sets/extract_gwas.py \
+  --catalog-dir /path/to/gwas_cache --fetch \
+  --koller-xlsx /path/to/41588_2026_2582_MOESM4_ESM.xlsx \
+  --output data/gene_sets/risk_evidence.tsv
+
+# 0b. Environment only: draft rows from the CTD release recorded in
 #    docs/gene_set_methods.md (download it outside the repository and check
 #    its SHA-256 first). This overwrites environment_evidence.tsv, so run it
 #    only before any review edits.

@@ -168,6 +168,8 @@ class MapLabelTests(GeneSetTestCase):
         self.assertEqual((result.status, result.method), ("ambiguous", "multi_gene_label"))
         self.assertEqual(result.candidates, ["ENSG00000000003.1", "ENSG00000000004.2"])
         self.assertEqual(result.gene_id(), "NA")
+        colon = gs.map_label("GREB1:KDR", self.reference)
+        self.assertEqual((colon.status, colon.method), ("ambiguous", "multi_gene_label"))
 
     def test_unknown_and_missing_labels_are_unresolved(self) -> None:
         self.assertEqual(gs.map_label("NOTAGENE", self.reference).status, "unresolved")
