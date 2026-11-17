@@ -1,6 +1,6 @@
 # Splice Girl input data contract
 
-**Contract version:** 0.7 (2026-11-16) — added the explicit-family `stats`
+**Contract version:** 0.8 (2026-11-17) — added baselines, optional ordering and the explicit-family `stats`
 command and statistics exports. Junction and manifest input schemas and frozen
 exon-node, coordinate, and strand conventions are unchanged.
 

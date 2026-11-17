@@ -56,7 +56,14 @@ def run(args):
         raise ValueError(f"output folder already exists: {output}")
     binary = args.binary.resolve()
     # Check the complete original input before filtering can hide bad rows.
-    subprocess.run([str(binary), "validate", str(args.junctions)], check=True)
+    validation = subprocess.run(
+        [str(binary), "validate", str(args.junctions)],
+        capture_output=True,
+        text=True,
+        check=False,
+    )
+    if validation.returncode:
+        raise ValueError(f"input validation failed: {validation.stderr.strip()}")
     with args.junctions.open(encoding="utf-8") as handle:
         reader = csv.DictReader(handle, delimiter="\t")
         header = reader.fieldnames
@@ -64,6 +71,7 @@ def run(args):
     genes = sorted({row["gene_id"] for row in rows})
     output.parent.mkdir(parents=True, exist_ok=True)
     output.mkdir()
+    (output / "validation.log").write_text(validation.stdout + validation.stderr)
     manifest = {
         "status": "running",
         "mode": "descriptive support sensitivity",

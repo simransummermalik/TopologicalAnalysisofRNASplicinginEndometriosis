@@ -59,7 +59,9 @@ def versions(names):
             [name, "--version"], capture_output=True, text=True, check=False, timeout=15
         )
         if call.returncode:
-            raise ValueError(f"{name} --version failed; check the installed executable and environment")
+            raise ValueError(
+                f"{name} --version failed; check the installed executable and environment"
+            )
         lines = (call.stdout + call.stderr).strip().splitlines()
         result[name] = {
             "path": shutil.which(name),
