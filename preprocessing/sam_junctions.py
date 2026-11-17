@@ -6,6 +6,7 @@ transcript strand; the read's reverse-complement flag is not a substitute.
 Counts are per read alignment, not per fragment, and retain PCR duplicates
 unless --exclude-duplicates is explicitly requested.
 """
+
 from __future__ import annotations
 
 import argparse
@@ -22,7 +23,9 @@ from star_junctions import load_gene_map
 CIGAR = re.compile(r"([1-9][0-9]*)([MIDNSHP=X])")
 
 
-def skipped_intervals(position: int, cigar: str, min_anchor: int) -> list[tuple[int, int]]:
+def skipped_intervals(
+    position: int, cigar: str, min_anchor: int
+) -> list[tuple[int, int]]:
     tokens = CIGAR.findall(cigar)
     if position < 1 or not tokens or "".join(n + op for n, op in tokens) != cigar:
         raise ValueError(f"invalid mapped POS/CIGAR: {position} {cigar}")
@@ -33,15 +36,25 @@ def skipped_intervals(position: int, cigar: str, min_anchor: int) -> list[tuple[
         if op == "N":
             left = tokens[index - 1] if index else ("0", "")
             right = tokens[index + 1] if index + 1 < len(tokens) else ("0", "")
-            if left[1] in {"M", "=", "X"} and right[1] in {"M", "=", "X"} and min(int(left[0]), int(right[0])) >= min_anchor:
+            if (
+                left[1] in {"M", "=", "X"}
+                and right[1] in {"M", "=", "X"}
+                and min(int(left[0]), int(right[0])) >= min_anchor
+            ):
                 intervals.append((reference, reference + size - 1))
         if op in {"M", "D", "N", "=", "X"}:
             reference += size
     return intervals
 
 
-def count_junctions(lines: Iterable[str], gene_map_path: Path, sample_id: str,
-                    min_anchor: int, min_unique: int, exclude_duplicates: bool = False):
+def count_junctions(
+    lines: Iterable[str],
+    gene_map_path: Path,
+    sample_id: str,
+    min_anchor: int,
+    min_unique: int,
+    exclude_duplicates: bool = False,
+):
     if not sample_id or any(char in sample_id for char in "\t\r\n"):
         raise ValueError("sample_id must be nonempty and contain no tab or newline")
     if min_anchor < 1 or min_unique < 1:
@@ -50,15 +63,18 @@ def count_junctions(lines: Iterable[str], gene_map_path: Path, sample_id: str,
     stats = Counter()
     counts = Counter()
     for line_number, raw in enumerate(lines, 1):
-        if not raw.strip() or raw.startswith("@"): continue
+        if not raw.strip() or raw.startswith("@"):
+            continue
         fields = raw.rstrip("\r\n").split("\t")
         stats["sam_records"] += 1
-        if len(fields) < 11: raise ValueError(f"SAM line {line_number}: expected at least 11 fields")
+        if len(fields) < 11:
+            raise ValueError(f"SAM line {line_number}: expected at least 11 fields")
         try:
             flag, position = int(fields[1]), int(fields[3])
         except ValueError as error:
             raise ValueError(f"SAM line {line_number}: invalid FLAG/POS") from error
-        if flag < 0: raise ValueError(f"SAM line {line_number}: negative FLAG")
+        if flag < 0:
+            raise ValueError(f"SAM line {line_number}: negative FLAG")
         if flag & (4 | 256 | 512 | 2048):
             stats["unmapped_secondary_qcfail_or_supplementary"] += 1
             continue
@@ -72,7 +88,10 @@ def count_junctions(lines: Iterable[str], gene_map_path: Path, sample_id: str,
         for tag in fields[11:]:
             parts = tag.split(":", 2)
             if len(parts) == 3 and parts[0] in {"NH", "XS"}:
-                if parts[0] in tags: raise ValueError(f"SAM line {line_number}: duplicate {parts[0]} tag")
+                if parts[0] in tags:
+                    raise ValueError(
+                        f"SAM line {line_number}: duplicate {parts[0]} tag"
+                    )
                 tags[parts[0]] = (parts[1], parts[2])
         if tags.get("NH") != ("i", "1"):
             stats["nonunique_or_missing_NH_records"] += 1
@@ -99,41 +118,77 @@ def count_junctions(lines: Iterable[str], gene_map_path: Path, sample_id: str,
     filtered = {key: count for key, count in counts.items() if count >= min_unique}
     stats["below_minimum_unique_edges"] = len(counts) - len(filtered)
     stats["written_rows"] = len(filtered)
-    if not filtered: raise ValueError("no uniquely mapped annotated junctions passed; inspect SAM NH/XS tags, reference/annotation, anchors, and support thresholds")
-    return filtered, {**dict(stats), "sample_id": sample_id, "minimum_anchor": min_anchor,
-                      "minimum_unique_reads": min_unique, "count_unit": "primary read alignments", "exclude_duplicates": exclude_duplicates}
+    return filtered, {
+        **dict(stats),
+        "sample_id": sample_id,
+        "minimum_anchor": min_anchor,
+        "minimum_unique_reads": min_unique,
+        "count_unit": "primary read alignments",
+        "exclude_duplicates": exclude_duplicates,
+    }
 
 
-def convert_sam(sam_path: Path, gene_map: Path, sample_id: str, output: Path,
-                qc: Path, min_anchor: int, min_unique: int, exclude_duplicates=False):
-    if output.exists() or qc.exists(): raise ValueError("refusing to overwrite junction TSV or QC output")
+def convert_sam(
+    sam_path: Path,
+    gene_map: Path,
+    sample_id: str,
+    output: Path,
+    qc: Path,
+    min_anchor: int,
+    min_unique: int,
+    exclude_duplicates=False,
+):
+    if output.exists() or qc.exists():
+        raise ValueError("refusing to overwrite junction TSV or QC output")
     with sam_path.open(encoding="utf-8") as handle:
-        counts, stats = count_junctions(handle, gene_map, sample_id, min_anchor, min_unique, exclude_duplicates)
+        counts, stats = count_junctions(
+            handle, gene_map, sample_id, min_anchor, min_unique, exclude_duplicates
+        )
+    qc.parent.mkdir(parents=True, exist_ok=True)
+    with qc.open("x", encoding="utf-8") as handle:
+        json.dump(stats, handle, indent=2, sort_keys=True)
+    if not counts:
+        raise ValueError(
+            f"no uniquely mapped annotated junctions passed; inspect {qc}, SAM NH/XS tags, annotation, anchors, and support thresholds"
+        )
     output.parent.mkdir(parents=True, exist_ok=True)
     with output.open("x", encoding="utf-8", newline="") as handle:
         writer = csv.writer(handle, delimiter="\t", lineterminator="\n")
         writer.writerow(["sample_id", "gene_id", "from", "to", "count"])
-        writer.writerows((sample_id, *key, count) for key, count in sorted(counts.items()))
-    qc.parent.mkdir(parents=True, exist_ok=True)
-    with qc.open("x", encoding="utf-8") as handle: json.dump(stats, handle, indent=2, sort_keys=True)
+        writer.writerows(
+            (sample_id, *key, count) for key, count in sorted(counts.items())
+        )
     return stats
 
 
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
-    for name in ("sam", "gene-map", "output", "qc-json"): parser.add_argument(f"--{name}", type=Path, required=True)
+    for name in ("sam", "gene-map", "output", "qc-json"):
+        parser.add_argument(f"--{name}", type=Path, required=True)
     parser.add_argument("--sample-id", required=True)
     parser.add_argument("--min-anchor", type=int, required=True)
     parser.add_argument("--min-unique", type=int, required=True)
     parser.add_argument("--exclude-duplicates", action="store_true")
     args = parser.parse_args()
     try:
-        stats = convert_sam(args.sam, args.gene_map, args.sample_id, args.output, args.qc_json,
-                            args.min_anchor, args.min_unique, args.exclude_duplicates)
+        stats = convert_sam(
+            args.sam,
+            args.gene_map,
+            args.sample_id,
+            args.output,
+            args.qc_json,
+            args.min_anchor,
+            args.min_unique,
+            args.exclude_duplicates,
+        )
     except (OSError, ValueError) as error:
-        print(f"error: {error}", file=sys.stderr); return 1
-    print(f"Wrote {stats['written_rows']} uniquely supported junctions to {args.output}")
+        print(f"error: {error}", file=sys.stderr)
+        return 1
+    print(
+        f"Wrote {stats['written_rows']} uniquely supported junctions to {args.output}"
+    )
     return 0
 
 
-if __name__ == "__main__": raise SystemExit(main())
+if __name__ == "__main__":
+    raise SystemExit(main())
