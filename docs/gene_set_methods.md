@@ -283,9 +283,88 @@ causal gene".
 | `risk_mapping_review.tsv` | `890b4d6b7b5d8f32376cb9fe6cc9fd8be78b13f6267daf14374843b88b97b966` |
 | `gencode.v19.annotation.gtf.gz`, used only for the clone-name translation and not kept in Git | `9909e8123a40eca090c3f8e501633f7cc65cd6c4adb83b95009745eca3564d70`; MD5 `bd83e28270e595d3bde6bfcb21c9748f`, matching GENCODE's MD5SUMS |
 
-**Still needed.** Dedupe (G8), the audit (G9), and export (G10). The G1 cold
-read is also still outstanding; if it changes a rule, rerun the extraction,
-`map`, and this review.
+## Genetic-risk membership, audit, and export (G8–G10)
+
+Done 2026-11-17 by Vania Zeledon.
+
+### Deduplication (G8)
+
+`gene_sets.py dedupe --kind risk` writes
+[`data/gene_sets/endometriosis_risk.tsv`](../data/gene_sets/endometriosis_risk.tsv),
+with one row per stable gene ID.
+
+- **Counts.** 228 mapped evidence rows become **103 genes**. No gene ID
+  appears twice.
+- **Sources.** 48 genes are supported by both sources, 36 by Supplementary
+  Table 4 only, and 19 by the Catalog only.
+- **Provenance.** Every evidence ID is kept, and the evidence table is
+  unchanged.
+- **Source detail.** `notes` keeps the detail for each source: rows, best
+  p-value, and lead variants. Example: "GWAS Catalog: 10 row(s), best p
+  5e-51, variants rs7521902, …". 18 genes are flagged `multi-gene locus`.
+
+### Audit (G9)
+
+Run with [`gene_sets/audit_risk.py`](../gene_sets/audit_risk.py). It is
+written separately from the extraction and review code, and re-reads the
+cached Catalog responses, the supplement, the review table, GENCODE v50, and
+GENCODE v19. The same person and session built the tables, so a teammate's
+spot check is still recommended (below).
+
+| Check | Result |
+|---|---|
+| A. Schema; membership unique by `gene_id` | Pass: 1,119 evidence rows, 103 genes |
+| B. Provenance: each Catalog row against its cached association (record, variants, mapped genes, p-value); each Supplementary Table 4 row against its sheet row (row number, gene label, p-value) | Pass: 1,029 Catalog rows, 90 Supplementary Table 4 rows from 80 loci |
+| C. Rule outcomes recomputed from G1 and the 2026-11-17 decisions (threshold, cross-trait, MTAG, other Koller analyses); Supplementary Table 4 lead SNPs equal the sheet's first section | Pass |
+| D. Mapping: IDs in GENCODE v50; symbols equal GENCODE names (or `NA` when unnamed); automatic mappings equal their label; manual mappings equal the review table | Pass: 186 by GENCODE symbol, 6 by HGNC alias or previous symbol, 36 manual |
+| E. Review: no row open; every exclusion has a reason; all 117 review decisions applied | Pass: 228 mapped, 891 excluded |
+| F. Membership rebuilt from the evidence | Pass |
+| G. Expression-only check (G9 step 4): every included row is a GWAS association from an approved source with p < 5×10⁻⁸; no included study has an expression-based trait | Pass. Included study traits: Endometriosis (10), ICD10 N80, stage 3 or 4, deep ovarian/rectovaginal disease, PheCode 615 |
+| H. Proximity: each mapped gene against its lead variant (GRCh38 for Catalog rows; GRCh37 through GENCODE v19 for Supplementary Table 4 rows) | Pass: 204 rows inside the gene, 24 within 1 Mb, none further |
+| I. 15 genes (seed 20261117) read by a person | 15 of 15 verified (below) |
+
+**The sample (I).** Results for each gene are in
+[`data/gene_sets/risk_audit_sample.tsv`](../data/gene_sets/risk_audit_sample.tsv).
+
+- **12 genes have their lead variant inside the gene.** The Catalog and
+  Supplementary Table 4 rows agree.
+- **FSHB (26 kb) and CD109 (72 kb in Supplementary Table 4)** are the
+  authors' nearest gene to an intergenic variant.
+- **ETAA1 (217 kb)** enters only through the authors' own report in the
+  Catalog (PMID 28537267). The Catalog itself maps two lncRNAs there.
+
+**Unresolved mappings (G9 step 3).** None remain. All 117 rows that `map`
+left open have a recorded decision; see the G7 review.
+
+**Corrections (G9 step 5).** None were needed, so no re-export was required.
+
+### Export and schema check (G10)
+
+- **Format.** `endometriosis_risk.tsv` has the required header, a stable ID
+  and evidence type in every row, unique IDs, symbols kept apart from IDs,
+  and no blank source.
+- **Joining.** Splice Girl accepts the file directly as a `--genes`
+  family. This was checked 2026-11-17 by running `splice-girl stats` on a
+  synthetic junction table that uses WNT4's GENCODE ID. All 103 genes were
+  read; WNT4 was tested and the other 102 were recorded as untested ("no
+  junction data"). The saved `gene_family.tsv` was a byte-for-byte copy of
+  the input.
+
+**Counts and checksums (SHA-256).**
+
+| File | Data rows | SHA-256 |
+|---|---|---|
+| `risk_evidence.tsv` | 1,119 | `67b2c20516ead4de405cc33992918b21bb229264cba60df94762367a8aaa8e98` |
+| `endometriosis_risk.tsv` | 103 | `6d16b6c47c5509902da6effacf6febbb64b0040bb7aa3f775897de862b1f2655` |
+| `risk_mapping_review.tsv` | 117 | `890b4d6b7b5d8f32376cb9fe6cc9fd8be78b13f6267daf14374843b88b97b966` |
+| `risk_audit_sample.tsv` | 15 | `39ee24a76eb675f491b5544c218485ff683581fafad7baf08becb3ac1631bcec` |
+
+**Still needed.**
+
+- **The G1 cold read** (G1 step 7). If it changes a rule, rerun the
+  extraction, `map`, the G7 review, `dedupe`, and this audit.
+- **A teammate re-checks 5 genes** from the sample independently, against the
+  Catalog web page or the supplement.
 
 ## Environmental-response scope (E1)
 

@@ -323,6 +323,11 @@ class DedupeTests(GeneSetTestCase):
         self.assertEqual(stats, {"evidence_rows": 3, "rows_not_mapped": 1, "genes": 1})
         self.assertEqual(membership[0]["evidence_ids"], "R1|R2")
         self.assertEqual(membership[0]["source"], "FIXTURE_GWAS|FIXTURE_META")
+        self.assertEqual(
+            membership[0]["notes"],
+            "FIXTURE_GWAS: 1 row(s), best p 1e-09, variants rs0000001; "
+            "FIXTURE_META: 1 row(s), best p 1e-09, variants rs0000001",
+        )
         self.assertEqual(gs.check_table("risk_membership", gs.RISK_MEMBERSHIP_COLUMNS, membership), [])
 
     def test_environment_publication_threshold_is_per_gene_chemical_pair(self) -> None:

@@ -16,6 +16,7 @@ the overlap. It never decides whether a gene counts.
 | `environment_evidence.tsv` | `extract_ctd.py` (E3–E4), `map`, then `review_ctd_context.py apply` (E6) | One measured response to one chemical in one context |
 | `environment_mapping_review.tsv` | People (E5 step 6), applied by `review` | One reviewed label: mapped by hand or excluded, with a reason |
 | `risk_mapping_review.tsv` | People (G7), applied by `review` | One reviewed risk row (keyed by `evidence_id`): mapped, split across overlapping genes, or excluded, with a reason |
+| `risk_audit_sample.tsv` | `audit_risk.py` (G9), then a person | One sampled risk gene with its check against the sources |
 | `environment_audit_sample.tsv` | `audit_environment.py` (E8), then a person | One sampled evidence row with its check against the cited papers |
 | `ctd_publication_tissue.tsv` | `review_ctd_context.py tag-publications` (E6) | One cited PubMed paper with its tissue tag and the terms that decided it |
 | `endometriosis_risk.tsv` | `dedupe --kind risk` | One gene |
@@ -26,7 +27,8 @@ the overlap. It never decides whether a gene counts.
 
 `risk_evidence.tsv` holds the GWAS Catalog and Koller Supplementary Table 4
 extraction from November 17, 2026 after the G7 review (1,119 rows; 228 mapped
-to 103 genes, the rest excluded with reasons). `environment_evidence.tsv`
+to 103 genes, the rest excluded with reasons). `endometriosis_risk.tsv` is the
+audited G8–G10 membership and can be passed straight to `splice-girl stats --genes`. `environment_evidence.tsv`
 holds the CTD extraction from November 17, 2026 (7,958 rows) after the E6
 context review: 1,028 co-treatment rows are `excluded` with a reason, and
 every row has a paper-level tissue tag. The 12 labels `map` could not
@@ -138,6 +140,19 @@ python3 gene_sets/gene_sets.py dedupe --kind risk \
 python3 gene_sets/gene_sets.py dedupe --kind environment --min-publications 2 \
   --evidence data/gene_sets/environment_evidence.tsv \
   --output data/gene_sets/environment_response.tsv
+
+# Risk audit (G9): re-checks both risk tables against the cached Catalog
+# responses, the supplement, the review table, GENCODE v50 and v19, and writes
+# a fixed-seed sample of genes for a person to read. Exits 1 if a check fails.
+python3 gene_sets/audit_risk.py \
+  --evidence data/gene_sets/risk_evidence.tsv \
+  --membership data/gene_sets/endometriosis_risk.tsv \
+  --review data/gene_sets/risk_mapping_review.tsv \
+  --catalog-dir /path/to/gwas_cache \
+  --koller-xlsx /path/to/41588_2026_2582_MOESM4_ESM.xlsx \
+  --gtf references/gencode_v50/gencode.v50.primary_assembly.annotation.gtf.gz \
+  --gtf-v19 /path/to/gencode.v19.annotation.gtf.gz \
+  --sample-output data/gene_sets/risk_audit_sample.tsv
 
 # Environment audit (E8): re-checks both tables against the raw CTD file and
 # references, rebuilds the membership, and writes a fixed-seed sample for a

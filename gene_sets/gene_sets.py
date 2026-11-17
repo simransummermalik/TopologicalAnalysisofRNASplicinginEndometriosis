@@ -590,7 +590,7 @@ def dedupe_risk(rows: list[dict[str, str]]) -> tuple[list[dict[str, str]], dict[
                 "source": join_unique(r["source"] for r in members),
                 "n_evidence": str(len(members)),
                 "evidence_ids": join_unique(r["evidence_id"] for r in members),
-                "notes": MISSING,
+                "notes": _risk_source_summary(members),
             }
         )
     stats = {
@@ -599,6 +599,25 @@ def dedupe_risk(rows: list[dict[str, str]]) -> tuple[list[dict[str, str]], dict[
         "genes": len(membership),
     }
     return membership, stats
+
+
+def _risk_source_summary(members: list[dict[str, str]]) -> str:
+    """Per-source detail for one gene: rows, best p-value, lead variants."""
+    by_source: dict[str, list[dict[str, str]]] = defaultdict(list)
+    for row in members:
+        by_source[row["source"]].append(row)
+    parts = []
+    for source in sorted(by_source):
+        rows = by_source[source]
+        p_values = [float(r["p_value"]) for r in rows if r.get("p_value", MISSING) != MISSING]
+        variants = join_unique(
+            v for r in rows for v in r.get("variant_id", MISSING).split(LIST_SEPARATOR)
+        ).replace(LIST_SEPARATOR, ", ")
+        best = f", best p {min(p_values):.3g}" if p_values else ""
+        parts.append(f"{source}: {len(rows)} row(s){best}, variants {variants}")
+    if any("multi-gene locus" in r.get("notes", "") for r in members):
+        parts.append("multi-gene locus: the source names several overlapping genes")
+    return "; ".join(parts)
 
 
 def _publications(row: dict[str, str]) -> set[str]:
