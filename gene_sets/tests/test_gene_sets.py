@@ -222,6 +222,64 @@ class MapEvidenceTests(GeneSetTestCase):
         self.assertFalse((self.temp / "o.tsv").exists())
 
 
+class ReviewTests(GeneSetTestCase):
+    def write_review(self, *lines: str) -> Path:
+        path = self.temp / "review.tsv"
+        path.write_text("original_id\tdecision\tgene_id\treason\n" + "".join(l + "\n" for l in lines))
+        return path
+
+    def open_row(self, evidence_id: str, label: str, status: str) -> dict[str, str]:
+        return env_row(evidence_id, "NA", "NA", "PMID:1", original_id=label,
+                       mapping_status=status, mapping_method="no_match")
+
+    def test_mapped_and_excluded_decisions_apply_once(self) -> None:
+        review = self.write_review(
+            "DUPNAME\tmapped\tENSG00000000006.1\tsource names the chr3 copy",
+            "NOSUCH\texcluded\tNA\tno gene in the annotation",
+            "UNUSED\texcluded\tNA\tnot in this table",
+        )
+        decisions = gs.read_mapping_review(review, self.reference)
+        rows = [
+            self.open_row("e1", "DUPNAME", "ambiguous"),
+            self.open_row("e2", "NOSUCH", "unresolved"),
+            env_row("e3", "ENSG00000000001.5", "WNT4", "PMID:2"),
+        ]
+        once, counts = gs.apply_mapping_review(rows, decisions, self.reference)
+        self.assertEqual(once[0]["mapping_status"], "mapped")
+        self.assertEqual(once[0]["mapping_method"], "manual")
+        self.assertEqual(once[0]["gene_symbol"], "DUPNAME")
+        self.assertIn("manual review (mapped): source names the chr3 copy", once[0]["notes"])
+        self.assertEqual((once[1]["mapping_status"], once[1]["gene_id"]), ("excluded", "NA"))
+        self.assertEqual(once[2], rows[2])
+        self.assertEqual(counts["review_labels_not_applied"], 1)
+        self.assertEqual(gs.check_table("environment_evidence", gs.ENVIRONMENT_EVIDENCE_COLUMNS, once), [])
+        twice, _ = gs.apply_mapping_review(once, decisions, self.reference)
+        self.assertEqual(twice, once)
+
+    def test_bad_review_tables_are_refused(self) -> None:
+        bad = [
+            ("X\tmapped\tENSG99999999999.1\treason",),  # gene not in annotation
+            ("X\texcluded\tENSG00000000001.5\treason",),  # excluded with a gene
+            ("X\tmaybe\tNA\treason",),  # unknown decision
+            ("X\texcluded\tNA\tNA",),  # no reason
+            ("X\texcluded\tNA\tr1", "X\texcluded\tNA\tr2"),  # reviewed twice
+        ]
+        for lines in bad:
+            with self.subTest(lines=lines), self.assertRaises(ValueError):
+                gs.read_mapping_review(self.write_review(*lines), self.reference)
+
+    def test_cli(self) -> None:
+        evidence = self.temp / "env.tsv"
+        gs.write_tsv(evidence, gs.ENVIRONMENT_EVIDENCE_COLUMNS,
+                     [self.open_row("e1", "NOSUCH", "unresolved")])
+        review = self.write_review("NOSUCH\texcluded\tNA\tno gene")
+        code, out, _ = self.run_cli("review", "--kind", "environment", "--evidence", str(evidence),
+                                    "--review", str(review), "--gtf", str(self.gtf),
+                                    "--output", str(evidence))
+        self.assertEqual(code, 0)
+        self.assertIn('"resolved_excluded": 1', out)
+
+
 class DedupeTests(GeneSetTestCase):
     def test_risk_membership_keeps_every_evidence_id(self) -> None:
         rows = [

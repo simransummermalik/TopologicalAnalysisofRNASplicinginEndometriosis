@@ -358,7 +358,8 @@ Kept rows by response type:
 
 These 15 rows need E7/G7-style review, using the CTD GeneID in each note.
 Three of them (`HGC6.3`, `TRK-TTT3-5`, and one `LINC00312` row) were later
-excluded at E6 as co-treatment rows, so 12 remain to review.
+excluded at E6 as co-treatment rows. The other 12 were resolved in the
+mapping review below.
 
 **Independent check.** Each mapped row was also checked through a separate
 route: CTD's NCBI GeneID, then HGNC `entrez_id`, then Ensembl ID. Result:
@@ -476,6 +477,167 @@ boundary.
 `gene_sets/review_ctd_context.py tag-publications` (with `--fetch` to
 download the PubMed records), then `apply`. Rerunning `apply` on its own
 output changes nothing.
+
+## Mapping review of unmapped rows (E5 step 6)
+
+Reviewed 2026-11-17; decisions recorded by Vania Zeledon. Each of the 12
+open labels was checked against HGNC, the GENCODE v50 annotation, CTD's NCBI
+GeneID (looked up in NCBI Gene), and the cited paper. The decisions are in
+[`data/gene_sets/environment_mapping_review.tsv`](../data/gene_sets/environment_mapping_review.tsv)
+and are applied by `gene_sets.py review`.
+
+| Label | Rows | Decision | Reason |
+|---|---|---|---|
+| `COX2` | 1 | Mapped to MT-CO2 (`ENSG00000198712.1`) | CTD's curated GeneID 4513 is human MT-CO2. The alias COX2 is also used for PTGS2, so the GeneID decides. |
+| `KIR2DL5A`, `HLA-DRB4` | 3 | Excluded | Only on alternate reference loci; no gene in the primary-assembly annotation, so no junction table can join to it |
+| `ERV3-2`, `LINC00312`, `PGBD3`, `RUNX1-IT1`, `RNA28SN4` | 5 | Excluded | HGNC lists no Ensembl gene, so there is no GENCODE v50 gene to join to |
+| `DOC1`, `SOS`, `WNT5` | 3 | Excluded | CTD links a *Drosophila* gene (GeneIDs 39039, 34790, 32838) to a human-cell study. The human gene meant (CDK2AP1 or ANAPC10; SOS1 or SOS2; WNT5A or WNT5B) cannot be chosen without guessing. |
+
+After the review, no environmental row is ambiguous or unresolved: 6,919 are
+mapped and 1,039 excluded (1,028 at E6, 11 here). The table passes `check`
+against the GENCODE v50 annotation.
+
+## Deduplication (E7)
+
+Built 2026-11-17 with `gene_sets.py dedupe --kind environment
+--min-publications 2`, using the provisional publication rule. Output:
+[`data/gene_sets/environment_response.tsv`](../data/gene_sets/environment_response.tsv).
+
+**Grouping.** Rows are grouped into one membership row per gene × chemical ×
+tissue tag × context. Each membership row keeps its exposure, tissue tag,
+context, publication count, and every supporting `evidence_id`, so no
+context is merged away. The publication rule is checked per gene–chemical
+pair, across all of that pair's rows. As a result, an endometrium-tagged
+row is kept whenever its gene–chemical pair passes overall, even if the
+endometrial paper is that row's only source.
+
+Counts before and after merging:
+
+| Stage | Rows | Genes | Gene × chemical | Evidence IDs kept |
+|---|---|---|---|---|
+| Mapped evidence rows (before merging) | 6,919 | 4,230 | 4,574 | — |
+| Merged, no publication rule (n ≥ 1) | 5,006 | 4,230 | 4,574 | 6,919 (all) |
+| **Merged, provisional rule (n ≥ 2)** | **2,007** | **1,640** | **1,700** | 3,818 |
+
+Merging lost no evidence ID: every mapped row appears in exactly one
+membership row at n ≥ 1. The 2-publication rule drops 3,101 rows.
+
+Membership rows under the provisional rule, by context and by tissue tag:
+
+| Context | Rows |
+|---|---|
+| `direct` | 1,739 |
+| `dioxin_effect_modified` | 205 |
+| `dioxin_modifies_other` | 63 |
+
+| Tissue tag | Rows |
+|---|---|
+| `endometrium_uterus` | 24 |
+| `other_female_reproductive` | 41 |
+| `other_or_unstated` | 1,942 |
+
+232 genes have more than one membership row (up to 23), because their
+evidence spans several chemicals, contexts, or tissue tags.
+
+**Genes per chemical.** TCDD contributes 1,625 of the 1,640 genes. The
+others: PCB 126, 49; PCB 118, 11; 2,3,4,7,8-PeCDF, 4; 1,2,3,7,8-PeCDD, 3;
+PCB 77, 3; 2,3,7,8-TCDF, 2; 1,2,3,6,7,8-HxCDD, 1; PCB 105, 1; PCB 156, 1.
+
+**Endometrial genes.** 13 of the 21 genes with endometrium/uterus evidence
+pass the rule: AHR, CCL5, CDH1, CTNNB1, CXCL8, CYP1A1, CYP1B1, IL1B, MMP2,
+MMP9, PGR, SERPINB2, TNF.
+
+**Still provisional.** The 2-publication threshold is not final; see the
+screening-paper analysis above. If the team changes it, rerun `dedupe` with
+the new `--min-publications`; nothing upstream changes.
+
+## Environmental audit (E8)
+
+Run 2026-11-17 with [`gene_sets/audit_environment.py`](../gene_sets/audit_environment.py).
+The audit is written separately from the extraction and review code. It
+re-reads the raw CTD file, HGNC, and the GENCODE annotation, and checks the
+saved tables against them.
+
+**Independence.** The same person and session that built the tables wrote
+this audit. Tracing every row back to the raw file is a strong check of the
+pipeline. It is not a substitute for a teammate's spot check against the
+papers; see "Still recommended" below.
+
+| Check | Result |
+|---|---|
+| A. Headers and schema (`check` with the GENCODE annotation) | Pass: 7,958 evidence rows, 2,007 membership rows |
+| B. Provenance: every evidence row compared with its raw CTD line (gene label, chemical name and ID, species, PubMed IDs, interaction text, NCBI GeneID); one source version | Pass: 7,958 of 7,958 rows match |
+| C. Independent re-derivation of the filters from the raw file | Pass: the same 7,958 lines, none missing or extra |
+| D. Stable IDs: mapped gene IDs against CTD GeneID → HGNC Entrez → Ensembl, and symbols against GENCODE names | Pass: 6,908 agree, 0 disagree, 11 cannot be checked (see below) |
+| E. Exposure and context: chemicals on the frozen list; context labels agree with CTD's actions; every co-treatment row excluded; every exclusion has a reason; every row tissue-tagged | Pass |
+| F. Duplicate handling: membership rebuilt from the evidence and compared row by row; no evidence ID in two membership rows | Pass: 2,007 rows, 1,640 genes, 1,700 gene–chemical pairs |
+| G. Sample of 20 rows (seed 20261117) checked against the cited PubMed abstracts | 7 confirmed, 13 consistent, 0 contradicted (below) |
+
+**The 11 rows D could not check.** These 10 labels have a CTD GeneID that
+belongs to another species: mouse, zebrafish, salmon, trout, macaque,
+*Drosophila*, and the wasp *Nasonia*. This is the same CTD curation error as
+`DOC1`, `SOS`, and `WNT5`. Unlike those three, each label resolves to
+exactly one human gene through HGNC, so the existing mapping rule applies and
+the mapping stands. The mapping rests on the symbol alone:
+
+| Label | Mapped to | Via HGNC |
+|---|---|---|
+| CYORF15A | TXLNGY | previous symbol |
+| DIMT1L | DIMT1 | previous symbol |
+| DTR | HBEGF | previous symbol |
+| KLRA1 | KLRA1P | previous symbol |
+| LPPR1 | PLPPR1 | alias |
+| MFSD2 | MFSD2A | previous symbol |
+| PB1 | PBRM1 | alias |
+| SR140 | U2SURP | alias |
+| TMEM178 | TMEM178A | previous symbol |
+| TSP1 | THBS1 | alias |
+
+DTR → HBEGF and TSP1 → THBS1 are the least certain, because both rest on old
+aliases.
+
+**Sample check (G).** Results for each row are in
+[`data/gene_sets/environment_audit_sample.tsv`](../data/gene_sets/environment_audit_sample.tsv).
+
+- **7 rows confirmed in the abstract**, gene and chemical both. For example,
+  TCDD increases aromatase (CYP19) mRNA in MCF-7 cells, and a stilbene analog
+  suppresses TCDD-induced CYP1B1.
+- **13 rows consistent.** Every cited paper is a human expression study that
+  tested that exact chemical. Most are genome-wide HepG2/HepaRG,
+  MCF-7, or Seveso blood-cell studies, and the gene-level result is in the
+  full text or supplement, not the abstract.
+- **None contradicted.**
+- **One weak citation.** For the CYP1A1 + oxygen-deficiency row, one of the
+  two cited papers is mainly a curated pathway model, not a measurement.
+
+The check is abstract-level only. A gene-level check of the screening rows
+would need the papers' supplementary tables.
+
+**Joining.** Every `gene_id` is a versioned GENCODE v50 ID present in the
+annotation the junction tables use. `environment_response.tsv` has one row
+per gene × chemical × tissue × context, so the same gene appears more than
+once. It must not be passed directly to `splice-girl stats --genes`, which
+rejects repeated gene IDs. The one-row-per-gene `candidate_genes.tsv` from
+E9 is the file meant for that.
+
+**Counts and checksums (SHA-256).**
+
+| File | Data rows | SHA-256 |
+|---|---|---|
+| `environment_evidence.tsv` | 7,958 | `05ed7081c1f6f7ea2952b086e79c72773a0d28c01bd1ab46313d39e9ab3d8f4f` |
+| `environment_response.tsv` | 2,007 | `8ca28b81fceb5974136a38c2d5391fc52340bd044d075f9ed7de256cf8a57aef` |
+| `environment_mapping_review.tsv` | 11 | `274c196b320cc7f7215732fec6b0ca4c353db3fa4b222152256482f08ca7e9ae` |
+| `ctd_publication_tissue.tsv` | 628 | `29ee65da5e63dc6c9ea2ee54bc2e223b141dc3b92eeddaef02419f5bc91bdf73` |
+| `environment_audit_sample.tsv` | 20 | `733e58c3a68edd44719e58b987835cd54e8641bde38bfdb39e7314fe4207edd9` |
+
+**Still recommended.** These steps need someone other than the builder:
+
+- A teammate re-checks 5 sampled rows independently, including at least 2
+  screening rows against the papers' supplementary tables.
+- A teammate looks over the 30 reproductive-tissue tags in
+  `ctd_publication_tissue.tsv`.
+
+The audit passes; these steps make it independent.
 
 ## Literature-context list
 

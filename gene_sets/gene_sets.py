@@ -10,6 +10,7 @@ computes the risk/environment overlap.
 Subcommands:
 
     map      Map original gene labels to versioned GENCODE gene IDs.
+    review   Apply people's recorded decisions on ambiguous/unresolved labels.
     dedupe   Build one membership row per gene from mapped evidence rows.
     check    Schema-check any gene-set table.
     overlap  Build overlap.tsv and candidate_genes.tsv from both memberships.
@@ -446,6 +447,92 @@ def command_map(args: argparse.Namespace) -> int:
 
 
 # ---------------------------------------------------------------------------
+# review (people's decisions on ambiguous and unresolved labels)
+# ---------------------------------------------------------------------------
+
+MAPPING_REVIEW_COLUMNS = ["original_id", "decision", "gene_id", "reason"]
+REVIEW_DECISIONS = {"mapped", "excluded"}
+
+
+def read_mapping_review(
+    path: Path, reference: GeneReference
+) -> dict[str, dict[str, str]]:
+    header, rows = read_tsv(path)
+    if header != MAPPING_REVIEW_COLUMNS:
+        raise ValueError(f"{path}: header must be {MAPPING_REVIEW_COLUMNS}")
+    decisions: dict[str, dict[str, str]] = {}
+    for line, row in enumerate(rows, start=2):
+        label, decision, gene_id = row["original_id"], row["decision"], row["gene_id"]
+        if label in decisions:
+            raise ValueError(f"{path} line {line}: {label!r} is reviewed twice")
+        if decision not in REVIEW_DECISIONS:
+            raise ValueError(f"{path} line {line}: decision must be one of {sorted(REVIEW_DECISIONS)}")
+        if not row["reason"].strip() or row["reason"] == MISSING:
+            raise ValueError(f"{path} line {line}: every decision needs a reason")
+        if decision == "mapped" and gene_id not in reference.gene_names:
+            raise ValueError(f"{path} line {line}: gene_id {gene_id!r} is not in the reference annotation")
+        if decision == "excluded" and gene_id != MISSING:
+            raise ValueError(f"{path} line {line}: an excluded label must have gene_id {MISSING}")
+        decisions[label] = row
+    return decisions
+
+
+def apply_mapping_review(
+    rows: list[dict[str, str]],
+    decisions: dict[str, dict[str, str]],
+    reference: GeneReference,
+) -> tuple[list[dict[str, str]], dict[str, int]]:
+    """Resolve ambiguous/unresolved rows from the review table.
+
+    Only rows still ambiguous or unresolved are touched, so rerunning is safe.
+    Labels in the review table that match no open row are reported, not ignored.
+    """
+    counts: dict[str, int] = defaultdict(int)
+    used: set[str] = set()
+    updated = []
+    for row in rows:
+        row = dict(row)
+        decision = decisions.get(row["original_id"])
+        if decision and row["mapping_status"] in ("ambiguous", "unresolved"):
+            used.add(row["original_id"])
+            note = f"manual review ({decision['decision']}): {decision['reason']}"
+            row["notes"] = note if row["notes"] in ("", MISSING) else f"{row['notes']}; {note}"
+            if decision["decision"] == "mapped":
+                row["mapping_status"] = "mapped"
+                row["mapping_method"] = "manual"
+                row["gene_id"] = decision["gene_id"]
+                row["gene_symbol"] = reference.gene_names[decision["gene_id"]] or MISSING
+            else:
+                row["mapping_status"] = "excluded"
+                row["gene_id"] = MISSING
+                row["gene_symbol"] = MISSING
+            counts[f"resolved_{decision['decision']}"] += 1
+        updated.append(row)
+    for row in updated:
+        counts[row["mapping_status"]] += 1
+    unused = sorted(set(decisions) - used)
+    counts["review_labels_not_applied"] = len(unused)
+    return updated, dict(counts)
+
+
+def command_review(args: argparse.Namespace) -> int:
+    columns = SCHEMAS[f"{args.kind}_evidence"]
+    header, rows = read_tsv(args.evidence)
+    if header != columns:
+        raise ValueError(f"{args.evidence} header does not match the {args.kind} evidence schema")
+    reference = GeneReference()
+    load_gtf_genes(args.gtf, reference)
+    decisions = read_mapping_review(args.review, reference)
+    updated, counts = apply_mapping_review(rows, decisions, reference)
+    write_tsv(args.output, columns, updated)
+    print(json.dumps(counts, indent=2))
+    still_open = counts.get("ambiguous", 0) + counts.get("unresolved", 0)
+    if still_open:
+        print(f"note: {still_open} row(s) are still ambiguous or unresolved", file=sys.stderr)
+    return 0
+
+
+# ---------------------------------------------------------------------------
 # dedupe
 # ---------------------------------------------------------------------------
 
@@ -794,6 +881,15 @@ def build_parser() -> argparse.ArgumentParser:
     p.add_argument("--mapping-table", type=Path, required=True,
                    help="one row per original label with candidates, for review")
     p.set_defaults(func=command_map)
+
+    p = sub.add_parser("review", help="apply people's decisions on ambiguous/unresolved labels")
+    p.add_argument("--kind", choices=["risk", "environment"], required=True)
+    p.add_argument("--evidence", type=Path, required=True, help="mapped evidence TSV")
+    p.add_argument("--review", type=Path, required=True,
+                   help="TSV with original_id, decision (mapped|excluded), gene_id, reason")
+    p.add_argument("--gtf", type=Path, required=True, help="GENCODE v50 GTF, to validate gene IDs")
+    p.add_argument("--output", type=Path, required=True)
+    p.set_defaults(func=command_review)
 
     p = sub.add_parser("dedupe", help="build one membership row per gene")
     p.add_argument("--kind", choices=["risk", "environment"], required=True)

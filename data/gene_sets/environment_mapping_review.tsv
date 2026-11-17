@@ -1,0 +1,12 @@
+original_id	decision	gene_id	reason
+COX2	mapped	ENSG00000198712.1	2026-11-17: CTD's curated NCBI GeneID 4513 is human MT-CO2 (HGNC alias COX2), not PTGS2
+KIR2DL5A	excluded	NA	2026-11-17: HGNC places it only on a 19q13.4 alternate reference locus; no gene in the GENCODE v50 primary assembly, so it cannot join to junction tables
+HLA-DRB4	excluded	NA	2026-11-17: HGNC places it only on a 6p21.3 alternate reference locus; no gene in the GENCODE v50 primary assembly, so it cannot join to junction tables
+ERV3-2	excluded	NA	2026-11-17: HGNC (NCBI GeneID 57612) lists no Ensembl gene; no GENCODE v50 gene to join to
+LINC00312	excluded	NA	2026-11-17: HGNC (NCBI GeneID 29931) lists no Ensembl gene; no GENCODE v50 gene to join to
+PGBD3	excluded	NA	2026-11-17: HGNC (NCBI GeneID 267004) lists no Ensembl gene; no GENCODE v50 gene to join to
+RUNX1-IT1	excluded	NA	2026-11-17: HGNC (NCBI GeneID 80215) lists no Ensembl gene; no GENCODE v50 gene to join to
+RNA28SN4	excluded	NA	2026-11-17: HGNC places this 28S rRNA copy on unplaced chromosome 22 sequence with no Ensembl gene; no GENCODE v50 gene to join to
+DOC1	excluded	NA	2026-11-17: CTD links Drosophila Doc1 (NCBI GeneID 39039) to a human-cell study (PMID 12377990); the human gene meant (CDK2AP1 or ANAPC10, both alias DOC1) cannot be determined without guessing
+SOS	excluded	NA	2026-11-17: CTD links Drosophila Sos (NCBI GeneID 34790) to a human-cell study (PMID 11489354); the human gene meant (SOS1 or SOS2) cannot be determined without guessing
+WNT5	excluded	NA	2026-11-17: CTD links Drosophila Wnt5 (NCBI GeneID 32838) to a human-cell study (PMID 36370075); the human gene meant (WNT5A or WNT5B) cannot be determined without guessing

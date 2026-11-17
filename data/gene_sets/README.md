@@ -14,6 +14,8 @@ the overlap. It never decides whether a gene counts.
 | `risk_evidence.tsv` | People (G4–G5), then `map` | One evidence assertion from one source |
 | `dioxin_like_chemicals.tsv` | People (E1), frozen | One dioxin-like chemical with its exact CTD ID |
 | `environment_evidence.tsv` | `extract_ctd.py` (E3–E4), `map`, then `review_ctd_context.py apply` (E6) | One measured response to one chemical in one context |
+| `environment_mapping_review.tsv` | People (E5 step 6), applied by `review` | One reviewed label: mapped by hand or excluded, with a reason |
+| `environment_audit_sample.tsv` | `audit_environment.py` (E8), then a person | One sampled evidence row with its check against the cited papers |
 | `ctd_publication_tissue.tsv` | `review_ctd_context.py tag-publications` (E6) | One cited PubMed paper with its tissue tag and the terms that decided it |
 | `endometriosis_risk.tsv` | `dedupe --kind risk` | One gene |
 | `environment_response.tsv` | `dedupe --kind environment` | One gene × chemical × tissue × context |
@@ -24,7 +26,10 @@ the overlap. It never decides whether a gene counts.
 `risk_evidence.tsv` holds only its header row. `environment_evidence.tsv`
 holds the CTD extraction from November 17, 2026 (7,958 rows) after the E6
 context review: 1,028 co-treatment rows are `excluded` with a reason, and
-every row has a paper-level tissue tag. See `docs/gene_set_methods.md`. Do not add example
+every row has a paper-level tissue tag. The 12 labels `map` could not
+resolve were reviewed by hand (1 mapped, 11 excluded). `environment_response.tsv`
+is the E7 membership under the provisional 2-publication rule. See
+`docs/gene_set_methods.md`. Do not add example
 rows to either file.
 
 ## Shared rules
@@ -95,9 +100,15 @@ python3 gene_sets/gene_sets.py map --kind risk \
   --output data/gene_sets/risk_evidence.tsv \
   --mapping-table data/gene_sets/risk_mapping.tsv
 
-# 2. People review every ambiguous and unresolved row (G7) and set it to
-#    mapped (mapping_method = manual) or excluded, with a reason in notes.
-#    map only touches rows still marked pending, so reruns keep those edits.
+# 2. People review every ambiguous and unresolved row (G7 / E5 step 6) and
+#    record each decision in a review table (original_id, decision =
+#    mapped|excluded, gene_id, reason), then apply it. Only rows still
+#    ambiguous or unresolved change, so reruns are safe:
+python3 gene_sets/gene_sets.py review --kind environment \
+  --evidence data/gene_sets/environment_evidence.tsv \
+  --review data/gene_sets/environment_mapping_review.tsv \
+  --gtf references/gencode_v50/gencode.v50.primary_assembly.annotation.gtf.gz \
+  --output data/gene_sets/environment_evidence.tsv
 
 # 3. Check, then build membership:
 python3 gene_sets/gene_sets.py check --kind risk_evidence \
@@ -112,6 +123,19 @@ python3 gene_sets/gene_sets.py dedupe --kind risk \
 python3 gene_sets/gene_sets.py dedupe --kind environment --min-publications 2 \
   --evidence data/gene_sets/environment_evidence.tsv \
   --output data/gene_sets/environment_response.tsv
+
+# Environment audit (E8): re-checks both tables against the raw CTD file and
+# references, rebuilds the membership, and writes a fixed-seed sample for a
+# person to check against the cited papers. Exits 1 if any check fails.
+python3 gene_sets/audit_environment.py \
+  --evidence data/gene_sets/environment_evidence.tsv \
+  --membership data/gene_sets/environment_response.tsv \
+  --chemicals data/gene_sets/dioxin_like_chemicals.tsv \
+  --ctd /path/to/CTD_chem_gene_ixns.tsv.gz \
+  --gtf references/gencode_v50/gencode.v50.primary_assembly.annotation.gtf.gz \
+  --hgnc references/hgnc/hgnc_complete_set.txt \
+  --min-publications 2 \
+  --sample-output data/gene_sets/environment_audit_sample.tsv
 
 # 4. Overlap and category counts (E9–E10):
 python3 gene_sets/gene_sets.py overlap \

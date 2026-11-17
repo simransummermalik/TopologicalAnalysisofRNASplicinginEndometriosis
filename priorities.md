@@ -40,15 +40,16 @@ table that Splice Girl can read without manual editing.
 **Status:** In progress. The rules, verified sources, dioxin-like chemical
 list, evidence templates, and the tested `gene_sets/gene_sets.py` tooling
 exist; see [`docs/gene_set_methods.md`](docs/gene_set_methods.md). The
-environmental (CTD) evidence table is extracted and context-reviewed (E6),
-awaiting unmapped-row review and audit;
-genetic-risk extraction, both reviews, and both audits have not started.
+environmental (CTD) evidence table is extracted, context-reviewed (E6),
+fully mapped, deduplicated (E7), and audited (E8). Genetic-risk extraction,
+review, and audit have not started.
 
 - [ ] Freeze rules for genetic-risk evidence. *(Drafted and recorded in
   `docs/decisions.md`; waiting for a teammate's cold read, G1 step 7.)*
 - [ ] Build the genetic-risk evidence table with stable gene IDs and sources.
 - [x] Freeze rules for environmental-response evidence.
-- [ ] Build the environmental evidence table with stable gene IDs and sources.
+- [x] Build the environmental evidence table with stable gene IDs and sources.
+  *(Audited; the 2-publication rule is still provisional.)*
 - [ ] Review duplicate, outdated, and ambiguous gene names.
 - [ ] Create risk-only, environment-only, and overlap gene lists.
 - [ ] Record the exact source and reason for including every gene.
