@@ -1,0 +1,22 @@
+congener	class	ctd_name	ctd_chemical_id
+2,3,7,8-TCDD	PCDD	Tetrachlorodibenzodioxin	MESH:D013749
+1,2,3,7,8-PeCDD	PCDD	1,2,3,7,8-pentachlorodibenzo-p-dioxin	MESH:C051452
+1,2,3,4,7,8-HxCDD	PCDD	1,2,3,4,7,8-hexachlorodibenzodioxin	MESH:C078219
+1,2,3,6,7,8-HxCDD	PCDD	1,2,3,6,7,8-hexachlorodibenzodioxin	MESH:C046838
+1,2,3,4,6,7,8-HpCDD	PCDD	1,2,3,4,6,7,8-heptachlorodibenzodioxin	MESH:C046839
+OCDD	PCDD	octachlorodibenzo-4-dioxin	MESH:C018117
+2,3,7,8-TCDF	PCDF	2,3,7,8-tetrachlorodibenzofuran	MESH:C014211
+1,2,3,7,8-PeCDF	PCDF	1,2,3,7,8-pentachlorodibenzofuran	MESH:C057584
+2,3,4,7,8-PeCDF	PCDF	2,3,4,7,8-pentachlorodibenzofuran	MESH:C038890
+1,2,3,4,7,8-HxCDF	PCDF	1,2,3,4,7,8-hexachlorodibenzofuran	MESH:C051412
+1,2,3,4,6,7,8-HpCDF	PCDF	1,2,3,4,6,7,8-heptachlorodibenzofuran	MESH:C473650
+OCDF	PCDF	octachlorodibenzofuran	MESH:C008694
+PCB 77	non-ortho PCB	3,4,3',4'-tetrachlorobiphenyl	MESH:C028451
+PCB 126	non-ortho PCB	3,4,5,3',4'-pentachlorobiphenyl	MESH:C023035
+PCB 169	non-ortho PCB	3,4,5,3',4',5'-hexachlorobiphenyl	MESH:C027309
+PCB 105	mono-ortho PCB	2,3,3',4,4'-pentachlorobiphenyl	MESH:C067940
+PCB 114	mono-ortho PCB	2,3,4,4'5-pentachlorobiphenyl	MESH:C035834
+PCB 118	mono-ortho PCB	2,3',4,4',5-pentachlorobiphenyl	MESH:C070055
+PCB 156	mono-ortho PCB	2,3,3',4,4',5-hexachlorobiphenyl	MESH:C087667
+PCB 167	mono-ortho PCB	2,4,5,3',4',5'-hexachlorobiphenyl	MESH:C038372
+PCB 189	mono-ortho PCB	2,3,4,5,3',4',5'-heptachlorobiphenyl	MESH:C034559

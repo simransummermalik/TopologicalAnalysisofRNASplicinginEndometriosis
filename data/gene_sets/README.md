@@ -12,15 +12,18 @@ the overlap. It never decides whether a gene counts.
 | File | Made by | One row means |
 |---|---|---|
 | `risk_evidence.tsv` | People (G4–G5), then `map` | One evidence assertion from one source |
-| `environment_evidence.tsv` | People (E3–E4), then `map` | One measured response to one chemical in one context |
+| `dioxin_like_chemicals.tsv` | People (E1), frozen | One dioxin-like chemical with its exact CTD ID |
+| `environment_evidence.tsv` | `extract_ctd.py` (E3–E4), then `map`, then people (E6) | One measured response to one chemical in one context |
 | `endometriosis_risk.tsv` | `dedupe --kind risk` | One gene |
 | `environment_response.tsv` | `dedupe --kind environment` | One gene × chemical × tissue × context |
 | `overlap.tsv` | `overlap` | One gene in both sets |
 | `candidate_genes.tsv` | `overlap` | One gene in either set, with category flags |
 | `*_mapping.tsv` | `map` | One original label and its candidate IDs, for G7 review |
 
-The two evidence files currently hold only their header row. Do not add
-example rows to them.
+`risk_evidence.tsv` holds only its header row. `environment_evidence.tsv`
+holds the CTD draft from November 17, 2026 (7,958 rows, still unreviewed;
+see the extraction record in `docs/gene_set_methods.md`). Do not add example
+rows to either file.
 
 ## Shared rules
 
@@ -64,6 +67,15 @@ Run from the repository root. `references/` is the ignored local folder named
 in [`docs/data_methods.md`](../../docs/data_methods.md).
 
 ```sh
+# 0. Environment only: draft rows from the CTD release recorded in
+#    docs/gene_set_methods.md (download it outside the repository and check
+#    its SHA-256 first). This overwrites environment_evidence.tsv, so run it
+#    only before any review edits.
+python3 gene_sets/extract_ctd.py \
+  --ctd /path/to/CTD_chem_gene_ixns.tsv.gz \
+  --chemicals data/gene_sets/dioxin_like_chemicals.tsv \
+  --output data/gene_sets/environment_evidence.tsv
+
 # 1. People enter rows with mapping_status = pending. Then map identifiers:
 python3 gene_sets/gene_sets.py map --kind risk \
   --evidence data/gene_sets/risk_evidence.tsv \

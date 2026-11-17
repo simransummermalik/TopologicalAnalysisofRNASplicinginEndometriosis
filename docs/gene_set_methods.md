@@ -121,7 +121,7 @@ requires a new dated decision.
 
 | Source | Access location | Version / release | Accessed | Status |
 |---|---|---|---|---|
-| CTD curated chemical–gene interactions | https://ctdbase.org/downloads/ | Record CTD release at extraction | — | Approved, not yet extracted |
+| CTD curated chemical–gene interactions | https://ctdbase.org/reports/CTD_chem_gene_ixns.tsv.gz | Report created 2026-10-29 | 2026-11-17 | Extracted as a draft; awaiting E6 review and E8 audit (see the extraction record below) |
 
 **Filters, applied in this order and recorded with row counts after each:**
 
@@ -226,6 +226,162 @@ are also excluded.
 TCDD. Report per-chemical row counts at E3 so that skew is visible.
 
 Source and filters approved: 2026-11-12, recorded by Vania Zeledon.
+
+## CTD extraction record (E3–E4)
+
+Drafted 2026-11-17 by Vania Zeledon. The rows are a machine-applied draft of
+the frozen filters. They are not reviewed evidence until E6 and E8 are done.
+
+| Field | Recorded value |
+|---|---|
+| File | `CTD_chem_gene_ixns.tsv.gz` from https://ctdbase.org/reports/CTD_chem_gene_ixns.tsv.gz |
+| CTD report date | Thu Oct 29 12:43:06 EDT 2026 (same release as the chemical vocabulary above) |
+| Accessed | 2026-11-17 |
+| Size | 43,514,023 bytes compressed; 3,190,383 interaction rows |
+| SHA-256 | `032f1b6fc674ca8614b91efeefe40e2cab8315639c1b1552a5df4df98d88f8c9` |
+| MD5 | `cd371d942b0214f2d395a59dd7db2ca0` |
+| Chemical list | [`data/gene_sets/dioxin_like_chemicals.tsv`](../data/gene_sets/dioxin_like_chemicals.tsv), a copy of the 21-row table above |
+| Script | [`gene_sets/extract_ctd.py`](../gene_sets/extract_ctd.py), then `gene_sets.py map` |
+| Output | [`data/gene_sets/environment_evidence.tsv`](../data/gene_sets/environment_evidence.tsv) (7,958 rows) and `environment_mapping.tsv` |
+
+The file is not kept in Git. To rebuild, download the same release, check the
+SHA-256, and run the commands in
+[`data/gene_sets/README.md`](../data/gene_sets/README.md).
+
+### How the filters were applied
+
+1. **Chemicals.** Exact match of `ChemicalID` to the 21 IDs. Names are never
+   used.
+2. **Species.** `Organism` is exactly `Homo sapiens`.
+3. **Interaction type.** At least one `InteractionActions` entry is an
+   `expression` or `activity` change (`increases`, `decreases`, or
+   `affects`). Binding, secretion, phosphorylation, localization, abundance,
+   and other action types do not count on their own.
+4. **Measured gene (implementation check).** The row's own gene must be the
+   one whose expression or activity was measured, read from the interaction
+   text (`expression of GENE mRNA`, `activity of GENE protein`). CTD also
+   files an interaction under every gene that takes part in it, so without
+   this check AHR would be counted for "AHR affects the reaction [TCDD
+   increases expression of CYP1A1]". This step removed 384 rows.
+
+Each kept row records:
+
+- **`response_type`.** `expression` for mRNA or an unstated form, `protein`
+  for protein expression, `activity` for activity. Eight interactions do not
+  say mRNA or protein; they are recorded as `expression` with a note.
+- **`context`.** One of:
+  - `direct`: the chemical alone changes the gene.
+  - `cotreatment`: the chemical is part of a mixture or co-exposure.
+  - `modulated_reaction`: another agent alters the chemical's effect, or the
+    chemical alters another agent's effect, for example "TCDD inhibits
+    [estradiol increases BRCA1]".
+  - `cotreatment|modulated_reaction`: both.
+- **Missing fields.** CTD records no tissue, dose, duration, or assay, so
+  `tissue`, `dose_duration`, and `assay` are `NA`. The note on each row gives
+  CTD's interaction text and NCBI GeneID; the cited PubMed IDs hold the
+  details.
+
+**Choices for E6 to confirm.** These choices are not covered by the frozen
+wording:
+
+- the measured-gene check
+- keeping `cotreatment` and `modulated_reaction` rows, labeled rather than
+  dropped
+- reading form-less interactions as `expression`
+
+### Counts
+
+Rows remaining after each filter, in order:
+
+| Step | Rows |
+|---|---|
+| All CTD interactions | 3,190,383 |
+| 1. Dioxin-like chemical IDs | 65,053 |
+| 2. *Homo sapiens* | 9,331 |
+| 3. Expression or activity change | 8,342 |
+| 4. Row's gene is the measured gene | 7,958 |
+
+Rows kept per chemical:
+
+| Chemical | After step 1 | After step 2 | After step 4 |
+|---|---|---|---|
+| 2,3,7,8-TCDD | 55,910 | 8,368 | 7,215 |
+| PCB 126 | 3,997 | 619 | 515 |
+| PCB 77 | 727 | 105 | 73 |
+| PCB 118 | 1,497 | 86 | 54 |
+| PCB 156 | 56 | 25 | 24 |
+| 2,3,4,7,8-PeCDF | 145 | 42 | 21 |
+| 2,3,7,8-TCDF | 2,463 | 36 | 12 |
+| 1,2,3,4,7,8-HxCDF | 27 | 8 | 8 |
+| 1,2,3,4,6,7,8-HpCDF | 23 | 8 | 8 |
+| 1,2,3,7,8-PeCDD | 30 | 7 | 6 |
+| PCB 105 | 46 | 9 | 6 |
+| PCB 169 | 72 | 6 | 5 |
+| 1,2,3,6,7,8-HxCDD | 18 | 4 | 4 |
+| 1,2,3,4,6,7,8-HpCDD | 15 | 4 | 4 |
+| PCB 114 | 4 | 4 | 3 |
+| 1,2,3,4,7,8-HxCDD, 1,2,3,7,8-PeCDF, PCB 167, PCB 189 | 10, 5, 5, 3 | 0 | 0 |
+| OCDD, OCDF | 0 | 0 | 0 |
+
+As expected, TCDD dominates: 91% of kept rows.
+
+Kept rows by context:
+
+| Context | Rows |
+|---|---|
+| `direct` | 5,548 |
+| `modulated_reaction` | 1,382 |
+| `cotreatment` | 964 |
+| `cotreatment\|modulated_reaction` | 64 |
+
+Kept rows by response type:
+
+| Response type | Rows |
+|---|---|
+| `expression` | 7,020 |
+| `protein` | 508 |
+| `activity` | 430 |
+
+### Gene mapping
+
+`map` results:
+
+- **7,943 rows mapped.**
+- **2 ambiguous.** `COX2` (CTD GeneID 4513, which is MT-CO2, not PTGS2) and
+  `DOC1`.
+- **13 unresolved.** `HLA-DRB4` and `KIR2DL5A` are on alternate haplotypes
+  only. `ERV3-2`, `HGC6.3`, `LINC00312`, `PGBD3`, `RNA28SN4`, `RUNX1-IT1`,
+  `SOS`, `TRK-TTT3-5`, and `WNT5` have no match.
+
+These 15 rows need E7/G7-style review, using the CTD GeneID in each note.
+
+**Independent check.** Each mapped row was also checked through a separate
+route: CTD's NCBI GeneID, then HGNC `entrez_id`, then Ensembl ID. Result:
+7,931 agree, 0 disagree, 12 cannot be checked (no HGNC Entrez–Ensembl
+link).
+
+### Evidence for the provisional publication rule
+
+These counts cover the 7,943 mapped rows from 628 distinct publications.
+Each cell is the number of genes with at least *n* distinct publications for
+some gene–chemical pair:
+
+| Rows used | n ≥ 1 | n ≥ 2 | n ≥ 3 | n ≥ 5 |
+|---|---|---|---|---|
+| All contexts | 4,393 | 1,693 | 711 | 146 |
+| `direct` only | 4,175 | 1,628 | 667 | 133 |
+
+**Large screening papers drive the 2-publication count.** 17 publications
+contribute at least 100 rows each. They supply 6,735 of the 11,230
+publication–row links; the largest, PMID 20106945, has 1,361 rows. Of the
+1,753 gene–chemical pairs with at least 2 publications, 1,119 are supported
+only by these large screens. Only 248 genes have at least 2 supporting
+publications with fewer than 100 rows each.
+
+So at this size, "2 publications" mostly means "appears in two genome-wide
+screens", not "independently replicated". The team should weigh this when the
+provisional rule is confirmed or revised. The draft genetic-risk set from the
+November 12 test run had 102 genes.
 
 ## Literature-context list
 
