@@ -279,8 +279,48 @@ fn write_comparison_bundle(
         (COMPARISONS.to_owned(), comparisons),
         (GENE_SUMMARIES.to_owned(), gene_summaries),
     ];
-    if let Some((_, run)) = statistics {
+    if let Some((path, run)) = statistics {
         files.push((STATISTICS.to_owned(), statistics_tsv(&metadata.run_id, run)));
+        let (sample_baselines, baseline_comparisons) =
+            crate::baselines::tables(&metadata.run_id, results, run);
+        files.push(("baseline_metrics.tsv".to_owned(), sample_baselines));
+        files.push(("baseline_comparisons.tsv".to_owned(), baseline_comparisons));
+        files.push((
+            "gene_family.tsv".to_owned(),
+            fs::read_to_string(path)
+                .map_err(|error| format!("could not preserve gene family: {error}"))?,
+        ));
+        if let Some(rule) = run.options.rank_by {
+            let mut rankings = String::from(
+                "run_id\tfamily_id\trank\tgene_id\tstatus\tmean_difference_case_minus_control\tp_value\tadjusted_p_value\trule\tuntested_reason\n",
+            );
+            for (position, index) in crate::ranking::ordered_genes(run, rule)
+                .into_iter()
+                .enumerate()
+            {
+                let row = &run.genes[index];
+                writeln!(
+                    rankings,
+                    "{}\t{}\t{}\t{}\t{}\t{}\t{}\t{}\t{}\t{}",
+                    tsv(&metadata.run_id),
+                    tsv(&run.family.family_id),
+                    if row.permutation.is_some() {
+                        (position + 1).to_string()
+                    } else {
+                        String::new()
+                    },
+                    tsv(&row.gene_id),
+                    row.status,
+                    optional_number(run.comparisons[index].mean_difference),
+                    optional_number(row.permutation.as_ref().map(|p| p.p_value)),
+                    optional_number(row.adjusted_p_value),
+                    rule.name(),
+                    tsv(&row.reason)
+                )
+                .unwrap();
+            }
+            files.push(("rankings.tsv".to_owned(), rankings));
+        }
     }
     if include_report {
         files.push((
@@ -357,7 +397,7 @@ impl RunMetadata {
 }
 
 fn statistics_settings_json(run: &StatisticsRun) -> String {
-    format!(
+    let mut settings = format!(
         "{{\"design\": \"independent (caller-declared)\", \"alternative\": {}, \"family_id\": {}, \"requested_genes\": {}, \"tested_genes\": {}, \"untested_genes\": {}, \"correction\": \"Benjamini-Hochberg\", \"correction_denominator\": \"successfully tested genes only\", \"minimum_samples_per_group\": {}, \"permutation_method\": \"exhaustive label enumeration including observed assignment\", \"extremity_tolerance\": {:.1e}, \"maximum_permutations\": {MAX_PERMUTATIONS}, \"random_seed\": null}}",
         json_string(alternative_name(run.options.alternative)),
         json_string(&run.family.family_id),
@@ -366,7 +406,10 @@ fn statistics_settings_json(run: &StatisticsRun) -> String {
         run.family.untested_count,
         run.options.min_per_group,
         TOLERANCE,
-    )
+    );
+    settings.pop();
+    write!(settings, ", \"ranking_rule\": {}, \"baseline_sample_policy\": \"same included samples as Hodge comparison; no missing-value imputation\"}}", run.options.rank_by.map(|rule| json_string(rule.name())).unwrap_or_else(|| "null".to_owned())).unwrap();
+    settings
 }
 
 fn statistics_tsv(run_id: &str, run: &StatisticsRun) -> String {

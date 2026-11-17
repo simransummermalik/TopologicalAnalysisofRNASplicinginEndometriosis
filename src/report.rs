@@ -161,7 +161,14 @@ fn render_report_inner(
 fn render_statistics(html: &mut String, run: &StatisticsRun) {
     writeln!(html, "<h2>Statistical tests</h2><p>Family: <code>{}</code>. Alternative: <strong>{}</strong>. Minimum per group: {}. Requested genes: {}; tested: {}; untested: {}.</p>", escape(&run.family.family_id), alternative_name(run.options.alternative), run.options.min_per_group, run.genes.len(), run.family.tested_count, run.family.untested_count).unwrap();
     html.push_str("<p>Method: exact unpaired label permutation, including the observed assignment. Independence and exchangeability are declared by the caller; tissue, batch effects, and other confounders require review. BH correction counts successfully tested genes only. Untested genes have no p-value; small p-values alone do not establish biological importance.</p><p><a href=\"statistics.tsv\">Download statistical results</a></p><div class=table-wrap><table><caption>Raw and Benjamini–Hochberg adjusted p-values. NA means untested. No significance cutoff or ranking was selected automatically.</caption><thead><tr><th scope=col>Gene</th><th scope=col>Status</th><th scope=col>Raw p</th><th scope=col>BH-adjusted p</th><th scope=col>Extreme / total permutations</th><th scope=col>Reason if untested</th></tr></thead><tbody>\n");
-    for (index, row) in run.genes.iter().enumerate() {
+    let indices = if let Some(rule) = run.options.rank_by {
+        writeln!(html, "<tr><td colspan=6>Requested order: {}. Ties use effect magnitude, then gene ID. Untested genes follow without ranks. <a href=\"rankings.tsv\">Download ordering</a></td></tr>", rule.name()).unwrap();
+        crate::ranking::ordered_genes(run, rule)
+    } else {
+        (0..run.genes.len()).collect()
+    };
+    for index in indices {
+        let row = &run.genes[index];
         let counts = row
             .permutation
             .as_ref()
@@ -170,6 +177,7 @@ fn render_statistics(html: &mut String, run: &StatisticsRun) {
         writeln!(html, "<tr><th scope=row><a href=\"#gene-{}\">{}</a></th><td>{}</td><td>{}</td><td>{}</td><td>{}</td><td>{}</td></tr>", index + 1, escape(&row.gene_id), row.status, number(row.permutation.as_ref().map(|test| test.p_value)), number(row.adjusted_p_value), counts, escape(&row.reason)).unwrap();
     }
     html.push_str("</tbody></table></div>\n");
+    html.push_str("<h3>Baseline checks</h3><p>Compare cycle fraction with total junction read support, observed node and junction counts, and graph cycle rank (edges minus nodes plus connected components). These descriptive baselines use the same included samples; they have no separate significance tests. Raw support depends on sequencing depth and is not a gene-expression estimate. Different observed topologies require review: missing edges may reflect coverage rather than biology.</p><p><a href=\"baseline_metrics.tsv\">Per-sample baselines</a> · <a href=\"baseline_comparisons.tsv\">Baseline group comparisons and topology flags</a> · <a href=\"gene_family.tsv\">Original gene family and annotations</a></p>\n");
 }
 
 fn number(value: Option<f64>) -> String {

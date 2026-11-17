@@ -25,6 +25,7 @@ use splice_girl::output::{
     write_report_bundle, write_stats_bundle,
 };
 use splice_girl::parser::parse_tsv;
+use splice_girl::ranking::RankBy;
 use splice_girl::statistics::{
     StatsOptions, alternative_name, parse_alternative, parse_gene_family, test_gene_family,
     validate_independent_metadata,
@@ -243,7 +244,13 @@ fn run_stats_command(arguments: Vec<String>, command: &[String]) -> Result<(), S
     for pair in rest.chunks_exact(2) {
         if !matches!(
             pair[0].as_str(),
-            "--genes" | "--family" | "--alternative" | "--design" | "--min-per-group" | "--output"
+            "--genes"
+                | "--family"
+                | "--alternative"
+                | "--design"
+                | "--min-per-group"
+                | "--output"
+                | "--rank-by"
         ) {
             return Err(format!(
                 "unknown stats option '{}'; use splice-girl stats --help",
@@ -295,6 +302,10 @@ fn run_stats_command(arguments: Vec<String>, command: &[String]) -> Result<(), S
             family_id,
             alternative,
             min_per_group,
+            rank_by: flags
+                .get("--rank-by")
+                .map(|value| RankBy::parse(value))
+                .transpose()?,
         },
     )?;
     let saved = write_stats_bundle(

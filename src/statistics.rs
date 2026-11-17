@@ -16,6 +16,7 @@ pub struct StatsOptions {
     pub family_id: String,
     pub alternative: Sidedness,
     pub min_per_group: usize,
+    pub rank_by: Option<crate::ranking::RankBy>,
 }
 
 #[derive(Debug)]
@@ -256,6 +257,7 @@ mod tests {
             family_id: "toy".to_owned(),
             alternative: Sidedness::TwoSided,
             min_per_group: 2,
+            rank_by: None,
         };
         let run = test_gene_family(&manifest, &results, &genes, options).unwrap();
         assert_eq!(run.family.tested_count, 0);

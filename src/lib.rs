@@ -2,6 +2,7 @@
 //! per-(sample, gene) graphs -> Hodge decomposition. `main.rs` is a thin
 //! CLI wrapper around `analyze_junctions`.
 pub mod audit;
+pub mod baselines;
 pub mod compare;
 pub mod fdr;
 pub mod graph;
@@ -11,6 +12,7 @@ pub mod matrix;
 pub mod output;
 pub mod parser;
 pub mod permutation;
+pub mod ranking;
 pub mod report;
 pub mod statistics;
 pub mod visualize;

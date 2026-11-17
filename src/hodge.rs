@@ -151,7 +151,7 @@ fn fit_potential(graph: &SpliceGraph, incidence: &Matrix) -> Result<Vec<f64>, St
 /// iterative depth-first search. Each component needs its own root node in
 /// `fit_potential` because potentials from different components can't be
 /// compared or linked by any edge.
-fn connected_components(graph: &SpliceGraph) -> Vec<Vec<usize>> {
+pub fn connected_components(graph: &SpliceGraph) -> Vec<Vec<usize>> {
     let mut adjacency = vec![Vec::new(); graph.nodes.len()];
     for edge in &graph.edges {
         adjacency[edge.from].push(edge.to);
