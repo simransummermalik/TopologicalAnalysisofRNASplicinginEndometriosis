@@ -1,0 +1,118 @@
+evidence_id	decision	gene_id	reason
+GWASCAT:16916	excluded	NA	2026-11-17: Catalog maps flanking genes (LINC03007, MIR148A) and records no author-reported gene (intergenic); not assigned by proximity (G1)
+GWASCAT:25392	mapped	ENSG00000162552.17	2026-11-17: the authors report WNT4 for this association (GWAS Catalog locus record), mapped by gencode_symbol
+GWASCAT:25396	excluded	NA	2026-11-17: Catalog maps flanking genes (LINC03007, MIR148A) and records no author-reported gene (intergenic); not assigned by proximity (G1)
+GWASCAT:25398	mapped	ENSG00000028203.21	2026-11-17: the authors report VEZT for this association (GWAS Catalog locus record), mapped by gencode_symbol
+GWASCAT:33206	mapped	ENSG00000162552.17	2026-11-17: the authors report WNT4 for this association (GWAS Catalog locus record), mapped by gencode_symbol
+GWASCAT:19712655	mapped	ENSG00000050344.11	2026-11-17: the authors report NFE2L3 for this association (GWAS Catalog locus record), mapped by gencode_symbol
+GWASCAT:21308389	mapped	ENSG00000143971.11	2026-11-17: the authors report ETAA1 for this association (GWAS Catalog locus record), mapped by gencode_symbol
+GWASCAT:21308394	mapped	ENSG00000115008.8	2026-11-17: the authors report IL1A for this association (GWAS Catalog locus record), mapped by gencode_symbol
+GWASCAT:21308399	mapped	ENSG00000128052.12	2026-11-17: the authors report KDR for this association (GWAS Catalog locus record), mapped by gencode_symbol
+GWASCAT:21308409	excluded	NA	2026-11-17: Catalog maps flanking genes (LINC03007, MIR148A) and records no author-reported gene (Intergenic); not assigned by proximity (G1)
+GWASCAT:21308489	mapped	ENSG00000128052.12	2026-11-17: the authors report KDR for this association (GWAS Catalog locus record), mapped by gencode_symbol
+GWASCAT:21308514	excluded	NA	2026-11-17: Catalog maps flanking genes (LINC03007, MIR148A) and records no author-reported gene (Intergenic); not assigned by proximity (G1)
+GWASCAT:24377374	excluded	NA	2026-11-17: Catalog maps flanking genes (GUCY2EP, TSKU) and records no author-reported gene (NR); not assigned by proximity (G1)
+GWASCAT:24377394	excluded	NA	2026-11-17: the authors report several genes (PARP1P2, RHOJ) without a single one; not assigned (G1)
+GWASCAT:93462745	excluded	NA	2026-11-17: Catalog maps flanking genes (CDC42, WNT4) and records no author-reported gene (none); not assigned by proximity (G1)
+GWASCAT:93462750	excluded	NA	2026-11-17: Catalog maps flanking genes (GRIK2, R3HDM2P2) and records no author-reported gene (none); not assigned by proximity (G1)
+GWASCAT:93481307	excluded	NA	2026-11-17: Catalog maps flanking genes (HMGN1P19, ZNF619P1) and records no author-reported gene (none); not assigned by proximity (G1)
+GWASCAT:105051522	excluded	NA	2026-11-17: Catalog maps flanking genes (HOXC-AS2, HOXC6) and records no author-reported gene (none); not assigned by proximity (G1)
+GWASCAT:105051576	excluded	NA	2026-11-17: Catalog maps flanking genes (LINC00574, RPL12P23) and records no author-reported gene (none); not assigned by proximity (G1)
+GWASCAT:105051588	excluded	NA	2026-11-17: Catalog maps flanking genes (KDR, RN7SL822P) and records no author-reported gene (none); not assigned by proximity (G1)
+GWASCAT:105051600	excluded	NA	2026-11-17: Catalog maps flanking genes (LINC01812, LINC02831) and records no author-reported gene (none); not assigned by proximity (G1)
+GWASCAT:105051972	excluded	NA	2026-11-17: Catalog maps flanking genes (HMGN1P19, ZNF619P1) and records no author-reported gene (none); not assigned by proximity (G1)
+GWASCAT:105051978	excluded	NA	2026-11-17: Catalog maps flanking genes (SKAP1, SKAP1-AS1) and records no author-reported gene (none); not assigned by proximity (G1)
+GWASCAT:105051990	excluded	NA	2026-11-17: Catalog maps flanking genes (THEM7P, WT1) and records no author-reported gene (none); not assigned by proximity (G1)
+GWASCAT:105052002	excluded	NA	2026-11-17: Catalog maps flanking genes (CD109, TXNP7) and records no author-reported gene (none); not assigned by proximity (G1)
+GWASCAT:105052008	excluded	NA	2026-11-17: Catalog maps flanking genes (IGF1, LINC02456) and records no author-reported gene (none); not assigned by proximity (G1)
+GWASCAT:105052092	excluded	NA	2026-11-17: Catalog maps flanking genes (HEY2-AS1, LINC02523) and records no author-reported gene (none); not assigned by proximity (G1)
+GWASCAT:105052098	excluded	NA	2026-11-17: Catalog maps flanking genes (HOXA10, HOXA10-HOXA9) and records no author-reported gene (none); not assigned by proximity (G1)
+GWASCAT:105052128	excluded	NA	2026-11-17: Catalog maps flanking genes (LINC03007, MIR148A) and records no author-reported gene (none); not assigned by proximity (G1)
+GWASCAT:105052146	excluded	NA	2026-11-17: Catalog maps flanking genes (ATP1B1, NME7) and records no author-reported gene (none); not assigned by proximity (G1)
+GWASCAT:105052176	excluded	NA	2026-11-17: Catalog maps flanking genes (AGKP2, RAP2C-AS1) and records no author-reported gene (none); not assigned by proximity (G1)
+GWASCAT:105052465	excluded	NA	2026-11-17: Catalog maps flanking genes (KDR, RN7SL822P) and records no author-reported gene (none); not assigned by proximity (G1)
+GWASCAT:105052501	excluded	NA	2026-11-17: Catalog maps flanking genes (LINC03007, MIR148A) and records no author-reported gene (none); not assigned by proximity (G1)
+GWASCAT:119486866	excluded	NA	2026-11-17: no mapped or author-reported gene for this association (G1)
+GWASCAT:119486872	excluded	NA	2026-11-17: no mapped or author-reported gene for this association (G1)
+GWASCAT:119486878	excluded	NA	2026-11-17: no mapped or author-reported gene for this association (G1)
+GWASCAT:119486884	excluded	NA	2026-11-17: no mapped or author-reported gene for this association (G1)
+GWASCAT:119486890	excluded	NA	2026-11-17: no mapped or author-reported gene for this association (G1)
+GWASCAT:119486896	excluded	NA	2026-11-17: no mapped or author-reported gene for this association (G1)
+GWASCAT:119486902	excluded	NA	2026-11-17: no mapped or author-reported gene for this association (G1)
+GWASCAT:119486908	excluded	NA	2026-11-17: no mapped or author-reported gene for this association (G1)
+GWASCAT:119486914	excluded	NA	2026-11-17: no mapped or author-reported gene for this association (G1)
+GWASCAT:119486920	excluded	NA	2026-11-17: no mapped or author-reported gene for this association (G1)
+GWASCAT:119486926	excluded	NA	2026-11-17: no mapped or author-reported gene for this association (G1)
+GWASCAT:119486932	excluded	NA	2026-11-17: no mapped or author-reported gene for this association (G1)
+GWASCAT:119486937	excluded	NA	2026-11-17: no mapped or author-reported gene for this association (G1)
+GWASCAT:119486943	excluded	NA	2026-11-17: no mapped or author-reported gene for this association (G1)
+GWASCAT:119486949	excluded	NA	2026-11-17: no mapped or author-reported gene for this association (G1)
+GWASCAT:119486955	excluded	NA	2026-11-17: no mapped or author-reported gene for this association (G1)
+GWASCAT:119486961	excluded	NA	2026-11-17: no mapped or author-reported gene for this association (G1)
+GWASCAT:119486967	excluded	NA	2026-11-17: no mapped or author-reported gene for this association (G1)
+GWASCAT:119486973	excluded	NA	2026-11-17: no mapped or author-reported gene for this association (G1)
+GWASCAT:119486979	excluded	NA	2026-11-17: no mapped or author-reported gene for this association (G1)
+GWASCAT:119486985	excluded	NA	2026-11-17: no mapped or author-reported gene for this association (G1)
+GWASCAT:165387781	excluded	NA	2026-11-17: Catalog maps flanking genes (LINC01812, LINC02831) and records no author-reported gene (none); not assigned by proximity (G1)
+GWASCAT:165387788	excluded	NA	2026-11-17: Catalog maps flanking genes (CALCRL-AS1, TFPI) and records no author-reported gene (none); not assigned by proximity (G1)
+GWASCAT:165387793	excluded	NA	2026-11-17: Catalog maps flanking genes (KDR, RN7SL822P) and records no author-reported gene (none); not assigned by proximity (G1)
+GWASCAT:165387805	excluded	NA	2026-11-17: Catalog maps flanking genes (CD109, TXNP7) and records no author-reported gene (none); not assigned by proximity (G1)
+GWASCAT:165387831	excluded	NA	2026-11-17: Catalog maps flanking genes (MIR331, VEZT) and records no author-reported gene (none); not assigned by proximity (G1)
+GWASCAT:165387836	excluded	NA	2026-11-17: Catalog maps flanking genes (HELLPAR, LINC02456) and records no author-reported gene (none); not assigned by proximity (G1)
+GWASCAT:213218787	excluded	NA	2026-11-17: Catalog maps flanking genes (KDR, RN7SL822P) and records no author-reported gene (none); not assigned by proximity (G1)
+GWASCAT:213218810	excluded	NA	2026-11-17: Catalog maps flanking genes (LINC01812, LINC02831) and records no author-reported gene (none); not assigned by proximity (G1)
+GWASCAT:213218858	excluded	NA	2026-11-17: Catalog maps flanking genes (ABO, Y_RNA) and records no author-reported gene (none); not assigned by proximity (G1)
+GWASCAT:213218874	excluded	NA	2026-11-17: Catalog maps flanking genes (HMGN1P19, ZNF619P1) and records no author-reported gene (none); not assigned by proximity (G1)
+GWASCAT:218952276	excluded	NA	2026-11-17: Catalog copy of Koller cross-ancestry locus rs10517343; the Catalog maps flanking genes (KDR, RN7SL822P), while row KOLLER2026_ST4:rs10517343 carries the authors' reported gene
+GWASCAT:218952301	excluded	NA	2026-11-17: Catalog copy of Koller cross-ancestry locus rs2917868; the Catalog maps flanking genes (CD109, TXNP7), while row KOLLER2026_ST4:rs2917868 carries the authors' reported gene
+GWASCAT:218952309	excluded	NA	2026-11-17: Catalog copy of Koller cross-ancestry locus rs1430787; the Catalog maps flanking genes (LINC01812, LINC02831), while row KOLLER2026_ST4:rs1430787 carries the authors' reported gene
+GWASCAT:218952336	excluded	NA	2026-11-17: Catalog copy of Koller cross-ancestry locus rs10860864; the Catalog maps flanking genes (IGF1, LINC02456), while row KOLLER2026_ST4:rs10860864 carries the authors' reported gene
+GWASCAT:218952349	excluded	NA	2026-11-17: Catalog copy of Koller cross-ancestry locus rs924040; the Catalog maps flanking genes (LINC00574, RPL12P23), while row KOLLER2026_ST4:rs924040 carries the authors' reported gene
+GWASCAT:218952353	excluded	NA	2026-11-17: Catalog copy of Koller cross-ancestry locus rs979165; the Catalog maps flanking genes (LINC03007, MIR148A), while row KOLLER2026_ST4:rs979165 carries the authors' reported gene
+GWASCAT:218952371	excluded	NA	2026-11-17: Catalog copy of Koller cross-ancestry locus rs12418834; the Catalog maps flanking genes (THEM7P, WT1), while row KOLLER2026_ST4:rs12418834 carries the authors' reported gene
+GWASCAT:218952380	excluded	NA	2026-11-17: Catalog copy of Koller cross-ancestry locus rs993183; the Catalog maps flanking genes (HMGN1P19, ZNF619P1), while row KOLLER2026_ST4:rs993183 carries the authors' reported gene
+GWASCAT:218952388	excluded	NA	2026-11-17: Catalog copy of Koller cross-ancestry locus rs635634; the Catalog maps flanking genes (ABO, Y_RNA), while row KOLLER2026_ST4:rs635634 carries the authors' reported gene
+GWASCAT:218952393	excluded	NA	2026-11-17: Catalog copy of Koller cross-ancestry locus rs1935773; the Catalog maps flanking genes (HEY2-AS1, LINC02523), while row KOLLER2026_ST4:rs1935773 carries the authors' reported gene
+GWASCAT:218952397	excluded	NA	2026-11-17: Catalog copy of Koller cross-ancestry locus rs72617705; the Catalog maps flanking genes (BMPR1B-DT, PDLIM5), while row KOLLER2026_ST4:rs72617705 carries the authors' reported gene
+GWASCAT:218952406	excluded	NA	2026-11-17: Catalog copy of Koller cross-ancestry locus rs10514243; the Catalog maps flanking genes (ATP6AP1L, RPL5P16), while row KOLLER2026_ST4:rs10514243 carries the authors' reported gene
+GWASCAT:218952415	excluded	NA	2026-11-17: Catalog copy of Koller cross-ancestry locus rs114760566; the Catalog maps flanking genes (CYCSP55, HMGA1), while row KOLLER2026_ST4:rs114760566 carries the authors' reported gene
+GWASCAT:218952420	excluded	NA	2026-11-17: Catalog copy of Koller cross-ancestry locus rs8176498; the Catalog maps flanking genes (CALCRL-AS1, TFPI), while row KOLLER2026_ST4:rs8176498 carries the authors' reported gene
+GWASCAT:218952430	excluded	NA	2026-11-17: Catalog copy of Koller cross-ancestry locus rs1566643; the Catalog maps flanking genes (TBX3-AS1, UBA52P7), while row KOLLER2026_ST4:rs1566643 carries the authors' reported gene
+GWASCAT:218952443	excluded	NA	2026-11-17: Catalog copy of Koller cross-ancestry locus rs7974900; the Catalog maps flanking genes (SSPN, SSPN-AS1), while row KOLLER2026_ST4:rs7974900 carries the authors' reported gene
+GWASCAT:218952447	excluded	NA	2026-11-17: Catalog copy of Koller cross-ancestry locus rs6970537; the Catalog maps flanking genes (HOXA10, HOXA10-HOXA9), while row KOLLER2026_ST4:rs6970537 carries the authors' reported gene
+GWASCAT:218952461	excluded	NA	2026-11-17: Catalog copy of Koller cross-ancestry locus rs11776952; the Catalog maps flanking genes (RNU6-356P, SFRP1), while row KOLLER2026_ST4:rs11776952 carries the authors' reported gene
+GWASCAT:218952470	excluded	NA	2026-11-17: Catalog copy of Koller cross-ancestry locus rs11614913; the Catalog maps flanking genes (HOXC6, MIR196A2), while row KOLLER2026_ST4:rs11614913 carries the authors' reported gene
+GWASCAT:218952489	excluded	NA	2026-11-17: Catalog copy of Koller cross-ancestry locus rs6778588; the Catalog maps flanking genes (CCT6P4, ENAHP1), while row KOLLER2026_ST4:rs6778588 carries the authors' reported gene
+GWASCAT:218952494	excluded	NA	2026-11-17: Catalog copy of Koller cross-ancestry locus rs13027814; the Catalog maps flanking genes (IL1A, IL1B), while row KOLLER2026_ST4:rs13027814 carries the authors' reported gene
+GWASCAT:218952512	excluded	NA	2026-11-17: Catalog maps flanking genes (IGF1, LINC00485) and records no author-reported gene; not assigned by proximity (G1)
+GWASCAT:218952526	excluded	NA	2026-11-17: Catalog copy of Koller cross-ancestry locus rs80235477; the Catalog maps flanking genes (LINC01254, VAPA), while row KOLLER2026_ST4:rs80235477 carries the authors' reported gene
+GWASCAT:218952531	excluded	NA	2026-11-17: Catalog copy of Koller cross-ancestry locus rs384114; the Catalog maps flanking genes (LINC02959, TSHZ3-AS1), while row KOLLER2026_ST4:rs384114 carries the authors' reported gene
+GWASCAT:218952562	excluded	NA	2026-11-17: Catalog copy of Koller cross-ancestry locus rs13278719; the Catalog maps flanking genes (MIR30B, ZFAT), while row KOLLER2026_ST4:rs13278719 carries the authors' reported gene
+GWASCAT:218952567	excluded	NA	2026-11-17: Catalog maps flanking genes (HOXA-AS2, HOXA3) and records no author-reported gene; not assigned by proximity (G1)
+GWASCAT:218952594	excluded	NA	2026-11-17: Catalog copy of Koller cross-ancestry locus rs61904091; the Catalog maps flanking genes (FAM76B, LNCRNA-IUR), while row KOLLER2026_ST4:rs61904091 carries the authors' reported gene
+GWASCAT:218952599	excluded	NA	2026-11-17: Catalog copy of Koller cross-ancestry locus rs61926299; the Catalog maps flanking genes (ATF1, DIP2B), while row KOLLER2026_ST4:rs61926299 carries the authors' reported gene
+GWASCAT:218952619	excluded	NA	2026-11-17: Catalog copy of Koller cross-ancestry locus rs929240; the Catalog maps flanking genes (LINC03007, TSEN15P3), while row KOLLER2026_ST4:rs929240 carries the authors' reported gene
+KOLLER2026_ST4:rs7413877	mapped	ENSG00000228470.1|ENSG00000152104.13	2026-11-17: the authors list 2 genes and the lead SNP lies inside all of them (GRCh37); every listed gene is kept (decision 2026-11-17); RP11-176D17.3 is ENSG00000228470 in GENCODE v19, the same stable ID as ENSG00000228470.1 in v50; PTPN14 is ENSG00000152104 in GENCODE v19, the same stable ID as ENSG00000152104.13 in v50
+KOLLER2026_ST4:rs1430787	mapped	ENSG00000235495.2	2026-11-17: retired clone name; AC010987.5 is ENSG00000235495 in GENCODE v19, the same stable ID as ENSG00000235495.2 in v50
+KOLLER2026_ST4:rs8176498	mapped	ENSG00000224063.7|ENSG00000003436.18	2026-11-17: the authors list 2 genes and the lead SNP lies inside all of them (GRCh37); every listed gene is kept (decision 2026-11-17); AC007319.1 is ENSG00000224063 in GENCODE v19, the same stable ID as ENSG00000224063.7 in v50; TFPI is ENSG00000003436 in GENCODE v19, the same stable ID as ENSG00000003436.18 in v50
+KOLLER2026_ST4:rs6778588	mapped	ENSG00000214147.2	2026-11-17: retired clone name; RP11-332P22.2 is ENSG00000214147 in GENCODE v19, the same stable ID as ENSG00000214147.2 in v50
+KOLLER2026_ST4:rs72617705	mapped	ENSG00000249951.1	2026-11-17: retired clone name; RP11-554D13.1 is ENSG00000249951 in GENCODE v19, the same stable ID as ENSG00000249951.1 in v50
+KOLLER2026_ST4:rs10514243	mapped	ENSG00000249100.1	2026-11-17: retired clone name; CTD-2218K11.2 is ENSG00000249100 in GENCODE v19, the same stable ID as ENSG00000249100.1 in v50
+KOLLER2026_ST4:rs6881996	excluded	NA	2026-11-17: retired clone name; RP11-542A14.2 is ENSG00000272085 in GENCODE v19 but that gene is not in GENCODE v50; cannot join to junction tables
+KOLLER2026_ST4:rs1935773	mapped	ENSG00000237742.9|ENSG00000224506.4	2026-11-17: the authors list 2 genes and the lead SNP lies inside all of them (GRCh37); every listed gene is kept (decision 2026-11-17); RP11-624M8.1 is ENSG00000237742 in GENCODE v19, the same stable ID as ENSG00000237742.9 in v50; RP1-293L8.2 is ENSG00000224506 in GENCODE v19, the same stable ID as ENSG00000224506.4 in v50
+KOLLER2026_ST4:rs6456259	excluded	NA	2026-11-17: retired clone name; RP1-167F1.2 is ENSG00000226786 in GENCODE v19 but that gene is not in GENCODE v50; cannot join to junction tables
+KOLLER2026_ST4:rs924040	mapped	ENSG00000232197.4	2026-11-17: retired clone name; RP11-302L19.1 is ENSG00000232197 in GENCODE v19, the same stable ID as ENSG00000232197.4 in v50
+KOLLER2026_ST4:rs6970537	mapped	ENSG00000257184.4|ENSG00000253293.7	2026-11-17: the authors list 2 genes and the lead SNP lies inside all of them (GRCh37); every listed gene is kept (decision 2026-11-17); RP1-170O19.20 is ENSG00000257184 in GENCODE v19, the same stable ID as ENSG00000257184.4 in v50; HOXA10 is ENSG00000253293 in GENCODE v19, the same stable ID as ENSG00000253293.7 in v50
+KOLLER2026_ST4:rs929240	excluded	NA	2026-11-17: retired clone name; RP5-978I12.1 is ENSG00000260951 in GENCODE v19 but that gene is not in GENCODE v50; cannot join to junction tables
+KOLLER2026_ST4:rs13278719	mapped	ENSG00000272456.1	2026-11-17: retired clone name; CTD-2342N23.3 is ENSG00000272456 in GENCODE v19, the same stable ID as ENSG00000272456.1 in v50
+KOLLER2026_ST4:rs1537377	mapped	ENSG00000236921.2	2026-11-17: retired clone name; RP11-408N14.1 is ENSG00000236921 in GENCODE v19, the same stable ID as ENSG00000236921.2 in v50
+KOLLER2026_ST4:rs10824194	mapped	ENSG00000156110.17|ENSG00000232342.7	2026-11-17: the authors list 2 genes and the lead SNP lies inside all of them (GRCh37); every listed gene is kept (decision 2026-11-17); ADK is ENSG00000156110 in GENCODE v19, the same stable ID as ENSG00000156110.17 in v50; RP11-46O21.2 is ENSG00000232342 in GENCODE v19, the same stable ID as ENSG00000232342.7 in v50
+KOLLER2026_ST4:rs61904091	mapped	ENSG00000255605.2	2026-11-17: retired clone name; RP11-644L4.1 is ENSG00000255605 in GENCODE v19, the same stable ID as ENSG00000255605.2 in v50
+KOLLER2026_ST4:rs11614913	mapped	ENSG00000273049.1|ENSG00000197757.9|ENSG00000207924.3	2026-11-17: the authors list 3 genes and the lead SNP lies inside all of them (GRCh37); every listed gene is kept (decision 2026-11-17); RP11-834C11.12 is ENSG00000273049 in GENCODE v19, the same stable ID as ENSG00000273049.1 in v50; HOXC6 is ENSG00000197757 in GENCODE v19, the same stable ID as ENSG00000197757.9 in v50; MIR196A2 is ENSG00000207924 in GENCODE v19, the same stable ID as ENSG00000207924.3 in v50
+KOLLER2026_ST4:rs1566643	mapped	ENSG00000257517.1	2026-11-17: retired clone name; RP4-601P9.1 is ENSG00000257517 in GENCODE v19, the same stable ID as ENSG00000257517.1 in v50
+KOLLER2026_ST4:rs61926299	mapped	ENSG00000271018.1	2026-11-17: retired clone name; RP11-60E8.2 is ENSG00000271018 in GENCODE v19, the same stable ID as ENSG00000271018.1 in v50
+KOLLER2026_ST4:rs7974900	mapped	ENSG00000123096.14|ENSG00000256234.1|ENSG00000255750.7	2026-11-17: the authors list 3 genes and the lead SNP lies inside all of them (GRCh37); every listed gene is kept (decision 2026-11-17); SSPN is ENSG00000123096 in GENCODE v19, the same stable ID as ENSG00000123096.14 in v50; RP11-283G6.4 is ENSG00000256234 in GENCODE v19, the same stable ID as ENSG00000256234.1 in v50; RP11-283G6.5 is ENSG00000255750 in GENCODE v19, the same stable ID as ENSG00000255750.7 in v50
+KOLLER2026_ST4:rs12453013	mapped	ENSG00000128487.21|ENSG00000263494.1	2026-11-17: the authors list 2 genes and the lead SNP lies inside all of them (GRCh37); every listed gene is kept (decision 2026-11-17); SPECC1 is ENSG00000128487 in GENCODE v19, the same stable ID as ENSG00000128487.21 in v50; AC004702.2 is ENSG00000263494 in GENCODE v19, the same stable ID as ENSG00000263494.1 in v50
+KOLLER2026_ST4:rs80235477	excluded	NA	2026-11-17: retired clone name; AP005271.1 is ENSG00000263630 in GENCODE v19 but that gene is not in GENCODE v50; cannot join to junction tables
+KOLLER2026_ST4:rs2967685	excluded	NA	2026-11-17: retired clone name; AC092566.1 is ENSG00000261866 in GENCODE v19 but that gene is not in GENCODE v50; cannot join to junction tables
+KOLLER2026_ST4:rs384114	excluded	NA	2026-11-17: retired clone name; AC008992.1 is ENSG00000267636 in GENCODE v19 but that gene is not in GENCODE v50; cannot join to junction tables

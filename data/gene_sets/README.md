@@ -15,6 +15,7 @@ the overlap. It never decides whether a gene counts.
 | `dioxin_like_chemicals.tsv` | People (E1), frozen | One dioxin-like chemical with its exact CTD ID |
 | `environment_evidence.tsv` | `extract_ctd.py` (E3–E4), `map`, then `review_ctd_context.py apply` (E6) | One measured response to one chemical in one context |
 | `environment_mapping_review.tsv` | People (E5 step 6), applied by `review` | One reviewed label: mapped by hand or excluded, with a reason |
+| `risk_mapping_review.tsv` | People (G7), applied by `review` | One reviewed risk row (keyed by `evidence_id`): mapped, split across overlapping genes, or excluded, with a reason |
 | `environment_audit_sample.tsv` | `audit_environment.py` (E8), then a person | One sampled evidence row with its check against the cited papers |
 | `ctd_publication_tissue.tsv` | `review_ctd_context.py tag-publications` (E6) | One cited PubMed paper with its tissue tag and the terms that decided it |
 | `endometriosis_risk.tsv` | `dedupe --kind risk` | One gene |
@@ -24,8 +25,8 @@ the overlap. It never decides whether a gene counts.
 | `*_mapping.tsv` | `map` | One original label and its candidate IDs, for G7 review |
 
 `risk_evidence.tsv` holds the GWAS Catalog and Koller Supplementary Table 4
-draft from November 17, 2026 (1,109 rows, 309 included, 117 still ambiguous or
-unresolved for G7). `environment_evidence.tsv`
+extraction from November 17, 2026 after the G7 review (1,119 rows; 228 mapped
+to 103 genes, the rest excluded with reasons). `environment_evidence.tsv`
 holds the CTD extraction from November 17, 2026 (7,958 rows) after the E6
 context review: 1,028 co-treatment rows are `excluded` with a reason, and
 every row has a paper-level tissue tag. The 12 labels `map` could not
@@ -112,9 +113,12 @@ python3 gene_sets/gene_sets.py map --kind risk \
   --mapping-table data/gene_sets/risk_mapping.tsv
 
 # 2. People review every ambiguous and unresolved row (G7 / E5 step 6) and
-#    record each decision in a review table (original_id, decision =
-#    mapped|excluded, gene_id, reason), then apply it. Only rows still
-#    ambiguous or unresolved change, so reruns are safe:
+#    record each decision in a review table, then apply it. The first column
+#    is original_id (one decision per label) or evidence_id (one per row);
+#    then decision (mapped|excluded), gene_id, and reason. A mapped gene_id
+#    may list several IDs with "|" to split a row across genes the source
+#    names equally. A gene GENCODE leaves unnamed gets gene_symbol NA.
+#    Only rows still ambiguous or unresolved change, so reruns are safe:
 python3 gene_sets/gene_sets.py review --kind environment \
   --evidence data/gene_sets/environment_evidence.tsv \
   --review data/gene_sets/environment_mapping_review.tsv \

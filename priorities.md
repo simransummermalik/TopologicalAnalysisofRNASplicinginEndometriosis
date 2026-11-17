@@ -42,8 +42,8 @@ list, evidence templates, and the tested `gene_sets/gene_sets.py` tooling
 exist; see [`docs/gene_set_methods.md`](docs/gene_set_methods.md). The
 environmental (CTD) evidence table is extracted, context-reviewed (E6),
 fully mapped, deduplicated (E7), and audited (E8). The genetic-risk table is
-drafted from both approved sources and mapped (G4–G6); its ambiguity review
-(G7) and audit have not started.
+extracted from both approved sources, mapped, and reviewed (G4–G7; 103
+genes); dedupe, audit, and export (G8–G10) remain.
 
 - [ ] Freeze rules for genetic-risk evidence. *(Drafted and recorded in
   `docs/decisions.md`; waiting for a teammate's cold read, G1 step 7.)*
@@ -51,7 +51,8 @@ drafted from both approved sources and mapped (G4–G6); its ambiguity review
 - [x] Freeze rules for environmental-response evidence.
 - [x] Build the environmental evidence table with stable gene IDs and sources.
   *(Audited; the 2-publication rule is still provisional.)*
-- [ ] Review duplicate, outdated, and ambiguous gene names.
+- [x] Review duplicate, outdated, and ambiguous gene names.
+  *(Environment E5 and risk G7 reviews recorded in `docs/gene_set_methods.md`.)*
 - [ ] Create risk-only, environment-only, and overlap gene lists.
 - [ ] Record the exact source and reason for including every gene.
 

@@ -235,11 +235,57 @@ previous or alias symbols:
 Each agrees with the Catalog's mapped gene for the same SNP. The table
 passes `check` against the GENCODE v50 annotation.
 
-**Open for G7.** 117 rows (67 distinct labels) are ambiguous or unresolved.
-They are listed in `data/gene_sets/risk_mapping.tsv` with every candidate. By
-G1 none may be assigned by proximity. A row can be resolved only from the
-source's own report: author-reported genes in the notes, or the paper.
-Otherwise it is excluded with a reason, using `gene_sets.py review`.
+**Open for G7.** 117 rows (67 distinct labels) were left ambiguous or
+unresolved. They are listed in `data/gene_sets/risk_mapping.tsv` with every
+candidate, and were resolved in the G7 review below.
+
+## Genetic-risk ambiguity review (G7)
+
+Reviewed 2026-11-17; decisions recorded by Vania Zeledon. One decision per
+row is recorded in
+[`data/gene_sets/risk_mapping_review.tsv`](../data/gene_sets/risk_mapping_review.tsv),
+keyed by `evidence_id`, and applied by `gene_sets.py review`. Each row's reason
+is written into its notes. No row was assigned by proximity.
+
+**Rules, by group.**
+
+| Group | Rows | Decision | Basis |
+|---|---|---|---|
+| Supplementary Table 4: retired clone name (`RP11-…`, `AC0…`) | 16 | 10 mapped, 6 excluded | Translated through GENCODE v19 (GRCh37, the build of the table's positions). Each name is exactly one v19 gene, and its stable Ensembl ID is carried into v50. Six of those genes are no longer in v50 and are excluded, because they cannot join to the junction tables. This is an identifier translation, not a choice between genes. |
+| Supplementary Table 4: several genes joined by `:` | 8 | Split into one row per gene (19 genes) | The lead SNP lies inside every listed gene (checked against GENCODE v19 coordinates), so the authors name all of them equally. Every listed gene is kept and flagged `multi-gene locus` (decision 2026-11-17). |
+| Catalog copy of a Koller cross-ancestry locus, still two genes | 27 | Excluded as duplicates | The matching `KOLLER2026_ST4` row carries the authors' own gene for the same SNP. The Catalog's flanking-gene pair is not assigned a gene from the other source. |
+| Catalog, other papers, one author-reported gene | 8 | Mapped to that gene | G1 accepts the gene the source reports. The genes are WNT4 (2), KDR (2), VEZT, NFE2L3, ETAA1, and IL1A. |
+| Catalog, flanking genes, no author-reported gene | 36 | Excluded | G1: not assigned by proximity. This includes 2 Koller loci the Catalog curated differently from Supplementary Table 4 (rs703593, rs17437251). Placeholders such as `NR` and `intergenic` count as no report. |
+| Catalog, several author-reported genes | 1 | Excluded | `PARP1P2, RHOJ`: no single gene reported. |
+| Catalog, no mapped or reported gene | 21 | Excluded | No gene to record. |
+
+**Unnamed genes.** 13 genes reached through clone names have no name in
+GENCODE v50, where `gene_name` is the bare Ensembl ID. Their `gene_symbol`
+is `NA`, which `check` now allows. The `gene_id` remains the join key.
+
+**Result.** The table now has 1,119 rows, because the 8 overlapping-gene
+rows became 19. Of these, 228 are mapped and 891 excluded, with nothing
+ambiguous or unresolved. The mapped rows cover **103 genes**: 67 supported
+by the Catalog and 84 by Supplementary Table 4. The table passes `check`
+against the GENCODE v50 annotation.
+
+Many of the genes are lncRNAs or pseudogenes that the authors give as the
+nearest gene to an intergenic SNP, for example SULT1D1P, HMGN1P19, and
+ENAHP1. That follows G1, which accepts the gene the source reports.
+Interpretation should say "the gene reported at this risk locus", not "the
+causal gene".
+
+**Checksums (SHA-256).**
+
+| File | SHA-256 |
+|---|---|
+| `risk_evidence.tsv` | `67b2c20516ead4de405cc33992918b21bb229264cba60df94762367a8aaa8e98` |
+| `risk_mapping_review.tsv` | `890b4d6b7b5d8f32376cb9fe6cc9fd8be78b13f6267daf14374843b88b97b966` |
+| `gencode.v19.annotation.gtf.gz`, used only for the clone-name translation and not kept in Git | `9909e8123a40eca090c3f8e501633f7cc65cd6c4adb83b95009745eca3564d70`; MD5 `bd83e28270e595d3bde6bfcb21c9748f`, matching GENCODE's MD5SUMS |
+
+**Still needed.** Dedupe (G8), the audit (G9), and export (G10). The G1 cold
+read is also still outstanding; if it changes a rule, rerun the extraction,
+`map`, and this review.
 
 ## Environmental-response scope (E1)
 

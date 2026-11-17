@@ -225,9 +225,9 @@ class MapEvidenceTests(GeneSetTestCase):
 
 
 class ReviewTests(GeneSetTestCase):
-    def write_review(self, *lines: str) -> Path:
+    def write_review(self, *lines: str, key: str = "original_id") -> Path:
         path = self.temp / "review.tsv"
-        path.write_text("original_id\tdecision\tgene_id\treason\n" + "".join(l + "\n" for l in lines))
+        path.write_text(f"{key}\tdecision\tgene_id\treason\n" + "".join(l + "\n" for l in lines))
         return path
 
     def open_row(self, evidence_id: str, label: str, status: str) -> dict[str, str]:
@@ -240,7 +240,8 @@ class ReviewTests(GeneSetTestCase):
             "NOSUCH\texcluded\tNA\tno gene in the annotation",
             "UNUSED\texcluded\tNA\tnot in this table",
         )
-        decisions = gs.read_mapping_review(review, self.reference)
+        key, decisions = gs.read_mapping_review(review, self.reference)
+        self.assertEqual(key, "original_id")
         rows = [
             self.open_row("e1", "DUPNAME", "ambiguous"),
             self.open_row("e2", "NOSUCH", "unresolved"),
@@ -253,10 +254,37 @@ class ReviewTests(GeneSetTestCase):
         self.assertIn("manual review (mapped): source names the chr3 copy", once[0]["notes"])
         self.assertEqual((once[1]["mapping_status"], once[1]["gene_id"]), ("excluded", "NA"))
         self.assertEqual(once[2], rows[2])
-        self.assertEqual(counts["review_labels_not_applied"], 1)
+        self.assertEqual(counts["review_keys_not_applied"], 1)
         self.assertEqual(gs.check_table("environment_evidence", gs.ENVIRONMENT_EVIDENCE_COLUMNS, once), [])
         twice, _ = gs.apply_mapping_review(once, decisions, self.reference)
         self.assertEqual(twice, once)
+
+    def test_row_keyed_review_and_multi_gene_split(self) -> None:
+        review = self.write_review(
+            "e1\tmapped\tENSG00000000003.1|ENSG00000000004.2\tvariant lies inside both genes",
+            "e2\texcluded\tNA\tno gene reported",
+            key="evidence_id",
+        )
+        key, decisions = gs.read_mapping_review(review, self.reference)
+        self.assertEqual(key, "evidence_id")
+        rows = [self.open_row("e1", "GREB1:KDR", "ambiguous"),
+                self.open_row("e2", "GREB1:KDR", "ambiguous")]
+        once, counts = gs.apply_mapping_review(rows, decisions, self.reference, key)
+        self.assertEqual([r["evidence_id"] for r in once], ["e1/1", "e1/2", "e2"])
+        self.assertEqual([r["gene_symbol"] for r in once[:2]], ["GREB1", "KDR"])
+        self.assertIn("multi-gene locus: gene 2 of 2", once[1]["notes"])
+        self.assertEqual(once[2]["mapping_status"], "excluded")
+        self.assertEqual(counts["rows_split"], 1)
+        self.assertEqual(gs.check_table("environment_evidence", gs.ENVIRONMENT_EVIDENCE_COLUMNS, once), [])
+        twice, _ = gs.apply_mapping_review(once, decisions, self.reference, key)
+        self.assertEqual(twice, once)
+
+    def test_unnamed_gencode_gene_gets_na_symbol(self) -> None:
+        self.reference.gene_names["ENSG00000000099.1"] = "ENSG00000000099"
+        self.assertEqual(gs.symbol_for(self.reference, "ENSG00000000099.1"), "NA")
+        self.assertEqual(gs.symbol_for(self.reference, "ENSG00000000001.5"), "WNT4")
+        row = env_row("e1", "ENSG00000000099.1", "NA", "PMID:1", original_id="RP11-1A1.1")
+        self.assertEqual(gs.check_table("environment_evidence", gs.ENVIRONMENT_EVIDENCE_COLUMNS, [row]), [])
 
     def test_bad_review_tables_are_refused(self) -> None:
         bad = [
@@ -265,6 +293,7 @@ class ReviewTests(GeneSetTestCase):
             ("X\tmaybe\tNA\treason",),  # unknown decision
             ("X\texcluded\tNA\tNA",),  # no reason
             ("X\texcluded\tNA\tr1", "X\texcluded\tNA\tr2"),  # reviewed twice
+            ("X\tmapped\tENSG00000000001.5|ENSG00000000001.5\treason",),  # gene listed twice
         ]
         for lines in bad:
             with self.subTest(lines=lines), self.assertRaises(ValueError):
