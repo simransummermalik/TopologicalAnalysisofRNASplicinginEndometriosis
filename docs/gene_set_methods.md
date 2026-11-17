@@ -907,6 +907,104 @@ E9 is the file meant for that.
 
 The audit passes; these steps make it independent.
 
+## Overlap and categories (E9–E10)
+
+Built 2026-11-17 with `gene_sets.py overlap`, from `endometriosis_risk.tsv`
+(103 genes) and `environment_response.tsv` (1,640 genes, provisional
+2-publication rule). Outputs:
+
+- [`data/gene_sets/overlap.tsv`](../data/gene_sets/overlap.tsv): 11 genes,
+  with both source fields.
+- [`data/gene_sets/candidate_genes.tsv`](../data/gene_sets/candidate_genes.tsv):
+  1,732 genes, with `is_risk`, `is_environment`, `is_overlap`, and
+  `category`.
+
+Both pass `check` against the GENCODE v50 annotation.
+
+### Category counts (E10)
+
+| Category | Genes |
+|---|---|
+| `risk_only` | 92 |
+| `environment_only` | 1,629 |
+| `overlap` | 11 |
+| Union | 1,732 |
+
+**Consistency checks.** 92 + 11 = 103 risk genes; 1,629 + 11 = 1,640
+environmental genes; 92 + 1,629 + 11 = 1,732. Gene IDs in the candidate file
+are unique, and `overlap.tsv` is exactly the intersection of the two
+membership files.
+
+**Joining.** `splice-girl stats` reads `candidate_genes.tsv` as a `--genes`
+family; this was checked 2026-11-17 on the same synthetic WNT4 table used in
+G10. All 1,732 genes were read, and the saved family file was a byte-for-byte
+copy. This is the one-row-per-gene file for the Rust tool.
+`environment_response.tsv` is not, because it has several rows per gene.
+
+**The 11 overlap genes.** All are protein-coding.
+
+| Gene | Risk sources | Environmental support (publications per gene–chemical pair) |
+|---|---|---|
+| PGR | Catalog, Supplementary Table 4 | TCDD: 9 (8 targeted); **includes endometrial studies** |
+| ESR1 | Catalog | TCDD: 11 (10 targeted); PCB 126: 3; PCB 77: 2 |
+| IL1A | Catalog, Supplementary Table 4 | PCB 126: 3 (all targeted); TCDD: 5 |
+| FN1 | Catalog, Supplementary Table 4 | TCDD: 6 (4 targeted) |
+| TMOD1 | Catalog, Supplementary Table 4 | TCDD: 2 (1 targeted) |
+| IGF1R | Catalog, Supplementary Table 4 | TCDD: 3 (1 targeted) |
+| GREB1 | Catalog, Supplementary Table 4 | TCDD: 2 (1 targeted) |
+| TFPI | Supplementary Table 4 (multi-gene locus) | TCDD: 4, all large screens |
+| KDR | Catalog, Supplementary Table 4 | TCDD: 2, both large screens |
+| CD109 | Catalog, Supplementary Table 4 | TCDD: 3, all large screens |
+| C2 | Catalog | TCDD: 2, both large screens |
+
+"Large screens" are the 17 publications contributing at least 100 evidence
+rows each (see the E3 extraction record). Only PGR has dioxin evidence from
+endometrial studies.
+
+### Unexpected sizes, investigated (E10 step 6)
+
+- **The environmental set is 16 times the risk set.** This comes from the
+  genome-wide expression screens behind the 2-publication rule (E3 record),
+  not from an error.
+- **The two sets differ in gene type.** 1,631 of the 1,640 environmental
+  genes are protein-coding, because they come from expression-array studies.
+  Only 68 of the 103 risk genes are protein-coding; the rest are the lncRNAs
+  and pseudogenes reported at intergenic loci. In practice only those 68 can
+  overlap. All 11 overlap genes are among them.
+- **The overlap depends on the publication rule, but not on the context
+  rules.**
+
+  | Environmental rule | Environmental genes | Overlap |
+  |---|---|---|
+  | n ≥ 1 | 4,230 | 23 |
+  | **n ≥ 2 (current, provisional)** | **1,640** | **11** |
+  | n ≥ 3 | 679 | 7 (CD109, ESR1, FN1, IGF1R, IL1A, PGR, TFPI) |
+  | n ≥ 5 | 136 | 4 (ESR1, FN1, IL1A, PGR) |
+
+  Using direct-context rows only gives the same overlap at every threshold.
+  The 4 genes left at n ≥ 5 are the same 4 that have at least 2 targeted
+  studies. Four of the current 11 (TFPI, KDR, CD109, C2) rest only on large
+  screens. These counts are evidence for the team's decision on the
+  provisional rule.
+- **The overlap is not an enrichment test.** No statistical claim is made
+  that 11 is more or fewer than expected. The two sets were built from
+  different kinds of evidence with different gene-type make-up, so a naive
+  test against all genes would be misleading. Per E10 step 7, the separate
+  risk and environmental sets are kept and analyzed whatever the overlap
+  size.
+
+**Checksums (SHA-256).**
+
+| File | Data rows | SHA-256 |
+|---|---|---|
+| `overlap.tsv` | 11 | `36b8be642128f64befbe7c11c3b110d2f221c46e5067a65da0f38380cacb8c5c` |
+| `candidate_genes.tsv` | 1,732 | `18bf39d287692b1de6ce369ac5c0d63de0ff5249e575f675bcbbba949ae31489` |
+
+**Interpretation.** The E11 boundary applies. An overlap gene has both a
+genome-wide risk association and dioxin-response evidence, mostly from
+non-endometrial cells. That is not a demonstrated gene–environment
+interaction.
+
 ## Literature-context list
 
 Expression-only genes from the group research notes (for example SULT1E1,

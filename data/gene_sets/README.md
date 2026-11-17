@@ -28,7 +28,9 @@ the overlap. It never decides whether a gene counts.
 `risk_evidence.tsv` holds the GWAS Catalog and Koller Supplementary Table 4
 extraction from November 17, 2026 after the G7 review (1,119 rows; 228 mapped
 to 103 genes, the rest excluded with reasons). `endometriosis_risk.tsv` is the
-audited G8–G10 membership and can be passed straight to `splice-girl stats --genes`. `environment_evidence.tsv`
+audited G8–G10 membership. `overlap.tsv` (11 genes) and `candidate_genes.tsv`
+(1,732 genes) are the E9 outputs; `candidate_genes.tsv` is the one-row-per-gene
+file to pass to `splice-girl stats --genes`. `environment_evidence.tsv`
 holds the CTD extraction from November 17, 2026 (7,958 rows) after the E6
 context review: 1,028 co-treatment rows are `excluded` with a reason, and
 every row has a paper-level tissue tag. The 12 labels `map` could not

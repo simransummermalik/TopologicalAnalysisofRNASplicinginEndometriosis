@@ -43,7 +43,9 @@ exist; see [`docs/gene_set_methods.md`](docs/gene_set_methods.md). The
 environmental (CTD) evidence table is extracted, context-reviewed (E6),
 fully mapped, deduplicated (E7), and audited (E8). The genetic-risk set is
 extracted, reviewed, deduplicated, audited, and exported (G4–G10; 103 genes).
-Remaining: overlap and category counts (E9–E10) and team sign-offs.
+Overlap and categories are built (E9–E10): 92 risk-only, 1,629
+environment-only, 11 overlap. Remaining: team sign-offs (G1 cold read,
+publication threshold, independent spot checks).
 
 - [ ] Freeze rules for genetic-risk evidence. *(Drafted and recorded in
   `docs/decisions.md`; waiting for a teammate's cold read, G1 step 7.)*
@@ -54,8 +56,10 @@ Remaining: overlap and category counts (E9–E10) and team sign-offs.
   *(Audited; the 2-publication rule is still provisional.)*
 - [x] Review duplicate, outdated, and ambiguous gene names.
   *(Environment E5 and risk G7 reviews recorded in `docs/gene_set_methods.md`.)*
-- [ ] Create risk-only, environment-only, and overlap gene lists.
-- [ ] Record the exact source and reason for including every gene.
+- [x] Create risk-only, environment-only, and overlap gene lists.
+  *(`candidate_genes.tsv`; the environmental threshold is still provisional.)*
+- [x] Record the exact source and reason for including every gene.
+  *(Every membership row lists its evidence IDs; every evidence row names its source record and any review reason.)*
 
 **Finished when:** every candidate gene can be traced to reviewed evidence and
 placed into one reproducible category.
