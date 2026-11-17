@@ -190,6 +190,7 @@ def configuration(args):
         commands.append(clean)
     align = [
         "hisat2",
+        "--dta-cufflinks",
         "-x",
         str(args.index.resolve()),
         "-p",

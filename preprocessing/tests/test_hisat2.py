@@ -124,6 +124,7 @@ class HisatTests(unittest.TestCase):
         self.assertEqual(commands[0][:2], ["cleaver", "fastp"])
         self.assertIn("-2", commands[0])
         self.assertIn("--known-splicesite-infile", commands[1])
+        self.assertIn("--dta-cufflinks", commands[1])
         self.assertIn("RF", commands[1])
         self.assertEqual(commands[-2][:3], ["cleaver", "samtools", "sort"])
         args.strandedness = "F"
