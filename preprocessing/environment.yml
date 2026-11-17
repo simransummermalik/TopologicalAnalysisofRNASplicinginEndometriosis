@@ -4,5 +4,6 @@ channels:
   - bioconda
 dependencies:
   - python>=3.11
-  - star
+  - hisat2=2.2.3
+  - samtools
   - bowtie2

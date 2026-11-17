@@ -2,7 +2,6 @@
 """Run the project's required local software checks; nothing is committed or pushed."""
 
 import argparse
-import os
 import subprocess
 import sys
 import tempfile
@@ -26,29 +25,87 @@ def smoke():
         root = Path(directory)
         reference = root / "reference"
         fixtures = ROOT / "preprocessing/tests/fixtures"
-        call([sys.executable, "preprocessing/hisat2_pipeline.py", "prepare-reference", "--fasta", fixtures / "tiny_genome.fa", "--gtf", fixtures / "tiny_annotation.gtf", "--output-dir", reference])
+        call(
+            [
+                sys.executable,
+                "preprocessing/hisat2_pipeline.py",
+                "prepare-reference",
+                "--fasta",
+                fixtures / "tiny_genome.fa",
+                "--gtf",
+                fixtures / "tiny_annotation.gtf",
+                "--output-dir",
+                reference,
+            ]
+        )
         # Two distinct copies demonstrate sample-preserving batch execution.
         for name in ("case", "control"):
-            (root / f"{name}.fastq").write_bytes((fixtures / "tiny_reads_R1.fastq").read_bytes())
+            (root / f"{name}.fastq").write_bytes(
+                (fixtures / "tiny_reads_R1.fastq").read_bytes()
+            )
         sheet = root / "input.tsv"
-        sheet.write_text("sample_id\tcondition\tread1\tread2\nCASE\tcase\tcase.fastq\t\nCONTROL\tcontrol\tcontrol.fastq\t\n")
+        sheet.write_text(
+            "sample_id\tcondition\tread1\tread2\nCASE\tcase\tcase.fastq\t\nCONTROL\tcontrol\tcontrol.fastq\t\n"
+        )
         output = root / "batch"
-        call([sys.executable, "preprocessing/batch_preprocessing.py", "run", "--samples", sheet, "--index", reference / "genome", "--gene-map", reference / "junction_exon_map.tsv", "--splice-sites", reference / "splice_sites.tsv", "--strandedness", "unstranded", "--min-anchor", "8", "--min-unique", "1", "--output-dir", output])
-        call(["cargo", "run", "--quiet", "--", "report", output / "junctions.tsv", output / "samples.tsv", "--output", root / "report"])
+        call(
+            [
+                sys.executable,
+                "preprocessing/batch_preprocessing.py",
+                "run",
+                "--samples",
+                sheet,
+                "--index",
+                reference / "genome",
+                "--gene-map",
+                reference / "junction_exon_map.tsv",
+                "--splice-sites",
+                reference / "splice_sites.tsv",
+                "--strandedness",
+                "unstranded",
+                "--min-anchor",
+                "8",
+                "--min-unique",
+                "1",
+                "--output-dir",
+                output,
+            ]
+        )
+        call(
+            [
+                "cargo",
+                "run",
+                "--quiet",
+                "--",
+                "report",
+                output / "junctions.tsv",
+                output / "samples.tsv",
+                "--output",
+                root / "report",
+            ]
+        )
         import csv
         import json
+
         with (output / "junctions.tsv").open() as handle:
             rows = list(csv.DictReader(handle, delimiter="\t"))
         assert {row["sample_id"] for row in rows} == {"CASE", "CONTROL"}
         assert len(rows) == 2 and all(row["count"] == "1" for row in rows), rows
-        assert json.loads((output / "batch_manifest.json").read_text())["status"] == "complete"
+        assert (
+            json.loads((output / "batch_manifest.json").read_text())["status"]
+            == "complete"
+        )
         assert (root / "report/report.html").is_file()
     print("External-tool synthetic smoke test passed.")
 
 
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("--with-tools", action="store_true", help="also run Cleaver/HISAT2 on a tiny synthetic fixture")
+    parser.add_argument(
+        "--with-tools",
+        action="store_true",
+        help="also run Cleaver/HISAT2 on a tiny synthetic fixture",
+    )
     args = parser.parse_args()
     commands = [
         ["cargo", "fmt", "--all", "--", "--check"],

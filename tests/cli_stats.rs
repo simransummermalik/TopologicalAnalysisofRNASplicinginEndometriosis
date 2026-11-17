@@ -308,3 +308,89 @@ fn menu_option_seven_runs_the_same_statistics_workflow() {
     assert!(!text(&output.stdout).contains("  error:"));
     assert!(fixture.0.join("output/statistics.tsv").is_file());
 }
+
+#[test]
+fn baselines_use_identical_samples_and_leave_missing_values_blank() {
+    let fixture = Fixture::new();
+    let output = run(&fixture.arguments("baselines", "two-sided", "2"));
+    assert!(output.status.success(), "{}", text(&output.stderr));
+    let folder = fixture.0.join("baselines");
+    let baseline = rows(&folder.join("baseline_comparisons.tsv"));
+    let support = baseline
+        .iter()
+        .find(|r| r["gene_id"] == "HIGH" && r["metric"] == "total_junction_support")
+        .unwrap();
+    assert_eq!(support["case_mean"], "30.0000000000");
+    assert_eq!(support["control_mean"], "20.0000000000");
+    assert_eq!(
+        support["mean_difference_case_minus_control"],
+        "10.0000000000"
+    );
+    assert_eq!(support["observed_topology"], "different_review_required");
+    let cycle = baseline
+        .iter()
+        .find(|r| r["gene_id"] == "HIGH" && r["metric"] == "cycle_rank")
+        .unwrap();
+    assert_eq!(cycle["case_mean"], "1.0000000000");
+    assert_eq!(cycle["control_mean"], "0.0000000000");
+    assert!(
+        baseline.iter().filter(|r| r["gene_id"] == "MISSING").all(
+            |r| r["case_mean"].is_empty() && r["mean_difference_case_minus_control"].is_empty()
+        )
+    );
+    assert_eq!(rows(&folder.join("baseline_metrics.tsv")).len(), 18);
+    assert_eq!(
+        fs::read(folder.join("gene_family.tsv")).unwrap(),
+        fs::read(fixture.0.join("genes.tsv")).unwrap()
+    );
+    assert!(!folder.join("rankings.tsv").exists());
+}
+
+#[test]
+fn requested_ranking_is_deterministic_and_does_not_rank_untested_genes() {
+    let fixture = Fixture::new();
+    for rule in ["absolute-effect", "adjusted-p"] {
+        let mut args = fixture.arguments(rule, "two-sided", "2");
+        args.extend(["--rank-by".to_owned(), rule.to_owned()]);
+        let output = run(&args);
+        assert!(output.status.success(), "{}", text(&output.stderr));
+        let folder = fixture.0.join(rule);
+        let rankings = rows(&folder.join("rankings.tsv"));
+        assert_eq!(
+            rankings
+                .iter()
+                .map(|r| r["gene_id"].as_str())
+                .collect::<Vec<_>>(),
+            ["HIGH", "FLAT", "MISSING", "SMALL"]
+        );
+        assert_eq!(rankings[0]["rank"], "1");
+        assert_eq!(rankings[1]["rank"], "2");
+        assert!(rankings[2..].iter().all(|r| r["rank"].is_empty()));
+        let manifest = fs::read_to_string(folder.join("run_manifest.json")).unwrap();
+        assert!(manifest.contains(&format!("\"ranking_rule\": \"{rule}\"")));
+    }
+    // Equal effect and p-value: lexical gene ID decides, regardless of input order.
+    let junctions = fs::read_to_string(fixture.0.join("junctions.tsv")).unwrap();
+    let mut tied = junctions.clone();
+    for line in junctions
+        .lines()
+        .skip(1)
+        .filter(|line| line.contains("\tHIGH\t"))
+    {
+        tied.push_str(&line.replace("\tHIGH\t", "\tALPHA\t"));
+        tied.push('\n');
+    }
+    fs::write(fixture.0.join("junctions.tsv"), tied).unwrap();
+    fs::write(fixture.0.join("genes.tsv"), "gene_id\nHIGH\nALPHA\n").unwrap();
+    let mut args = fixture.arguments("ties", "two-sided", "2");
+    args.extend(["--rank-by".to_owned(), "adjusted-p".to_owned()]);
+    assert!(run(&args).status.success());
+    assert_eq!(
+        rows(&fixture.0.join("ties/rankings.tsv"))[0]["gene_id"],
+        "ALPHA"
+    );
+    let mut args = fixture.arguments("invalid-rank", "two-sided", "2");
+    args.extend(["--rank-by".to_owned(), "whatever".to_owned()]);
+    assert!(text(&run(&args).stderr).contains("--rank-by must"));
+    assert!(!fixture.0.join("invalid-rank").exists());
+}

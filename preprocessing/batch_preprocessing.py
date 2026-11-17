@@ -9,7 +9,6 @@ from __future__ import annotations
 
 import argparse
 import csv
-import json
 import re
 import shlex
 import subprocess
@@ -26,14 +25,26 @@ def load_samples(path: Path):
     with path.open(encoding="utf-8-sig", newline="") as handle:
         reader = csv.DictReader(handle, delimiter="\t")
         header = reader.fieldnames or []
-        if len(set(header)) != len(header) or not {"sample_id", "condition", "read1", "read2"}.issubset(header):
-            raise ValueError("sample sheet needs unique sample_id, condition, read1, read2 columns")
+        if len(set(header)) != len(header) or not {
+            "sample_id",
+            "condition",
+            "read1",
+            "read2",
+        }.issubset(header):
+            raise ValueError(
+                "sample sheet needs unique sample_id, condition, read1, read2 columns"
+            )
         for number, row in enumerate(reader, 2):
             if None in row or any(value is None for value in row.values()):
                 raise ValueError(f"sample sheet line {number}: wrong number of fields")
             sample = row["sample_id"]
-            if not re.fullmatch(r"[A-Za-z0-9][A-Za-z0-9._-]*", sample) or sample in seen:
-                raise ValueError(f"line {number}: invalid or duplicate sample_id {sample!r}")
+            if (
+                not re.fullmatch(r"[A-Za-z0-9][A-Za-z0-9._-]*", sample)
+                or sample in seen
+            ):
+                raise ValueError(
+                    f"line {number}: invalid or duplicate sample_id {sample!r}"
+                )
             if row["condition"] not in {"case", "control"}:
                 raise ValueError(f"line {number}: condition must be case or control")
             if not row["read1"].strip():
@@ -46,7 +57,9 @@ def load_samples(path: Path):
                     if not resolved.is_file():
                         raise ValueError(f"line {number}: missing {name}: {resolved}")
                     if resolved in used_reads:
-                        raise ValueError(f"line {number}: read file reused across samples/mates: {resolved}")
+                        raise ValueError(
+                            f"line {number}: read file reused across samples/mates: {resolved}"
+                        )
                     used_reads.add(resolved)
                 item[name] = resolved
             seen.add(sample)
@@ -65,7 +78,10 @@ def batch(args):
     for sample in samples:
         options = vars(args).copy()
         options.update(sample)
-        options.update(output_dir=output / sample["sample_id"], command="plan" if args.command == "plan" else "run")
+        options.update(
+            output_dir=output / sample["sample_id"],
+            command="plan" if args.command == "plan" else "run",
+        )
         job = argparse.Namespace(**options)
         _, commands = configuration(job)  # Validate every sample before any work.
         jobs.append(job)
@@ -82,7 +98,14 @@ def batch(args):
         "pipeline": "Splice Girl sequential Cleaver/HISAT2 batch",
         "status": "running",
         "sample_sheet": checksum(args.samples),
-        "samples": [{"sample_id": s["sample_id"], "condition": s["condition"], "status": "not_started"} for s in samples],
+        "samples": [
+            {
+                "sample_id": s["sample_id"],
+                "condition": s["condition"],
+                "status": "not_started",
+            }
+            for s in samples
+        ],
         "outputs": [],
     }
     manifest = output / "batch_manifest.json"
@@ -107,27 +130,37 @@ def batch(args):
             header = ["sample_id", "gene_id", "from", "to", "count"]
             writer.writerow(header)
             for job in jobs:
-                with (job.output_dir / "junctions.tsv").open(encoding="utf-8", newline="") as source:
+                with (job.output_dir / "junctions.tsv").open(
+                    encoding="utf-8", newline=""
+                ) as source:
                     reader = csv.reader(source, delimiter="\t")
                     if next(reader, None) != header:
-                        raise ValueError(f"unexpected junction schema for {job.sample_id}")
+                        raise ValueError(
+                            f"unexpected junction schema for {job.sample_id}"
+                        )
                     for row in reader:
                         if len(row) != 5 or row[0] != job.sample_id:
-                            raise ValueError(f"junction identity mismatch for {job.sample_id}")
+                            raise ValueError(
+                                f"junction identity mismatch for {job.sample_id}"
+                            )
                         writer.writerow(row)
         temporary.replace(output / "junctions.tsv")
         with (output / "samples.tsv").open("x", encoding="utf-8") as handle:
             handle.write("sample_id\tcondition\n")
             for sample in samples:
                 handle.write(f"{sample['sample_id']}\t{sample['condition']}\n")
-        record["outputs"] = [checksum(output / name) for name in ("junctions.tsv", "samples.tsv")]
+        record["outputs"] = [
+            checksum(output / name) for name in ("junctions.tsv", "samples.tsv")
+        ]
         record["status"] = "complete"
     except Exception as error:
         record.update(status="failed", error=str(error))
         raise
     finally:
         save(manifest, record)
-    print(f"Ready for Splice Girl: {output / 'junctions.tsv'} and {output / 'samples.tsv'}")
+    print(
+        f"Ready for Splice Girl: {output / 'junctions.tsv'} and {output / 'samples.tsv'}"
+    )
 
 
 def main():
@@ -135,7 +168,9 @@ def main():
     parser.add_argument("command", choices=["plan", "run"])
     for name in ("samples", "index", "gene-map", "splice-sites", "output-dir"):
         parser.add_argument(f"--{name}", type=Path, required=True)
-    parser.add_argument("--strandedness", choices=["unstranded", "F", "R", "FR", "RF"], required=True)
+    parser.add_argument(
+        "--strandedness", choices=["unstranded", "F", "R", "FR", "RF"], required=True
+    )
     parser.add_argument("--min-anchor", type=int, required=True)
     parser.add_argument("--min-unique", type=int, required=True)
     parser.add_argument("--threads", type=int, default=2)
