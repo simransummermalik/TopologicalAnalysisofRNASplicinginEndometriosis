@@ -8,6 +8,13 @@ Anyone can pick up any available task; there are no assigned leads.
 
 ## Latest completed work — November 18
 
+- [x] Settle the junction-ambiguity rule: annotated exons sharing a splice
+  site are one node (`shared-splice-site`), with retained-intron exons kept
+  from merging neighbors. 98.5% of candidate junctions now map uniquely
+  (was 69.6%); the pilot's same-gene candidate reads kept rise from 35% to
+  about 100%. Rebuild the exon map (seconds) before the cohort run; the HISAT2
+  index stays valid. See the [decision](docs/decisions.md) and
+  [review](docs/data_methods.md#node-rule-review-2026-11-18).
 - [x] Add optional streaming BAM to single-sample and batch preprocessing,
   keeping the existing retained-SAM mode and unchanged count filters.
 - [x] Check estimated output/scratch space before starting and recheck a

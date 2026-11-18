@@ -17,7 +17,8 @@ The current prototype rejects groups whose total support is zero. It also
 rejects duplicate directed edges and self-loops rather than silently deciding
 how to combine them.
 
-For real data, nodes are unique annotated exon intervals and edges follow
+For real data, nodes are annotated exon loci (exons of a gene that share a
+splice site are one node; rule adopted 2026-11-18) and edges follow
 biological transcript order. Plus-strand edges normally move toward higher
 genomic coordinates and minus-strand edges toward lower coordinates. The exact
 coordinate, node-ID, annotation-mapping, and exclusion rules are frozen in

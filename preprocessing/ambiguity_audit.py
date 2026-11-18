@@ -26,15 +26,18 @@ CLASSES = (
     "within_gene_exon_pairs",
     "cross_gene",
     "cross_gene_and_exon_pairs",
+    "same_node",
     "unannotated",
 )
+AMBIGUOUS = ("within_gene_exon_pairs", "cross_gene", "cross_gene_and_exon_pairs")
 
 
 def classify(targets):
     if not targets:
         return "unannotated"
     if len(targets) == 1:
-        return "assigned"
+        _, from_node, to_node = next(iter(targets))
+        return "same_node" if from_node == to_node else "assigned"
     by_gene = Counter(target[0] for target in targets)
     if len(by_gene) == 1:
         return "within_gene_exon_pairs"
@@ -93,6 +96,8 @@ def observe(lines, mapping, minimum_anchor, exclude_duplicates=False):
                 qc["assigned_junction_observations"] += 1
             elif kind == "unannotated":
                 qc["unannotated_junction_observations"] += 1
+            elif kind == "same_node":
+                qc["same_node_junction_observations"] += 1
             else:
                 qc["ambiguous_junction_observations"] += 1
     return observations, qc, strand
@@ -222,7 +227,7 @@ def run(args):
         ]
         table(output / "junction_assignments.tsv", detail_header, details)
         top = sorted(
-            (row for row in details if row[4] not in {"assigned", "unannotated"}),
+            (row for row in details if row[4] in AMBIGUOUS),
             key=lambda row: (-row[5], tuple(row[:4])),
         )[:50]
         table(output / "top_ambiguous.tsv", detail_header, top)
@@ -255,9 +260,11 @@ def run(args):
                     annotation.get("gene_symbol", ""),
                     annotation.get("category", ""),
                     "observed" if any_observations else "no_eligible_observation",
-                    *[counts[kind] for kind in CLASSES[:-1]],
+                    counts["assigned"],
+                    *[counts[kind] for kind in AMBIGUOUS],
                     counts["assigned_keys"],
-                    sum(counts[kind + "_keys"] for kind in CLASSES[1:-1]),
+                    sum(counts[kind + "_keys"] for kind in AMBIGUOUS),
+                    counts["same_node"],
                 ]
             )
         table(
@@ -273,6 +280,7 @@ def run(args):
                 "both_ambiguous_potential_observations",
                 "assigned_junction_keys",
                 "ambiguous_junction_keys",
+                "same_node_observations",
             ],
             candidate_rows,
         )

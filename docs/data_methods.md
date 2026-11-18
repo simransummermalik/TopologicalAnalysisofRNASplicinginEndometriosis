@@ -149,22 +149,45 @@ The coordinate rules follow the
 
 ### Graph nodes
 
-One graph node is one **unique annotated exon interval within a gene**, not a
-single splice-site coordinate. Exact duplicate exon intervals appearing in
-multiple transcripts of the same gene collapse to one node. This convention
-connects consecutive junctions through their shared exon and makes an
-annotated exon-skipping pattern form the intended triangle.
+**Rule since 2026-11-18 (`shared-splice-site`).** One graph node is one
+**exon locus within a gene**: annotated exons of the same gene and strand that
+share a start coordinate or an end coordinate are one node. A junction read
+shows only its two splice sites, so exon variants that differ only at their
+far ends (truncated, alternative-start or alternative-end transcripts) are the
+same exon to the data. Exons that share no coordinate stay separate, so
+skipped, included and mutually exclusive exons remain distinct nodes, and an
+annotated exon-skipping pattern still forms the intended triangle.
+
+A **retained-intron exon** (an exon that strictly contains an annotated intron
+of its own gene) would otherwise glue the exons on either side of that intron
+into one node. It therefore joins its start to its end only when that does not
+merge two nodes that each already contain a normal exon.
 
 The node identifier is:
 
 ```text
-sequence:exon_start-exon_end:strand
+sequence:lowest_start-highest_end:strand
 ```
 
-For example, `chr1:100-199:+` is a plus-strand exon covering bases 100 through
-199. `exon_number` is not used because it can differ between transcripts.
+taken over the exons in the node. For example, exons `chr1:300-399:+` and
+`chr1:300-420:+` (an alternative donor) form node `chr1:300-420:+`. Every node
+contains at least one whole exon, and its lowest coordinate is a start site
+that belongs to that node only, so identifiers are unique within a gene.
+`exon_number` is not used because it can differ between transcripts.
 `gene_id` is stored separately and preserves the versioned GENCODE identifier,
-such as `ENSG00000123456.7`.
+such as `ENSG00000123456.7`. Nodes come from the annotation alone, so they are
+identical for every sample.
+
+Why: under the earlier rule, 30% of annotated candidate-gene junctions and
+74% of the pilot's junction observations matched several exon pairs and were
+excluded. Under this rule 98.5% of candidate junctions map to one node pair.
+The comparison is in [the node-rule review](#node-rule-review-2026-11-18).
+
+**Earlier rule (2026-10-22 to 2026-11-17, `exon-interval`).** One node per
+unique annotated exon interval. The November 17 technical pilot used it.
+`build_junction_gene_map.py --node-rule exon-interval` and
+`hisat2_pipeline.py prepare-reference --node-rule exon-interval` reproduce it
+exactly.
 
 ### Directed edges and strand
 
@@ -174,8 +197,8 @@ direction.
 
 | Strand | Source (`from`) | Destination (`to`) | Direction on the reference |
 |---|---|---|---|
-| `+` | Exon whose `end = intron_start - 1` | Exon whose `start = intron_end + 1` | Lower to higher coordinates |
-| `-` | Exon whose `start = intron_end + 1` | Exon whose `end = intron_start - 1` | Higher to lower coordinates |
+| `+` | Node with an exon whose `end = intron_start - 1` | Node with an exon whose `start = intron_end + 1` | Lower to higher coordinates |
+| `-` | Node with an exon whose `start = intron_end + 1` | Node with an exon whose `end = intron_start - 1` | Higher to lower coordinates |
 
 For plus-strand exons `chr1:100-199:+` and `chr1:300-399:+`, the intron is
 `chr1:200-299:+` and the edge is `chr1:100-199:+` to
@@ -188,22 +211,65 @@ excluded from the primary graph and counted in conversion QC.
 ### Annotation mapping and exclusions
 
 The annotation map is built from exon pairs that are adjacent within at least
-one GENCODE transcript. A junction is kept only when its sequence, intron
-coordinates, and strand identify exactly one `(gene_id, from_node, to_node)`
-mapping after duplicate mappings are collapsed.
+one GENCODE transcript, and lists every annotated intron. A junction is kept
+only when its sequence, intron coordinates, and strand identify exactly one
+`(gene_id, from_node, to_node)` mapping after duplicate mappings are
+collapsed.
 
 - No annotation match: record the junction as unannotated and exclude it.
-- More than one gene or exon-pair match: record it as ambiguous and exclude it.
+- More than one gene (or, under the earlier rule, exon-pair) match: record it
+  as ambiguous and exclude it.
+- Both ends in one node (`same_node`): exclude it, because a self-loop has no
+  graph meaning. This is rare: 40 of 711,654 GENCODE v50 map rows and none in
+  the candidate genes.
 - Exactly one match: keep it and aggregate supporting reads for that directed
-  edge within the sample.
+  edge within the sample. Two junctions that join the same pair of nodes, such
+  as alternative 5′ or 3′ splice sites, are **summed into one edge**; the
+  choice between nearby sites is not measured.
 - Primary counts use uniquely mapped junction-spanning reads. Multimapping
   support remains excluded unless a later reviewed rule explicitly changes
   that setting for every sample.
 
-These exclusions favor a smaller graph with clear biological node identities
-over silently assigning a junction to the wrong exon or gene. The conversion
-QC must report the number of input, unannotated, ambiguous, filtered, and
-written junctions.
+These exclusions favor a graph with clear biological node identities over
+silently assigning a junction to the wrong exon or gene. The conversion QC
+must report the number of input, unannotated, ambiguous, same-node, filtered,
+and written junctions.
+
+### Node-rule review (2026-11-18)
+
+Compared on the full GENCODE v50 annotation, without reads, for the 661
+candidate genes (18,052 annotated junctions). Splice-site hints for HISAT2 are
+identical under both rules, so an existing index stays valid; only the map
+file changes.
+
+| Rule | Junctions mapped to one node pair | Same-node | Candidate genes with ≥ 1 graph cycle | Median cycle rank |
+|---|---:|---:|---:|---:|
+| Exact exon interval (earlier rule) | 69.6% | 0 | 298 | 0 |
+| **Shared splice site, retained introns kept apart (adopted)** | **98.5%** | **0** | **536** | **4** |
+| *Exploratory:* shared splice site, retained introns may merge | 93.1% | 976 | 526 | 3 |
+| *Exploratory:* exact exon interval, GENCODE `basic` transcripts only | 77.9% of a set that drops 24% of junctions | 0 | 313 | 0 |
+
+The first two rows are reproduced from the real maps:
+
+```sh
+python3 preprocessing/build_junction_gene_map.py --gtf <GENCODE v50 GTF> \
+  --output maps/shared.tsv
+python3 preprocessing/build_junction_gene_map.py --gtf <GENCODE v50 GTF> \
+  --output maps/exon_interval.tsv --node-rule exon-interval
+python3 scripts/node_rule_review.py --genes data/gene_sets/candidate_genes.tsv \
+  --map exon-interval=maps/exon_interval.tsv --map shared-splice-site=maps/shared.tsv
+```
+
+The exploratory rows came from a one-off comparison script and were not
+adopted. A graph-cycle count assumes every usable annotated junction is
+observed; real graphs contain only observed junctions.
+
+The remaining 1.5% match several genes and stay excluded. In the November 17
+pilot prefix, the candidate genes had 19,983 assigned and 36,591 within-gene
+ambiguous observations, so the adopted rule keeps about 100% instead of 35% of
+same-gene candidate reads; candidate genes with at least 100 reads rise from
+14 to 65. These are diagnostic estimates from the pilot's saved audit, not a
+rerun.
 
 ### Interpretation boundary
 

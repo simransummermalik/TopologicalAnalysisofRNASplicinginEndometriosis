@@ -112,6 +112,9 @@ def count_junctions(
                 stats["unannotated_junction_observations"] += 1
             elif len(targets) != 1:
                 stats["ambiguous_junction_observations"] += 1
+            elif next(iter(targets))[1] == next(iter(targets))[2]:
+                # Both ends fall in one node; a self-loop has no graph meaning.
+                stats["same_node_junction_observations"] += 1
             else:
                 counts[next(iter(targets))] += 1
                 stats["assigned_junction_observations"] += 1

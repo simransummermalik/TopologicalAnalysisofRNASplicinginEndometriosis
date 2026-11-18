@@ -49,12 +49,14 @@ def load_gene_map(path: Path) -> dict[JunctionKey, set[JunctionTarget]]:
                 or not gene_id
                 or not from_node
                 or not to_node
-                or from_node == to_node
                 or strand not in {"1", "2"}
             ):
                 raise ValueError(f"{path}:{line_number}: invalid map values")
             if start < 1 or end < start:
                 raise ValueError(f"{path}:{line_number}: invalid coordinates")
+            # from_node == to_node is allowed: under the shared-splice-site rule
+            # both ends can fall in one merged exon. Converters exclude such
+            # junctions and count them as same-node observations.
             mapping[(chromosome, start, end, strand)].add((gene_id, from_node, to_node))
 
     return mapping
@@ -80,6 +82,7 @@ def convert_star_junctions(
         "unannotated_junctions": 0,
         "ambiguous_annotation_junctions": 0,
         "ambiguous_gene_junctions": 0,
+        "same_node_junctions": 0,
         "include_multimapping": include_multimapping,
         "minimum_unique_reads": minimum_unique_reads,
     }
@@ -130,6 +133,9 @@ def convert_star_junctions(
                 continue
 
             gene_id, from_node, to_node = next(iter(targets))
+            if from_node == to_node:
+                stats["same_node_junctions"] = int(stats["same_node_junctions"]) + 1
+                continue
             count = unique_reads
             if include_multimapping:
                 count += multimapping_reads

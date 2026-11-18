@@ -66,6 +66,19 @@ suffix-sort bucket divisor for a lower-memory build. See the
 [bounded real-data pilot](../docs/real_pilot.md) for recorded example choices;
 neither option changes the biological reference.
 
+The exon map uses the `shared-splice-site` node rule (decided 2026-11-18; see
+[data_methods.md](../docs/data_methods.md#graph-nodes)). `--node-rule
+exon-interval` reproduces the earlier rule. A reference folder built before
+2026-11-18 has an `exon-interval` map but valid index and splice-site hints,
+which do not depend on the rule. Rebuild only the map, in seconds rather than
+the hour an index takes, and pass it with `--gene-map`:
+
+```sh
+python3 preprocessing/build_junction_gene_map.py \
+  --gtf references/gencode_v50/gencode.v50.primary_assembly.annotation.gtf.gz \
+  --output references/hisat2_v50/junction_exon_map_shared_site.tsv
+```
+
 ## 4. Write a local sample sheet
 
 Make a tab-separated file with these four columns. The paths below are

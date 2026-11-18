@@ -132,7 +132,7 @@ def reference(args):
         command[1:1] = ["--bmaxdivn", str(bmaxdivn)]
     if args.command == "plan-reference":
         print(
-            f"Create new folder {output}; expand/copy FASTA, build exon map and 0-based splice hints, then:"
+            f"Create new folder {output}; expand/copy FASTA, build exon map (node rule {getattr(args, 'node_rule', 'shared-splice-site')}) and 0-based splice hints, then:"
         )
         print(shlex.join(command))
         return
@@ -156,7 +156,9 @@ def reference(args):
         with opener(args.fasta, "rb") as source, fasta.open("xb") as dest:
             shutil.copyfileobj(source, dest)
         map_path = output / "junction_exon_map.tsv"
-        record["annotation_summary"] = build_gene_map(args.gtf, map_path)
+        record["annotation_summary"] = build_gene_map(
+            args.gtf, map_path, getattr(args, "node_rule", "shared-splice-site")
+        )
         splice_hints(map_path, output / "splice_sites.tsv")
         with (output / "index.log").open("w") as log:
             subprocess.run(command, stdout=log, stderr=subprocess.STDOUT, check=True)
@@ -464,6 +466,12 @@ def main():
             "--discard-expanded-reference",
             action="store_true",
             help="remove this run's expanded FASTA after successful indexing; retain the original input",
+        )
+        ref.add_argument(
+            "--node-rule",
+            choices=("shared-splice-site", "exon-interval"),
+            default="shared-splice-site",
+            help="exon node rule for the junction map; exon-interval reproduces the 2026-11-17 pilot",
         )
         ref.add_argument(
             "--build-bmaxdivn",

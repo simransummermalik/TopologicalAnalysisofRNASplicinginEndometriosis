@@ -6,6 +6,11 @@ effect, validate the entire sample, or replace the eight-sample study.
 The [written plan](../data/pilots/SRR36710387_prefix1m_nov17/plan.md) records
 the exploratory choices and gene-selection rule before the Hodge result.
 
+**Node rule:** this pilot used the earlier `exon-interval` node rule. Since
+2026-11-18 the default is `shared-splice-site`
+([decision](decisions.md)). To reproduce the pilot exactly, add
+`--node-rule exon-interval` to `prepare-reference` in step 1.
+
 **Completed run:** [CDH11 review and findings](../data/pilots/SRR36710387_prefix1m_nov17/README.md)
 and [generated report](../data/pilots/SRR36710387_prefix1m_nov17/verified/report.html).
 The technical checks pass; the review records the zero-cycle result and the
