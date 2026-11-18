@@ -1,29 +1,110 @@
 <!doctype html>
 <html lang="en">
-  <head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <meta name="description" content="A beginner's guide to Splice Girl: RNA splicing, graph Hodge theory, and a small command-line demo.">
-    <title>Splice Girl · About the project</title>
-    <link rel="stylesheet" href="styles.css">
-  </head>
-  <body>
-    <a class="skip-link" href="#content">Skip to the page</a>
-    <div class="site-shell">
-      <header class="site-header">
-        <p class="site-name"><a href="index.html">splice girl</a> <span>* RNA, graphs &amp; a little math *</span></p>
-        <nav aria-label="Main navigation">
-          <a href="index.html" aria-current="page">About</a>
-          <a href="learn.html">How it works</a>
-          <a href="guide.html">Run the demo</a>
-          <a href="results.html">Read the results</a>
-          <a href="dictionary.html">Word list</a>
-        </nav>
-      </header>
-      <main id="content">
-        <div class="home-layout">
-      <figure class="ascii-side">
-        <figcaption>from our terminal: splice_girl_banner.txt</figcaption>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Splice Girl documentation: installation, splice-junction inputs, graph Hodge analysis, and example workflows.">
+  <title>Splice Girl documentation</title>
+  <link rel="icon" href="favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="styles.css?v=2">
+  <script src="script.js?v=2" defer></script>
+</head>
+<body>
+  <a class="skip-link" href="#content">Skip to content</a>
+  <div class="site-shell">
+    <header class="site-header">
+      <a class="site-brand" href="index.html"><span class="brand-mark" aria-hidden="true">SG</span>Splice Girl</a>
+      <span class="header-description">Documentation</span>
+      <div class="header-links"><span class="version">v0.1.0</span><a href="https://github.com/simransummermalik/TopologicalAnalysisofRNASplicinginEndometriosis">GitHub</a></div>
+    </header>
+    <aside class="site-sidebar">
+      <p class="nav-label">Documentation</p>
+      <nav aria-label="Main navigation">
+        <a href="index.html" aria-current="page">Overview</a>
+        <a href="learn.html">Concepts</a>
+        <a href="guide.html">Quickstart</a>
+        <a href="results.html">Output reference</a>
+        <a href="dictionary.html">Glossary</a>
+      </nav>
+      <div class="sidebar-resources">
+        <p class="nav-label">Resources</p>
+        <a href="https://github.com/simransummermalik/TopologicalAnalysisofRNASplicinginEndometriosis/tree/main/examples/demo">Example data</a>
+        <a href="https://github.com/simransummermalik/TopologicalAnalysisofRNASplicinginEndometriosis/blob/main/beginner_test/README.md">Detailed walkthrough</a>
+        <a href="https://github.com/simransummermalik/TopologicalAnalysisofRNASplicinginEndometriosis/blob/main/docs/math_spec.md">Math specification</a>
+      </div>
+      <p class="sidebar-note">RNA splice-junction analysis<br>Rust command-line software</p>
+    </aside>
+    <main id="content" class="text-page">
+      <p class="eyebrow">Documentation / Overview</p>
+      <h1>Splice Girl</h1>
+      <p class="lead">Graph and Hodge analysis for RNA splice-junction data.</p>
+      <p>Splice Girl is a Rust command-line tool for building splice graphs,
+        separating their gradient and cycle-space signals, and comparing
+        sample-level measurements. It takes standardized junction counts and
+        saves tables, graph figures and an offline report.</p>
+      <p class="doc-links"><a href="guide.html">Quickstart</a>
+        <span aria-hidden="true">·</span> <a href="learn.html">How the analysis works</a>
+        <span aria-hidden="true">·</span> <a href="results.html">Output reference</a></p>
+
+      <h2 id="installation">Build from source</h2>
+      <p>Requires <strong>Rust 1.85 or newer</strong>. Download or clone the
+        <a href="https://github.com/simransummermalik/TopologicalAnalysisofRNASplicinginEndometriosis">source repository</a>,
+        then run this from the folder containing <code>Cargo.toml</code>:</p>
+      <div class="command">
+        <span class="command-label">Terminal</span>
+        <button type="button" class="copy-button" data-copy="install-code" aria-label="Copy installation commands" hidden>Copy</button>
+        <pre><code id="install-code">cargo install --path .
+splice-girl --help</code></pre>
+      </div>
+      <p>New to Rust or the terminal? The <a href="guide.html#ready">setup guide</a>
+        explains each step. You can also run the examples from source with
+        <code>cargo run --</code>, without installing a global command.</p>
+
+      <h2 id="example">Run an example</h2>
+      <p>The repository includes synthetic inputs with known mathematical answers.
+        This example analyzes a three-exon graph with an exon-skipping path:</p>
+      <div class="command">
+        <span class="command-label">Terminal</span>
+        <button type="button" class="copy-button" data-copy="example-code" aria-label="Copy example analysis command" hidden>Copy</button>
+        <pre><code id="example-code">cargo run -- analyze tests/fixtures/exon_skip.tsv</code></pre>
+      </div>
+      <p>Expected cycle fraction: <code>0.1111111111</code>, with
+        <code>checks: PASS</code>. Continue through the
+        <a href="guide.html">seven-step quickstart</a> to compare samples,
+        generate a graph and save a report.</p>
+
+      <h2 id="input-output">Input and output</h2>
+      <table>
+        <thead><tr><th scope="col">Stage</th><th scope="col">Format</th></tr></thead>
+        <tbody>
+          <tr><td>Junction input</td><td>A tab-separated table with
+            <code>sample_id</code>, <code>gene_id</code>, <code>from</code>,
+            <code>to</code> and <code>count</code>.</td></tr>
+          <tr><td>Sample metadata</td><td>A manifest providing the sample IDs
+            and case/control labels for comparisons.</td></tr>
+          <tr><td>Results</td><td>Per-sample measurements, signed junction
+            components, comparison tables, SVG graphs and an HTML report.</td></tr>
+        </tbody>
+      </table>
+      <p>Sequencing reads are prepared separately with the Cleaver/HISAT2
+        adapter. The graph tool reads junction tables, not raw FASTQ files.
+        See <a href="results.html">the output reference</a> for file-by-file explanations.</p>
+
+      <h2 id="research-status">Research status</h2>
+      <p>The software and synthetic workflows are working. A bounded CDH11
+        technical pilot from one million cleaned read pairs of one control
+        sample has independent count and mathematical checks. The complete
+        eight-sample endometriosis/control analysis remains in progress.</p>
+      <p class="margin-note">Demo results are synthetic. A cycle-space signal
+        does not by itself establish circular RNA, a disease association or
+        causation.</p>
+
+      <details class="banner-details">
+        <summary>Terminal banner</summary>
+        <p>The original ASCII artwork appears when the terminal menu starts
+          with <code>splice-girl --start</code>.</p>
+        <figure class="ascii-side">
+        <figcaption>splice_girl_banner.txt</figcaption>
         <pre class="ascii-banner" role="img" aria-label="Splice Girl's original ASCII portrait">                             .,
                               sr,        ..                                               ,
                  ;:           itr;,      ,s,                                             rs          :.
@@ -119,40 +200,13 @@
                                               R N A   /   T O P O L O G Y
                                                         2 0 2 6</pre>
       </figure>
-
-      <section class="home-copy" aria-labelledby="about-title">
-        <p class="eyebrow">a BINF-2111 student project / 2026</p>
-        <h1 id="about-title">Same gene.<br>Different connections?</h1>
-        <p>Cells can join sections of RNA in different ways.
-          We’re building <strong>Splice Girl</strong> to study those connections
-          in endometriosis and control tissue.</p>
-        <p>The tool turns counted RNA splice junctions into a graph, uses
-          Hodge theory to measure its signal, and saves the results as tables
-          and figures you can inspect.</p>
-        <p><a href="learn.html">Start with the biology and graph idea</a>, or
-          <a href="guide.html">try the small demo</a>. You don’t need to know
-          Hodge theory before you start.</p>
-        <h2>What’s working?</h2>
-        <p>The command-line tool and synthetic demo work. We also checked one
-          real gene, CDH11, using one million cleaned read pairs from one
-          control sample. <strong>The full eight-sample disease comparison
-          is still in progress.</strong></p>
-        <p class="margin-note">The demo uses made-up data with known answers.
-          Its case/control labels are examples, not findings about patients.</p>
-      </section>
-        </div>
-        <section class="reading-note" aria-labelledby="first-visit">
-          <h2 id="first-visit">First visit?</h2>
-          <p>Read <a href="learn.html">How it works</a>, then follow
-            <a href="guide.html">Run the demo</a> with your terminal open.
-            <a href="dictionary.html">The word list</a> is here whenever a
-            term gets in the way.</p>
-        </section>
-      </main>
-      <footer class="site-footer">
-        <p>Sydney Holmes · Vania Zeledon · Summer Malik · Wynn Oo</p>
-        <p><a href="https://github.com/simransummermalik/TopologicalAnalysisofRNASplicinginEndometriosis">Project files on GitHub</a> · Made for learning, 2026</p>
-      </footer>
-    </div>
-  </body>
+      </details>
+      <p id="copy-status" class="copy-status" role="status" aria-live="polite"></p>
+    </main>
+    <footer class="site-footer">
+      <p>Splice Girl v0.1.0 · BINF-2111 · 2026</p>
+      <p>Sydney Holmes · Vania Zeledon · Summer Malik · Wynn Oo</p>
+    </footer>
+  </div>
+</body>
 </html>

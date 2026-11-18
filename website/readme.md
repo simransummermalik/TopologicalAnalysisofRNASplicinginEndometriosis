@@ -1,13 +1,16 @@
 # Splice Girl website
 
-A small educational website explaining Splice Girl to beginners. It uses
-plain HTML, one CSS file and a small JavaScript file. No build step, package
-installation, framework, downloaded font, account or backend is needed.
+Software documentation for Splice Girl, including a beginner quickstart,
+concepts, output reference and glossary. It uses plain HTML, one CSS file
+and a small JavaScript file. No build step, package installation, framework,
+downloaded font, account or backend is needed.
 
-The site keeps the presentation's pink/plum colors and the complete original
-ASCII artwork from `assets/splice_girl_banner.txt`. Topics are split into
-separate pages. The demo shows one step at a time instead of putting all the
-instructions into a long page; with JavaScript off, all steps remain readable.
+The layout uses a compact dark header, a left navigation sidebar, system fonts
+and a neutral reading column with restrained plum links. The homepage starts
+with source installation, an example command and the input/output format.
+The complete original `assets/splice_girl_banner.txt` artwork is preserved
+inside the homepage's collapsible Terminal banner section. The quickstart
+still shows one step at a time; with JavaScript off, all steps remain readable.
 
 ## Preview locally
 
@@ -35,12 +38,13 @@ the repository root, not from `website/`.
 
 ## Files
 
-- `index.html`: what the project is, its current status, team and original ASCII.
+- `index.html`: installation, example usage, input/output formats, research status and terminal banner.
 - `learn.html`: biology, graphs, normalization, Hodge theory, Rust and limits.
 - `guide.html`: seven demo steps, commands, menu prompts and expected results.
 - `results.html`: reading reports, output files, statistics context and common errors.
 - `dictionary.html`: short definitions for biology, math, files and terminal terms.
-- `styles.css`: shared colors, typography, page layout, mobile and print styles.
+- `styles.css`: header/sidebar layout, shared colors, system typography, mobile and print styles.
+- `favicon.svg`: a small SG text icon for browser tabs.
 - `script.js`: copy buttons, step navigation and browser-history handling.
 
 Edit teaching text directly in its HTML file. Navigation is ordinary HTML
