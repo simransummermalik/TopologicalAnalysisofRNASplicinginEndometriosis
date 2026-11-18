@@ -49,6 +49,12 @@ no ranking file. `absolute-effect` sorts tested genes by effect magnitude;
 gene ID. Untested genes are retained without ranks. Ordering never selects a
 significance cutoff or approves a gene family.
 
+When the supplied gene-family table contains symbols, risk/environment flags
+or categories, these now appear directly in the statistics and ranking tables,
+joined by exact versioned gene ID. The report shows the supplied symbol and
+category too. Missing annotations stay blank; the full original family table
+is still preserved for evidence tracing.
+
 ## Check robustness to support thresholds
 
 ```sh
@@ -77,10 +83,12 @@ same junction/manifest contract as the demo. Inspect read and alignment QC,
 sample labels, exclusions and graph comparability before inference.
 
 The gene evidence helpers are documented in
-[gene_set_methods.md](gene_set_methods.md). Existing evidence tables are
-templates until the research group supplies reviewed source-backed rows.
-The software preserves the supplied gene annotations; it does not invent
-genetic-risk or environmental-response evidence.
+[gene_set_methods.md](gene_set_methods.md). The repository now contains
+source-backed risk/environment extractions and a 661-gene candidate table;
+see [the evidence status](../data/gene_sets/README.md) for completed reviews
+and remaining independent spot checks. The software preserves the supplied
+gene annotations; it does not invent genetic-risk or environmental-response
+evidence.
 
 ## One command to check the software
 

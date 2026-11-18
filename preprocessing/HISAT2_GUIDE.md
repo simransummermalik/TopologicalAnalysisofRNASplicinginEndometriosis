@@ -57,6 +57,13 @@ execute it. The new folder contains the eight-part index (`genome` is its
 prefix), exon map, splice-site hints, log, and checksummed reference manifest.
 An existing output folder is never overwritten. Use a new folder for a retry.
 
+On a machine with limited disk space, `--discard-expanded-reference` removes
+only this run's expanded FASTA copy after a successful build. The original
+compressed reference remains intact. `--build-bmaxdivn` exposes HISAT2's positive
+suffix-sort bucket divisor for a lower-memory build. See the
+[bounded real-data pilot](../docs/real_pilot.md) for recorded example choices;
+neither option changes the biological reference.
+
 ## 4. Write a local sample sheet
 
 Make a tab-separated file with these four columns. The paths below are

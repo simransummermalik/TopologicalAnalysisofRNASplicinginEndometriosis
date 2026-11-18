@@ -1,15 +1,18 @@
 from __future__ import annotations
 
 import argparse
+import contextlib
+import io
 import json
 import sys
 import tempfile
 import unittest
+from unittest.mock import patch
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 from build_junction_gene_map import build_gene_map
-from hisat2_pipeline import configuration, index_files, splice_hints
+from hisat2_pipeline import configuration, index_files, reference, splice_hints
 from sam_junctions import convert_sam, count_junctions, skipped_intervals
 
 FIXTURES = Path(__file__).parent / "fixtures"
@@ -130,6 +133,81 @@ class HisatTests(unittest.TestCase):
         args.strandedness = "F"
         with self.assertRaisesRegex(ValueError, "paired reads"):
             configuration(args)
+
+    def test_reference_cleanup_removes_only_its_generated_copy_after_success(self):
+        output = self.root / "reference"
+        args = argparse.Namespace(
+            command="prepare-reference",
+            fasta=FIXTURES / "tiny_genome.fa",
+            gtf=FIXTURES / "tiny_annotation.gtf",
+            output_dir=output,
+            threads=2,
+            build_bmaxdivn=16,
+            discard_expanded_reference=True,
+        )
+        source = args.fasta.read_bytes()
+
+        def build(command, **kwargs):
+            self.assertIn("--bmaxdivn", command)
+            for number in range(1, 9):
+                (output / f"genome.{number}.ht2").write_text("fixture")
+
+        with (
+            patch("hisat2_pipeline.require_tools"),
+            patch("hisat2_pipeline.versions", return_value={}),
+            patch("hisat2_pipeline.subprocess.run", side_effect=build),
+            contextlib.redirect_stdout(io.StringIO()),
+        ):
+            reference(args)
+        self.assertFalse((output / "reference.fa").exists())
+        self.assertEqual(args.fasta.read_bytes(), source)
+        self.assertFalse(
+            json.loads((output / "reference_manifest.json").read_text())[
+                "expanded_reference_retained"
+            ]
+        )
+
+    def test_partial_or_still_running_reference_is_not_accepted_for_alignment(self):
+        prefix = self.root / "building"
+        for number in range(1, 9):
+            Path(f"{prefix}.{number}.ht2").write_text("fixture")
+        Path(f"{prefix}.8.ht2").write_text("")
+        with self.assertRaisesRegex(ValueError, "incomplete"):
+            index_files(prefix)
+        Path(f"{prefix}.8.ht2").write_text("fixture")
+        manifest = self.root / "reference_manifest.json"
+        manifest.write_text('{"status":"running"}')
+        with self.assertRaisesRegex(ValueError, "not complete"):
+            index_files(prefix)
+        manifest.write_text('{"status":"complete"}')
+        self.assertEqual(len(index_files(prefix)), 8)
+
+    def test_reference_build_failure_preserves_diagnostics_and_expanded_copy(self):
+        output = self.root / "failed-reference"
+        args = argparse.Namespace(
+            command="prepare-reference",
+            fasta=FIXTURES / "tiny_genome.fa",
+            gtf=FIXTURES / "tiny_annotation.gtf",
+            output_dir=output,
+            threads=2,
+            build_bmaxdivn=16,
+            discard_expanded_reference=True,
+        )
+        with (
+            patch("hisat2_pipeline.require_tools"),
+            patch("hisat2_pipeline.versions", return_value={}),
+            patch(
+                "hisat2_pipeline.subprocess.run",
+                side_effect=OSError("index build failed"),
+            ),
+            self.assertRaisesRegex(OSError, "build failed"),
+        ):
+            reference(args)
+        self.assertTrue((output / "reference.fa").exists())
+        self.assertEqual(
+            json.loads((output / "reference_manifest.json").read_text())["status"],
+            "failed",
+        )
 
 
 if __name__ == "__main__":

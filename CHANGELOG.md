@@ -2,6 +2,14 @@
 
 ## Unreleased
 
+- Joined supplied gene symbols, risk/environment/overlap flags and categories
+  directly into statistics, ranked results and the HTML report, retaining
+  annotations for untested genes and leaving missing metadata blank.
+- Added a checksummed paired-FASTQ prefix extractor and independent real-pilot
+  BAM/SVD verifier. Reference preparation now supports lower-memory index
+  builds, cleanup of its expanded FASTA copy after success, and rejection of
+  partial or still-running indexes at alignment time.
+
 - Added the runnable Cleaver/HISAT2 reference and sample adapter, SAM junction
   counting, sequential batch processing, QC and checksummed provenance.
 - Added same-sample baselines, topology flags, optional deterministic ranking,

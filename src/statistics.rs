@@ -34,6 +34,7 @@ pub struct StatisticsRun {
     pub family: FdrFamily,
     pub comparisons: Vec<GeneComparisonSummary>,
     pub genes: Vec<GeneStatistics>,
+    pub annotations: std::collections::BTreeMap<String, crate::annotations::GeneAnnotation>,
 }
 
 pub fn alternative_name(alternative: Sidedness) -> &'static str {
@@ -215,6 +216,7 @@ pub fn test_gene_family(
         family,
         comparisons,
         genes,
+        annotations: std::collections::BTreeMap::new(),
     })
 }
 

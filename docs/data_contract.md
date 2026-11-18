@@ -1,6 +1,6 @@
 # Splice Girl input data contract
 
-**Contract version:** 0.8 (2026-11-17) — added baselines, optional ordering and the explicit-family `stats`
+**Contract version:** 0.9 (2026-11-17) — added direct evidence annotations, baselines, optional ordering and the explicit-family `stats`
 command and statistics exports. Junction and manifest input schemas and frozen
 exon-node, coordinate, and strand conventions are unchanged.
 
@@ -314,6 +314,15 @@ missing means as blank fields. Measurements are total junction support,
 observed nodes, junctions and cycle rank (edges minus nodes plus connected
 components). Different node/edge signatures are flagged
 `different_review_required`; no implicit topology harmonization occurs.
+
+Both `statistics.tsv` and `rankings.tsv` append `gene_symbol`, `is_risk`,
+`is_environment`, `is_overlap` and `category`, joined by exact versioned
+`gene_id`. Values are copied from the supplied family table; missing columns
+remain blank, never inferred as zero or guessed from Hodge results. Untested
+genes retain their supplied annotations. Duplicate recognized annotation
+headers are rejected rather than choosing an ambiguous column. The report
+shows supplied symbols/categories with escaped text. These labels describe
+gene evidence, not measurements of a donor's genotype or exposure.
 
 Optional `--rank-by absolute-effect|adjusted-p` writes `rankings.tsv` and orders
 the report's statistics table. Tested genes come first, ordered by the requested

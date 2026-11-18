@@ -399,3 +399,31 @@ fn requested_ranking_is_deterministic_and_does_not_rank_untested_genes() {
     assert!(text(&run(&args).stderr).contains("--rank-by must"));
     assert!(!fixture.0.join("invalid-rank").exists());
 }
+
+#[test]
+fn evidence_annotations_join_directly_to_tested_and_untested_results_by_gene_id() {
+    let fixture = Fixture::new();
+    fs::write(fixture.0.join("genes.tsv"), "gene_id\tgene_symbol\tis_risk\tis_environment\tis_overlap\tcategory\nMISSING\tAbsent\t1\t0\t0\trisk_only\nHIGH\tShared<&>\t1\t1\t1\toverlap\nFLAT\tResponse\t0\t1\t0\tenvironment_only\n").unwrap();
+    let mut args = fixture.arguments("annotated", "two-sided", "2");
+    args.extend(["--rank-by".to_owned(), "adjusted-p".to_owned()]);
+    let output = run(&args);
+    assert!(output.status.success(), "{}", text(&output.stderr));
+    for name in ["statistics.tsv", "rankings.tsv"] {
+        let values = rows(&fixture.0.join("annotated").join(name));
+        let high = values.iter().find(|row| row["gene_id"] == "HIGH").unwrap();
+        assert_eq!(high["gene_symbol"], "Shared<&>");
+        assert_eq!(high["category"], "overlap");
+        assert_eq!(high["is_overlap"], "1");
+        let missing = values
+            .iter()
+            .find(|row| row["gene_id"] == "MISSING")
+            .unwrap();
+        assert_eq!(missing["category"], "risk_only");
+        assert_eq!(missing["status"], "untested");
+        assert!(missing["p_value"].is_empty());
+    }
+    let report = fs::read_to_string(fixture.0.join("annotated/report.html")).unwrap();
+    assert!(report.contains("Shared&lt;&amp;&gt;"));
+    assert!(report.contains("Provided evidence: overlap"));
+    assert!(!report.contains("Shared<&>"));
+}

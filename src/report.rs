@@ -169,12 +169,29 @@ fn render_statistics(html: &mut String, run: &StatisticsRun) {
     };
     for index in indices {
         let row = &run.genes[index];
+        let annotation = run.annotations.get(&row.gene_id);
+        let symbol = annotation
+            .map(|value| value.gene_symbol.as_str())
+            .filter(|value| !value.is_empty());
+        let label = symbol
+            .map(|symbol| format!("{} ({})", escape(&row.gene_id), escape(symbol)))
+            .unwrap_or_else(|| escape(&row.gene_id));
+        let category = annotation
+            .map(|value| value.category.as_str())
+            .filter(|value| !value.is_empty())
+            .map(|value| {
+                format!(
+                    "<br><small>Provided evidence: {}</small>",
+                    escape(&value.replace('_', " "))
+                )
+            })
+            .unwrap_or_default();
         let counts = row
             .permutation
             .as_ref()
             .map(|test| format!("{} / {}", test.extreme_count, test.permutations_considered))
             .unwrap_or_else(|| "NA".to_owned());
-        writeln!(html, "<tr><th scope=row><a href=\"#gene-{}\">{}</a></th><td>{}</td><td>{}</td><td>{}</td><td>{}</td><td>{}</td></tr>", index + 1, escape(&row.gene_id), row.status, number(row.permutation.as_ref().map(|test| test.p_value)), number(row.adjusted_p_value), counts, escape(&row.reason)).unwrap();
+        writeln!(html, "<tr><th scope=row><a href=\"#gene-{}\">{}</a>{}</th><td>{}</td><td>{}</td><td>{}</td><td>{}</td><td>{}</td></tr>", index + 1, label, category, row.status, number(row.permutation.as_ref().map(|test| test.p_value)), number(row.adjusted_p_value), counts, escape(&row.reason)).unwrap();
     }
     html.push_str("</tbody></table></div>\n");
     html.push_str("<h3>Baseline checks</h3><p>Compare cycle fraction with total junction read support, observed node and junction counts, and graph cycle rank (edges minus nodes plus connected components). These descriptive baselines use the same included samples; they have no separate significance tests. Raw support depends on sequencing depth and is not a gene-expression estimate. Different observed topologies require review: missing edges may reflect coverage rather than biology.</p><p><a href=\"baseline_metrics.tsv\">Per-sample baselines</a> · <a href=\"baseline_comparisons.tsv\">Baseline group comparisons and topology flags</a> · <a href=\"gene_family.tsv\">Original gene family and annotations</a></p>\n");

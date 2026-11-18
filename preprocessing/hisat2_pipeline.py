@@ -70,10 +70,17 @@ def versions(names):
     return result
 
 
-def index_files(prefix: Path):
+def index_files(prefix: Path, check_manifest=True):
     for suffix in ("ht2", "ht2l"):
         files = [Path(f"{prefix}.{index}.{suffix}") for index in range(1, 9)]
-        if all(path.is_file() for path in files):
+        if all(path.is_file() and path.stat().st_size > 0 for path in files):
+            manifest = prefix.parent / "reference_manifest.json"
+            if check_manifest and manifest.exists():
+                record = json.loads(manifest.read_text(encoding="utf-8"))
+                if not isinstance(record, dict) or record.get("status") != "complete":
+                    raise ValueError(
+                        f"reference preparation is not complete: {manifest}; wait for a successful build"
+                    )
             return files
     raise ValueError(
         f"incomplete HISAT2 index prefix {prefix}; expected all eight .ht2 or .ht2l files"
@@ -108,6 +115,11 @@ def reference(args):
     fasta = output / "reference.fa"
     prefix = output / "genome"
     command = ["hisat2-build", "-p", str(args.threads), str(fasta), str(prefix)]
+    bmaxdivn = getattr(args, "build_bmaxdivn", None)
+    if bmaxdivn is not None:
+        if bmaxdivn < 1:
+            raise ValueError("build-bmaxdivn must be positive")
+        command[1:1] = ["--bmaxdivn", str(bmaxdivn)]
     if args.command == "plan-reference":
         print(
             f"Create new folder {output}; expand/copy FASTA, build exon map and 0-based splice hints, then:"
@@ -122,6 +134,7 @@ def reference(args):
         "method": "HISAT2 reference preparation",
         "inputs": [],
         "commands": [command],
+        "expanded_reference_retained": True,
         "tools": {},
     }
     manifest = output / "reference_manifest.json"
@@ -139,8 +152,15 @@ def reference(args):
             subprocess.run(command, stdout=log, stderr=subprocess.STDOUT, check=True)
         record["outputs"] = [
             checksum(path)
-            for path in [*index_files(prefix), map_path, output / "splice_sites.tsv"]
+            for path in [
+                *index_files(prefix, check_manifest=False),
+                map_path,
+                output / "splice_sites.tsv",
+            ]
         ]
+        if getattr(args, "discard_expanded_reference", False):
+            fasta.unlink()  # Only the expanded copy created in this new folder.
+            record["expanded_reference_retained"] = False
         record["status"] = "complete"
     except Exception as error:
         record.update(status="failed", error=str(error))
@@ -323,6 +343,16 @@ def main():
         ref.add_argument("--gtf", type=Path, required=True)
         ref.add_argument("--output-dir", type=Path, required=True)
         ref.add_argument("--threads", type=int, default=2)
+        ref.add_argument(
+            "--discard-expanded-reference",
+            action="store_true",
+            help="remove this run's expanded FASTA after successful indexing; retain the original input",
+        )
+        ref.add_argument(
+            "--build-bmaxdivn",
+            type=int,
+            help="optional positive HISAT2 suffix-sort bucket divisor to reduce build memory",
+        )
     for action in ("plan", "run"):
         item = sub.add_parser(action)
         item.add_argument("--sample-id", required=True)

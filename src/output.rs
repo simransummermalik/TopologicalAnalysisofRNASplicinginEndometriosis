@@ -292,7 +292,7 @@ fn write_comparison_bundle(
         ));
         if let Some(rule) = run.options.rank_by {
             let mut rankings = String::from(
-                "run_id\tfamily_id\trank\tgene_id\tstatus\tmean_difference_case_minus_control\tp_value\tadjusted_p_value\trule\tuntested_reason\n",
+                "run_id\tfamily_id\trank\tgene_id\tstatus\tmean_difference_case_minus_control\tp_value\tadjusted_p_value\trule\tuntested_reason\tgene_symbol\tis_risk\tis_environment\tis_overlap\tcategory\n",
             );
             for (position, index) in crate::ranking::ordered_genes(run, rule)
                 .into_iter()
@@ -301,7 +301,7 @@ fn write_comparison_bundle(
                 let row = &run.genes[index];
                 writeln!(
                     rankings,
-                    "{}\t{}\t{}\t{}\t{}\t{}\t{}\t{}\t{}\t{}",
+                    "{}\t{}\t{}\t{}\t{}\t{}\t{}\t{}\t{}\t{}\t{}",
                     tsv(&metadata.run_id),
                     tsv(&run.family.family_id),
                     if row.permutation.is_some() {
@@ -315,7 +315,8 @@ fn write_comparison_bundle(
                     optional_number(row.permutation.as_ref().map(|p| p.p_value)),
                     optional_number(row.adjusted_p_value),
                     rule.name(),
-                    tsv(&row.reason)
+                    tsv(&row.reason),
+                    annotation_fields(run, &row.gene_id)
                 )
                 .unwrap();
             }
@@ -415,12 +416,12 @@ fn statistics_settings_json(run: &StatisticsRun) -> String {
 fn statistics_tsv(run_id: &str, run: &StatisticsRun) -> String {
     use std::fmt::Write as _;
     let mut table = String::from(
-        "run_id\tfamily_id\tgene_id\tstatus\tcase_n\tcontrol_n\tmean_difference_case_minus_control\talternative\tp_value\tadjusted_p_value\tpermutations_considered\textreme_count\ttested_family_size\texcluded_samples\tuntested_reason\n",
+        "run_id\tfamily_id\tgene_id\tstatus\tcase_n\tcontrol_n\tmean_difference_case_minus_control\talternative\tp_value\tadjusted_p_value\tpermutations_considered\textreme_count\ttested_family_size\texcluded_samples\tuntested_reason\tgene_symbol\tis_risk\tis_environment\tis_overlap\tcategory\n",
     );
     for (row, summary) in run.genes.iter().zip(&run.comparisons) {
         writeln!(
             table,
-            "{}\t{}\t{}\t{}\t{}\t{}\t{}\t{}\t{}\t{}\t{}\t{}\t{}\t{}\t{}",
+            "{}\t{}\t{}\t{}\t{}\t{}\t{}\t{}\t{}\t{}\t{}\t{}\t{}\t{}\t{}\t{}",
             tsv(run_id),
             tsv(&run.family.family_id),
             tsv(&row.gene_id),
@@ -442,10 +443,18 @@ fn statistics_tsv(run_id: &str, run: &StatisticsRun) -> String {
             run.family.tested_count,
             summary.comparison.excluded.len(),
             tsv(&row.reason),
+            annotation_fields(run, &row.gene_id),
         )
         .unwrap();
     }
     table
+}
+
+fn annotation_fields(run: &StatisticsRun, gene: &str) -> String {
+    run.annotations
+        .get(gene)
+        .map(|row| row.fields().map(tsv).join("\t"))
+        .unwrap_or_else(|| "\t\t\t\t".to_owned())
 }
 
 fn write_bundle<S: AsRef<str>>(

@@ -284,6 +284,7 @@ fn run_stats_command(arguments: Vec<String>, command: &[String]) -> Result<(), S
     }
     let output_dir = Path::new(required("--output")?);
     let gene_ids = parse_gene_family(gene_path)?;
+    let annotations = splice_girl::annotations::read_annotations(gene_path)?;
     let selected: BTreeSet<&str> = gene_ids.iter().map(String::as_str).collect();
     let manifest = parse_manifest(Path::new(manifest_path))?;
     validate_independent_metadata(Path::new(manifest_path))?;
@@ -294,7 +295,7 @@ fn run_stats_command(arguments: Vec<String>, command: &[String]) -> Result<(), S
             .filter(|row| selected.contains(row.gene_id.as_str()))
             .collect(),
     )?;
-    let statistics = test_gene_family(
+    let mut statistics = test_gene_family(
         &manifest,
         &results,
         &gene_ids,
@@ -308,6 +309,7 @@ fn run_stats_command(arguments: Vec<String>, command: &[String]) -> Result<(), S
                 .transpose()?,
         },
     )?;
+    statistics.annotations = annotations;
     let saved = write_stats_bundle(
         output_dir,
         Path::new(junctions_path),

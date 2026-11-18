@@ -40,6 +40,7 @@ interpretation.
 | A live demonstration | [Try Splice Girl](#try-splice-girl) |
 | Running the complete software workflow | [Step-by-step software guide](docs/running_the_tool.md) |
 | Processing local FASTQ samples | [Cleaver/HISAT2 guide](preprocessing/HISAT2_GUIDE.md) |
+| Checking one real sample end to end | [Bounded real-data pilot](docs/real_pilot.md) |
 | An unfamiliar word | [Beginner dictionary](#beginner-dictionary) |
 | Scientific cautions | [How to interpret the results](#how-to-interpret-the-results) |
 
@@ -181,7 +182,7 @@ In plain language:
 | Support sensitivity | An explicit threshold grid reruns the Rust analysis and keeps disappearing genes visible. |
 | Public dataset selection | Four control and four endometriosis RNA-seq samples have been identified. |
 
-The Rust project currently has **91 automated tests**. Real-data
+The Rust project currently has **94 automated tests**. Real-data
 preprocessing is the next active stage, and the large raw-read files remain
 outside Git.
 

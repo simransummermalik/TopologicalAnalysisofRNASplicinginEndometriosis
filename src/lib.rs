@@ -1,6 +1,7 @@
 //! Library entry point tying the pipeline together: parsed junctions ->
 //! per-(sample, gene) graphs -> Hodge decomposition. `main.rs` is a thin
 //! CLI wrapper around `analyze_junctions`.
+pub mod annotations;
 pub mod audit;
 pub mod baselines;
 pub mod compare;

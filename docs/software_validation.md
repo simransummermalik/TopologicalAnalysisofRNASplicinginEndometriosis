@@ -17,7 +17,7 @@ benchmark.
 
 Rust 1.85 is the minimum because it is the first stable release supporting the
 Rust 2024 edition used by this package. The October 28 suite of 56 tests was
-compiled and run with both Rust 1.85.0 and Rust 1.97.1. The current 91-test
+compiled and run with both Rust 1.85.0 and Rust 1.97.1. The current 94-test
 suite, including reports and the full configured statistics workflow, passes
 on both versions.
 The CI matrix retains Rust 1.85.0 as well as stable.
@@ -63,19 +63,20 @@ after the check; the user's installed executable was not replaced.
 
 ## Automated verification
 
-The current Rust suite contains **91 passing tests**:
+The current Rust suite contains **94 passing tests**:
 
-- 51 library tests for parsing, manifests, graph math, comparisons, outputs,
+- 53 library tests for parsing, manifests, graph math, comparisons, outputs,
   validation summaries, SVG generation, report escaping/missing values, and
   permutation testing, and BH correction (the four toy adjustment vectors
   were independently checked with R's `p.adjust`)
 - 9 command-level error tests
 - 9 command-level workflow tests, including report/table agreement, links,
   overwrite protection, missing groups, unsafe identifiers, and menu execution
-- 10 statistics CLI acceptance tests covering independently known p-values,
+- 11 statistics CLI acceptance tests covering independently known p-values,
   BH correction, one-sided alternatives, required options, untested rows,
   repeated subjects, enumeration limits, provenance, reports, menu option 7,
-  baseline/sample agreement, topology flags, optional rankings and tie handling
+  baseline/sample agreement, topology flags, optional rankings, tie handling,
+  and exact-ID evidence joins for tested and untested genes
 - 12 independent synthetic-math tests
 
 The following checks pass:
@@ -195,10 +196,12 @@ The default check needs only Cargo/Python; the extra smoke test requires
 Cleaver and HISAT2 on `PATH`. The source test helpers use unique temporary
 folders even when tests start simultaneously.
 
-- Rust: 91 tests, formatting, strict Clippy and release build pass on stable
+- Rust: 94 tests, formatting, strict Clippy and release build pass on stable
   Rust 1.97.1 and the declared minimum 1.85.0.
-- Python: 17 preprocessing tests, 22 gene-evidence helper tests and 2 support
-  sensitivity tests pass. Total automated Rust/Python tests: **132**.
+- Python: 22 preprocessing tests, 56 gene-evidence helper tests and 5 script
+  tests pass. Total automated Rust/Python tests: **177**.
+  This includes the repository's expanded evidence-helper suite as well as
+  the paired-prefix and independent-recount regression tests.
 - The actual Cleaver 1.0.1 / HISAT2 2.2.3 smoke test builds the tiny reference,
   cleans and aligns two synthetic paired samples, counts annotated junctions,
   sorts/indexes BAMs through Cleaver, merges samples, and generates the Rust
@@ -206,6 +209,10 @@ folders even when tests start simultaneously.
   interoperability rather than only printed command plans.
 - The support-grid test reruns the real Rust executable and verifies that
   disappearing genes retain blank effects rather than zero effects.
+- A separate NumPy 2.4.6 SVD-based least-squares check agrees with Rust on
+  11 sample/gene groups across seven valid mathematical fixtures, including
+  disconnected, noisy, cyclic and exon-skipping shapes. The independent BAM
+  recount also reproduces the external-tool fixture's junction count.
 - The complete ranked demo report was inspected in headless Chrome. Input
   hashes, table run IDs, graph SVGs, preserved gene-family contents, and all
   report file links and section anchors were checked.
