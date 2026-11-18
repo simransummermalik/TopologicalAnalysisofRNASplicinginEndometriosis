@@ -107,6 +107,25 @@ class BatchTests(unittest.TestCase):
         self.assertIn("hisat2 --dta-cufflinks", captured.getvalue())
         self.assertFalse(self.args.output_dir.exists())
 
+    def test_interrupted_sample_is_recorded_without_publishing_cohort_outputs(self):
+        def interrupted(job):
+            if job.sample_id == "B":
+                raise KeyboardInterrupt("test interruption")
+            self.fake_run(job)
+
+        with (
+            patch("batch_preprocessing.require_tools"),
+            patch("batch_preprocessing.run", side_effect=interrupted),
+            self.assertRaises(KeyboardInterrupt),
+        ):
+            batch(self.args)
+        record = json.loads((self.args.output_dir / "batch_manifest.json").read_text())
+        self.assertEqual(record["status"], "interrupted")
+        self.assertEqual(
+            [item["status"] for item in record["samples"]], ["complete", "interrupted"]
+        )
+        self.assertFalse((self.args.output_dir / "junctions.tsv").exists())
+
 
 if __name__ == "__main__":
     unittest.main()

@@ -1,12 +1,29 @@
 # Splice Girl project priorities
 
-Updated November 17, 2026.
+Updated November 18, 2026.
 
 This is the short, ordered version of the full
 [task guide](delegations_and_tasks/tasks.md). It covers the entire project.
 Anyone can pick up any available task; there are no assigned leads.
 
-## Latest completed work — November 17
+## Latest completed work — November 18
+
+- [x] Add optional streaming BAM to single-sample and batch preprocessing,
+  keeping the existing retained-SAM mode and unchanged count filters.
+- [x] Check estimated output/scratch space before starting and recheck a
+  configurable reserve between stages.
+- [x] Supervise both sides of each pipe, stop children on failure/interruption,
+  and retain stage logs plus incomplete outputs without publishing a complete
+  cohort bundle.
+- [x] Compare actual tools in both modes on synthetic paired reads; counts/QC
+  agree. Force real sort spill with 12,000 synthetic pairs per sample.
+- [x] Pass the complete project check: 100 Rust and 100 Python tests, strict
+  Clippy, formatting, release build and actual-tool checks in both modes.
+
+No human-read run was started. See the [storage guide](preprocessing/HISAT2_GUIDE.md#save-disk-space-with-streaming-bam)
+and [validation evidence](preprocessing/validation/2026-11-18-storage-mode/README.md).
+
+## Previously completed — November 17
 
 - [x] Diagnose the real pilot's assignment loss with a tested
   [exon-pair/gene ambiguity and strand audit](data/pilots/SRR36710387_prefix1m_nov17/assignment_audit/README.md).
@@ -32,9 +49,10 @@ Anyone can pick up any available task; there are no assigned leads.
 **Actual remaining dependencies:** the user confirmed there is no external
 drive or server available. The laptop has about 9 GB free, and seven samples'
 read pairs are not available locally. The full cohort has not been launched.
-The [storage preflight](docs/cohort_execution.md) estimates about 768 GB for
-the current workflow retaining all raw/cleaned reads, SAMs and BAMs; other
-retention plans may need less. Final preprocessing choices, independent
+The [November 17 storage preflight](docs/cohort_execution.md) estimated about
+768 GB for the retained-SAM mode keeping all raw/cleaned reads, SAMs and BAMs.
+Streaming BAM now avoids SAM, but does not establish that all samples fit
+this laptop. Final preprocessing choices, independent
 evidence/beginner reviews, the Overleaf parent source, course dates and the
 team's license choice also remain. These are not marked complete by software
 tests or by writing a draft.

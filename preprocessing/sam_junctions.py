@@ -138,12 +138,35 @@ def convert_sam(
     min_unique: int,
     exclude_duplicates=False,
 ):
+    with sam_path.open(encoding="utf-8") as handle:
+        return convert_lines(
+            handle,
+            gene_map,
+            sample_id,
+            output,
+            qc,
+            min_anchor,
+            min_unique,
+            exclude_duplicates,
+        )
+
+
+def convert_lines(
+    lines,
+    gene_map,
+    sample_id,
+    output,
+    qc,
+    min_anchor,
+    min_unique,
+    exclude_duplicates=False,
+):
+    """Apply the same converter to a file or a supervised SAM stream."""
     if output.exists() or qc.exists():
         raise ValueError("refusing to overwrite junction TSV or QC output")
-    with sam_path.open(encoding="utf-8") as handle:
-        counts, stats = count_junctions(
-            handle, gene_map, sample_id, min_anchor, min_unique, exclude_duplicates
-        )
+    counts, stats = count_junctions(
+        lines, gene_map, sample_id, min_anchor, min_unique, exclude_duplicates
+    )
     qc.parent.mkdir(parents=True, exist_ok=True)
     with qc.open("x", encoding="utf-8") as handle:
         json.dump(stats, handle, indent=2, sort_keys=True)
@@ -171,8 +194,9 @@ def main():
     parser.add_argument("--exclude-duplicates", action="store_true")
     args = parser.parse_args()
     try:
-        stats = convert_sam(
-            args.sam,
+        converter = convert_lines if args.sam == Path("-") else convert_sam
+        stats = converter(
+            sys.stdin if args.sam == Path("-") else args.sam,
             args.gene_map,
             args.sample_id,
             args.output,

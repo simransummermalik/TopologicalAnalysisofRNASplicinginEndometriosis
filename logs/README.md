@@ -42,3 +42,4 @@ commits authored with Summer's university email through October 24, 2026.
 | November 3, 2026 | Summer | Prepared locally | [Offline comparison report and linked Hodge graphs](november_3rd_summer.md) |
 | November 16, 2026 | Summer | Prepared locally | [Configured statistics CLI, exports, and report integration](november_16th_summer.md) |
 | November 17, 2026 | Summer | Prepared locally | [Connected preprocessing, baselines, ranking, sensitivity and project checks](november_17th_summer.md) |
+| November 18, 2026 | Summer | Prepared locally | [Streaming BAM, disk checks, subprocess supervision and interruption handling](november_18th_summer.md) |

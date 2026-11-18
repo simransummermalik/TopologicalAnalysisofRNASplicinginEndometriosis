@@ -1,0 +1,106 @@
+{
+  "date": "2026-11-18",
+  "scope": "synthetic storage-mode acceptance only; no human-read processing",
+  "unit_tests": {
+    "rust": 100,
+    "preprocessing": 39,
+    "gene_evidence": 56,
+    "scripts": 5,
+    "total": 200
+  },
+  "actual_tools": {
+    "cleaver": "1.0.1",
+    "hisat2": "2.2.3",
+    "samtools": "1.25"
+  },
+  "external_smoke": {
+    "modes": [
+      "retain-sam",
+      "stream-bam"
+    ],
+    "one_pair_per_sample": "PASS",
+    "twelve_thousand_pairs_per_sample": "PASS",
+    "sample_ids": [
+      "CASE",
+      "CONTROL"
+    ],
+    "expected_junction_support_per_sample_in_larger_test": 24000,
+    "counts_and_all_qc_counters_identical": true,
+    "sort_disk_spill_observed_for_both_samples": true,
+    "stream_mode_has_no_sam_file": true
+  },
+  "disk_refusal": {
+    "exit": 1,
+    "processing_started": false,
+    "run_folder_created": false
+  },
+  "inputs": [
+    {
+      "path": "preprocessing/pipeline_runtime.py",
+      "bytes": 8460,
+      "sha256": "701b0a16cb27e2f73f2749e8cd824d5c3168cd70ce88e57841b35bdc6c26e45e"
+    },
+    {
+      "path": "preprocessing/hisat2_pipeline.py",
+      "bytes": 18482,
+      "sha256": "bcae96607ba1a8ae1441de6897ad36075eda9ab8b42b3d929ca40915f19edd0d"
+    },
+    {
+      "path": "preprocessing/batch_preprocessing.py",
+      "bytes": 8504,
+      "sha256": "5344912b6ab0ce692ce09f9fc4214241e6b8c69a6b6630fce981285479c59a6f"
+    },
+    {
+      "path": "preprocessing/sam_junctions.py",
+      "bytes": 7740,
+      "sha256": "bb4cd66f5a544fc6acacb471878635a1b7c85d7ebf961d2b563b240809ba981d"
+    },
+    {
+      "path": "preprocessing/cohort_readiness.py",
+      "bytes": 7792,
+      "sha256": "11c970da6ab58892006831acc07a78920a824badf7400c9f57cae9911963b2a6"
+    },
+    {
+      "path": "preprocessing/tests/test_storage_mode.py",
+      "bytes": 14998,
+      "sha256": "10d54da5af502d16925317de41a7667dbdcf18bda41bd39402ed57d4ef8e0ecf"
+    },
+    {
+      "path": "preprocessing/tests/test_batch.py",
+      "bytes": 4970,
+      "sha256": "6e90294d84d9b47c13693bb8eeba38a256edb22485922ea82ba46c0748c9f1b2"
+    },
+    {
+      "path": "preprocessing/tests/test_cohort_readiness.py",
+      "bytes": 3368,
+      "sha256": "aa8e01442eb03695c70cda9cd62f54626c8933620684853698b85f90164d5b86"
+    },
+    {
+      "path": "scripts/check_project.py",
+      "bytes": 8162,
+      "sha256": "170a0eaf5633a4069580a2be2b95aa387a481d9d07b0686481b321f5c671c2f8"
+    }
+  ],
+  "logs": [
+    {
+      "path": "preprocessing/validation/2026-11-18-storage-mode/disk_refusal.log",
+      "bytes": 924,
+      "sha256": "1dc214f3e7145a2ea923fcff397b0ca462e4f241f8e1aee5deff5468d7ad2ec0"
+    },
+    {
+      "path": "preprocessing/validation/2026-11-18-storage-mode/full_checks.log",
+      "bytes": 44604,
+      "sha256": "43beda10c614063228c24ccbbcb74c5e2b68f940870b94e07412390f270ad7d4"
+    },
+    {
+      "path": "preprocessing/validation/2026-11-18-storage-mode/sort_spill_smoke.log",
+      "bytes": 34980,
+      "sha256": "63d10b04eda9f9b2b0cdd7b05220c26400b80f0a6162cacd68145110df5b3c92"
+    }
+  ],
+  "limits": [
+    "Synthetic inputs only; final human-cohort settings are not approved by this check.",
+    "Disk-size estimates are heuristics, not guarantees.",
+    "Runtime interruption handling cannot run after forced kill or power loss."
+  ]
+}

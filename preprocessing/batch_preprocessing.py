@@ -10,12 +10,27 @@ from __future__ import annotations
 import argparse
 import csv
 import re
-import shlex
 import subprocess
 import sys
 from pathlib import Path
 
-from hisat2_pipeline import checksum, configuration, require_tools, run, save
+from hisat2_pipeline import (
+    checksum,
+    configuration,
+    print_plan,
+    require_tools,
+    run,
+    save,
+)
+from pipeline_runtime import (
+    RunInterrupted,
+    add_storage_arguments,
+    disk_budget,
+    interruption_handlers,
+    print_budget,
+    require_budget,
+    storage_settings,
+)
 
 
 def load_samples(path: Path):
@@ -87,16 +102,22 @@ def batch(args):
         jobs.append(job)
         if args.command == "plan":
             print(f"# {job.sample_id} ({sample['condition']})")
-            for command in commands:
-                print(shlex.join(command))
+            print_plan(job, commands)
+    budget = disk_budget(args, output, jobs)
     if args.command == "plan":
+        print_budget(budget)
         return
-    require_tools(["cleaver", "hisat2"])
+    require_budget(budget)
+    require_tools(
+        ["cleaver", "hisat2"]
+        + (["samtools"] if storage_settings(args)[0] == "stream-bam" else [])
+    )
     output.parent.mkdir(parents=True, exist_ok=True)
     output.mkdir()
     record = {
         "pipeline": "Splice Girl sequential Cleaver/HISAT2 batch",
         "status": "running",
+        "disk_preflight": budget,
         "sample_sheet": checksum(args.samples),
         "samples": [
             {
@@ -116,8 +137,11 @@ def batch(args):
             save(manifest, record)
             try:
                 run(job)
-            except Exception:
-                item["status"] = "failed"
+            except BaseException as error:
+                item["status"] = (
+                    "interrupted" if isinstance(error, KeyboardInterrupt) else "failed"
+                )
+                item["error"] = str(error) or type(error).__name__
                 raise
             item["status"] = "complete"
             item["run_manifest"] = checksum(job.output_dir / "run_manifest.json")
@@ -153,8 +177,11 @@ def batch(args):
             checksum(output / name) for name in ("junctions.tsv", "samples.tsv")
         ]
         record["status"] = "complete"
-    except Exception as error:
-        record.update(status="failed", error=str(error))
+    except BaseException as error:
+        record.update(
+            status="interrupted" if isinstance(error, KeyboardInterrupt) else "failed",
+            error=str(error) or type(error).__name__,
+        )
         raise
     finally:
         save(manifest, record)
@@ -176,8 +203,16 @@ def main():
     parser.add_argument("--threads", type=int, default=2)
     parser.add_argument("--skip-cleaning", action="store_true")
     parser.add_argument("--exclude-duplicates", action="store_true")
+    add_storage_arguments(parser)
     try:
-        batch(parser.parse_args())
+        with interruption_handlers():
+            batch(parser.parse_args())
+    except KeyboardInterrupt as error:
+        print(
+            "error: batch interrupted; completed samples and partial-run logs are retained; no complete cohort bundle was published.",
+            file=sys.stderr,
+        )
+        return 128 + (error.signum if isinstance(error, RunInterrupted) else 2)
     except (OSError, ValueError, subprocess.SubprocessError) as error:
         print(f"error: {error}", file=sys.stderr)
         return 1

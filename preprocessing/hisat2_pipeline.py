@@ -21,6 +21,16 @@ from datetime import datetime, timezone
 from pathlib import Path
 
 from build_junction_gene_map import build_gene_map
+from pipeline_runtime import (
+    RunInterrupted,
+    add_storage_arguments,
+    disk_budget,
+    interruption_handlers,
+    print_budget,
+    require_budget,
+    run_stage,
+    storage_settings,
+)
 
 HERE = Path(__file__).resolve().parent
 
@@ -171,6 +181,7 @@ def reference(args):
 
 
 def configuration(args):
+    mode, sort_memory, _ = storage_settings(args)
     if not re.fullmatch(r"[A-Za-z0-9][A-Za-z0-9._-]*", args.sample_id):
         raise ValueError(
             "sample ID must start with a letter/number and use only letters, numbers, dot, hyphen, underscore"
@@ -224,9 +235,11 @@ def configuration(args):
         str(args.splice_sites.resolve()),
         "--summary-file",
         str(output / "alignment_summary.txt"),
-        "-S",
-        str(output / "aligned.sam"),
     ]
+    # This HISAT2 wrapper treats '-S -' as a literal file named '-'. Omit
+    # -S entirely to use its documented stdout default in stream mode.
+    if mode == "retain-sam":
+        align.extend(["-S", str(output / "aligned.sam")])
     if args.strandedness != "unstranded":
         align.extend(["--rna-strandness", args.strandedness])
     align.extend(
@@ -239,13 +252,16 @@ def configuration(args):
         sys.executable,
         str(HERE / "sam_junctions.py"),
         "--sam",
-        str(output / "aligned.sam"),
+        "-" if mode == "stream-bam" else str(output / "aligned.sam"),
         "--gene-map",
         str(args.gene_map.resolve()),
         "--sample-id",
         args.sample_id,
         "--output",
-        str(output / "junctions.tsv"),
+        str(
+            output
+            / ("junctions.partial.tsv" if mode == "stream-bam" else "junctions.tsv")
+        ),
         "--qc-json",
         str(output / "junction_qc.json"),
         "--min-anchor",
@@ -255,6 +271,32 @@ def configuration(args):
     ]
     if args.exclude_duplicates:
         convert.append("--exclude-duplicates")
+    if mode == "stream-bam":
+        partial = output / "aligned.partial.bam"
+        commands.extend(
+            [
+                [
+                    "samtools",
+                    "sort",
+                    "-m",
+                    f"{sort_memory}M",
+                    "-@",
+                    str(max(0, args.threads - 1)),
+                    "-T",
+                    str(output / "sort.tmp"),
+                    "-O",
+                    "BAM",
+                    "-o",
+                    str(partial),
+                    "-",
+                ],
+                ["samtools", "quickcheck", "-v", str(partial)],
+                ["samtools", "view", "-h", str(partial)],
+                convert,
+                ["cleaver", "samtools", "index", str(partial)],
+            ]
+        )
+        return output, commands
     commands.extend(
         [
             convert,
@@ -272,13 +314,52 @@ def configuration(args):
     return output, commands
 
 
+def command_groups(args, commands):
+    """Preserve argv lists in provenance while identifying real pipe groups."""
+    groups = []
+    offset = 0
+    if not args.skip_cleaning:
+        groups.append(("clean", [commands[0]]))
+        offset = 1
+    remaining = commands[offset:]
+    if storage_settings(args)[0] == "stream-bam":
+        groups.extend(
+            [
+                ("align_sort", remaining[:2]),
+                ("bam_quickcheck", [remaining[2]]),
+                ("junctions", remaining[3:5]),
+                ("bam_index", [remaining[5]]),
+            ]
+        )
+    else:
+        groups.extend(
+            (name, [command])
+            for name, command in zip(
+                ["align", "junctions", "bam_sort", "bam_index"], remaining
+            )
+        )
+    return groups
+
+
+def print_plan(args, commands):
+    for _, group in command_groups(args, commands):
+        print(" | ".join(shlex.join(command) for command in group))
+
+
 def run(args):
     output, commands = configuration(args)
+    budget = disk_budget(args, output)
     if args.command == "plan":
-        for command in commands:
-            print(shlex.join(command))
+        print_budget(budget)
+        print_plan(args, commands)
         return
-    require_tools(["cleaver", "hisat2"])
+    if output.exists():
+        raise ValueError(f"output folder already exists: {output}; choose a new folder")
+    mode, sort_memory, reserve = storage_settings(args)
+    require_budget(budget)
+    require_tools(
+        ["cleaver", "hisat2"] + (["samtools"] if mode == "stream-bam" else [])
+    )
     output.parent.mkdir(parents=True, exist_ok=True)
     output.mkdir()
     record = {
@@ -286,6 +367,8 @@ def run(args):
         "status": "running",
         "created_utc": datetime.now(timezone.utc).isoformat(),
         "commands": commands,
+        "disk_preflight": budget,
+        "stages": [],
         "settings": {
             "sample_id": args.sample_id,
             "strandedness": args.strandedness,
@@ -293,6 +376,10 @@ def run(args):
             "minimum_anchor": args.min_anchor,
             "exclude_duplicates": args.exclude_duplicates,
             "cleaning_skipped": args.skip_cleaning,
+            "storage_mode": mode,
+            "sam_retained": mode == "retain-sam",
+            "sort_memory_mb_per_thread": sort_memory if mode == "stream-bam" else None,
+            "disk_reserve_bytes": reserve,
             "count_unit": "primary uniquely mapped read alignments with NH:i:1 and XS strand",
         },
         "tools": {},
@@ -300,7 +387,9 @@ def run(args):
     manifest = output / "run_manifest.json"
     save(manifest, record)
     try:
-        record["tools"] = versions(["cleaver", "hisat2"])
+        record["tools"] = versions(
+            ["cleaver", "hisat2"] + (["samtools"] if mode == "stream-bam" else [])
+        )
         paths = [
             args.read1,
             args.gene_map,
@@ -308,12 +397,32 @@ def run(args):
             *index_files(args.index),
         ] + ([args.read2] if args.read2 else [])
         record["inputs"] = [checksum(path) for path in paths]
-        for index, command in enumerate(commands, 1):
-            print(f"[{index}/{len(commands)}] {shlex.join(command)}", flush=True)
-            with (output / f"step_{index}.log").open("w") as log:
-                subprocess.run(
-                    command, stdout=log, stderr=subprocess.STDOUT, check=True
-                )
+        for name, group in command_groups(args, commands):
+            run_stage(
+                name,
+                group,
+                output,
+                reserve,
+                record["stages"],
+                lambda: save(manifest, record),
+            )
+        if mode == "stream-bam":
+            # Never present partial alignments/counts as a successful bundle.
+            # These are this new run's files; no previous run is touched.
+            for name in [
+                "aligned.partial.bam",
+                "aligned.partial.bam.bai",
+                "junctions.partial.tsv",
+            ]:
+                path = output / name
+                if not path.is_file() or not path.stat().st_size:
+                    raise ValueError(f"missing or empty expected output: {path}")
+            for source, destination in [
+                ("aligned.partial.bam", "aligned.bam"),
+                ("aligned.partial.bam.bai", "aligned.bam.bai"),
+                ("junctions.partial.tsv", "junctions.tsv"),
+            ]:
+                (output / source).rename(output / destination)
         required = [
             output / "junctions.tsv",
             output / "junction_qc.json",
@@ -325,8 +434,16 @@ def run(args):
                 raise ValueError(f"missing or empty expected output: {path}")
         record["outputs"] = [checksum(path) for path in required]
         record["status"] = "complete"
-    except Exception as error:
-        record.update(status="failed", error=str(error))
+    except BaseException as error:
+        record.update(
+            status="interrupted" if isinstance(error, KeyboardInterrupt) else "failed",
+            error=str(error) or type(error).__name__,
+        )
+        record["retained_files"] = sorted(
+            path.name
+            for path in output.iterdir()
+            if path.is_file() and path != manifest
+        )
         raise
     finally:
         save(manifest, record)
@@ -369,15 +486,24 @@ def main():
         item.add_argument("--threads", type=int, default=2)
         item.add_argument("--skip-cleaning", action="store_true")
         item.add_argument("--exclude-duplicates", action="store_true")
+        add_storage_arguments(item)
     args = parser.parse_args()
     try:
         if args.command == "check":
-            require_tools(["cleaver", "hisat2", "hisat2-build"])
-            print(json.dumps(versions(["cleaver", "hisat2", "hisat2-build"]), indent=2))
+            tools = ["cleaver", "hisat2", "hisat2-build", "samtools"]
+            require_tools(tools)
+            print(json.dumps(versions(tools), indent=2))
         elif args.command in {"prepare-reference", "plan-reference"}:
             reference(args)
         else:
-            run(args)
+            with interruption_handlers():
+                run(args)
+    except KeyboardInterrupt as error:
+        print(
+            "error: preprocessing interrupted; any started run retains its manifest, logs and partial files. Choose a new output folder for a retry.",
+            file=sys.stderr,
+        )
+        return 128 + (error.signum if isinstance(error, RunInterrupted) else 2)
     except (OSError, ValueError, subprocess.SubprocessError) as error:
         print(f"error: {error}", file=sys.stderr)
         return 1

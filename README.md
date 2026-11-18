@@ -42,6 +42,7 @@ interpretation.
 | Every demo step, expected answer and troubleshooting | [Documented beginner walkthrough](beginner_test/README.md) |
 | Running the complete software workflow | [Step-by-step software guide](docs/running_the_tool.md) |
 | Processing local FASTQ samples | [Cleaver/HISAT2 guide](preprocessing/HISAT2_GUIDE.md) |
+| Using less space during preprocessing | [Streaming BAM and disk checks](preprocessing/HISAT2_GUIDE.md#save-disk-space-with-streaming-bam) |
 | Checking one real sample end to end | [Bounded real-data pilot](docs/real_pilot.md) |
 | Why some real junction counts were excluded | [Assignment and strand audit](data/pilots/SRR36710387_prefix1m_nov17/assignment_audit/README.md) |
 | What to say during the demonstration | [Speaking plan and commands](docs/presentation_notes.md) |

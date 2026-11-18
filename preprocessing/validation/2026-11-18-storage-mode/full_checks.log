@@ -1,0 +1,450 @@
+
+$ cargo fmt --all -- --check
+
+$ cargo test --all-targets
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 0.04s
+     Running unittests src/lib.rs (target/debug/deps/splice_girl-a6ec5d1414c01b54)
+
+running 59 tests
+test compare::tests::includes_samples_present_in_both_sources ... ok
+test compare::tests::excludes_a_result_sample_with_no_manifest_entry ... ok
+test compare::tests::excludes_a_sample_whose_decomposition_checks_failed ... ok
+test compare::tests::all_gene_comparisons_are_sorted_and_keep_exclusions ... ok
+test annotations::tests::ambiguous_annotation_headers_are_rejected ... ok
+test compare::tests::excludes_a_manifest_sample_with_no_data_for_the_gene ... ok
+test audit::tests::summarizes_rows_samples_genes_support_and_checks ... ok
+test annotations::tests::annotations_join_by_id_with_no_category_inference ... ok
+test audit::tests::reports_manifest_mismatches_in_both_directions ... ok
+test compare::tests::end_to_end_with_real_parsing_for_one_gene_among_several ... ok
+test compare::tests::missing_group_is_explicit_and_has_no_effect_value ... ok
+test compare::tests::summarizes_case_control_values_without_pooling_samples ... ok
+test fdr::tests::matches_hand_calculated_unsorted_family ... ok
+test fdr::tests::rejects_invalid_p_values_with_the_gene_id ... ok
+test fdr::tests::handles_empty_untested_singleton_and_boundary_families ... ok
+test fdr::tests::tied_values_are_equal_and_row_order_does_not_change_answers ... ok
+test fdr::tests::rejects_unnamed_families_and_empty_or_duplicate_genes ... ok
+test fdr::tests::accepts_exact_permutation_results_without_changing_their_raw_values ... ok
+test fdr::tests::untested_genes_remain_missing_and_do_not_expand_the_test_denominator ... ok
+test fdr::tests::reverse_minimum_prevents_nonmonotone_adjustments ... ok
+test manifest::tests::condition_is_matched_case_insensitively ... ok
+test manifest::tests::parses_a_valid_manifest_with_extra_columns ... ok
+test manifest::tests::rejects_a_header_missing_a_required_column ... ok
+test manifest::tests::rejects_a_header_with_a_duplicated_required_column ... ok
+test manifest::tests::rejects_a_row_with_the_wrong_number_of_fields ... ok
+test manifest::tests::rejects_duplicate_sample_ids ... ok
+test manifest::tests::rejects_invalid_condition_values ... ok
+test matrix::tests::singular_system_returns_an_actionable_error ... ok
+test output::tests::sha256_matches_known_vectors ... ok
+test parser::tests::rejects_empty_sample_ids ... ok
+test parser::tests::rejects_negative_counts ... ok
+test parser::tests::rejects_self_loops ... ok
+test parser::tests::rejects_non_finite_counts ... ok
+test permutation::tests::binomial_coefficient_matches_known_small_values ... ok
+test parser::tests::rejects_rows_with_the_wrong_number_of_fields ... ok
+test permutation::tests::binomial_coefficient_refuses_an_infeasible_enumeration ... ok
+test permutation::tests::combinations_of_four_choose_two_match_hand_enumeration ... ok
+test permutation::tests::no_difference_fixture_gives_p_value_of_one ... ok
+test permutation::tests::rejects_a_comparison_with_an_empty_group ... ok
+test permutation::tests::one_sided_p_value_matches_hand_enumeration ... ok
+test fdr::tests::coarse_balanced_permutation_p_values_can_still_pass_bh ... ok
+test permutation::tests::full_cohort_reaches_the_documented_p_value_floor ... ok
+test output::tests::refuses_to_overwrite_an_existing_output_folder ... ok
+test permutation::tests::two_sided_p_value_matches_hand_enumeration ... ok
+test permutation::tests::p_value_does_not_depend_on_input_order ... ok
+test permutation::tests::unequal_three_vs_four_groups_do_not_have_a_two_over_35_floor ... ok
+test output::tests::analysis_bundle_contains_metrics_components_and_manifest ... ok
+test statistics::tests::family_parser_accepts_extra_columns_and_rejects_bad_rows ... ok
+test statistics::tests::explicit_thresholds_keep_requested_missing_genes_untested ... ok
+test permutation::tests::set_test_two_sided_does_not_cancel_opposite_changes ... ok
+test permutation::tests::set_test_single_gene_matches_gene_test ... ok
+test statistics::tests::set_test_averages_complete_genes_and_matches_mean_gene_effect ... ok
+test output::tests::gene_bundle_records_inclusions_and_exclusions ... ok
+test visualize::tests::svg_values_change_with_the_selected_sample ... ok
+test report::tests::report_preserves_missing_values_and_escapes_input_as_text ... ok
+test visualize::tests::genomic_nodes_get_distinct_plot_ids_and_a_coordinate_key ... ok
+test visualize::tests::svg_escapes_identifiers_and_preserves_full_node_in_title ... ok
+test output::tests::all_gene_bundle_records_descriptive_effects_and_no_inference ... ok
+test visualize::tests::svg_contains_graph_metrics_and_junction_values ... ok
+
+test result: ok. 59 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.01s
+
+     Running unittests src/main.rs (target/debug/deps/splice_girl-042d25cde5fb9c44)
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running tests/cli_errors.rs (target/debug/deps/cli_errors-e319cac41debf28a)
+
+running 9 tests
+test missing_input_names_the_path_and_suggests_a_fix ... ok
+test invalid_manifest_names_the_file_line_column_and_accepted_values ... ok
+test zero_support_names_the_sample_gene_and_correction ... ok
+test malformed_header_names_the_file_and_expected_columns ... ok
+test empty_input_names_the_file_and_required_header ... ok
+test comparison_requires_at_least_one_case_and_one_control ... ok
+test invalid_count_names_the_file_line_column_value_and_fix ... ok
+test existing_output_folder_is_not_overwritten ... ok
+test missing_sample_metadata_is_reported_without_silent_dropping ... ok
+
+test result: ok. 9 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.58s
+
+     Running tests/cli_stats.rs (target/debug/deps/cli_stats-c1cf78f32ccd16a3)
+
+running 11 tests
+test repeated_subjects_cannot_enter_an_independent_test ... ok
+test gene_family_input_errors_are_actionable_and_do_not_create_outputs ... ok
+test all_untestable_genes_save_diagnostics_but_exit_unsuccessfully ... ok
+test exact_enumeration_limit_is_reported_as_untested_without_a_fake_p_value ... ok
+test evidence_annotations_join_directly_to_tested_and_untested_results_by_gene_id ... ok
+test baselines_use_identical_samples_and_leave_missing_values_blank ... ok
+test menu_option_seven_runs_the_same_statistics_workflow ... ok
+test sidedness_is_applied_instead_of_silently_using_two_sided ... ok
+test stats_runs_exact_tests_bh_exports_reports_and_preserves_missing_genes ... ok
+test every_scientific_option_is_required_and_invalid_flags_fail_before_writing ... ok
+test requested_ranking_is_deterministic_and_does_not_rank_untested_genes ... ok
+
+test result: ok. 11 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.10s
+
+     Running tests/cli_workflows.rs (target/debug/deps/cli_workflows-6c5918aa90e22efd)
+
+running 9 tests
+test validate_reports_compact_input_and_math_summary ... ok
+test validate_manifest_mismatches_are_visible_and_fail_the_audit ... ok
+test report_requires_an_explicit_destination ... ok
+test compare_reports_every_gene_and_a_descriptive_effect ... ok
+test report_keeps_missing_groups_visible_in_a_diagnostic_bundle ... ok
+test compare_writes_a_reproducible_five_file_bundle ... ok
+test report_does_not_use_identifiers_as_paths_or_markup ... ok
+test interactive_menu_can_generate_a_report_then_return_to_menu ... ok
+test report_exports_the_same_values_as_compare_with_linked_graphs ... ok
+
+test result: ok. 9 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.03s
+
+     Running tests/synthetic.rs (target/debug/deps/synthetic-82323724cebd2a84)
+
+running 12 tests
+test duplicate_directed_edges_are_rejected ... ok
+test incidence_columns_use_negative_source_and_positive_destination ... ok
+test exon_skipping_graph_has_nonzero_cycle_component_despite_no_directed_cycle ... ok
+test fixed_noise_fixture_matches_independent_expectation ... ok
+test linear_graph_has_no_cycle_component ... ok
+test branching_tree_has_no_cycle_component ... ok
+test shuffled_rows_preserve_graph_and_metrics ... ok
+test equal_weight_directed_cycle_is_entirely_cyclic ... ok
+test back_splice_weight_sweep_matches_reviewed_expectations ... ok
+test zero_total_support_is_rejected ... ok
+test edge_case_fixtures_have_explicit_statuses ... ok
+test incidence_dimensions_match_cycle_rank ... ok
+
+test result: ok. 12 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+
+$ cargo clippy --all-targets -- -D warnings
+    Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.15s
+
+$ cargo build --release
+    Finished `release` profile [optimized] target(s) in 0.07s
+
+$ /opt/homebrew/opt/python@3.14/bin/python3.14 -m unittest discover -s preprocessing/tests
+.......................................
+----------------------------------------------------------------------
+Ran 39 tests in 1.252s
+
+OK
+
+$ /opt/homebrew/opt/python@3.14/bin/python3.14 -m unittest discover -s gene_sets/tests
+........................................................
+----------------------------------------------------------------------
+Ran 56 tests in 0.255s
+
+OK
+
+$ /opt/homebrew/opt/python@3.14/bin/python3.14 -m unittest discover -s scripts -p test_*.py
+.....
+----------------------------------------------------------------------
+Ran 5 tests in 0.298s
+
+OK
+Descriptive sensitivity table: /private/var/folders/tv/_11343vn6153sfykk5r11dq40000gn/T/tmpvo7e2cq_/sensitivity/sensitivity.tsv
+
+$ /opt/homebrew/opt/python@3.14/bin/python3.14 scripts/benchmark_candidate.py --runs 3
+input: 200 genes x 8 samples x 3 junctions
+rows: 4800
+runs: 3
+median_ms: 19.071
+mean_ms: 19.000
+min_ms: 18.743
+max_ms: 19.185
+
+$ /opt/homebrew/opt/python@3.14/bin/python3.14 preprocessing/hisat2_pipeline.py prepare-reference --fasta /Users/summermalik/Documents/GitHub/TopologicalAnalysisofRNASplicinginEndometriosis/preprocessing/tests/fixtures/tiny_genome.fa --gtf /Users/summermalik/Documents/GitHub/TopologicalAnalysisofRNASplicinginEndometriosis/preprocessing/tests/fixtures/tiny_annotation.gtf --output-dir /var/folders/tv/_11343vn6153sfykk5r11dq40000gn/T/splice-girl-smoke-8naui_1w/reference
+Prepared HISAT2 reference: /private/var/folders/tv/_11343vn6153sfykk5r11dq40000gn/T/splice-girl-smoke-8naui_1w/reference/genome
+
+$ /opt/homebrew/opt/python@3.14/bin/python3.14 preprocessing/batch_preprocessing.py run --samples /var/folders/tv/_11343vn6153sfykk5r11dq40000gn/T/splice-girl-smoke-8naui_1w/input.tsv --index /var/folders/tv/_11343vn6153sfykk5r11dq40000gn/T/splice-girl-smoke-8naui_1w/reference/genome --gene-map /var/folders/tv/_11343vn6153sfykk5r11dq40000gn/T/splice-girl-smoke-8naui_1w/reference/junction_exon_map.tsv --splice-sites /var/folders/tv/_11343vn6153sfykk5r11dq40000gn/T/splice-girl-smoke-8naui_1w/reference/splice_sites.tsv --strandedness unstranded --min-anchor 8 --min-unique 1 --output-dir /var/folders/tv/_11343vn6153sfykk5r11dq40000gn/T/splice-girl-smoke-8naui_1w/batch
+[clean] cleaver fastp -i /private/var/folders/tv/_11343vn6153sfykk5r11dq40000gn/T/splice-girl-smoke-8naui_1w/case.fastq -o /private/var/folders/tv/_11343vn6153sfykk5r11dq40000gn/T/splice-girl-smoke-8naui_1w/batch/CASE/trimmed.R1.fastq.gz -j /private/var/folders/tv/_11343vn6153sfykk5r11dq40000gn/T/splice-girl-smoke-8naui_1w/batch/CASE/fastp.json -I /private/var/folders/tv/_11343vn6153sfykk5r11dq40000gn/T/splice-girl-smoke-8naui_1w/case_R2.fastq -O /private/var/folders/tv/_11343vn6153sfykk5r11dq40000gn/T/splice-girl-smoke-8naui_1w/batch/CASE/trimmed.R2.fastq.gz -2
+[align] hisat2 --dta-cufflinks -x /private/var/folders/tv/_11343vn6153sfykk5r11dq40000gn/T/splice-girl-smoke-8naui_1w/reference/genome -p 2 --known-splicesite-infile /private/var/folders/tv/_11343vn6153sfykk5r11dq40000gn/T/splice-girl-smoke-8naui_1w/reference/splice_sites.tsv --summary-file /private/var/folders/tv/_11343vn6153sfykk5r11dq40000gn/T/splice-girl-smoke-8naui_1w/batch/CASE/alignment_summary.txt -S /private/var/folders/tv/_11343vn6153sfykk5r11dq40000gn/T/splice-girl-smoke-8naui_1w/batch/CASE/aligned.sam -1 /private/var/folders/tv/_11343vn6153sfykk5r11dq40000gn/T/splice-girl-smoke-8naui_1w/batch/CASE/trimmed.R1.fastq.gz -2 /private/var/folders/tv/_11343vn6153sfykk5r11dq40000gn/T/splice-girl-smoke-8naui_1w/batch/CASE/trimmed.R2.fastq.gz
+[junctions] /opt/homebrew/opt/python@3.14/bin/python3.14 /Users/summermalik/Documents/GitHub/TopologicalAnalysisofRNASplicinginEndometriosis/preprocessing/sam_junctions.py --sam /private/var/folders/tv/_11343vn6153sfykk5r11dq40000gn/T/splice-girl-smoke-8naui_1w/batch/CASE/aligned.sam --gene-map /private/var/folders/tv/_11343vn6153sfykk5r11dq40000gn/T/splice-girl-smoke-8naui_1w/reference/junction_exon_map.tsv --sample-id CASE --output /private/var/folders/tv/_11343vn6153sfykk5r11dq40000gn/T/splice-girl-smoke-8naui_1w/batch/CASE/junctions.tsv --qc-json /private/var/folders/tv/_11343vn6153sfykk5r11dq40000gn/T/splice-girl-smoke-8naui_1w/batch/CASE/junction_qc.json --min-anchor 8 --min-unique 1
+[bam_sort] cleaver samtools sort -o /private/var/folders/tv/_11343vn6153sfykk5r11dq40000gn/T/splice-girl-smoke-8naui_1w/batch/CASE/aligned.bam /private/var/folders/tv/_11343vn6153sfykk5r11dq40000gn/T/splice-girl-smoke-8naui_1w/batch/CASE/aligned.sam
+[bam_index] cleaver samtools index /private/var/folders/tv/_11343vn6153sfykk5r11dq40000gn/T/splice-girl-smoke-8naui_1w/batch/CASE/aligned.bam
+Splice Girl junction input: /private/var/folders/tv/_11343vn6153sfykk5r11dq40000gn/T/splice-girl-smoke-8naui_1w/batch/CASE/junctions.tsv
+[clean] cleaver fastp -i /private/var/folders/tv/_11343vn6153sfykk5r11dq40000gn/T/splice-girl-smoke-8naui_1w/control.fastq -o /private/var/folders/tv/_11343vn6153sfykk5r11dq40000gn/T/splice-girl-smoke-8naui_1w/batch/CONTROL/trimmed.R1.fastq.gz -j /private/var/folders/tv/_11343vn6153sfykk5r11dq40000gn/T/splice-girl-smoke-8naui_1w/batch/CONTROL/fastp.json -I /private/var/folders/tv/_11343vn6153sfykk5r11dq40000gn/T/splice-girl-smoke-8naui_1w/control_R2.fastq -O /private/var/folders/tv/_11343vn6153sfykk5r11dq40000gn/T/splice-girl-smoke-8naui_1w/batch/CONTROL/trimmed.R2.fastq.gz -2
+[align] hisat2 --dta-cufflinks -x /private/var/folders/tv/_11343vn6153sfykk5r11dq40000gn/T/splice-girl-smoke-8naui_1w/reference/genome -p 2 --known-splicesite-infile /private/var/folders/tv/_11343vn6153sfykk5r11dq40000gn/T/splice-girl-smoke-8naui_1w/reference/splice_sites.tsv --summary-file /private/var/folders/tv/_11343vn6153sfykk5r11dq40000gn/T/splice-girl-smoke-8naui_1w/batch/CONTROL/alignment_summary.txt -S /private/var/folders/tv/_11343vn6153sfykk5r11dq40000gn/T/splice-girl-smoke-8naui_1w/batch/CONTROL/aligned.sam -1 /private/var/folders/tv/_11343vn6153sfykk5r11dq40000gn/T/splice-girl-smoke-8naui_1w/batch/CONTROL/trimmed.R1.fastq.gz -2 /private/var/folders/tv/_11343vn6153sfykk5r11dq40000gn/T/splice-girl-smoke-8naui_1w/batch/CONTROL/trimmed.R2.fastq.gz
+[junctions] /opt/homebrew/opt/python@3.14/bin/python3.14 /Users/summermalik/Documents/GitHub/TopologicalAnalysisofRNASplicinginEndometriosis/preprocessing/sam_junctions.py --sam /private/var/folders/tv/_11343vn6153sfykk5r11dq40000gn/T/splice-girl-smoke-8naui_1w/batch/CONTROL/aligned.sam --gene-map /private/var/folders/tv/_11343vn6153sfykk5r11dq40000gn/T/splice-girl-smoke-8naui_1w/reference/junction_exon_map.tsv --sample-id CONTROL --output /private/var/folders/tv/_11343vn6153sfykk5r11dq40000gn/T/splice-girl-smoke-8naui_1w/batch/CONTROL/junctions.tsv --qc-json /private/var/folders/tv/_11343vn6153sfykk5r11dq40000gn/T/splice-girl-smoke-8naui_1w/batch/CONTROL/junction_qc.json --min-anchor 8 --min-unique 1
+[bam_sort] cleaver samtools sort -o /private/var/folders/tv/_11343vn6153sfykk5r11dq40000gn/T/splice-girl-smoke-8naui_1w/batch/CONTROL/aligned.bam /private/var/folders/tv/_11343vn6153sfykk5r11dq40000gn/T/splice-girl-smoke-8naui_1w/batch/CONTROL/aligned.sam
+[bam_index] cleaver samtools index /private/var/folders/tv/_11343vn6153sfykk5r11dq40000gn/T/splice-girl-smoke-8naui_1w/batch/CONTROL/aligned.bam
+Splice Girl junction input: /private/var/folders/tv/_11343vn6153sfykk5r11dq40000gn/T/splice-girl-smoke-8naui_1w/batch/CONTROL/junctions.tsv
+Ready for Splice Girl: /private/var/folders/tv/_11343vn6153sfykk5r11dq40000gn/T/splice-girl-smoke-8naui_1w/batch/junctions.tsv and /private/var/folders/tv/_11343vn6153sfykk5r11dq40000gn/T/splice-girl-smoke-8naui_1w/batch/samples.tsv
+
+$ cargo run --quiet -- report /var/folders/tv/_11343vn6153sfykk5r11dq40000gn/T/splice-girl-smoke-8naui_1w/batch/junctions.tsv /var/folders/tv/_11343vn6153sfykk5r11dq40000gn/T/splice-girl-smoke-8naui_1w/batch/samples.tsv --output /var/folders/tv/_11343vn6153sfykk5r11dq40000gn/T/splice-girl-smoke-8naui_1w/report
+                             .,
+                              sr,        ..                                               ,
+                 ;:           itr;,      ,s,                                             rs          :.
+                 ,*s:,        ,??i;:.    .?s:.                                          rti.       ,+s.
+                  ;t+;;,       rt?ii;,   .*?;;.                                        rts;.      ;?*;
+                   it*i;;,     :*t*r;;:.  stsi;.                                      r??;;.    .rt*;:
+        .           rt?ri;;,    r*t?ii::. r??r;;.   ,.                               i*tsi;.   :+t*;;,        ;,
+        ,r;,.       .s?t*ir::,  :+*f+ri;:.;*t*i;:.  +i.                             ;+??ri:   ;*t?ri;      .i*s.
+         ;?+i:,.     ,s?t?rii::. r+?t+ii;:;+?trii:.,?s;.                           :+*fsi;: .r+?tri;,    .i*?r:
+          :??s;;:,.   ,s*t?sii;;,,s+?fsii::s+t?ii;::?*;;.                         ,s+t?ii;,,r+?tsi;:   .i+t*i;.
+           ,+t?rr;;:,  ,s+?tsrii::;s+?tsi;;r+*tsii,r??r;:                        .i+*tri;:,r+?tsii;, .;+?t+i;,
+            .s?t?sii:;, ,s+?t*ir:i:rs+?triiir+?tii;r*tsi;,                       ;s+t*ii:irs*tsii:: :s*ttsi;:
+              i*?t*rii;:,:rs*t?rii;;rs*?tir;rs*t+iir+t*ii:.                     :r+*tri;ir+*t+ii;:,i+*t?ri;:       .,
+     .         :s*tt*ir;i,;rs+??+;r;rrs*t*r;rr+?tiii+??ii;,                    .is+t+iiiss*t*ii;:is+?t*ii;:.    .;ss:
+     :ri:,..    ,r+*ttsri;:iis+?f+r;iirs*t?;ris*t*iis*tri:;.                   ;r+?triiis+t*ii;iss*?tsii;:.  .;s??s;
+      ,+?si;::,.  is+?t?rr;i;irs*t?ii;ir+*f+rir+*fisr+t+ii:,                  :is*t+iiis*??ii;rr++t?rii;:..:r*t?si:
+        i??+rr;;:,.:is+?t*s;i:rrs*ttsiirr+*f+;rr+t?rr+??;:,:;;irii;,         .;r+??irrr+t?riris+?t*ri;::,is*tt+r;:
+         ,r?t?+ri;i::rrs*?t+riiiis+?t+isir+*tsris*frrs*r,iss??*L*f+*+:       :is*fsi;s+??riisr+?t+ii;;irs*?t*ri;:
+           :s?tt*sii;i;rs+*t?*;rirr+*t*riis*+tsir+?trs::rr+L?t????tLffr     .;s+??rrr+??riri+*t?ri;;irs+?t*ri;;,
+            .;s*?t?srii:irs+*t?si;rrs*ttrii+*s*sis*t+;,srs+?*+++srr*tLf;    ;is*tsir+??rris+*t*riiri++?t*sii;:,
+              .;s+?t?*ri;rirs+?t?iriis**?*rr*?rsrr+?t,iss++**++srrr+?tff;  .;s+t?ir+*tsirr+?t+rirrs+*t?siii;,   .,;i:
+      .::,,,,.. ,;rs*?t*+ii;rrs+?t*r;is*s*+ii*?riis*?:rr+s*?++sss+**?tfL*  :r+*fsis+t+;is*?t++rrr+*t?sii;::,,:rs*?*r.
+       ,s?+ri;;::::rrs+*t?+sirirs*?tssir**rrss*?rir+*;rs++*?+isrs+**?t?ff, is+t*rr+?+;i+*tt?srr+*t?+ii;;irrs*?t*si:
+         :+??*+sii;i;isrs*?t*sriir+*?t+ir*?+rir*?rir+,ss*??*sisrs+**?tffC?;:s*frss?*;r+?*?*rr+*?t+riiiiss*?t?+ri;,
+           :s*?t?*sriiiirrs+??t+rrr+*+*++rs?*rii+?si:;ss?t?+risrs++*?tfLCCt,st*rs?*ii*+*?+ir*?t+rirrss+?t?*sii;:.
+             ,i+*?tt?+sii;irr+*???sir+*+rirs+?+ii+r::s+s**?riirss++*?tfLL;:r??rs*?iis+**ris?t*srrrs+*?t*srii;:,
+               .;r+*??t?*+iriirs+?t?*ss*?+siis*+;,:sssss+**siiir++++?tff*.s*?+r*?iis+?+ii?t*s+*++*?t?+rii;;:.     .
+                  ,;rs+*?tt**rriis+*??*+ssr;:;;iiss++++s+**riiiis*+*?+;: :+?+r+?ris?*ris??***+s*t?+riiii;;i;irs++s:
+             ....,,,:iirss+*?t??+rrs++si:;rs+s+**++++ss++?+iiiii+++*?r   ;??++?sr+?+ii+****r:;;+rrririss+*?t?*+ri,
+             ,r++srii;i;i;;;;rr+**?+++;:rssss*??**++++++?+rriirss++**?;, ;?*+?ss**rir+**+r;,*?;+,;s++*?t?*+sri;,
+               :r*????+srrii;;;:;:irss,srsss*??**?**++??srrr;:srs++*?tff?i;s?++?+rs+**sri:,?Ltt*+:st?*+sri;;;,.
+                 .:r+??????*+srrii;ii:;rrss*?*???****?*+srritLf?s++*tLLLCC*,+?*ss**+r;::i+fCLff*i:rri;;;;::.
+                    .:is++**??t??*+++;;s+ss+++?***+++++s+r;C0CLf???fLCCLLCOs;**?*+i::i*LOOCft+;:;iirrrrii;::,.
+                        ,;rrrrrrssssi,r+s+++**?**+++**+ssr?0OCftffLLCCCLtCOCs:ri;:r?O000C?r:;;rs++**?????**+r,
+                      :iriiiiiii;:,,:r+s++s+*???+++++ssrrrGOOCttffLLCCLLLOOOOCftfC088Gfsiis**?????**+ssri;:,
+                      ,i+*???r::::irsss+ss+srssss+sssssr:*0OGCttffLCCCLtsfCOOOOOOOGL+;:is++srrrriiii;;;:,.
+                         .:i:::::irssrrrsr;:;ii;::;;;;::,COGGL?ffLLCCCLr .is*???*s;::iiiiiiiiiii;;::,,.
+                            ::,:;iiriirri,:;;;;iii;iiii,sGO0O*tffLLCCL?. i?+sssss+********++++++++si:,
+                           ,;,,:r;;;irr:,irrrrsssssrrri,COG8?,?tfLLCLLi  r????**++++++++*********???**s;
+                           .::::iriii;:r?????*+srriii;.?GG0L, ifLLCCLf:   ,iss+*??*++srriii;;;iiiiii;::.
+                             ,,:::,,;issssrii;;;irs*s,*OG0f,   +LLCCLLi     .:;iirs+*??**+sri;,,,,,.
+                                    ...,:;;irs+*???s,*LOO*.    :fCCLff?,      .,:;;;iirs+*???*s:
+                                      :ir+*???*+sr;,+tLLi     ,iLCCLLff?;        ..,::;;;;irs+**+i.
+                                    .i+***+sri;:,..s*tf: ,;r*tttCCCLfft?*r,           .,,,::::::;;,
+                                     ......       :s+**s*?t?si.+CCLff??+sssi,
+                                                 :r+++*+i:,   iCf?Lff*f**srisr:
+                                               ,s****+*r     ;LCr*ffrr?t*?*+r+*r.
+                                              ,*??*i:i..    :fCtiLfLri+*sr*+?**t+.
+                                             .*???i        ,tCLs+CLt*;sss:r?*tt?f*.
+                                             i???r.       .*LCLi?CL??r;sr;;ss+tffL+
+                       .,                   .*?t+;        ifLCLitCf?*+;ir;:sistfLLCi
+                      ,i,                   ;?*?s,        +fLCLi?Ct**+r:ii;+s;ftCCOL,
+                     :i,                    s*?+r.       .?fCCCr+Lf*?ss;;i;?*;tLLOOG?
+                    :;.                    i???s;        .?ftfC+sf???sri;iit*;tLLOOGOr
+                   ,:.                   ,s???+i.        .?LitL*it*t+sr;i;st*;fLCOGOOL:
+                   .                  .;+tft?s;.          *f;LL*;???sri:i:??*;fLCOGOCCt:
+                                    ,stLLt*r:.            sf;LLsi??*sr:i;it?+iLCOGGOCLL?,
+                                  .rtL?r:.                ;L;tC;+*??r:;r:+??rsLCOGOOCLff*,
+                                 .+fLr                    ,fr**i?*++;:ii:**tr+CCOGOCOLft?*,
+                                 ifLL:                     t?;;t?++r:irr;+?t+rCOGOOCLCf??*+,
+                                 +LLC*.                    *LsiLt+si:irs;*?tfifOGOCOLfLt*++s.
+                                 +LCLf+.                   ?L+rft+s;:ir+isttLtrGGOCLCftt*+s+i
+                                 :fCLft+,                 ,ff*i?tssi:rs+*itfLO**GCCLfLf?*+srs.
+                                  ;fLft*s.                sLft;*?sr*:rs+?i*LLCG*tCLLf**f*+srs:
+                                   :*t?++i               ,tftf;t+ss*:i+*?+iLCOGO*tLff*:??srir:
+                                    .s*sri               sLfL+s?sr++ir+*??;fCOGGLrLft*:??srir.
+                                     .ssr;              ,ff*f+f+sr*rrs+*?trfOOGOL;ff?irf+rrs:        ,;.
+                                      isi.              rL*;?ttssr?rs+*?tfLCOGOO?iftrsf*srs:        ,i:
+                                  .,.:r;.               ?Lrr?t?si;?rs+*?tfCOOGOOt?fttf*ssr,        ,i:.
+                                  .::,.                ;Lf;**t*si,*ss*?tfLCOOOOOCftff**+i.        .i;.
+                                                      ,tL+r?*t+rr:s?+*?tfLOOGOOCLffL*?t;          i;.
+                                                      *Cf;t?*tsri;;t**?tfLOGO*LCffff*fr          ,;.
+                                                     iCLrrL**trrii:sf?tfLCOGG*sLftff*t.          .
+                                                    .tC?rft*++riirr:*ftfLCOGGL;fft?f**
+                                                    ,LLfLf**+sriir++istLCOOOOCi?ft??*+.
+                                                    .+Lff??*+srrs++*??LCCOGOOCr*L??*++:
+                                                     .;sssrri;::?Lt??fLCOGGOOLi*Lt*+ssr
+                                                               ,LLf?,rLCOGOOOt;tL?*+srs.
+                                                               sOffr  +OOGGOO++ff**+srs.
+                                                              ,CCL?,  .?GGOOCfft?*+srs;
+                                                              tGLLi    .+COCCLt??*++s;.
+                                                             +0OC+       :s?tt??*+r;,             ...
+                                                            r0GO?.          .,,,..            .,:::,.
+                                                           iO0G?.                            .:,,.
+                                                        .:+O0O*.
+                                                  .,;is*fOGOf;
+                                                  .is+***+r:
+                                                    ..
+
+
+                                                 S P L I C E   G I R L
+
+                                              R N A   /   T O P O L O G Y
+                                                        2 0 2 6
+
+results saved: /var/folders/tv/_11343vn6153sfykk5r11dq40000gn/T/splice-girl-smoke-8naui_1w/report
+run_id: splice-girl-1795023440-787601000
+  /var/folders/tv/_11343vn6153sfykk5r11dq40000gn/T/splice-girl-smoke-8naui_1w/report/sample_metrics.tsv
+  /var/folders/tv/_11343vn6153sfykk5r11dq40000gn/T/splice-girl-smoke-8naui_1w/report/junction_components.tsv
+  /var/folders/tv/_11343vn6153sfykk5r11dq40000gn/T/splice-girl-smoke-8naui_1w/report/comparisons.tsv
+  /var/folders/tv/_11343vn6153sfykk5r11dq40000gn/T/splice-girl-smoke-8naui_1w/report/gene_summaries.tsv
+  /var/folders/tv/_11343vn6153sfykk5r11dq40000gn/T/splice-girl-smoke-8naui_1w/report/report.html
+  /var/folders/tv/_11343vn6153sfykk5r11dq40000gn/T/splice-girl-smoke-8naui_1w/report/graphs/graph-000001.svg
+  /var/folders/tv/_11343vn6153sfykk5r11dq40000gn/T/splice-girl-smoke-8naui_1w/report/graphs/graph-000002.svg
+  /var/folders/tv/_11343vn6153sfykk5r11dq40000gn/T/splice-girl-smoke-8naui_1w/report/run_manifest.json
+
+Open in your browser: /var/folders/tv/_11343vn6153sfykk5r11dq40000gn/T/splice-girl-smoke-8naui_1w/report/report.html
+all-gene descriptive comparison
+gene_id	status	case_n	control_n	case_mean	control_mean	mean_difference_case_minus_control	case_median	control_median	case_range	control_range	excluded
+GENE_SMOKE	complete	1	1	0.0000000000	0.0000000000	0.0000000000	0.0000000000	0.0000000000	0.0000000000..0.0000000000	0.0000000000..0.0000000000	0
+
+genes_total: 1
+genes_with_both_groups: 1
+effect_definition: case mean minus control mean
+inference: descriptive only; no p-values, q-values, or ranking calculated
+
+
+$ /opt/homebrew/opt/python@3.14/bin/python3.14 preprocessing/batch_preprocessing.py run --samples /var/folders/tv/_11343vn6153sfykk5r11dq40000gn/T/splice-girl-smoke-8naui_1w/input.tsv --index /var/folders/tv/_11343vn6153sfykk5r11dq40000gn/T/splice-girl-smoke-8naui_1w/reference/genome --gene-map /var/folders/tv/_11343vn6153sfykk5r11dq40000gn/T/splice-girl-smoke-8naui_1w/reference/junction_exon_map.tsv --splice-sites /var/folders/tv/_11343vn6153sfykk5r11dq40000gn/T/splice-girl-smoke-8naui_1w/reference/splice_sites.tsv --strandedness unstranded --min-anchor 8 --min-unique 1 --storage-mode stream-bam --sort-memory-mb 1 --output-dir /var/folders/tv/_11343vn6153sfykk5r11dq40000gn/T/splice-girl-smoke-8naui_1w/streamed
+[clean] cleaver fastp -i /private/var/folders/tv/_11343vn6153sfykk5r11dq40000gn/T/splice-girl-smoke-8naui_1w/case.fastq -o /private/var/folders/tv/_11343vn6153sfykk5r11dq40000gn/T/splice-girl-smoke-8naui_1w/streamed/CASE/trimmed.R1.fastq.gz -j /private/var/folders/tv/_11343vn6153sfykk5r11dq40000gn/T/splice-girl-smoke-8naui_1w/streamed/CASE/fastp.json -I /private/var/folders/tv/_11343vn6153sfykk5r11dq40000gn/T/splice-girl-smoke-8naui_1w/case_R2.fastq -O /private/var/folders/tv/_11343vn6153sfykk5r11dq40000gn/T/splice-girl-smoke-8naui_1w/streamed/CASE/trimmed.R2.fastq.gz -2
+[align_sort] hisat2 --dta-cufflinks -x /private/var/folders/tv/_11343vn6153sfykk5r11dq40000gn/T/splice-girl-smoke-8naui_1w/reference/genome -p 2 --known-splicesite-infile /private/var/folders/tv/_11343vn6153sfykk5r11dq40000gn/T/splice-girl-smoke-8naui_1w/reference/splice_sites.tsv --summary-file /private/var/folders/tv/_11343vn6153sfykk5r11dq40000gn/T/splice-girl-smoke-8naui_1w/streamed/CASE/alignment_summary.txt -1 /private/var/folders/tv/_11343vn6153sfykk5r11dq40000gn/T/splice-girl-smoke-8naui_1w/streamed/CASE/trimmed.R1.fastq.gz -2 /private/var/folders/tv/_11343vn6153sfykk5r11dq40000gn/T/splice-girl-smoke-8naui_1w/streamed/CASE/trimmed.R2.fastq.gz | samtools sort -m 1M -@ 1 -T /private/var/folders/tv/_11343vn6153sfykk5r11dq40000gn/T/splice-girl-smoke-8naui_1w/streamed/CASE/sort.tmp -O BAM -o /private/var/folders/tv/_11343vn6153sfykk5r11dq40000gn/T/splice-girl-smoke-8naui_1w/streamed/CASE/aligned.partial.bam -
+[bam_quickcheck] samtools quickcheck -v /private/var/folders/tv/_11343vn6153sfykk5r11dq40000gn/T/splice-girl-smoke-8naui_1w/streamed/CASE/aligned.partial.bam
+[junctions] samtools view -h /private/var/folders/tv/_11343vn6153sfykk5r11dq40000gn/T/splice-girl-smoke-8naui_1w/streamed/CASE/aligned.partial.bam | /opt/homebrew/opt/python@3.14/bin/python3.14 /Users/summermalik/Documents/GitHub/TopologicalAnalysisofRNASplicinginEndometriosis/preprocessing/sam_junctions.py --sam - --gene-map /private/var/folders/tv/_11343vn6153sfykk5r11dq40000gn/T/splice-girl-smoke-8naui_1w/reference/junction_exon_map.tsv --sample-id CASE --output /private/var/folders/tv/_11343vn6153sfykk5r11dq40000gn/T/splice-girl-smoke-8naui_1w/streamed/CASE/junctions.partial.tsv --qc-json /private/var/folders/tv/_11343vn6153sfykk5r11dq40000gn/T/splice-girl-smoke-8naui_1w/streamed/CASE/junction_qc.json --min-anchor 8 --min-unique 1
+[bam_index] cleaver samtools index /private/var/folders/tv/_11343vn6153sfykk5r11dq40000gn/T/splice-girl-smoke-8naui_1w/streamed/CASE/aligned.partial.bam
+Splice Girl junction input: /private/var/folders/tv/_11343vn6153sfykk5r11dq40000gn/T/splice-girl-smoke-8naui_1w/streamed/CASE/junctions.tsv
+[clean] cleaver fastp -i /private/var/folders/tv/_11343vn6153sfykk5r11dq40000gn/T/splice-girl-smoke-8naui_1w/control.fastq -o /private/var/folders/tv/_11343vn6153sfykk5r11dq40000gn/T/splice-girl-smoke-8naui_1w/streamed/CONTROL/trimmed.R1.fastq.gz -j /private/var/folders/tv/_11343vn6153sfykk5r11dq40000gn/T/splice-girl-smoke-8naui_1w/streamed/CONTROL/fastp.json -I /private/var/folders/tv/_11343vn6153sfykk5r11dq40000gn/T/splice-girl-smoke-8naui_1w/control_R2.fastq -O /private/var/folders/tv/_11343vn6153sfykk5r11dq40000gn/T/splice-girl-smoke-8naui_1w/streamed/CONTROL/trimmed.R2.fastq.gz -2
+[align_sort] hisat2 --dta-cufflinks -x /private/var/folders/tv/_11343vn6153sfykk5r11dq40000gn/T/splice-girl-smoke-8naui_1w/reference/genome -p 2 --known-splicesite-infile /private/var/folders/tv/_11343vn6153sfykk5r11dq40000gn/T/splice-girl-smoke-8naui_1w/reference/splice_sites.tsv --summary-file /private/var/folders/tv/_11343vn6153sfykk5r11dq40000gn/T/splice-girl-smoke-8naui_1w/streamed/CONTROL/alignment_summary.txt -1 /private/var/folders/tv/_11343vn6153sfykk5r11dq40000gn/T/splice-girl-smoke-8naui_1w/streamed/CONTROL/trimmed.R1.fastq.gz -2 /private/var/folders/tv/_11343vn6153sfykk5r11dq40000gn/T/splice-girl-smoke-8naui_1w/streamed/CONTROL/trimmed.R2.fastq.gz | samtools sort -m 1M -@ 1 -T /private/var/folders/tv/_11343vn6153sfykk5r11dq40000gn/T/splice-girl-smoke-8naui_1w/streamed/CONTROL/sort.tmp -O BAM -o /private/var/folders/tv/_11343vn6153sfykk5r11dq40000gn/T/splice-girl-smoke-8naui_1w/streamed/CONTROL/aligned.partial.bam -
+[bam_quickcheck] samtools quickcheck -v /private/var/folders/tv/_11343vn6153sfykk5r11dq40000gn/T/splice-girl-smoke-8naui_1w/streamed/CONTROL/aligned.partial.bam
+[junctions] samtools view -h /private/var/folders/tv/_11343vn6153sfykk5r11dq40000gn/T/splice-girl-smoke-8naui_1w/streamed/CONTROL/aligned.partial.bam | /opt/homebrew/opt/python@3.14/bin/python3.14 /Users/summermalik/Documents/GitHub/TopologicalAnalysisofRNASplicinginEndometriosis/preprocessing/sam_junctions.py --sam - --gene-map /private/var/folders/tv/_11343vn6153sfykk5r11dq40000gn/T/splice-girl-smoke-8naui_1w/reference/junction_exon_map.tsv --sample-id CONTROL --output /private/var/folders/tv/_11343vn6153sfykk5r11dq40000gn/T/splice-girl-smoke-8naui_1w/streamed/CONTROL/junctions.partial.tsv --qc-json /private/var/folders/tv/_11343vn6153sfykk5r11dq40000gn/T/splice-girl-smoke-8naui_1w/streamed/CONTROL/junction_qc.json --min-anchor 8 --min-unique 1
+[bam_index] cleaver samtools index /private/var/folders/tv/_11343vn6153sfykk5r11dq40000gn/T/splice-girl-smoke-8naui_1w/streamed/CONTROL/aligned.partial.bam
+Splice Girl junction input: /private/var/folders/tv/_11343vn6153sfykk5r11dq40000gn/T/splice-girl-smoke-8naui_1w/streamed/CONTROL/junctions.tsv
+Ready for Splice Girl: /private/var/folders/tv/_11343vn6153sfykk5r11dq40000gn/T/splice-girl-smoke-8naui_1w/streamed/junctions.tsv and /private/var/folders/tv/_11343vn6153sfykk5r11dq40000gn/T/splice-girl-smoke-8naui_1w/streamed/samples.tsv
+
+$ cargo run --quiet -- report /var/folders/tv/_11343vn6153sfykk5r11dq40000gn/T/splice-girl-smoke-8naui_1w/streamed/junctions.tsv /var/folders/tv/_11343vn6153sfykk5r11dq40000gn/T/splice-girl-smoke-8naui_1w/streamed/samples.tsv --output /var/folders/tv/_11343vn6153sfykk5r11dq40000gn/T/splice-girl-smoke-8naui_1w/streamed_report
+                             .,
+                              sr,        ..                                               ,
+                 ;:           itr;,      ,s,                                             rs          :.
+                 ,*s:,        ,??i;:.    .?s:.                                          rti.       ,+s.
+                  ;t+;;,       rt?ii;,   .*?;;.                                        rts;.      ;?*;
+                   it*i;;,     :*t*r;;:.  stsi;.                                      r??;;.    .rt*;:
+        .           rt?ri;;,    r*t?ii::. r??r;;.   ,.                               i*tsi;.   :+t*;;,        ;,
+        ,r;,.       .s?t*ir::,  :+*f+ri;:.;*t*i;:.  +i.                             ;+??ri:   ;*t?ri;      .i*s.
+         ;?+i:,.     ,s?t?rii::. r+?t+ii;:;+?trii:.,?s;.                           :+*fsi;: .r+?tri;,    .i*?r:
+          :??s;;:,.   ,s*t?sii;;,,s+?fsii::s+t?ii;::?*;;.                         ,s+t?ii;,,r+?tsi;:   .i+t*i;.
+           ,+t?rr;;:,  ,s+?tsrii::;s+?tsi;;r+*tsii,r??r;:                        .i+*tri;:,r+?tsii;, .;+?t+i;,
+            .s?t?sii:;, ,s+?t*ir:i:rs+?triiir+?tii;r*tsi;,                       ;s+t*ii:irs*tsii:: :s*ttsi;:
+              i*?t*rii;:,:rs*t?rii;;rs*?tir;rs*t+iir+t*ii:.                     :r+*tri;ir+*t+ii;:,i+*t?ri;:       .,
+     .         :s*tt*ir;i,;rs+??+;r;rrs*t*r;rr+?tiii+??ii;,                    .is+t+iiiss*t*ii;:is+?t*ii;:.    .;ss:
+     :ri:,..    ,r+*ttsri;:iis+?f+r;iirs*t?;ris*t*iis*tri:;.                   ;r+?triiis+t*ii;iss*?tsii;:.  .;s??s;
+      ,+?si;::,.  is+?t?rr;i;irs*t?ii;ir+*f+rir+*fisr+t+ii:,                  :is*t+iiis*??ii;rr++t?rii;:..:r*t?si:
+        i??+rr;;:,.:is+?t*s;i:rrs*ttsiirr+*f+;rr+t?rr+??;:,:;;irii;,         .;r+??irrr+t?riris+?t*ri;::,is*tt+r;:
+         ,r?t?+ri;i::rrs*?t+riiiis+?t+isir+*tsris*frrs*r,iss??*L*f+*+:       :is*fsi;s+??riisr+?t+ii;;irs*?t*ri;:
+           :s?tt*sii;i;rs+*t?*;rirr+*t*riis*+tsir+?trs::rr+L?t????tLffr     .;s+??rrr+??riri+*t?ri;;irs+?t*ri;;,
+            .;s*?t?srii:irs+*t?si;rrs*ttrii+*s*sis*t+;,srs+?*+++srr*tLf;    ;is*tsir+??rris+*t*riiri++?t*sii;:,
+              .;s+?t?*ri;rirs+?t?iriis**?*rr*?rsrr+?t,iss++**++srrr+?tff;  .;s+t?ir+*tsirr+?t+rirrs+*t?siii;,   .,;i:
+      .::,,,,.. ,;rs*?t*+ii;rrs+?t*r;is*s*+ii*?riis*?:rr+s*?++sss+**?tfL*  :r+*fsis+t+;is*?t++rrr+*t?sii;::,,:rs*?*r.
+       ,s?+ri;;::::rrs+*t?+sirirs*?tssir**rrss*?rir+*;rs++*?+isrs+**?t?ff, is+t*rr+?+;i+*tt?srr+*t?+ii;;irrs*?t*si:
+         :+??*+sii;i;isrs*?t*sriir+*?t+ir*?+rir*?rir+,ss*??*sisrs+**?tffC?;:s*frss?*;r+?*?*rr+*?t+riiiiss*?t?+ri;,
+           :s*?t?*sriiiirrs+??t+rrr+*+*++rs?*rii+?si:;ss?t?+risrs++*?tfLCCt,st*rs?*ii*+*?+ir*?t+rirrss+?t?*sii;:.
+             ,i+*?tt?+sii;irr+*???sir+*+rirs+?+ii+r::s+s**?riirss++*?tfLL;:r??rs*?iis+**ris?t*srrrs+*?t*srii;:,
+               .;r+*??t?*+iriirs+?t?*ss*?+siis*+;,:sssss+**siiir++++?tff*.s*?+r*?iis+?+ii?t*s+*++*?t?+rii;;:.     .
+                  ,;rs+*?tt**rriis+*??*+ssr;:;;iiss++++s+**riiiis*+*?+;: :+?+r+?ris?*ris??***+s*t?+riiii;;i;irs++s:
+             ....,,,:iirss+*?t??+rrs++si:;rs+s+**++++ss++?+iiiii+++*?r   ;??++?sr+?+ii+****r:;;+rrririss+*?t?*+ri,
+             ,r++srii;i;i;;;;rr+**?+++;:rssss*??**++++++?+rriirss++**?;, ;?*+?ss**rir+**+r;,*?;+,;s++*?t?*+sri;,
+               :r*????+srrii;;;:;:irss,srsss*??**?**++??srrr;:srs++*?tff?i;s?++?+rs+**sri:,?Ltt*+:st?*+sri;;;,.
+                 .:r+??????*+srrii;ii:;rrss*?*???****?*+srritLf?s++*tLLLCC*,+?*ss**+r;::i+fCLff*i:rri;;;;::.
+                    .:is++**??t??*+++;;s+ss+++?***+++++s+r;C0CLf???fLCCLLCOs;**?*+i::i*LOOCft+;:;iirrrrii;::,.
+                        ,;rrrrrrssssi,r+s+++**?**+++**+ssr?0OCftffLLCCCLtCOCs:ri;:r?O000C?r:;;rs++**?????**+r,
+                      :iriiiiiii;:,,:r+s++s+*???+++++ssrrrGOOCttffLLCCLLLOOOOCftfC088Gfsiis**?????**+ssri;:,
+                      ,i+*???r::::irsss+ss+srssss+sssssr:*0OGCttffLCCCLtsfCOOOOOOOGL+;:is++srrrriiii;;;:,.
+                         .:i:::::irssrrrsr;:;ii;::;;;;::,COGGL?ffLLCCCLr .is*???*s;::iiiiiiiiiii;;::,,.
+                            ::,:;iiriirri,:;;;;iii;iiii,sGO0O*tffLLCCL?. i?+sssss+********++++++++si:,
+                           ,;,,:r;;;irr:,irrrrsssssrrri,COG8?,?tfLLCLLi  r????**++++++++*********???**s;
+                           .::::iriii;:r?????*+srriii;.?GG0L, ifLLCCLf:   ,iss+*??*++srriii;;;iiiiii;::.
+                             ,,:::,,;issssrii;;;irs*s,*OG0f,   +LLCCLLi     .:;iirs+*??**+sri;,,,,,.
+                                    ...,:;;irs+*???s,*LOO*.    :fCCLff?,      .,:;;;iirs+*???*s:
+                                      :ir+*???*+sr;,+tLLi     ,iLCCLLff?;        ..,::;;;;irs+**+i.
+                                    .i+***+sri;:,..s*tf: ,;r*tttCCCLfft?*r,           .,,,::::::;;,
+                                     ......       :s+**s*?t?si.+CCLff??+sssi,
+                                                 :r+++*+i:,   iCf?Lff*f**srisr:
+                                               ,s****+*r     ;LCr*ffrr?t*?*+r+*r.
+                                              ,*??*i:i..    :fCtiLfLri+*sr*+?**t+.
+                                             .*???i        ,tCLs+CLt*;sss:r?*tt?f*.
+                                             i???r.       .*LCLi?CL??r;sr;;ss+tffL+
+                       .,                   .*?t+;        ifLCLitCf?*+;ir;:sistfLLCi
+                      ,i,                   ;?*?s,        +fLCLi?Ct**+r:ii;+s;ftCCOL,
+                     :i,                    s*?+r.       .?fCCCr+Lf*?ss;;i;?*;tLLOOG?
+                    :;.                    i???s;        .?ftfC+sf???sri;iit*;tLLOOGOr
+                   ,:.                   ,s???+i.        .?LitL*it*t+sr;i;st*;fLCOGOOL:
+                   .                  .;+tft?s;.          *f;LL*;???sri:i:??*;fLCOGOCCt:
+                                    ,stLLt*r:.            sf;LLsi??*sr:i;it?+iLCOGGOCLL?,
+                                  .rtL?r:.                ;L;tC;+*??r:;r:+??rsLCOGOOCLff*,
+                                 .+fLr                    ,fr**i?*++;:ii:**tr+CCOGOCOLft?*,
+                                 ifLL:                     t?;;t?++r:irr;+?t+rCOGOOCLCf??*+,
+                                 +LLC*.                    *LsiLt+si:irs;*?tfifOGOCOLfLt*++s.
+                                 +LCLf+.                   ?L+rft+s;:ir+isttLtrGGOCLCftt*+s+i
+                                 :fCLft+,                 ,ff*i?tssi:rs+*itfLO**GCCLfLf?*+srs.
+                                  ;fLft*s.                sLft;*?sr*:rs+?i*LLCG*tCLLf**f*+srs:
+                                   :*t?++i               ,tftf;t+ss*:i+*?+iLCOGO*tLff*:??srir:
+                                    .s*sri               sLfL+s?sr++ir+*??;fCOGGLrLft*:??srir.
+                                     .ssr;              ,ff*f+f+sr*rrs+*?trfOOGOL;ff?irf+rrs:        ,;.
+                                      isi.              rL*;?ttssr?rs+*?tfLCOGOO?iftrsf*srs:        ,i:
+                                  .,.:r;.               ?Lrr?t?si;?rs+*?tfCOOGOOt?fttf*ssr,        ,i:.
+                                  .::,.                ;Lf;**t*si,*ss*?tfLCOOOOOCftff**+i.        .i;.
+                                                      ,tL+r?*t+rr:s?+*?tfLOOGOOCLffL*?t;          i;.
+                                                      *Cf;t?*tsri;;t**?tfLOGO*LCffff*fr          ,;.
+                                                     iCLrrL**trrii:sf?tfLCOGG*sLftff*t.          .
+                                                    .tC?rft*++riirr:*ftfLCOGGL;fft?f**
+                                                    ,LLfLf**+sriir++istLCOOOOCi?ft??*+.
+                                                    .+Lff??*+srrs++*??LCCOGOOCr*L??*++:
+                                                     .;sssrri;::?Lt??fLCOGGOOLi*Lt*+ssr
+                                                               ,LLf?,rLCOGOOOt;tL?*+srs.
+                                                               sOffr  +OOGGOO++ff**+srs.
+                                                              ,CCL?,  .?GGOOCfft?*+srs;
+                                                              tGLLi    .+COCCLt??*++s;.
+                                                             +0OC+       :s?tt??*+r;,             ...
+                                                            r0GO?.          .,,,..            .,:::,.
+                                                           iO0G?.                            .:,,.
+                                                        .:+O0O*.
+                                                  .,;is*fOGOf;
+                                                  .is+***+r:
+                                                    ..
+
+
+                                                 S P L I C E   G I R L
+
+                                              R N A   /   T O P O L O G Y
+                                                        2 0 2 6
+
+results saved: /var/folders/tv/_11343vn6153sfykk5r11dq40000gn/T/splice-girl-smoke-8naui_1w/streamed_report
+run_id: splice-girl-1795023442-573843000
+  /var/folders/tv/_11343vn6153sfykk5r11dq40000gn/T/splice-girl-smoke-8naui_1w/streamed_report/sample_metrics.tsv
+  /var/folders/tv/_11343vn6153sfykk5r11dq40000gn/T/splice-girl-smoke-8naui_1w/streamed_report/junction_components.tsv
+  /var/folders/tv/_11343vn6153sfykk5r11dq40000gn/T/splice-girl-smoke-8naui_1w/streamed_report/comparisons.tsv
+  /var/folders/tv/_11343vn6153sfykk5r11dq40000gn/T/splice-girl-smoke-8naui_1w/streamed_report/gene_summaries.tsv
+  /var/folders/tv/_11343vn6153sfykk5r11dq40000gn/T/splice-girl-smoke-8naui_1w/streamed_report/report.html
+  /var/folders/tv/_11343vn6153sfykk5r11dq40000gn/T/splice-girl-smoke-8naui_1w/streamed_report/graphs/graph-000001.svg
+  /var/folders/tv/_11343vn6153sfykk5r11dq40000gn/T/splice-girl-smoke-8naui_1w/streamed_report/graphs/graph-000002.svg
+  /var/folders/tv/_11343vn6153sfykk5r11dq40000gn/T/splice-girl-smoke-8naui_1w/streamed_report/run_manifest.json
+
+Open in your browser: /var/folders/tv/_11343vn6153sfykk5r11dq40000gn/T/splice-girl-smoke-8naui_1w/streamed_report/report.html
+all-gene descriptive comparison
+gene_id	status	case_n	control_n	case_mean	control_mean	mean_difference_case_minus_control	case_median	control_median	case_range	control_range	excluded
+GENE_SMOKE	complete	1	1	0.0000000000	0.0000000000	0.0000000000	0.0000000000	0.0000000000	0.0000000000..0.0000000000	0.0000000000..0.0000000000	0
+
+genes_total: 1
+genes_with_both_groups: 1
+effect_definition: case mean minus control mean
+inference: descriptive only; no p-values, q-values, or ranking calculated
+
+External-tool synthetic smoke test passed in retain-sam and stream-bam modes; counts and QC agree.
+
+All requested project checks passed.

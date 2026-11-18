@@ -5,6 +5,11 @@ It covers reference preparation, single-sample and sequential batch execution,
 junction QC, provenance, and the actual external-tool smoke test. The notes
 below describe the retained **legacy STAR prototype**, not the production adapter.
 
+The HISAT2 adapter now offers `--storage-mode stream-bam` to avoid writing a
+large SAM file, plus pre-run disk estimates and interruption logs. See the
+[storage options](HISAT2_GUIDE.md#save-disk-space-with-streaming-bam); the
+default `retain-sam` mode remains available.
+
 This folder contains Splice Girl's small workflow for turning one raw FASTQ
 sample into the junction table accepted by the Rust analyzer.
 

@@ -84,6 +84,14 @@ the verified reference and process a local sample sheet. That produces the
 same junction/manifest contract as the demo. Inspect read and alignment QC,
 sample labels, exclusions and graph comparability before inference.
 
+For smaller intermediate files, add `--storage-mode stream-bam` to the
+preprocessing plan/run command. It pipes alignments into sorted BAM without
+saving SAM. The adapter checks estimated disk space before starting and
+retains stage logs/partial files after failures or interruptions. The
+[storage guide](../preprocessing/HISAT2_GUIDE.md#save-disk-space-with-streaming-bam)
+explains the reserve, memory controls and retry behavior. No existing data
+are automatically deleted.
+
 The gene evidence helpers are documented in
 [gene_set_methods.md](gene_set_methods.md). The repository now contains
 source-backed risk/environment extractions and a 661-gene candidate table;

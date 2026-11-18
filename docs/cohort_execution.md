@@ -7,13 +7,27 @@ below are for when a suitable location becomes available.
 
 The saved QC tables contain **545,210,220 raw read pairs**. Extrapolating the
 pilot's compressed reads, SAM and BAM sizes gives about **768 GB (716 GiB)**
-for the current workflow if it retains every sample's raw reads, cleaned reads,
+for the default `retain-sam` workflow if it retains every sample's raw reads, cleaned reads,
 SAM and BAM, including a 25% allowance. This is a planning estimate, not a
 minimum for every possible workflow. References and extra tool temporary files
 need additional space. Sequential processing with a separately agreed retention
 policy could use less; the current pipeline does not automatically delete data.
-The [recorded preflight](../data/pilots/SRR36710387_prefix1m_nov17/cohort_preflight.json)
+The [November 17 recorded preflight](../data/pilots/SRR36710387_prefix1m_nov17/cohort_preflight.json)
 contains the calculation and exact pilot sizes.
+
+**November 18:** the single-sample and batch adapters now support
+`--storage-mode stream-bam`, which never creates the large SAM file. They
+check estimated output/scratch space plus a reserve before starting, with
+the reserve rechecked between stages. See the
+[storage guide](../preprocessing/HISAT2_GUIDE.md#save-disk-space-with-streaming-bam).
+This reduces storage use but does not establish that the full cohort fits
+the laptop's remaining space. The original inputs and BAM/sort spill still
+need space, and no full human-data run has been launched.
+
+The read-only `cohort_readiness.py` also accepts `--storage-mode stream-bam`.
+Its pilot-based cohort estimate replaces retained SAM with a BAM-sized sort
+scratch allowance; unlike the adapter's fast input-size guard, this estimate
+uses the saved pilot sizes and cohort read counts. Both are planning estimates.
 
 ## On a mounted drive
 

@@ -1,6 +1,6 @@
 # Splice Girl software validation
 
-**Validation date:** November 17, 2026
+**Validation date:** November 18, 2026
 **Package version:** `0.1.0`
 
 This note records installation, compatibility, workflow, test, and performance
@@ -318,3 +318,23 @@ retained. See [the findings](../beginner_test/RESULTS.md) for instruction fixes,
 scope and evidence. This is an assistant-run walkthrough, not independent
 first-time human usability sign-off. Application logic and the automated
 unit-test count were not changed by this documentation task.
+
+## Streaming BAM and disk handling — November 18
+
+The optional preprocessing mode pipes HISAT2 into sorted BAM without creating
+SAM. Cleaver remains responsible for cleaning and indexing; bounded-memory
+sorting uses the environment's samtools. Both modes now estimate required
+output/scratch space before starting, recheck a configurable reserve between
+stages, and record per-process logs/exit codes. Streaming outputs retain partial
+names until all required stages succeed. Interrupted/failed samples do not
+publish a complete cohort bundle.
+
+The full check passes **100 Rust and 100 Python tests (200 total)**: 39
+preprocessing, 56 evidence-helper and five script tests. Actual-tool tests in
+both modes produce identical junction tables and all QC counters, with Rust
+reports generated from each. An additional test used 12,000 synthetic pairs
+per sample and forced actual sort spill to disk; both samples retained exactly
+24,000 junction observations. Tests also cover both sides of a failed pipe,
+partial-file protection, disk refusal, reserve checks, real SIGTERM propagation
+and batch interruption. The detailed [storage validation record](../preprocessing/validation/2026-11-18-storage-mode/README.md)
+contains commands, logs, source hashes and scope. No human-read run was launched.

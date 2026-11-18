@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """Read-only cohort storage/input check. Never downloads or launches an alignment.
 
-Estimate the current SAM-retaining workflow using the actual pilot file sizes
+Estimate the selected storage mode using the actual pilot file sizes
 and saved FastQC counts. Estimates are planning values, not disk guarantees.
 """
 
@@ -83,14 +83,19 @@ def run(args):
     clean_bytes = sum(item["bytes"] for item in pilot["outputs"])
     total_pairs = sum(counts.values())
     factor = total_pairs / pairs
-    # Retain raw + cleaned reads, SAM and BAM; reserve 25% on top. Cleaning
-    # compression is only a proxy for raw storage and is explicitly labeled.
+    mode = getattr(args, "storage_mode", "retain-sam")
+    if mode not in {"retain-sam", "stream-bam"}:
+        raise ValueError("storage-mode must be retain-sam or stream-bam")
+    sam_bytes = args.pilot_sam.stat().st_size if mode == "retain-sam" else None
+    bam_bytes = args.pilot_bam.stat().st_size
+    # Stream mode budgets BAM plus sort spill instead of a retained SAM.
+    # Both modes keep raw/cleaned reads; allow 25% on top. Raw compression
+    # uses a cleaned-file proxy and is explicitly an estimate.
     estimate = int(
         factor
         * (
             2 * clean_bytes
-            + args.pilot_sam.stat().st_size
-            + args.pilot_bam.stat().st_size
+            + (sam_bytes + bam_bytes if mode == "retain-sam" else 2 * bam_bytes)
         )
         * 1.25
     )
@@ -101,6 +106,7 @@ def run(args):
         free = shutil.disk_usage(args.storage).free
     record = {
         "scope": "full eight-sample input/storage preflight only; no processing launched",
+        "storage_mode": mode,
         "samples": available,
         "input_paths_checked": bool(sheet),
         "raw_read_pairs": total_pairs,
@@ -118,11 +124,12 @@ def run(args):
         "pilot_file_sizes": {
             "pairs": pairs,
             "clean_gzip_bytes": clean_bytes,
-            "sam_bytes": args.pilot_sam.stat().st_size,
-            "bam_bytes": args.pilot_bam.stat().st_size,
+            "sam_bytes": sam_bytes,
+            "bam_bytes": bam_bytes,
         },
         "limits": [
             "Raw and cleaned storage use the pilot cleaned-gzip rate as a proxy; allow extra for references, indexes, tool temporary files and other users.",
+            "Stream-bam omits retained SAM and budgets another BAM-sized allowance for sort spill; actual sort scratch can differ.",
             "Sample presence does not verify FASTQ integrity, identity, checksums or full-sample scope.",
             "Final strand, mapping-ambiguity, support and coverage choices still need the scientific review recorded in priorities.md.",
             "No path means no assumed drive/server; an SSH address must be checked on that server.",
@@ -171,6 +178,9 @@ def main():
         "--pilot-bam", type=Path, default=base / "alignment/aligned.bam"
     )
     parser.add_argument("--output", type=Path)
+    parser.add_argument(
+        "--storage-mode", choices=["retain-sam", "stream-bam"], default="retain-sam"
+    )
     try:
         run(parser.parse_args())
     except (OSError, ValueError, KeyError) as error:

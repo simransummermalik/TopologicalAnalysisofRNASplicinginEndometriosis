@@ -2,6 +2,14 @@
 
 ## Unreleased
 
+- Added optional `--storage-mode stream-bam` for single-sample and sequential
+  batch preprocessing: supervised HISAT2/samtools pipes avoid SAM files while
+  preserving junction-counting rules and Cleaver cleaning/indexing.
+- Added disk estimates/reserve checks, bounded sort-memory options, partial
+  output handling, per-process logs/exit codes and interruption propagation.
+- Added pipeline-failure/signal regressions and actual-tool comparisons of
+  retained-SAM/streaming-BAM counts, QC and disk-spilling sort behavior.
+
 - Added a diagnostic junction-assignment/strand audit, a paired-input/storage
   preflight, an observed-candidate real-prefix benchmark, scientific pilot
   figures and an unpublished source-package preparation command.

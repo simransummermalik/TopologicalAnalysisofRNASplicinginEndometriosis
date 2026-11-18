@@ -66,6 +66,16 @@ class CohortReadinessTests(unittest.TestCase):
                 result["estimated_working_bytes_with_25_percent_margin"], 375
             )
             self.assertFalse(result["all_paired_inputs_present"])
+            args.storage_mode = "stream-bam"
+            args.output = root / "stream_check.json"
+            args.pilot_sam = root / "no_sam_needed.sam"
+            with contextlib.redirect_stdout(io.StringIO()):
+                run(args)
+            stream = json.loads(args.output.read_text())
+            self.assertEqual(
+                stream["estimated_working_bytes_with_25_percent_margin"], 150
+            )
+            self.assertIsNone(stream["pilot_file_sizes"]["sam_bytes"])
             with self.assertRaisesRegex(ValueError, "exists"):
                 run(args)
             sheet = root / "samples.tsv"

@@ -38,6 +38,8 @@ The test builds a tiny synthetic reference, processes two separate synthetic
 paired-end samples, merges their junction tables without pooling their counts, and
 generates a Rust comparison report. Temporary outputs are removed afterward.
 Its anchor/support choices are test settings, not approved study thresholds.
+The smoke test checks both retained-SAM and streaming-BAM modes and requires
+identical junction tables and QC counters.
 
 ## 3. Prepare the real reference once
 
@@ -117,6 +119,80 @@ every sample completes. A failure stops the batch, records the failed and
 unstarted samples, and leaves existing completed results for inspection.
 The combined table preserves sample IDs and does not manufacture missing zeros.
 
+### Save disk space with streaming BAM
+
+Add these options to either the single-sample or batch `plan`/`run` command:
+
+```text
+--storage-mode stream-bam
+--sort-memory-mb 256
+--min-free-gb 2
+```
+
+For example, after preparing a real sample sheet and choosing the reviewed
+reference/strand/threshold arguments, append `--storage-mode stream-bam` to
+the existing command. Keep `--skip-cleaning` only for already cleaned inputs.
+Planning prints the real pipe connections and the disk estimate without
+starting processing. Use the same options with `run` when ready.
+
+The two storage choices are:
+
+| Mode | What happens |
+|---|---|
+| `retain-sam` (default) | Existing workflow: save SAM, count junctions, then sort/index BAM using Cleaver. |
+| `stream-bam` | Clean with Cleaver, pipe HISAT2 stdout into samtools sort, check the BAM, stream its records through the same junction counter, then index with Cleaver. No SAM file is created. |
+
+Standalone samtools is already included in `environment.yml`. The streaming
+sort uses its memory setting and disk-spill prefix; Cleaver remains the actual
+read-cleaning and BAM-indexing tool. `--sort-memory-mb` is an approximate
+**per-thread** sort-memory setting in MiB, not a limit on HISAT2 or the whole
+pipeline. Sort spill files stay in the new run's output folder. See the
+[samtools sort manual](https://www.htslib.org/doc/samtools-sort.html).
+
+In stream mode, BAM/count outputs have `.partial` names until alignment,
+BAM checking, full record decoding/counting and indexing succeed. Only then
+are the final `aligned.bam`, `aligned.bam.bai` and `junctions.tsv` published.
+Always check that `run_manifest.json` says `complete`; a file's presence alone
+does not establish a completed run. The quick BAM check covers header/EOF,
+while the subsequent record-decoding stage reads through the BAM; quickcheck
+alone does not detect all internal corruption. See its
+[manual](https://www.htslib.org/doc/samtools-quickcheck.html).
+
+### Disk checks, errors and interrupted runs
+
+Both modes now check the output filesystem **before creating the run folder
+or starting tools**. The batch checks the summed sample estimate first, then
+each sample checks again before its own run. The estimate uses the input
+read-file sizes and these additional-output multipliers:
+
+| Mode | Already cleaned (`--skip-cleaning`) | Cleaning needed |
+|---|---:|---:|
+| `retain-sam` | 12 × input bytes | 13 × input bytes |
+| `stream-bam` | 3 × input bytes | 4 × input bytes |
+
+The estimate includes an allowance for outputs/sort spill; original input
+files already occupy disk and are not counted as new allocations. The
+`--min-free-gb` reserve is added on top, using GiB (1024 cubed bytes), and is
+rechecked between stages. Its default is 2 GiB. It can be adjusted explicitly
+but does not disable the output estimate. These conservative heuristics are
+planning checks, not guarantees against every compression ratio, mapping
+pattern or another process filling the disk. The input files must already
+exist; downloads and new reference builds need their own storage allowance.
+
+On a tool failure or Control-C/SIGTERM interruption, the runner stops its
+started subprocesses, records `failed` or `interrupted`, and retains logs and
+partial files in that run's folder. It checks **both sides of each pipe**, so
+a failed HISAT2 process cannot be hidden by a successful sorter, or a failed
+BAM reader by a successful counter. Stage records include commands, process
+exit codes and separate log filenames. A batch does not publish its complete
+cohort bundle when a sample fails or is interrupted.
+
+Choose a **new output folder** for a retry. Automatic resume is not implemented.
+No old reads, references or prior run folders are deleted. Samtools manages
+its own sort scratch files inside the new run. Reserve checks happen between
+stages; an abrupt power loss/forced kill cannot execute Python's interruption
+handler, and a completely full disk can prevent final log updates.
+
 ## 6. Analyze the combined output
 
 ```sh
@@ -152,8 +228,9 @@ substitute for alignment, read-quality, coverage, or cohort review.
   separate reviewed detector and input adapter.
   A missing back-splice in these outputs is therefore not evidence that the
   biological sample lacks back-splicing.
-- SAM is retained alongside BAM for auditability, so reserve disk space for
-  both. FASTQs, references, indexes, BAMs and run folders stay outside Git.
+- The default mode retains SAM alongside BAM; `--storage-mode stream-bam`
+  avoids writing SAM while retaining BAM, counts, QC and provenance. FASTQs,
+  references, indexes, BAMs and run folders stay outside Git.
 - Reference preparation does not certify that arbitrary FASTA/GTF files match;
   use the verified pair. Index/map/hint hashes record exactly what was used.
 
