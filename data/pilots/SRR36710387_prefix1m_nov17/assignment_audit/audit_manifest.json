@@ -1,0 +1,77 @@
+{
+  "command": [
+    "samtools",
+    "view",
+    "-h",
+    "/Users/summermalik/Documents/GitHub/TopologicalAnalysisofRNASplicinginEndometriosis/preprocessing/runs/SRR36710387_pilot_nov17/alignment/aligned.bam"
+  ],
+  "exclude_duplicates": false,
+  "inputs": [
+    {
+      "bytes": 111416174,
+      "path": "/Users/summermalik/Documents/GitHub/TopologicalAnalysisofRNASplicinginEndometriosis/preprocessing/runs/SRR36710387_pilot_nov17/alignment/aligned.bam",
+      "sha256": "3a9eb27b70d1f265600c3c906a53f5847e073984a76167f64b9c91b45311bd2b"
+    },
+    {
+      "bytes": 118288244,
+      "path": "/Users/summermalik/Documents/GitHub/TopologicalAnalysisofRNASplicinginEndometriosis/references/hisat2_v50_pilot_nov17/junction_exon_map.tsv",
+      "sha256": "1e2199753dbb46cd63ee8906fb79918d9bff4ff06583a864969858056b7dbc60"
+    },
+    {
+      "bytes": 30901,
+      "path": "/Users/summermalik/Documents/GitHub/TopologicalAnalysisofRNASplicinginEndometriosis/data/gene_sets/candidate_genes.tsv",
+      "sha256": "0aacc70364351a8d28189410a0c24111958a219c13daad4614f8c73b42b787c0"
+    },
+    {
+      "bytes": 14596,
+      "path": "/Users/summermalik/Documents/GitHub/TopologicalAnalysisofRNASplicinginEndometriosis/preprocessing/ambiguity_audit.py",
+      "sha256": "46d2a4ad4430a32fa40833b809a0d34a81e6da0886bfb970cf70962133efdc41"
+    },
+    {
+      "bytes": 550,
+      "path": "/Users/summermalik/Documents/GitHub/TopologicalAnalysisofRNASplicinginEndometriosis/preprocessing/runs/SRR36710387_pilot_nov17/alignment/junction_qc.json",
+      "sha256": "ce092dfda7aba5b36a72d6c91c36e3bb09dba3966d0f894e0a5c7255ce4f2db0"
+    }
+  ],
+  "minimum_anchor": 8,
+  "outputs": [
+    {
+      "bytes": 327,
+      "path": "/Users/summermalik/Documents/GitHub/TopologicalAnalysisofRNASplicinginEndometriosis/preprocessing/runs/SRR36710387_pilot_nov17/ambiguity_audit/assignment_summary.tsv",
+      "sha256": "a3f1d884b69b1146e622fcc80e853872ab2d940c7e2b026f286e4faf344913c5"
+    },
+    {
+      "bytes": 45334,
+      "path": "/Users/summermalik/Documents/GitHub/TopologicalAnalysisofRNASplicinginEndometriosis/preprocessing/runs/SRR36710387_pilot_nov17/ambiguity_audit/candidate_gene_coverage.tsv",
+      "sha256": "10ee18c33074c3c0477d03d1cfddf2fd7e6b54a3c6356c0d4a56fef0a283f670"
+    },
+    {
+      "bytes": 28434671,
+      "path": "/Users/summermalik/Documents/GitHub/TopologicalAnalysisofRNASplicinginEndometriosis/preprocessing/runs/SRR36710387_pilot_nov17/ambiguity_audit/junction_assignments.tsv",
+      "sha256": "66423a4155b0376fd9dc6ab0592e2e14ec2ffc3365762c4415c87b462b0e832b"
+    },
+    {
+      "bytes": 1791,
+      "path": "/Users/summermalik/Documents/GitHub/TopologicalAnalysisofRNASplicinginEndometriosis/preprocessing/runs/SRR36710387_pilot_nov17/ambiguity_audit/report.html",
+      "sha256": "e74c6c11cabbb7c53b9356d9545c09b5c23dd6c9383ef0d90626bb8bd26ea8ce"
+    },
+    {
+      "bytes": 0,
+      "path": "/Users/summermalik/Documents/GitHub/TopologicalAnalysisofRNASplicinginEndometriosis/preprocessing/runs/SRR36710387_pilot_nov17/ambiguity_audit/samtools.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "bytes": 1428,
+      "path": "/Users/summermalik/Documents/GitHub/TopologicalAnalysisofRNASplicinginEndometriosis/preprocessing/runs/SRR36710387_pilot_nov17/ambiguity_audit/summary.json",
+      "sha256": "ad85a868f624b17f31eea15d919775a1da4523fc7766c2ddbc450030c57f8c0d"
+    },
+    {
+      "bytes": 18294,
+      "path": "/Users/summermalik/Documents/GitHub/TopologicalAnalysisofRNASplicinginEndometriosis/preprocessing/runs/SRR36710387_pilot_nov17/ambiguity_audit/top_ambiguous.tsv",
+      "sha256": "b884c12acb5638ecd57f046109ce9e0b8524d2b1e3bad103d119c68c01e3df8a"
+    }
+  ],
+  "policy": "diagnostic only; exact frozen exon-pair assignment remains unchanged",
+  "sample_id": "SRR36710387",
+  "status": "complete"
+}

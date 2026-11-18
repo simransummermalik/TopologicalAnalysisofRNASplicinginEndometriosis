@@ -2,6 +2,14 @@
 
 ## Unreleased
 
+- Added a diagnostic junction-assignment/strand audit, a paired-input/storage
+  preflight, an observed-candidate real-prefix benchmark, scientific pilot
+  figures and an unpublished source-package preparation command.
+- Added permutation/BH regressions and corrected the explanation of small
+  sample p-value resolution without changing the study's frozen testing policy.
+- Added methods/results drafts and a shared speaking plan; compiled the simple
+  roadmap section with working CLI examples and no assigned team roles.
+
 - Joined supplied gene symbols, risk/environment/overlap flags and categories
   directly into statistics, ranked results and the HTML report, retaining
   annotations for untested genes and leaving missing metadata blank.

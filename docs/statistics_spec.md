@@ -7,9 +7,9 @@ statistics CLI, and the [inference rules](#inference-rules-decided-2026-11-17)
 in [`data/metadata/samples.tsv`](../data/metadata/samples.tsv).
 
 The exact permutation and S8 correction code is connected to the `stats`
-command, exports, and offline report. Its biological testing family and final
-workflow policy remain open. S2/S3 (eligible real inputs), scientific review of
-S7 (whether inference is allowed), and S9–S12 (baselines, sensitivity, and final
+command, exports, and offline report. The inference rules below fix the
+candidate-set testing policy. S2/S3 (eligible real inputs), scientific review of
+its assumptions, and S9–S12 (baselines, sensitivity, and final
 study results) are still pending. Synthetic tests establish software behavior
 while real-data QC and scientific decisions are completed.
 
@@ -36,9 +36,11 @@ Phase 8, and [`data/metadata/samples.tsv`](../data/metadata/samples.tsv).
   constant across both groups.** This is a controlled design choice made
   during sample selection, not a blocking variable — it removes a known
   confound rather than requiring stratified or restricted permutation.
-- Because the design is unpaired with no blocking factor, **any relabeling of
-  the 8 subjects into "4 case / 4 control" is a valid, exchangeable
-  permutation under the null hypothesis of no group effect.** What that means
+- Under the assumed independent, unblocked design and exchangeability under
+  the null, the test enumerates relabelings of the 8 subjects into
+  "4 case / 4 control". Unpaired labels alone do not establish exchangeability:
+  unrecorded batch, donor dependence or other confounding can invalidate it.
+  What the enumeration means
   in practice for exactly this sample size is worked out in S5 below.
 
 **Done when:** We know what can and cannot be shuffled. Met — nothing
@@ -196,20 +198,32 @@ With 4 cases and 4 controls there are 70 relabelings, so a two-sided p-value
 can only be 2/70 (0.029), 4/70 (0.057), or larger. Only the single most extreme
 split is below 0.05. Two consequences follow:
 
-- **Gene-by-gene correction cannot succeed.** Under BH at 0.05 with `m`
+- **Gene-by-gene BH has limited resolution, but is not impossible.** Under BH at 0.05 with `m`
   tested genes, a gene at p = 2/70 passes only if at least
   `0.0286 m / 0.05 ≈ 0.57 m` genes are also at 2/70. With hundreds of genes
-  that will not happen, however real the biology.
-- **Only one confirmatory test is possible.** Any correction over 2 or more
-  tests (Bonferroni or Holm) needs a per-test p of at most 0.025, which is
-  below 2/70.
+  this is a demanding requirement, not a mathematical impossibility. For
+  example, if every raw p-value equals 2/70, every BH-adjusted value also
+  equals 2/70. The code regression test covers 661 such values. BH is a
+  step-up procedure; its threshold is not always 0.05/m.
+- **Bonferroni/Holm are especially restrictive here.** For two or more tests,
+  the first rejection requires p at most 0.025, below the balanced 2/70 floor.
+  This supports choosing one primary test in this protocol; it does not prove
+  that only one confirmatory analysis is possible under every design or method.
+
+The distinction between BH false-discovery control and family-wise methods is
+described in the [R statistics documentation](https://stat.ethz.ch/R-manual/R-devel/library/stats/html/p.adjust.html).
+The two counterexamples below are also verified directly by the project's tests.
 
 ### Rules
 
 1. **Direction:** every test is two-sided (`--alternative two-sided`).
 2. **Testable gene:** all 4 cases and all 4 controls must be eligible
-   (`--min-per-group 4`). With 3 versus 4 there are 35 relabelings and the
-   smallest two-sided p is 2/35 = 0.057, so such a gene could never pass.
+   (`--min-per-group 4`). This keeps the predeclared common eight-sample cohort
+   and coverage requirement consistent across genes. It is not an impossibility
+   result for smaller groups: with cases [1,1,1] and controls [0,0,0,0], the
+   absolute-effect procedure counts one extreme split out of 35, giving 1/35.
+   The complementary split has the wrong group size, so the balanced 2/70
+   symmetry argument cannot simply be changed to 2/35.
 3. **Primary (confirmatory) test:** one gene-set test on the full candidate
    set, [`candidate_genes.tsv`](../data/gene_sets/candidate_genes.tsv), at
    α = 0.05. This is the only result that may be called significant.

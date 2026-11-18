@@ -6,6 +6,36 @@ This is the short, ordered version of the full
 [task guide](delegations_and_tasks/tasks.md). It covers the entire project.
 Anyone can pick up any available task; there are no assigned leads.
 
+## Latest completed work — November 17
+
+- [x] Diagnose the real pilot's assignment loss with a tested
+  [exon-pair/gene ambiguity and strand audit](data/pilots/SRR36710387_prefix1m_nov17/assignment_audit/README.md).
+- [x] Benchmark Rust analysis/export on all 243 candidate genes observed in
+  that real prefix; every group passes the internal math checks.
+- [x] Export and inspect three plain scientific pilot figures as PDF/SVG/PNG.
+- [x] Write a shared speaking plan with live commands, explanations and handoffs.
+- [x] Assemble methods/results drafts with technical findings separated from
+  biological comparisons that have not run.
+- [x] Correct the BH/permutation-resolution explanation and add mathematical
+  regression examples without changing the frozen four-versus-four policy.
+- [x] Compile and inspect the available LaTeX roadmap section using a temporary
+  standard wrapper; preserve the simple academic appearance.
+- [x] Prepare an unpublished source-package workflow and release-review notes.
+- [x] Pass the full offline check from an extracted source snapshot, verify
+  its archive/file hashes, and run the isolated installed CLI and live demo.
+- [x] Pass 100 Rust and 88 Python tests, strict Clippy, formatting and release
+  build; Rust tests/Clippy also pass on the minimum 1.85.0 compiler.
+
+**Actual remaining dependencies:** the user confirmed there is no external
+drive or server available. The laptop has about 9 GB free, and seven samples'
+read pairs are not available locally. The full cohort has not been launched.
+The [storage preflight](docs/cohort_execution.md) estimates about 768 GB for
+the current workflow retaining all raw/cleaned reads, SAMs and BAMs; other
+retention plans may need less. Final preprocessing choices, independent
+evidence/beginner reviews, the Overleaf parent source, course dates and the
+team's license choice also remain. These are not marked complete by software
+tests or by writing a draft.
+
 ## What matters most
 
 Splice Girl already has working Hodge math, a Rust CLI, a synthetic demo,
@@ -18,7 +48,8 @@ careful case-versus-control result.
 **Task IDs:** D1, D3, and D5--D12  
 **Status:** Partly complete; this is the main blocker.
 
-- [ ] Finish the dataset suitability review and raw-file checksum record.
+- [ ] Resolve the [documented dataset review](docs/dataset_review.md), including
+  conflicting library/read-length descriptions, and complete all raw checksums.
 - [x] Build the full human HISAT2 index, exon map and splice-site hints from
   the verified reference (November 17).
 - [x] Implement and test the Cleaver/HISAT2 adapter matching the current data
@@ -130,14 +161,15 @@ an approved analysis rule, and a versioned output file.
 
 **Task IDs:** R14--R17 and U1, U3, and U5  
 **Status:** The developer-run installation, compatibility, candidate-sized
-synthetic benchmark, CI checks, and CLI checks are complete; an independent
-beginner review and a real-data benchmark remain.
+synthetic benchmark, real-prefix observed-candidate benchmark, CI checks, and
+CLI checks are complete; an independent beginner review remains. Full-cohort
+performance is not measured.
 
 - [x] Finish tests for missing files, empty files, bad columns, invalid values,
   and unsafe output replacement.
 - [x] Make every failure explain what happened and how to fix it.
 - [x] Record runtime and peak-memory checks, including a repeatable
-  candidate-sized synthetic benchmark.
+  candidate-sized synthetic benchmark and the real-prefix benchmark.
 - [x] Record the minimum supported Rust version.
 - [x] Test `cargo install --path .` from an isolated clean source copy.
 - [x] Test `splice-girl --help`, `splice-girl --version`, and
@@ -152,19 +184,24 @@ the written instructions alone.
 ## Priority 7 — Complete the figures and demo
 
 **Task IDs:** V3--V11  
-**Status:** The tiny demo, three-part Hodge SVG, and offline comparison report
-with sample-level plots work.
+**Status:** The tiny demo, three-part Hodge SVG, offline comparison report,
+real-prefix technical figures and speaking draft are available. The final
+real case/control figure and team rehearsal remain.
 
 - [x] Show the original, gradient, and cycle signals with identical graph layouts.
 - [x] Generate a plain offline comparison report with each sample's value,
   exclusions, provenance links, and Hodge graph figures from the same run.
 - [ ] Create one real-gene case/control figure after the pilot is approved.
-- [ ] Create result figures only from versioned tables.
-- [ ] Explain junctions, cycle fraction, and limitations in plain language.
-- [ ] Choose the real demo gene using a written rule.
-- [ ] Write speaking parts and handoff sentences.
+- [x] Create the available technical figures from saved, checksummed tables.
+  Final biological result figures remain dependent on Priority 5.
+- [x] Draft plain-language explanations of junctions, cycle fraction and limits
+  in [presentation_notes.md](docs/presentation_notes.md); audience review remains.
+- [x] Choose CDH11 for the bounded technical demonstration using a written rule.
+  Final cohort-demo selection remains subject to real QC/results review.
+- [x] Write shared speaking parts, live commands and handoff sentences.
 - [ ] Rehearse with a timer and save an offline screenshot or recording backup.
-- [ ] Audit every label and caption against its source output.
+- [x] Audit the current pilot figures' labels/captions against source outputs.
+  Repeat for final case/control figures when those exist.
 
 **Finished when:** the team can explain the whole project clearly and complete
 the demo even without internet access.
@@ -177,8 +214,10 @@ the demo even without internet access.
 - [ ] Join computational results to the evidence tables by stable gene ID.
 - [ ] Compare risk-only, environment-only, and overlap categories.
 - [ ] Link every discussed gene to its samples, junctions, and sources.
-- [ ] State that cycle-space signal does not by itself prove circular RNA.
-- [ ] State tissue, sample-size, alignment, coverage, and causation limits.
+- [x] State that cycle-space signal does not by itself prove circular RNA.
+- [x] Document current tissue, sample-size, alignment, coverage and causation
+  limits in the methods/results drafts and speaking notes; apply them to final
+  interpretations after the cohort run.
 - [ ] Report a null result honestly if Hodge summaries do not beat baselines.
 
 **Finished when:** every biological claim has visible computational evidence,
@@ -188,10 +227,14 @@ source provenance, and a matching limitation.
 
 **Task IDs:** F1--F5
 
-- [ ] Assemble the final methods from the frozen specifications.
-- [ ] Assemble the final results from versioned outputs.
-- [ ] Prepare the software release, license, version, and release notes.
-- [ ] Compile and inspect the LaTeX documents.
+- [ ] Finalize the [assembled methods draft](docs/methods_draft.md) after real
+  eligibility and preprocessing choices are resolved.
+- [ ] Finalize the [technical results draft](docs/results_draft.md) after the
+  full cohort analysis; do not substitute pilot measurements for disease results.
+- [ ] Finalize the [prepared release review](docs/release_notes.md), including
+  the team's license choice. No tag or publication has been performed.
+- [ ] Compile the missing Overleaf parent. The available roadmap section is
+  compiled, inspected and saved in `roadmap-preview.pdf`.
 - [ ] Run the complete acceptance checklist from a clean checkout.
 
 **Finished when:** the report, presentation, software, figures, and reproducible
@@ -206,7 +249,8 @@ results agree with one another.
   that the parent `.tex` file is still in Overleaf and not in this checkout.
 - [x] Create `docs/decisions.md` and add dated decisions without deleting history.
 - [ ] Add dependencies and target dates to the shared task board.
-- [ ] Keep file-naming, large-file, and output-location rules in the decisions log.
+- [x] Record file-naming, large-file and output-location rules in the decisions
+  log and release checklist; maintain them as new outputs are added.
 
 **Finished when:** nobody needs chat history to understand a deadline, decision,
 file location, or dependency.
@@ -215,10 +259,11 @@ file location, or dependency.
 
 These are choices for four people, not assigned roles:
 
-1. Continue the reference/index and standardized-junction work in Priority 1.
-2. Continue the two evidence tables in Priority 2.
-3. Write and test the statistical specification in Priority 4.
-4. Finish the error audit and three-part graph view in Priorities 6 and 7.
+1. Review the source-method discrepancy, pilot assignment loss and final data
+   settings; the index and diagnostic software are already built.
+2. Complete the independent evidence cold read/spot checks in Priority 2.
+3. Have a beginner run the written demo and record where they get stuck.
+4. Rehearse the shared speaking plan and make the offline recording backup.
 
 ## Already finished — do not redo
 

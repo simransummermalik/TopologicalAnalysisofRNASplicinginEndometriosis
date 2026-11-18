@@ -35,3 +35,20 @@ and statistical outputs, made long coordinate labels readable in the figures,
 and added checks against incomplete indexes and mismatched paired reads. The
 current combined suite passes 178 tests, including 95 Rust tests. No commit or
 push was performed by the assistant.
+
+## Mapping audit, figures and local finish-up
+
+I looked into the ambiguous junctions instead of just leaving that huge number
+unexplained. Most of them still point to one gene, but the annotation gives
+more than one possible exon pair, so I kept those reads excluded and saved an
+audit showing why. I also checked the read directions, made three basic plots
+from the saved results, and timed Rust on all 243 candidate genes found in the
+real prefix. The final benchmark took about 11 ms per run at the median, with all internal
+math checks passing. I added a storage/input checker, a source-release packer,
+methods/results drafts, and a simple demo script with things we can say while
+running it. I fixed a misleading explanation about small-sample p-values and
+added examples to test it, updated the task board, and compiled the existing
+LaTeX roadmap without changing its basic look. The latest checks pass 100 Rust
+and 88 Python tests. We still need the other read files, enough storage,
+reviewed processing settings and the independent team checks before claiming
+full disease results. Nothing from this follow-up was committed or pushed.

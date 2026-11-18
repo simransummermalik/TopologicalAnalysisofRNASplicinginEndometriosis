@@ -42,6 +42,9 @@ interpretation.
 | Running the complete software workflow | [Step-by-step software guide](docs/running_the_tool.md) |
 | Processing local FASTQ samples | [Cleaver/HISAT2 guide](preprocessing/HISAT2_GUIDE.md) |
 | Checking one real sample end to end | [Bounded real-data pilot](docs/real_pilot.md) |
+| Why some real junction counts were excluded | [Assignment and strand audit](data/pilots/SRR36710387_prefix1m_nov17/assignment_audit/README.md) |
+| What to say during the demonstration | [Speaking plan and commands](docs/presentation_notes.md) |
+| Completed results and what remains | [Technical results draft](docs/results_draft.md) |
 | An unfamiliar word | [Beginner dictionary](#beginner-dictionary) |
 | Scientific cautions | [How to interpret the results](#how-to-interpret-the-results) |
 
@@ -183,7 +186,7 @@ In plain language:
 | Support sensitivity | An explicit threshold grid reruns the Rust analysis and keeps disappearing genes visible. |
 | Public dataset selection | Four control and four endometriosis RNA-seq samples have been identified. |
 
-The Rust project currently has **98 automated tests**. Real-data
+The Rust project currently has **100 automated tests**. Real-data
 preprocessing is the next active stage, and the large raw-read files remain
 outside Git.
 

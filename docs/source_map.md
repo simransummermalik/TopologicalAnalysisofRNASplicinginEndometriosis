@@ -1,6 +1,6 @@
 # Project source map
 
-Updated November 2, 2026.
+Updated November 17, 2026.
 
 This file records where the documents that control the project live. It keeps
 the repository honest about what is available locally and what still lives in
@@ -34,5 +34,10 @@ working checkout or export it from Overleaf, then record:
 5. the command used to compile the PDF; and
 6. any remaining overfull boxes or missing references.
 
-The current checkout can validate the include-only section's syntax only after
-the parent document is supplied. No proposal rewrite is implied by this map.
+The include-only section was compiled on November 17 with a temporary standard
+`article` wrapper and `geometry` at one-inch margins using Tectonic. The
+three-page preview has no overfull/underfull boxes, undefined references or
+missing characters in the build log; its pages were visually inspected.
+This checks the local section, not its integration with the missing Overleaf
+parent. The simple compiled [roadmap preview](../roadmap-preview.pdf) is retained.
+No parent proposal has been recreated.

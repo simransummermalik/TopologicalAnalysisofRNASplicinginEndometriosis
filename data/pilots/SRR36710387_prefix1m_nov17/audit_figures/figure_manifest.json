@@ -1,0 +1,68 @@
+{
+  "inputs": [
+    {
+      "bytes": 1428,
+      "path": "/Users/summermalik/Documents/GitHub/TopologicalAnalysisofRNASplicinginEndometriosis/data/pilots/SRR36710387_prefix1m_nov17/assignment_audit/summary.json",
+      "sha256": "ad85a868f624b17f31eea15d919775a1da4523fc7766c2ddbc450030c57f8c0d"
+    },
+    {
+      "bytes": 252,
+      "path": "/Users/summermalik/Documents/GitHub/TopologicalAnalysisofRNASplicinginEndometriosis/data/pilots/SRR36710387_prefix1m_nov17/verified/support_sensitivity.tsv",
+      "sha256": "12c78723094f1923d21cbe469d60368bcb9c6b99a72bddb7a3b7d4beae27b298"
+    },
+    {
+      "bytes": 5859,
+      "path": "/Users/summermalik/Documents/GitHub/TopologicalAnalysisofRNASplicinginEndometriosis/scripts/plot_pilot_audit.py",
+      "sha256": "34c0e533b854a20f0b31e9a1530aa3b2aaa958d2fdc80e70a6d69b27e3b73ee8"
+    }
+  ],
+  "matplotlib_version": "3.11.0",
+  "outputs": [
+    {
+      "bytes": 13251,
+      "path": "/Users/summermalik/Documents/GitHub/TopologicalAnalysisofRNASplicinginEndometriosis/data/pilots/SRR36710387_prefix1m_nov17/audit_figures/junction_assignment.svg",
+      "sha256": "ca5353b65979ab0f469c6d91fcbc7314774ab21c43057c5bfc62565df9584728"
+    },
+    {
+      "bytes": 48730,
+      "path": "/Users/summermalik/Documents/GitHub/TopologicalAnalysisofRNASplicinginEndometriosis/data/pilots/SRR36710387_prefix1m_nov17/audit_figures/junction_assignment.pdf",
+      "sha256": "c9803f457636b99e93966f671734bf25904877390033c6e4fb1d0b89feb7e6b0"
+    },
+    {
+      "bytes": 87865,
+      "path": "/Users/summermalik/Documents/GitHub/TopologicalAnalysisofRNASplicinginEndometriosis/data/pilots/SRR36710387_prefix1m_nov17/audit_figures/junction_assignment.png",
+      "sha256": "d7e1b295c437ce611b029614e9b1f1ed81fe4ed027d213876cabddbc90aa3a12"
+    },
+    {
+      "bytes": 10241,
+      "path": "/Users/summermalik/Documents/GitHub/TopologicalAnalysisofRNASplicinginEndometriosis/data/pilots/SRR36710387_prefix1m_nov17/audit_figures/mate_orientation.svg",
+      "sha256": "fa3819724aa5a4ee453f5518c37440e8a26be2066733a67904cc738ffac9b441"
+    },
+    {
+      "bytes": 42750,
+      "path": "/Users/summermalik/Documents/GitHub/TopologicalAnalysisofRNASplicinginEndometriosis/data/pilots/SRR36710387_prefix1m_nov17/audit_figures/mate_orientation.pdf",
+      "sha256": "bb3e9132bd04a0305e65b2aeb05e0aed31b5fc4692efdb9706d834cedee93e6b"
+    },
+    {
+      "bytes": 55557,
+      "path": "/Users/summermalik/Documents/GitHub/TopologicalAnalysisofRNASplicinginEndometriosis/data/pilots/SRR36710387_prefix1m_nov17/audit_figures/mate_orientation.png",
+      "sha256": "d091cf383ba329cff4e8033e0a1b917a81bd965cfd0c1be85737c11e634ee029"
+    },
+    {
+      "bytes": 17671,
+      "path": "/Users/summermalik/Documents/GitHub/TopologicalAnalysisofRNASplicinginEndometriosis/data/pilots/SRR36710387_prefix1m_nov17/audit_figures/cdh11_support_sensitivity.svg",
+      "sha256": "f5a2a82e601e2ff96243ef01198d9b4602fc12a67f8664bb449fa3c9702222c7"
+    },
+    {
+      "bytes": 49026,
+      "path": "/Users/summermalik/Documents/GitHub/TopologicalAnalysisofRNASplicinginEndometriosis/data/pilots/SRR36710387_prefix1m_nov17/audit_figures/cdh11_support_sensitivity.pdf",
+      "sha256": "d4e2d2da16fbd9c3720aca00052fefdb80a2f31221ae7194570cbb8d0099bc53"
+    },
+    {
+      "bytes": 78920,
+      "path": "/Users/summermalik/Documents/GitHub/TopologicalAnalysisofRNASplicinginEndometriosis/data/pilots/SRR36710387_prefix1m_nov17/audit_figures/cdh11_support_sensitivity.png",
+      "sha256": "edb7912ec80c45ff1145691e5167cbe99521aa451d4313eb0cbfd9ee1e562dca"
+    }
+  ],
+  "scope": "descriptive diagnostics for one real control prefix"
+}

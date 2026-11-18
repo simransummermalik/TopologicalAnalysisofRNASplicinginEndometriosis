@@ -62,6 +62,16 @@ Also review library strandedness, final anchors/support/coverage thresholds,
 and the deterministic-prefix sampling limit. There is no case sample here,
 so no case–control effect, p-value or disease conclusion was calculated.
 
+The [follow-up assignment/strand audit](assignment_audit/README.md) now
+explains that **94.69% of ambiguous observations identify one gene but multiple
+exon pairs**. Its counters match this original QC exactly, without rescuing
+excluded observations. The observed RF pattern and conflicting source-method
+descriptions are recorded for review in [dataset_review.md](../../../docs/dataset_review.md).
+Three plain [technical figures](audit_figures/README.md) are available for
+slides/Overleaf. The [candidate benchmark](candidate_benchmark/benchmark.json)
+checks analysis/export across all 243 candidates observed in this prefix;
+it does not extend the independent BAM/SVD validation beyond CDH11.
+
 ## Files and provenance
 
 - [Verification JSON](verified/verification.json): source/output hashes, gene

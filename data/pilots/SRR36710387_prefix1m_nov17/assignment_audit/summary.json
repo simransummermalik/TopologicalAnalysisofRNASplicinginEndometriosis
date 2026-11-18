@@ -1,0 +1,42 @@
+{
+  "filter_counts": {
+    "ambiguous_junction_observations": 432599,
+    "assigned_junction_observations": 152907,
+    "insufficient_anchor_records": 69028,
+    "nonunique_or_missing_NH_records": 36663,
+    "sam_records": 2168724,
+    "unannotated_junction_observations": 1583,
+    "unmapped_secondary_qcfail_or_supplementary": 224068,
+    "unspliced_records": 1294663
+  },
+  "junction_keys_by_class": {
+    "assigned": 32575,
+    "cross_gene": 944,
+    "cross_gene_and_exon_pairs": 2918,
+    "unannotated": 1103,
+    "within_gene_exon_pairs": 58562
+  },
+  "limits": [
+    "Potential per-gene ambiguous support is non-additive across genes.",
+    "No ambiguous observations were rescued or assigned to an exon pair.",
+    "Strand counts describe primary unique spliced alignments; verify the library protocol before choosing strandedness."
+  ],
+  "observations_by_class": {
+    "assigned": 152907,
+    "cross_gene": 3352,
+    "cross_gene_and_exon_pairs": 19634,
+    "unannotated": 1583,
+    "within_gene_exon_pairs": 409613
+  },
+  "same_gene_assignment_upper_bound_if_exon_pair_ambiguity_were_ignored": 562520,
+  "sample_id": "SRR36710387",
+  "scope": "input alignment only; no disease inference",
+  "source_qc_agreement": "PASS",
+  "spliced_alignment_strand_counts": {
+    "read1_antisense": 264362,
+    "read1_sense": 741,
+    "read2_antisense": 776,
+    "read2_sense": 278423
+  },
+  "total_assignment_observations": 587089
+}

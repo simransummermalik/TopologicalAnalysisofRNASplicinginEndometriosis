@@ -1,0 +1,6 @@
+assignment_class	observed_junction_keys	junction_observations	fraction_of_assignment_stage
+assigned	32575	152907	0.2604494378194788
+within_gene_exon_pairs	58562	409613	0.6977017113248587
+cross_gene	944	3352	0.00570952615361555
+cross_gene_and_exon_pairs	2918	19634	0.03344297031625529
+unannotated	1103	1583	0.002696354385791592

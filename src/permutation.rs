@@ -324,6 +324,28 @@ mod tests {
         assert!((result.p_value - 1.0 / 6.0).abs() < 1e-9);
     }
 
+    #[test]
+    fn unequal_three_vs_four_groups_do_not_have_a_two_over_35_floor() {
+        // Only choosing all three ones yields |effect| = 1. Choosing three
+        // zeros yields -0.75, so the observed split is the sole extreme split.
+        let mut samples = Vec::new();
+        for index in 0..7 {
+            samples.push(sample(
+                &format!("S{index}"),
+                if index < 3 {
+                    Condition::Case
+                } else {
+                    Condition::Control
+                },
+                if index < 3 { 1.0 } else { 0.0 },
+            ));
+        }
+        let result = permutation_test(&samples, Sidedness::TwoSided).unwrap();
+        assert_eq!(result.permutations_considered, 35);
+        assert_eq!(result.extreme_count, 1);
+        assert!((result.p_value - 1.0 / 35.0).abs() < 1e-12);
+    }
+
     /// The full eight-sample cohort shape from `docs/statistics_spec.md`,
     /// with case values strictly greater than every control value so the
     /// observed labeling is the unique most extreme split in both

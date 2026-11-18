@@ -1,0 +1,74 @@
+{
+  "candidate_genes": 661,
+  "environment": "macOS-26.6.2-arm64-arm-64bit-Mach-O",
+  "filtered_input": {
+    "bytes": 118152,
+    "path": "/Users/summermalik/Documents/GitHub/TopologicalAnalysisofRNASplicinginEndometriosis/data/pilots/SRR36710387_prefix1m_nov17/candidate_benchmark/junctions.tsv",
+    "sha256": "771e56e060f1046d0dc8d84009abdb2d866810499b6cca66448ea1c855dc2219"
+  },
+  "inputs": [
+    {
+      "bytes": 2761948,
+      "path": "/Users/summermalik/Documents/GitHub/TopologicalAnalysisofRNASplicinginEndometriosis/preprocessing/runs/SRR36710387_pilot_nov17/alignment/junctions.tsv",
+      "sha256": "fdb67969ef48439d884dd3ff3f7eb5cc866626cc8e31de634e9b1c50675b02ff"
+    },
+    {
+      "bytes": 30901,
+      "path": "/Users/summermalik/Documents/GitHub/TopologicalAnalysisofRNASplicinginEndometriosis/data/gene_sets/candidate_genes.tsv",
+      "sha256": "0aacc70364351a8d28189410a0c24111958a219c13daad4614f8c73b42b787c0"
+    },
+    {
+      "bytes": 992880,
+      "path": "/Users/summermalik/Documents/GitHub/TopologicalAnalysisofRNASplicinginEndometriosis/target/release/splice-girl",
+      "sha256": "42c4f849584c3a41e13bff19180e9547073a93e14692d9519d012249bbfa314e"
+    },
+    {
+      "bytes": 5748,
+      "path": "/Users/summermalik/Documents/GitHub/TopologicalAnalysisofRNASplicinginEndometriosis/scripts/benchmark_real.py",
+      "sha256": "5198e0237862e659480afd8ca649bcdf7de9c422a6b65707a501f816d5369845"
+    }
+  ],
+  "junction_rows": 1388,
+  "largest_graph_edges": 52,
+  "largest_graph_nodes": 66,
+  "limits": "One deterministic control prefix; observed genes only; startup/filesystem included; not a full-cohort benchmark.",
+  "maximum_peak_rss_bytes": 4227072,
+  "median_seconds": 0.016424959059804678,
+  "observed_genes": 243,
+  "operation": "analyze plus TSV/manifest export; no figures or inference",
+  "runs": [
+    {
+      "math_checks": "PASS",
+      "peak_rss_bytes": 4161536,
+      "returncode": 0,
+      "seconds": 0.2826015839818865
+    },
+    {
+      "math_checks": "PASS",
+      "peak_rss_bytes": 4128768,
+      "returncode": 0,
+      "seconds": 0.016424959059804678
+    },
+    {
+      "math_checks": "PASS",
+      "peak_rss_bytes": 4227072,
+      "returncode": 0,
+      "seconds": 0.011065957834944129
+    },
+    {
+      "math_checks": "PASS",
+      "peak_rss_bytes": 4128768,
+      "returncode": 0,
+      "seconds": 0.016713291872292757
+    },
+    {
+      "math_checks": "PASS",
+      "peak_rss_bytes": 4128768,
+      "returncode": 0,
+      "seconds": 0.013524499954655766
+    }
+  ],
+  "sample_gene_groups": 243,
+  "scope": "SRR36710387 control; first 1,000,000 cleaned pairs; frozen unique exon-pair assignments, support >= 1; all observed candidates",
+  "unobserved_genes": 418
+}

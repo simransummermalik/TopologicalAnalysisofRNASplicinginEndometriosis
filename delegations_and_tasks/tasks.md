@@ -29,7 +29,7 @@ means Rust task 5.
 Split task IDs according to available time and interest. A task can be completed
 alone or worked on together. A simple shared table is enough:
 
-This status board was checked against the repository on **November 16, 2026**.
+This status board was checked against the repository on **November 17, 2026**.
 **Done** is used only when the task's requested output and acceptance evidence
 exist. **In progress** means useful work exists but the full “Done when” rule
 has not been met.
@@ -57,14 +57,14 @@ has not been met.
 
 | Task ID | Status | Evidence or next requirement |
 |---|---|---|
-| D1 | In progress | GSE315857 samples and raw-read QC are documented; the formal suitability review is incomplete. |
+| D1 | In progress | The [suitability review](../docs/dataset_review.md) now covers design, tissue, QC, metadata gaps and conflicting library/read-length methods. Protocol confirmation and final suitability sign-off remain. |
 | D2 | **Done** | GSE315857 and its eight exact run accessions are recorded in [samples.tsv](../endometriosis-splicing/samples.tsv) and the [README](../README.md#the-eight-sample-study). |
 | D3 | In progress | Eight runs were retrieved in Galaxy and one control pilot is local; complete source checksums are still needed. |
 | D4 | **Done** | The standardized [sample manifest](../data/metadata/samples.tsv) records unique run-based sample IDs, internal subject labels, case/control status, tissue, accessions, file locations, QC/Cleaver status, pending reference fields, and eligibility for all eight samples. |
 | D5 | **Done** | The verified GENCODE v50 reference and frozen coordinate/node/strand conventions now have a complete checksummed full-human HISAT2 2.2.3 index, exon map and splice-site hints. Commands and hashes are retained in the [real-pilot bundle](../data/pilots/SRR36710387_prefix1m_nov17/README.md). Final cohort eligibility/settings remain separate. |
 | D6 | In progress | Annotated SAM junction counting, strand/uniqueness/anchor filters and sequential batch export are implemented and tested. Real cohort alignments and QC remain. |
 | D7 | **Done** | The [HISAT2 detection note](../preprocessing/HISAT2_GUIDE.md#counting-rules-and-limits) and [math limitation](../docs/math_spec.md#preprocessing-and-back-splice-detection) document strand availability, excluded alignment classes, and why missing back-splices do not prove biological absence. |
-| D8 | In progress | The real prefix pilot exports complete junction QC; 73.7% of assignment-stage junction observations are ambiguous under the frozen exon-pair rule. This needs team review before expanding. |
+| D8 | In progress | The [tested assignment audit](../data/pilots/SRR36710387_prefix1m_nov17/assignment_audit/README.md) exactly reproduces converter QC and separates exon-pair ambiguity from cross-gene ambiguity: 94.69% of ambiguous observations identify one gene. Full-cohort filter/coverage review remains; no observations were rescued. |
 | D9 | In progress | Exploratory anchor/support choices and a four-threshold same-gene check are recorded in the pilot. Final cohort coverage/ambiguity thresholds are not approved. |
 | D10 | In progress | The real prefix produces 32,575 standard junction rows and a verified four-edge CDH11 table. The full sample and remaining cohort are pending. |
 | D11 | Blocked | Graph comparability requires standardized real junction tables. |
@@ -109,7 +109,7 @@ has not been met.
 | R12 | **Done (software)** | Explicit-rule ranking, deterministic ties, direct symbol/category/flag joins into statistics and ranked outputs, signed junction exports and preservation of the full supplied gene family are implemented and tested. Every row traces back by versioned gene ID to source annotations and sample/junction results. Real-study rule approval and interpretation remain separate. |
 | R13 | **Done** | [`src/output.rs`](../src/output.rs) writes metrics, junction components, comparisons, and `run_manifest.json` with checksums and settings; see the [October 22 log](../logs/october_22nd_summer.md). |
 | R14 | **Done** | [`tests/cli_errors.rs`](../tests/cli_errors.rs) checks missing/empty files, headers, counts, manifests, metadata mismatches, zero support, comparison groups, overwrite protection, corrections, and failure exit codes; solver failure is unit-tested. |
-| R15 | In progress | [Software validation](../docs/software_validation.md) records small and candidate-sized synthetic timing plus peak memory; a real-data benchmark remains after D12. |
+| R15 | **Done (current software scope)** | [Software validation](../docs/software_validation.md) records synthetic performance and a five-run real-prefix benchmark across 243 observed candidates/1,388 rows: median 11.194 ms and maximum child RSS 4.05 MiB. This does not measure alignment or full-cohort performance. |
 | R16 | **Done** | README/demo installation instructions, Rust 1.85 minimum, isolated `cargo install --path .`, installed command checks, examples, and limitations are recorded in [software validation](../docs/software_validation.md). |
 | R17 | Not started | A clean-checkout review by another person has not been recorded. |
 
@@ -124,7 +124,7 @@ has not been met.
 | S4 | **Done** | The primary effect (case mean minus control mean cycle fraction) is recorded in [statistics_spec.md](../docs/statistics_spec.md) as the `compare` command's existing, frozen definition. |
 | S5 | **Done** | The exact 70-permutation design, its p-value floor, and a numbered procedure are recorded in [statistics_spec.md](../docs/statistics_spec.md) and implemented in [`src/permutation.rs`](../src/permutation.rs) ([November 3 log](../logs/november_3rd_vania.md)); two-sided testing was chosen on 2026-11-17 ([inference rules](../docs/statistics_spec.md#inference-rules-decided-2026-11-17)). |
 | S6 | **Done** | No-difference, known-difference, and fully hand-enumerable (`C(4,2) = 6`) fixtures are tested in `src/permutation.rs`, including one that independently rederives S5's documented `1/70`/`2/70` p-value floor rather than asserting a copied number; the code cannot report `p = 0` because the observed labeling is always counted. "Compare exact and sampled results" and "check the saved seed" do not apply — S5 deliberately chose exhaustive enumeration over sampling, so there is no seed to check. |
-| S7 | In progress | `stats` requires an independent-design declaration and an explicit replication minimum, rejects known repeated subjects, and records untestable genes. Real exchangeability, confounding, QC, and study-design review remain. *2026-11-17:* a gene is testable only with all 4 cases and 4 controls (`--min-per-group 4`), because 3 versus 4 can never reach p < 0.05. |
+| S7 | In progress | `stats` requires an independent-design declaration and explicit replication minimum, rejects known repeated subjects, and records untestable genes. The study's four-per-group rule keeps the predeclared complete cohort consistent; it is not a mathematical impossibility claim about 3 versus 4 (the tested counterexample attains 1/35). Real exchangeability, confounding and QC review remain. |
 | S8 | In progress | BH correction now runs in `stats`, preserving raw/adjusted values, untested reasons, and family counts in TSV/JSON/HTML; final biological family and missing-test policy approval remain. *2026-11-17:* family and policy decided: one primary gene-set test on `candidate_genes.tsv` (mean absolute effect, exact 70 relabelings), implemented in `stats` as `set_test.tsv`; gene-level BH and the risk, environmental and overlap set tests are exploratory. Remaining: review outputs on real data. |
 | S12 | In progress | The generic statistics TSV, run manifest, sample decisions, and report are implemented and tested; the final real-study report and baseline/sensitivity results remain. |
 | S2, S3 | Not started | Real eligibility and support/coverage thresholds still require scientific review. |
@@ -144,10 +144,18 @@ has not been met.
 | V2 | **Done** | `visualize` draws the tested synthetic splice graph with direction and support. |
 | V3 | **Done** | `visualize` generates aligned observed, gradient, and cycle graph panels with fixed node/edge layout, signed values, a shared width scale, and a complete junction table; see [`splice-girl-basic.svg`](../splice-girl-basic.svg). |
 | V4 | In progress | The report and [real CDH11 graph](../data/pilots/SRR36710387_prefix1m_nov17/verified/graph.svg) exist; the real case/control figure still requires additional processed samples. |
-| V5–V8 | Not started | Real results, biological explanations, speaking plan, and demo-gene selection remain. |
+| V5 | In progress | Three [technical audit figures](../data/pilots/SRR36710387_prefix1m_nov17/audit_figures/README.md) are exported as PDF/SVG/PNG with source hashes. Final disease-result figures await the cohort. |
+| V6 | In progress | [Presentation notes](../docs/presentation_notes.md) explain junctions, normalization, gradient/cycle space and limitations in plain language; an audience comprehension check remains. |
+| V7 | **Done (speaking draft)** | Four shared speaking sections, target timings, live commands and handoff sentences are written in the presentation notes, without assigning roles. Rehearsal remains V10. |
+| V8 | In progress | CDH11 is selected by a predeclared rule for the bounded technical demo. Final real case/control selection must wait for cohort QC/results. |
 | V9 | **Done** | [examples/demo](../examples/demo/README.md) contains tiny inputs, exact commands, expected output, and runtime guidance. |
-| V10–V11 | Not started | Rehearsal, backup recording, and final figure audit remain. |
-| F1–F5 | Not started | Final methods, results, release, compiled documents, and acceptance review remain; the software release checklist is now prepared. |
+| V10 | Not started | Written target timings and saved offline figures exist; the team still needs a timed rehearsal and backup recording. |
+| V11 | In progress | Current pilot graph/audit plots and captions were checked against saved counts and visually inspected. Repeat for the final cohort figures. |
+| F1 | In progress | [Methods draft](../docs/methods_draft.md) assembled from specifications; final data settings and sign-offs remain. |
+| F2 | In progress | [Results draft](../docs/results_draft.md) reports the completed technical pilot and benchmark; biological comparisons remain explicitly pending. |
+| F3 | In progress | Source-archive preparation and [release-review notes](../docs/release_notes.md) exist; the license choice and publication review remain. No tag or push performed. |
+| F4 | In progress | The simple roadmap section compiles in a standard temporary article wrapper with no box/reference warnings and three visually checked pages. Main Overleaf source remains missing. |
+| F5 | In progress | Automated checks pass on current/minimum Rust (100 Rust + 88 Python tests); independent team acceptance and final cohort review remain. |
 | X1–X4 | Not started | These are optional extensions after the required workflow works. |
 
 When a task changes, update its status and link the concrete output. Mark a

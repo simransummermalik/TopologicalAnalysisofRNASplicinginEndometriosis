@@ -17,7 +17,7 @@ benchmark.
 
 Rust 1.85 is the minimum because it is the first stable release supporting the
 Rust 2024 edition used by this package. The October 28 suite of 56 tests was
-compiled and run with both Rust 1.85.0 and Rust 1.97.1. The current 98-test
+compiled and run with both Rust 1.85.0 and Rust 1.97.1. The current 100-test
 suite, including reports and the full configured statistics workflow, passes
 on both versions.
 The CI matrix retains Rust 1.85.0 as well as stable.
@@ -63,9 +63,9 @@ after the check; the user's installed executable was not replaced.
 
 ## Automated verification
 
-The current Rust suite contains **98 passing tests**:
+The current Rust suite contains **100 passing tests**:
 
-- 57 library tests for parsing, manifests, graph math, comparisons, outputs,
+- 59 library tests for parsing, manifests, graph math, comparisons, outputs,
   validation summaries, SVG generation, report escaping/missing values, and
   permutation testing, and BH correction (the four toy adjustment vectors
   were independently checked with R's `p.adjust`)
@@ -183,8 +183,9 @@ exists.
 
 ## Limits of this validation
 
-- The performance measurements use synthetic data. A real-data benchmark is
-  required after a candidate-sized checked junction table exists.
+- The original performance measurements use synthetic data. The real-prefix
+  benchmark below covers observed candidates from one control; full-cohort
+  performance remains unmeasured.
 - The independent beginner clean-checkout review in task R17 is still pending.
 - Successful software validation does not validate RNA-seq preprocessing,
   biological comparability, statistical inference, or gene interpretation.
@@ -251,6 +252,54 @@ comparison, a nonzero real-data cycle demonstration, or approval of all
 preprocessing choices. The pilot records a 73.7% ambiguous-observation exclusion
 rate at the annotation-assignment stage, which requires review before expanding.
 The recorded single selected-gene Rust analysis/export took about 0.57 seconds
-including startup and file writing. Full-candidate real-data benchmarking
-remains pending. Optional macOS kernel-level memory profiling was unavailable;
+including startup and file writing. The observed-candidate benchmark below
+extends this check. Optional macOS kernel-level memory profiling was unavailable;
 the actual reference and alignment runs completed and passed verification.
+
+## Final local checks and observed-candidate benchmark — November 17
+
+The current full check passes **100 Rust tests and 88 Python tests (188 total)**,
+formatting, strict Clippy and the release build. Rust tests and strict Clippy
+also pass with the minimum Rust 1.85.0. The Python count is 27 preprocessing,
+56 evidence-helper and five script tests. New regressions distinguish
+within-gene exon ambiguity from cross-gene ambiguity, verify mate-count and
+condition checks in the storage preflight, and establish that BH significance
+is not mathematically impossible at the balanced permutation p-value floor.
+The unequal three-versus-four counterexample attains a two-sided p-value of
+1/35; the study's four-per-group rule remains its predeclared completeness policy.
+
+`scripts/benchmark_real.py` filtered the actual prefix's junction table to all
+observed members of the fixed 661-gene family: **243 genes, 1,388 junction rows**.
+The remaining 418 candidates were recorded as unobserved, not assigned zero.
+The largest graph had 66 nodes; the maximum edge count was 52. Over five runs,
+analysis plus TSV/manifest export took a median **11.194 ms** (range 10.355–16.516
+ms, startup included). Maximum measured child-process peak RSS was **4,243,456
+bytes (4.05 MiB)**, read through a fresh worker's `getrusage` rather than the
+unavailable kernel profiler. Every one of the 243 groups passed the Rust math
+checks on every run. These are internal checks across the candidate prefix;
+only the selected CDH11 graph has the separate BAM/SVD verification above.
+
+The [benchmark record](../data/pilots/SRR36710387_prefix1m_nov17/candidate_benchmark/benchmark.json)
+stores source/binary/script hashes, scope, sizes and each run's measurements;
+the exact filtered junction input is saved beside it. This benchmark excludes
+alignment, HTML/SVG generation and disease inference. It does not predict
+full-cohort runtime or establish biological validity of the other genes.
+
+## Isolated source-package acceptance — November 17
+
+The unpublished allowlisted source archive was extracted into a new temporary
+folder. The archive and all 132 included file hashes matched its manifest;
+no raw reads, references, alignment files or run folders entered the payload.
+The complete default check passed from that extracted source with Cargo
+offline: all 188 tests, formatting, strict Clippy, release build and the
+synthetic benchmark. An isolated `cargo install --path . --locked --offline`
+then passed help, version, menu/quit, synthetic validation/report generation
+and live recomputation of the four-edge CDH11 input. The normal installed
+executable in the user's account was not replaced.
+
+This run caught a speaking-script mistake: the demo manifest intentionally
+contains an absent `control_03`, so validating it with the junction table is
+supposed to fail. The opening script now validates the junction table alone,
+then lets the report show the intentional exclusion. The corrected commands
+were run successfully. This is developer acceptance, not the independent
+beginner or biological review requested in the task guide.

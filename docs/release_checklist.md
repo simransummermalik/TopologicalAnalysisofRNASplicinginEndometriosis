@@ -3,6 +3,11 @@
 This checklist describes the smallest honest software release. It does not
 claim that the biological study is finished.
 
+The [release notes](release_notes.md) and `scripts/prepare_release.py` prepare
+an unpublished, allowlisted source archive with a checksum manifest. A license
+choice and final review remain necessary before publication; no release tag
+has been created.
+
 ## Included now
 
 - Rust CLI source and dependency-free `Cargo.lock`.

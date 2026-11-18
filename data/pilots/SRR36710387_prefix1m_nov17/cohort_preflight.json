@@ -1,0 +1,107 @@
+{
+  "all_paired_inputs_present": false,
+  "estimated_working_bytes_with_25_percent_margin": 768382227492,
+  "input_paths_checked": false,
+  "inputs": [
+    {
+      "bytes": 6641,
+      "path": "/Users/summermalik/Documents/GitHub/TopologicalAnalysisofRNASplicinginEndometriosis/data/metadata/samples.tsv",
+      "sha256": "42f27f708378fba1c89fe3cf8081518a763ce8abb27e14d3c70ac23cefe98d35"
+    },
+    {
+      "bytes": 927,
+      "path": "/Users/summermalik/Documents/GitHub/TopologicalAnalysisofRNASplicinginEndometriosis/data/galaxy_data/october_20/Galaxy138-[controls_multiqc_stats].tabular",
+      "sha256": "7f840f74c68362efdcbabc44c9e9ca7201e0f6ea7073fcf21c185871d7180705"
+    },
+    {
+      "bytes": 931,
+      "path": "/Users/summermalik/Documents/GitHub/TopologicalAnalysisofRNASplicinginEndometriosis/data/galaxy_data/october_20/Galaxy140-[endometriosis_multiqc_stats].tabular",
+      "sha256": "60683d3876a8585f05f2b8ba78009da5d1a046bc46c99450dd8af368cf8c16ef"
+    },
+    {
+      "bytes": 1677,
+      "path": "/Users/summermalik/Documents/GitHub/TopologicalAnalysisofRNASplicinginEndometriosis/preprocessing/runs/SRR36710387_pilot_nov17/subset/subset_manifest.json",
+      "sha256": "7917d20ff6af9a9137c5271eaf8294f0244cfd2ea85f959c494657c418aebd4b"
+    },
+    {
+      "bytes": 7207,
+      "path": "/Users/summermalik/Documents/GitHub/TopologicalAnalysisofRNASplicinginEndometriosis/preprocessing/cohort_readiness.py",
+      "sha256": "4131f635bab1ce67b7a0fd964c6ec0e00491d8238f890a767291d10f5491472a"
+    }
+  ],
+  "limits": [
+    "Raw and cleaned storage use the pilot cleaned-gzip rate as a proxy; allow extra for references, indexes, tool temporary files and other users.",
+    "Sample presence does not verify FASTQ integrity, identity, checksums or full-sample scope.",
+    "Final strand, mapping-ambiguity, support and coverage choices still need the scientific review recorded in priorities.md.",
+    "No path means no assumed drive/server; an SSH address must be checked on that server."
+  ],
+  "pilot_file_sizes": {
+    "bam_bytes": 111416174,
+    "clean_gzip_bytes": 103954202,
+    "pairs": 1000000,
+    "sam_bytes": 808141048
+  },
+  "raw_read_pairs": 545210220,
+  "samples": [
+    {
+      "condition": "control",
+      "raw_pairs_from_saved_qc": 65132389,
+      "read1_present": false,
+      "read2_present": false,
+      "sample_id": "SRR36710390"
+    },
+    {
+      "condition": "control",
+      "raw_pairs_from_saved_qc": 72536093,
+      "read1_present": false,
+      "read2_present": false,
+      "sample_id": "SRR36710389"
+    },
+    {
+      "condition": "control",
+      "raw_pairs_from_saved_qc": 58246706,
+      "read1_present": false,
+      "read2_present": false,
+      "sample_id": "SRR36710388"
+    },
+    {
+      "condition": "control",
+      "raw_pairs_from_saved_qc": 49477059,
+      "read1_present": false,
+      "read2_present": false,
+      "sample_id": "SRR36710387"
+    },
+    {
+      "condition": "case",
+      "raw_pairs_from_saved_qc": 54679384,
+      "read1_present": false,
+      "read2_present": false,
+      "sample_id": "SRR36710386"
+    },
+    {
+      "condition": "case",
+      "raw_pairs_from_saved_qc": 89664641,
+      "read1_present": false,
+      "read2_present": false,
+      "sample_id": "SRR36710385"
+    },
+    {
+      "condition": "case",
+      "raw_pairs_from_saved_qc": 75430216,
+      "read1_present": false,
+      "read2_present": false,
+      "sample_id": "SRR36710384"
+    },
+    {
+      "condition": "case",
+      "raw_pairs_from_saved_qc": 80043732,
+      "read1_present": false,
+      "read2_present": false,
+      "sample_id": "SRR36710383"
+    }
+  ],
+  "scope": "full eight-sample input/storage preflight only; no processing launched",
+  "storage_estimate_fits": false,
+  "storage_free_bytes": null,
+  "storage_path": null
+}

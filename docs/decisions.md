@@ -36,6 +36,17 @@ the team records an owner and a reasoned choice.
 
 ## Open decisions that still need a team answer
 
+**Mathematical clarification, November 17:** the statistical-policy row above
+retains its historical rationale, but two claims in that rationale were too
+broad. BH discoveries are possible with balanced p-values of 2/70 when enough
+genes share small p-values; Bonferroni/Holm and BH have different thresholds.
+An unequal 3-versus-4 absolute-effect test can attain 1/35, not necessarily 2/35.
+The added tests in `src/fdr.rs` and `src/permutation.rs` demonstrate both facts.
+The chosen primary candidate-set test, two-sided alternative, four-per-group
+eligibility and exploratory status of other tests are unchanged. The four-per-
+group requirement is a consistent complete-cohort policy, not a claim that
+significance is impossible for every smaller design.
+
 Implementation note, 2026-11-17: `preprocessing/hisat2_pipeline.py` now implements
 the HISAT2 path already named in the data methods; a tiny actual paired-read
 Cleaver/HISAT2-to-Rust-report test passes. The STAR prototype is retained as
@@ -52,3 +63,16 @@ synthetic smoke test as approval of the full human pilot or its thresholds.
 
 An open decision is not a failure. It is safer to leave an item visible than to
 hide an assumption inside code or a final result.
+
+## File and output handling — November 17 clarification
+
+Use the stable `SRR...` run IDs across read sheets, alignment outputs and
+junction tables; retain the `case`/`control` labels from the study manifest.
+Create a new named run folder for each execution rather than replacing prior
+outputs. Large reads, indexes and alignments stay in ignored local/external
+storage. Small review tables, plots and their checksum manifests may be kept
+under `data/pilots/<sample_scope_date>/`; generated software review archives
+stay under ignored `target/`. Preserve original source checksums and distinguish
+full samples from deterministic prefixes. The user confirmed that there is
+currently no external drive/server, so no full-cohort run is started on the
+nearly full laptop. This records output handling, not a new scientific method.

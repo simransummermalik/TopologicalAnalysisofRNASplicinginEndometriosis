@@ -146,6 +146,17 @@ mod tests {
     }
 
     #[test]
+    fn coarse_balanced_permutation_p_values_can_still_pass_bh() {
+        let p = 2.0 / 70.0;
+        let input = rows(&vec![Some(p); 661]);
+        let adjusted = benjamini_hochberg("counterexample", &input).unwrap();
+        for gene in adjusted.genes {
+            close(gene.adjusted_p_value.unwrap(), p);
+            assert!(gene.adjusted_p_value.unwrap() < 0.05);
+        }
+    }
+
+    #[test]
     fn untested_genes_remain_missing_and_do_not_expand_the_test_denominator() {
         let result = benjamini_hochberg("toy", &rows(&[None, Some(0.01), Some(0.04)])).unwrap();
         assert_eq!((result.tested_count, result.untested_count), (2, 1));
