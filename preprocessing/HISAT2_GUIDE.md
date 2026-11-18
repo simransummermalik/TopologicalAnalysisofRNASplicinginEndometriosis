@@ -98,8 +98,11 @@ in `data/metadata/samples.tsv`; a batch sheet does not establish study eligibili
 
 ## 5. Plan and run the batch
 
-Choose the RNA strandedness from the library protocol and the count/anchor
-thresholds through the group's methods review. Do not infer these from
+For GSE315857 the strandedness is **RF** (decided 2026-11-18 from all eight
+runs; see [data_methods.md](../docs/data_methods.md#library-strandedness-2026-11-18)).
+For another dataset, check it with `preprocessing/strand_kmer_check.py` and
+the library protocol. Choose the count/anchor thresholds through the group's
+methods review. Do not infer these from
 whether an example happens to run. `FR`/`RF` describe paired library
 strandedness; `unstranded` is an explicit choice, not an automatic guess.
 
@@ -112,7 +115,7 @@ python3 preprocessing/batch_preprocessing.py plan
   --index references/hisat2_v50/genome
   --gene-map references/hisat2_v50/junction_exon_map.tsv
   --splice-sites references/hisat2_v50/splice_sites.tsv
-  --strandedness APPROVED_LIBRARY_STRANDEDNESS
+  --strandedness RF
   --min-anchor APPROVED_ANCHOR_LENGTH
   --min-unique APPROVED_JUNCTION_SUPPORT
   --output-dir preprocessing/runs/cohort_run_01

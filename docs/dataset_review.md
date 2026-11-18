@@ -11,7 +11,7 @@ support; it is not final approval of the cohort or library settings.
 | Are these paired subjects? | The current design is independent groups. Internal subject IDs identify the eight samples; they are not published patient identifiers or proof of matching. Confirm there are no repeated donors before final inference. |
 | What files exist? | Saved raw FastQC/MultiQC summaries for all eight runs; one complete cleaned control locally; one million-pair aligned prefix from that control. Other FASTQ pairs still need an accessible storage location. |
 | How much sequence? | The saved QC tables contain 545,210,220 pairs across the eight runs. Both mates agree for every run; median read length is 100 bases. These are raw counts, before cleaning. |
-| Is library information settled? | No. See the source discrepancy below and the independent mate-orientation diagnostic. |
+| Is library information settled? | Orientation yes: all eight runs are RF ([2026-11-18 check](../data/strandedness_2026-11-18/README.md)). The kit description still differs between sources; see below. |
 | Are batch/covariates complete? | Sequencing batch is not reported in the local manifest. Eight samples cannot support a large covariate model. Check donor independence and clinical metadata before interpreting diagnosis effects. |
 | Can this test exposure effects? | No patient exposure measurements are present in the study manifest. Environmental evidence prioritizes genes; it does not label these donors as exposed. |
 | Can this test the proposed graph method? | Provisionally yes: paired bulk RNA-seq, matched tissue/phase, accessible run identifiers and a successful human-reference technical pilot. Full eligibility still depends on cleaning, alignment, assignment coverage and graph comparability for every sample. |
@@ -41,10 +41,14 @@ has not been relabeled or silently rerun as a final RF analysis.
 
 ## What remains before accepting all eight
 
-1. Resolve library preparation/orientation using the original records or lab
-   confirmation, then inspect orientation consistently across samples.
-2. Review the exact-exon-pair ambiguity loss and retain one documented rule
-   across the cohort. No ambiguous support has been rescued here.
+1. ~~Resolve library orientation and inspect it across samples.~~ Done
+   2026-11-18: the reads of all eight runs show RF orientation
+   ([check](../data/strandedness_2026-11-18/README.md)). The written sources
+   still disagree on kit and read length; that affects only how the authors'
+   own processing is described, not this project's settings.
+2. ~~Review the exact-exon-pair ambiguity loss and retain one documented rule
+   across the cohort.~~ Done 2026-11-18: the
+   [shared-splice-site node rule](data_methods.md#graph-nodes).
 3. Set anchor, support, gene coverage and missing-value rules before comparing
    case/control effects; check graph comparability after applying them.
 4. Verify raw/cleaned checksums, donor identity, QC and sample exclusions for

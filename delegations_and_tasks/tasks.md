@@ -57,7 +57,7 @@ has not been met.
 
 | Task ID | Status | Evidence or next requirement |
 |---|---|---|
-| D1 | In progress | The [suitability review](../docs/dataset_review.md) now covers design, tissue, QC, metadata gaps and conflicting library/read-length methods. Protocol confirmation and final suitability sign-off remain. |
+| D1 | In progress | The [suitability review](../docs/dataset_review.md) now covers design, tissue, QC, metadata gaps and conflicting library/read-length methods. Protocol confirmation and final suitability sign-off remain. *2026-11-18:* library orientation is settled as RF for all eight runs ([check](../data/strandedness_2026-11-18/README.md)). |
 | D2 | **Done** | GSE315857 and its eight exact run accessions are recorded in [samples.tsv](../endometriosis-splicing/samples.tsv) and the [README](../README.md#the-eight-sample-study). |
 | D3 | In progress | Eight runs were retrieved in Galaxy and one control pilot is local; complete source checksums are still needed. |
 | D4 | **Done** | The standardized [sample manifest](../data/metadata/samples.tsv) records unique run-based sample IDs, internal subject labels, case/control status, tissue, accessions, file locations, QC/Cleaver status, pending reference fields, and eligibility for all eight samples. |
@@ -65,7 +65,7 @@ has not been met.
 | D6 | In progress | Annotated junction counting, strand/uniqueness/anchor filters and sequential batch export are implemented and tested. Optional streaming BAM now avoids SAM files, with disk guards and interruption logs; [actual-tool counts/QC match](../preprocessing/validation/2026-11-18-storage-mode/README.md). Real cohort alignments and QC remain. |
 | D7 | **Done** | The [HISAT2 detection note](../preprocessing/HISAT2_GUIDE.md#counting-rules-and-limits) and [math limitation](../docs/math_spec.md#preprocessing-and-back-splice-detection) document strand availability, excluded alignment classes, and why missing back-splices do not prove biological absence. |
 | D8 | In progress | The [tested assignment audit](../data/pilots/SRR36710387_prefix1m_nov17/assignment_audit/README.md) exactly reproduces converter QC and separates exon-pair ambiguity from cross-gene ambiguity: 94.69% of ambiguous observations identify one gene. Full-cohort filter/coverage review remains; no observations were rescued. |
-| D9 | In progress | Exploratory anchor/support choices and a four-threshold same-gene check are recorded in the pilot. Final cohort coverage/ambiguity thresholds are not approved. *2026-11-18:* the ambiguity rule is settled: exons sharing a splice site are one node, which maps 98.5% of candidate junctions uniquely. Strandedness and support/coverage thresholds remain. |
+| D9 | In progress | Exploratory anchor/support choices and a four-threshold same-gene check are recorded in the pilot. Final cohort coverage/ambiguity thresholds are not approved. *2026-11-18:* the ambiguity rule is settled: exons sharing a splice site are one node, which maps 98.5% of candidate junctions uniquely. Strandedness is RF (2026-11-18). Support/coverage thresholds remain. |
 | D10 | In progress | The real prefix produces 32,575 standard junction rows and a verified four-edge CDH11 table. The full sample and remaining cohort are pending. |
 | D11 | Blocked | Graph comparability requires standardized real junction tables. |
 | D12 | In progress | A checksummed one-million-pair control prefix and CDH11 review bundle exist. A multi-sample approved integration subset still needs QC/comparability review. |

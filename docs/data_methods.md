@@ -284,5 +284,23 @@ circular RNA or a back-splice junction.
 The genome, annotation, coordinate system, node identity, and strand direction
 are frozen. The full human index, map and known splice-site hints were built
 and checksum-recorded from this exact pair on November 17, completing D5.
-Final library-strandedness, support/coverage eligibility and ambiguity-policy
-review remain processing decisions; the technical pilot does not approve them.
+The junction-ambiguity rule was settled on 2026-11-18 (see
+[graph nodes](#graph-nodes)), and library strandedness on the same day (see
+[below](#library-strandedness-2026-11-18)). Support/coverage eligibility
+remains a processing decision; the technical pilot does not approve it.
+
+## Library strandedness (2026-11-18)
+
+All eight runs are **RF**: read 1 is antisense and read 2 sense to the
+transcript, in 98.1–99.5% of reads matching nine reference mRNAs (both
+groups; [results](../data/strandedness_2026-11-18/README.md)). The pilot's
+HISAT2 alignment of SRR36710387 independently gave 99.7%. The cohort alignment
+therefore uses `--strandedness RF` (HISAT2 `--rna-strandness RF`).
+
+After alignment, each sample's spliced-alignment orientation is rechecked
+(the strand counts reported by `preprocessing/ambiguity_audit.py`). A sample
+whose read 1 is antisense in less than 95% of eligible spliced alignments is
+held for review rather than analyzed.
+
+The November 17 pilot was aligned as `unstranded`; its results are kept as
+recorded and not relabeled.

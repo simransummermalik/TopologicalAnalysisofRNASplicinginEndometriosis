@@ -8,6 +8,10 @@ Anyone can pick up any available task; there are no assigned leads.
 
 ## Latest completed work — November 18
 
+- [x] Settle library strandedness: all eight runs are RF (read 1 antisense in
+  98.1–99.5% of matched reads, both groups), checked by streaming 200,000
+  reads per mate from ENA. The cohort alignment uses `--strandedness RF`. See
+  the [check](data/strandedness_2026-11-18/README.md).
 - [x] Settle the junction-ambiguity rule: annotated exons sharing a splice
   site are one node (`shared-splice-site`), with retained-intron exons kept
   from merging neighbors. 98.5% of candidate junctions now map uniquely
