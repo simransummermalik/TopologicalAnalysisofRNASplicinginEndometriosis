@@ -1,0 +1,93 @@
+{
+  "annotation_summary": {
+    "exon_rows": 5087789,
+    "junctions": 698612,
+    "rows_written": 1229403,
+    "skipped_overlapping_exons": 0,
+    "transcripts": 646577
+  },
+  "commands": [
+    [
+      "hisat2-build",
+      "--bmaxdivn",
+      "16",
+      "-p",
+      "2",
+      "/Users/summermalik/Documents/GitHub/TopologicalAnalysisofRNASplicinginEndometriosis/references/hisat2_v50_pilot_nov17/reference.fa",
+      "/Users/summermalik/Documents/GitHub/TopologicalAnalysisofRNASplicinginEndometriosis/references/hisat2_v50_pilot_nov17/genome"
+    ]
+  ],
+  "expanded_reference_retained": false,
+  "inputs": [
+    {
+      "bytes": 845635028,
+      "path": "/Users/summermalik/Documents/GitHub/TopologicalAnalysisofRNASplicinginEndometriosis/references/gencode_v50/GRCh38.primary_assembly.genome.fa.gz",
+      "sha256": "b760d18dbb651dd14dfc290083371b3ef3bff122d43a9cefb13ca4ecf38f05ca"
+    },
+    {
+      "bytes": 124650284,
+      "path": "/Users/summermalik/Documents/GitHub/TopologicalAnalysisofRNASplicinginEndometriosis/references/gencode_v50/gencode.v50.primary_assembly.annotation.gtf.gz",
+      "sha256": "89bbad69a8c89fee5fadec0a2f14a098752d27a4ef7f24e4de9bac681e1b18f4"
+    }
+  ],
+  "method": "HISAT2 reference preparation",
+  "outputs": [
+    {
+      "bytes": 987090013,
+      "path": "/Users/summermalik/Documents/GitHub/TopologicalAnalysisofRNASplicinginEndometriosis/references/hisat2_v50_pilot_nov17/genome.1.ht2",
+      "sha256": "a5f638a7d5c7e8787fe58d497ba457dec2996fec44e17b109b9a4f6eea1dbf59"
+    },
+    {
+      "bytes": 737156944,
+      "path": "/Users/summermalik/Documents/GitHub/TopologicalAnalysisofRNASplicinginEndometriosis/references/hisat2_v50_pilot_nov17/genome.2.ht2",
+      "sha256": "368f797ae1febc9fa70be82d218c82924ef1f274d24297468f6697cd27b6cffc"
+    },
+    {
+      "bytes": 11384,
+      "path": "/Users/summermalik/Documents/GitHub/TopologicalAnalysisofRNASplicinginEndometriosis/references/hisat2_v50_pilot_nov17/genome.3.ht2",
+      "sha256": "ac6bb02a4878926497a95847e7bb0a60f219da8c346825cf4e4b5662fc541179"
+    },
+    {
+      "bytes": 737156939,
+      "path": "/Users/summermalik/Documents/GitHub/TopologicalAnalysisofRNASplicinginEndometriosis/references/hisat2_v50_pilot_nov17/genome.4.ht2",
+      "sha256": "cc0f2ba6e6e637780bc233ef30772558f9457df0fbd1fd4fb717d675caf9679b"
+    },
+    {
+      "bytes": 1296562299,
+      "path": "/Users/summermalik/Documents/GitHub/TopologicalAnalysisofRNASplicinginEndometriosis/references/hisat2_v50_pilot_nov17/genome.5.ht2",
+      "sha256": "de286e937b074d8503f78bed645581d63de29b7c0401f27643d5959a9cf94335"
+    },
+    {
+      "bytes": 750650868,
+      "path": "/Users/summermalik/Documents/GitHub/TopologicalAnalysisofRNASplicinginEndometriosis/references/hisat2_v50_pilot_nov17/genome.6.ht2",
+      "sha256": "11077d036d50322f165dbab4b4acdf151efdf89edeef23827a2a15d4dace6627"
+    },
+    {
+      "bytes": 12,
+      "path": "/Users/summermalik/Documents/GitHub/TopologicalAnalysisofRNASplicinginEndometriosis/references/hisat2_v50_pilot_nov17/genome.7.ht2",
+      "sha256": "ca888f40c3caca805b37a5434c75de5550616e0795e7602fb91156f22dd90851"
+    },
+    {
+      "bytes": 8,
+      "path": "/Users/summermalik/Documents/GitHub/TopologicalAnalysisofRNASplicinginEndometriosis/references/hisat2_v50_pilot_nov17/genome.8.ht2",
+      "sha256": "7c9fa136d4413fa6173637e883b6998d32e1d675f88cddff9dcbcf331820f4b8"
+    },
+    {
+      "bytes": 118288244,
+      "path": "/Users/summermalik/Documents/GitHub/TopologicalAnalysisofRNASplicinginEndometriosis/references/hisat2_v50_pilot_nov17/junction_exon_map.tsv",
+      "sha256": "1e2199753dbb46cd63ee8906fb79918d9bff4ff06583a864969858056b7dbc60"
+    },
+    {
+      "bytes": 18059118,
+      "path": "/Users/summermalik/Documents/GitHub/TopologicalAnalysisofRNASplicinginEndometriosis/references/hisat2_v50_pilot_nov17/splice_sites.tsv",
+      "sha256": "ac0e17330eec6b50264d96fbf5ca8321a796ba5f1048fbe6ea1b81f8e9666d2f"
+    }
+  ],
+  "status": "complete",
+  "tools": {
+    "hisat2-build": {
+      "path": "/tmp/splice-girl-hisat2-tools/bin/hisat2-build",
+      "version_output": "hisat2-build version 2.2.3\n64-bit\nBuilt on VM-8b0b7afd3b\nMon Sep  7 00:30:36 GMT 2026\nCompiler: arm64-apple-darwin20.0: error: linker command failed with exit code 1 (use -v to see invocation)\nOptions: -O3   -funroll-loops -g3 -std=c++11\nSizeof {int, long, long long, void*, size_t, off_t}: {4, 8, 8, 8, 8, 8}"
+    }
+  }
+}

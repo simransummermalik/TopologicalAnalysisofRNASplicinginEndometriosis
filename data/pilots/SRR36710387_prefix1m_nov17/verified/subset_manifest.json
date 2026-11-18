@@ -1,0 +1,37 @@
+{
+  "inputs": [
+    {
+      "bytes": 2680245681,
+      "expected_sha256": "f94bdb4fb8f283ab03a4861e3bf44404bec0835f91fa8d93a1322e41f8e8acc2",
+      "path": "/Users/summermalik/Documents/GitHub/TopologicalAnalysisofRNASplicinginEndometriosis/preprocessing/runs/SRR36710387/trimmed/SRR36710387.R1.fastq.gz",
+      "sha256": "f94bdb4fb8f283ab03a4861e3bf44404bec0835f91fa8d93a1322e41f8e8acc2"
+    },
+    {
+      "bytes": 2554496242,
+      "expected_sha256": "b0dacc0f6fcd403db34f4034b577a4ab14110592a1d0e5ca7b6d10641495e88e",
+      "path": "/Users/summermalik/Documents/GitHub/TopologicalAnalysisofRNASplicinginEndometriosis/preprocessing/runs/SRR36710387/trimmed/SRR36710387.R2.fastq.gz",
+      "sha256": "b0dacc0f6fcd403db34f4034b577a4ab14110592a1d0e5ca7b6d10641495e88e"
+    }
+  ],
+  "method": "first N synchronized cleaned read pairs",
+  "outputs": [
+    {
+      "bytes": 53253435,
+      "path": "/Users/summermalik/Documents/GitHub/TopologicalAnalysisofRNASplicinginEndometriosis/preprocessing/runs/SRR36710387_pilot_nov17/subset/R1.fastq.gz",
+      "sha256": "69bcf195df20e24e837ca4dc77c5c3faaf06a0fd1eb015c3b4f0044f27e1dfb0"
+    },
+    {
+      "bytes": 50700767,
+      "path": "/Users/summermalik/Documents/GitHub/TopologicalAnalysisofRNASplicinginEndometriosis/preprocessing/runs/SRR36710387_pilot_nov17/subset/R2.fastq.gz",
+      "sha256": "2402c27a59b05cbed8fc06709de66dd58b7e095cae5598d5f358be43258aad58"
+    }
+  ],
+  "read_length_range": [
+    15,
+    100
+  ],
+  "requested_pairs": 1000000,
+  "scope": "technical pilot only; deterministic prefix may have ordering bias; not the full sample or a biological replicate",
+  "status": "complete",
+  "written_pairs": 1000000
+}

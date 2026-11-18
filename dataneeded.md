@@ -29,8 +29,9 @@ sample records; the study reports an overall age range of 18–45 years.
 
 - [x] All eight paired-end SRA runs were retrieved in Galaxy.
 - [x] Raw FastQC and MultiQC reports exist for all eight samples.
-- [x] One control pilot, `SRR36710387`, has local raw reads, a Cleaver report,
-  cleaned paired reads, checksums, and post-cleaning FastQC/MultiQC.
+- [x] One control pilot, `SRR36710387`, has a recorded Cleaver cleaning run,
+  local cleaned paired reads, checksums, and post-cleaning FastQC/MultiQC.
+  Its original raw files are not currently in `data/raw/`.
 - [ ] Run the same reviewed Cleaver cleaning on the remaining seven samples.
 - [ ] Record cleaned-file checksums for the remaining seven samples.
 - [ ] Review the complete post-cleaning cohort together before alignment.
@@ -46,13 +47,20 @@ are under [`data/galaxy_data/october_20`](data/galaxy_data/october_20).
 - [x] Exact genome and annotation versions recorded in the manifest; source
   URLs, sizes, and checksums recorded in
   [`docs/data_methods.md`](docs/data_methods.md).
-- [ ] HISAT2 index built from that same genome. HISAT2 is the planned
+- [x] HISAT2 index built from that same genome (November 17). HISAT2 is the
   splice-aware Bowtie-family aligner; plain Bowtie2 should not be used for
   intron-spanning RNA-seq reads.
 - [x] FASTA and GTF source URLs, sizes, checksums, and integrity checks.
-- [ ] HISAT2 version and final index-building command.
+- [x] HISAT2 2.2.3 and the exact executed index-building command, source/output
+  hashes and splice-site map recorded in the [pilot bundle](data/pilots/SRR36710387_prefix1m_nov17/README.md).
 
 ## Alignment and splice junctions
+
+**Completed bounded pilot:** the first one million cleaned pairs from the
+local control have a full-reference alignment, BAM/index, 32,575 junction rows
+and an independently verified CDH11 result. See the [review](data/pilots/SRR36710387_prefix1m_nov17/README.md).
+The boxes below still refer to the complete sample/cohort, not its prefix.
+Review the large annotation-ambiguity exclusion rate before expanding.
 
 - [ ] Align the cleaned paired reads for the pilot sample with HISAT2.
 - [ ] Save the alignment summary, SAM/BAM output, sorted BAM, and BAM index.

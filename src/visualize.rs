@@ -31,7 +31,13 @@ pub fn render_svg(result: &GroupResult) -> String {
     let first_table_row_y = 650.0;
     let table_row_height = 26.0;
     let table_end_y = first_table_row_y + table_row_height * graph.edges.len() as f64;
-    let footer_line_y = table_end_y + 22.0;
+    let needs_node_key = graph.nodes.iter().any(|node| node.chars().count() > 12);
+    let key_height = if needs_node_key {
+        56.0 + graph.nodes.len() as f64 * 24.0
+    } else {
+        0.0
+    };
+    let footer_line_y = table_end_y + 22.0 + key_height;
     let canvas_height = footer_line_y + 76.0;
     let component_scale = graph
         .signal
@@ -134,8 +140,8 @@ pub fn render_svg(result: &GroupResult) -> String {
 
     for (index, edge) in graph.edges.iter().enumerate() {
         let row_y = first_table_row_y + table_row_height * index as f64;
-        let from = shorten(&graph.nodes[edge.from], 24);
-        let to = shorten(&graph.nodes[edge.to], 24);
+        let from = node_label(&graph.nodes, edge.from);
+        let to = node_label(&graph.nodes, edge.to);
         let connection = format!("{from} → {to}");
         svg.push_str(&format!(
             r##"<text class="serif" x="60" y="{row_y:.1}" font-size="12" fill="#111111">J{number}</text>
@@ -159,6 +165,15 @@ pub fn render_svg(result: &GroupResult) -> String {
             gradient_x = width * 0.70,
             cycle_x = width * 0.85,
         ));
+    }
+
+    if needs_node_key {
+        let y = table_end_y + 32.0;
+        svg.push_str(&format!("<text class=\"serif\" x=\"48\" y=\"{y:.1}\" font-size=\"14\" font-weight=\"700\">Node key (plot IDs, not transcript exon numbers)</text>\n"));
+        for (index, node) in graph.nodes.iter().enumerate() {
+            let y = y + 26.0 + index as f64 * 24.0;
+            svg.push_str(&format!("<text class=\"mono\" x=\"60\" y=\"{y:.1}\" font-size=\"12\">N{}</text><text class=\"mono\" x=\"112\" y=\"{y:.1}\" font-size=\"12\">{}<title>{}</title></text>\n", index + 1, xml_escape(&shorten(node, 80)), xml_escape(node)));
+        }
     }
 
     svg.push_str(&format!(
@@ -240,7 +255,7 @@ fn render_panel(
 
     for (index, node) in graph.nodes.iter().enumerate() {
         let x = panel_node_x(panel_x, panel_width, graph.nodes.len(), index);
-        let display = shorten(node, 12);
+        let display = node_label(&graph.nodes, index);
         svg.push_str(&format!(
             r##"<rect x="{left:.1}" y="{top:.1}" width="{NODE_WIDTH:.1}" height="{NODE_HEIGHT:.1}" fill="#ffffff" stroke="#111111" stroke-width="1.2"/>
 <text class="serif" x="{x:.1}" y="{text_y:.1}" text-anchor="middle" font-size="13" fill="#111111">{display}<title>{full}</title></text>
@@ -295,6 +310,16 @@ fn shorten(value: &str, max_chars: usize) -> String {
     }
     let prefix: String = value.chars().take(max_chars.saturating_sub(1)).collect();
     format!("{prefix}…")
+}
+
+/// Long genomic coordinates otherwise truncate to indistinguishable prefixes.
+/// The key preserves exact identities; graph construction and math are unchanged.
+fn node_label(nodes: &[String], index: usize) -> String {
+    if nodes.iter().any(|node| node.chars().count() > 12) {
+        format!("N{}", index + 1)
+    } else {
+        nodes[index].clone()
+    }
 }
 
 fn xml_escape(value: &str) -> String {
@@ -359,6 +384,17 @@ mod tests {
         assert!(svg.contains("gene&lt;1&gt;"));
         assert!(svg.contains("<title>a-very-long-node-name</title>"));
         assert!(!svg.contains("gene<1>"));
+    }
+
+    #[test]
+    fn genomic_nodes_get_distinct_plot_ids_and_a_coordinate_key() {
+        let rows = parse_tsv_text("sample_id\tgene_id\tfrom\tto\tcount\nS\tG\tchr1:100000-100099:+\tchr1:100200-100299:+\t10\n").unwrap();
+        let result = analyze_junctions(rows).unwrap();
+        let svg = render_svg(&result[0]);
+        assert!(svg.contains("N1<title>chr1:100000-100099:+</title>"));
+        assert!(svg.contains("N2<title>chr1:100200-100299:+</title>"));
+        assert!(svg.contains("N1 → N2"));
+        assert!(svg.contains("Node key (plot IDs, not transcript exon numbers)"));
     }
 
     #[test]

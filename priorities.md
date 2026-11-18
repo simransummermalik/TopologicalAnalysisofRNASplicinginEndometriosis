@@ -19,7 +19,8 @@ careful case-versus-control result.
 **Status:** Partly complete; this is the main blocker.
 
 - [ ] Finish the dataset suitability review and raw-file checksum record.
-- [ ] Build the HISAT2 index and splice-site hints from the verified reference.
+- [x] Build the full human HISAT2 index, exon map and splice-site hints from
+  the verified reference (November 17).
 - [x] Implement and test the Cleaver/HISAT2 adapter matching the current data
   methods, including a sequential batch command. The legacy STAR prototype
   remains separate. Full-cohort use still needs the checked human pilot.
@@ -70,11 +71,15 @@ placed into one reproducible category.
 **Task IDs:** D/R6.1 and D/R6.2  
 **Depends on:** Priorities 1 and 2.
 
-- [ ] Choose one eligible gene using a written rule.
-- [ ] Run its junction table through Splice Girl.
-- [ ] Compare parsed counts with the source table.
-- [ ] Inspect its graph and Hodge checks manually.
-- [ ] Record excluded samples, junctions, and reasons.
+**Status:** The [bounded CDH11 technical pilot](data/pilots/SRR36710387_prefix1m_nov17/README.md)
+passes on one million cleaned read pairs from one control. The full sample,
+case/control comparison and team review remain; mapping ambiguity needs review.
+
+- [x] Choose one pilot gene using a written coverage/size rule.
+- [x] Run its junction table through Splice Girl.
+- [x] Compare every count with an independent BAM recount.
+- [x] Inspect its graph and compare Rust with an independent SVD projection.
+- [x] Record the prefix scope, junction exclusions and sensitivity results.
 - [ ] Review the pilot before expanding to more genes.
 
 **Finished when:** one real gene moves from checked junction counts to a saved,

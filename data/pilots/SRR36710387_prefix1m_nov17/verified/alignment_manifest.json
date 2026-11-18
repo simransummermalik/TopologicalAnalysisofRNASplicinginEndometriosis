@@ -1,0 +1,160 @@
+{
+  "commands": [
+    [
+      "hisat2",
+      "--dta-cufflinks",
+      "-x",
+      "/Users/summermalik/Documents/GitHub/TopologicalAnalysisofRNASplicinginEndometriosis/references/hisat2_v50_pilot_nov17/genome",
+      "-p",
+      "2",
+      "--known-splicesite-infile",
+      "/Users/summermalik/Documents/GitHub/TopologicalAnalysisofRNASplicinginEndometriosis/references/hisat2_v50_pilot_nov17/splice_sites.tsv",
+      "--summary-file",
+      "/Users/summermalik/Documents/GitHub/TopologicalAnalysisofRNASplicinginEndometriosis/preprocessing/runs/SRR36710387_pilot_nov17/alignment/alignment_summary.txt",
+      "-S",
+      "/Users/summermalik/Documents/GitHub/TopologicalAnalysisofRNASplicinginEndometriosis/preprocessing/runs/SRR36710387_pilot_nov17/alignment/aligned.sam",
+      "-1",
+      "/Users/summermalik/Documents/GitHub/TopologicalAnalysisofRNASplicinginEndometriosis/preprocessing/runs/SRR36710387_pilot_nov17/subset/R1.fastq.gz",
+      "-2",
+      "/Users/summermalik/Documents/GitHub/TopologicalAnalysisofRNASplicinginEndometriosis/preprocessing/runs/SRR36710387_pilot_nov17/subset/R2.fastq.gz"
+    ],
+    [
+      "/tmp/splice-girl-hisat2-tools/bin/python3",
+      "/Users/summermalik/Documents/GitHub/TopologicalAnalysisofRNASplicinginEndometriosis/preprocessing/sam_junctions.py",
+      "--sam",
+      "/Users/summermalik/Documents/GitHub/TopologicalAnalysisofRNASplicinginEndometriosis/preprocessing/runs/SRR36710387_pilot_nov17/alignment/aligned.sam",
+      "--gene-map",
+      "/Users/summermalik/Documents/GitHub/TopologicalAnalysisofRNASplicinginEndometriosis/references/hisat2_v50_pilot_nov17/junction_exon_map.tsv",
+      "--sample-id",
+      "SRR36710387",
+      "--output",
+      "/Users/summermalik/Documents/GitHub/TopologicalAnalysisofRNASplicinginEndometriosis/preprocessing/runs/SRR36710387_pilot_nov17/alignment/junctions.tsv",
+      "--qc-json",
+      "/Users/summermalik/Documents/GitHub/TopologicalAnalysisofRNASplicinginEndometriosis/preprocessing/runs/SRR36710387_pilot_nov17/alignment/junction_qc.json",
+      "--min-anchor",
+      "8",
+      "--min-unique",
+      "1"
+    ],
+    [
+      "cleaver",
+      "samtools",
+      "sort",
+      "-o",
+      "/Users/summermalik/Documents/GitHub/TopologicalAnalysisofRNASplicinginEndometriosis/preprocessing/runs/SRR36710387_pilot_nov17/alignment/aligned.bam",
+      "/Users/summermalik/Documents/GitHub/TopologicalAnalysisofRNASplicinginEndometriosis/preprocessing/runs/SRR36710387_pilot_nov17/alignment/aligned.sam"
+    ],
+    [
+      "cleaver",
+      "samtools",
+      "index",
+      "/Users/summermalik/Documents/GitHub/TopologicalAnalysisofRNASplicinginEndometriosis/preprocessing/runs/SRR36710387_pilot_nov17/alignment/aligned.bam"
+    ]
+  ],
+  "created_utc": "2026-11-18T01:21:14.059649+00:00",
+  "inputs": [
+    {
+      "bytes": 53253435,
+      "path": "/Users/summermalik/Documents/GitHub/TopologicalAnalysisofRNASplicinginEndometriosis/preprocessing/runs/SRR36710387_pilot_nov17/subset/R1.fastq.gz",
+      "sha256": "69bcf195df20e24e837ca4dc77c5c3faaf06a0fd1eb015c3b4f0044f27e1dfb0"
+    },
+    {
+      "bytes": 118288244,
+      "path": "/Users/summermalik/Documents/GitHub/TopologicalAnalysisofRNASplicinginEndometriosis/references/hisat2_v50_pilot_nov17/junction_exon_map.tsv",
+      "sha256": "1e2199753dbb46cd63ee8906fb79918d9bff4ff06583a864969858056b7dbc60"
+    },
+    {
+      "bytes": 18059118,
+      "path": "/Users/summermalik/Documents/GitHub/TopologicalAnalysisofRNASplicinginEndometriosis/references/hisat2_v50_pilot_nov17/splice_sites.tsv",
+      "sha256": "ac0e17330eec6b50264d96fbf5ca8321a796ba5f1048fbe6ea1b81f8e9666d2f"
+    },
+    {
+      "bytes": 987090013,
+      "path": "/Users/summermalik/Documents/GitHub/TopologicalAnalysisofRNASplicinginEndometriosis/references/hisat2_v50_pilot_nov17/genome.1.ht2",
+      "sha256": "a5f638a7d5c7e8787fe58d497ba457dec2996fec44e17b109b9a4f6eea1dbf59"
+    },
+    {
+      "bytes": 737156944,
+      "path": "/Users/summermalik/Documents/GitHub/TopologicalAnalysisofRNASplicinginEndometriosis/references/hisat2_v50_pilot_nov17/genome.2.ht2",
+      "sha256": "368f797ae1febc9fa70be82d218c82924ef1f274d24297468f6697cd27b6cffc"
+    },
+    {
+      "bytes": 11384,
+      "path": "/Users/summermalik/Documents/GitHub/TopologicalAnalysisofRNASplicinginEndometriosis/references/hisat2_v50_pilot_nov17/genome.3.ht2",
+      "sha256": "ac6bb02a4878926497a95847e7bb0a60f219da8c346825cf4e4b5662fc541179"
+    },
+    {
+      "bytes": 737156939,
+      "path": "/Users/summermalik/Documents/GitHub/TopologicalAnalysisofRNASplicinginEndometriosis/references/hisat2_v50_pilot_nov17/genome.4.ht2",
+      "sha256": "cc0f2ba6e6e637780bc233ef30772558f9457df0fbd1fd4fb717d675caf9679b"
+    },
+    {
+      "bytes": 1296562299,
+      "path": "/Users/summermalik/Documents/GitHub/TopologicalAnalysisofRNASplicinginEndometriosis/references/hisat2_v50_pilot_nov17/genome.5.ht2",
+      "sha256": "de286e937b074d8503f78bed645581d63de29b7c0401f27643d5959a9cf94335"
+    },
+    {
+      "bytes": 750650868,
+      "path": "/Users/summermalik/Documents/GitHub/TopologicalAnalysisofRNASplicinginEndometriosis/references/hisat2_v50_pilot_nov17/genome.6.ht2",
+      "sha256": "11077d036d50322f165dbab4b4acdf151efdf89edeef23827a2a15d4dace6627"
+    },
+    {
+      "bytes": 12,
+      "path": "/Users/summermalik/Documents/GitHub/TopologicalAnalysisofRNASplicinginEndometriosis/references/hisat2_v50_pilot_nov17/genome.7.ht2",
+      "sha256": "ca888f40c3caca805b37a5434c75de5550616e0795e7602fb91156f22dd90851"
+    },
+    {
+      "bytes": 8,
+      "path": "/Users/summermalik/Documents/GitHub/TopologicalAnalysisofRNASplicinginEndometriosis/references/hisat2_v50_pilot_nov17/genome.8.ht2",
+      "sha256": "7c9fa136d4413fa6173637e883b6998d32e1d675f88cddff9dcbcf331820f4b8"
+    },
+    {
+      "bytes": 50700767,
+      "path": "/Users/summermalik/Documents/GitHub/TopologicalAnalysisofRNASplicinginEndometriosis/preprocessing/runs/SRR36710387_pilot_nov17/subset/R2.fastq.gz",
+      "sha256": "2402c27a59b05cbed8fc06709de66dd58b7e095cae5598d5f358be43258aad58"
+    }
+  ],
+  "outputs": [
+    {
+      "bytes": 2761948,
+      "path": "/Users/summermalik/Documents/GitHub/TopologicalAnalysisofRNASplicinginEndometriosis/preprocessing/runs/SRR36710387_pilot_nov17/alignment/junctions.tsv",
+      "sha256": "fdb67969ef48439d884dd3ff3f7eb5cc866626cc8e31de634e9b1c50675b02ff"
+    },
+    {
+      "bytes": 550,
+      "path": "/Users/summermalik/Documents/GitHub/TopologicalAnalysisofRNASplicinginEndometriosis/preprocessing/runs/SRR36710387_pilot_nov17/alignment/junction_qc.json",
+      "sha256": "ce092dfda7aba5b36a72d6c91c36e3bb09dba3966d0f894e0a5c7255ce4f2db0"
+    },
+    {
+      "bytes": 111416174,
+      "path": "/Users/summermalik/Documents/GitHub/TopologicalAnalysisofRNASplicinginEndometriosis/preprocessing/runs/SRR36710387_pilot_nov17/alignment/aligned.bam",
+      "sha256": "3a9eb27b70d1f265600c3c906a53f5847e073984a76167f64b9c91b45311bd2b"
+    },
+    {
+      "bytes": 3243448,
+      "path": "/Users/summermalik/Documents/GitHub/TopologicalAnalysisofRNASplicinginEndometriosis/preprocessing/runs/SRR36710387_pilot_nov17/alignment/aligned.bam.bai",
+      "sha256": "9df18f058c76020542f39ff73f198cc21ec51407a5570d95867b4e5b001719fb"
+    }
+  ],
+  "pipeline": "Splice Girl Cleaver/HISAT2",
+  "settings": {
+    "cleaning_skipped": true,
+    "count_unit": "primary uniquely mapped read alignments with NH:i:1 and XS strand",
+    "exclude_duplicates": false,
+    "minimum_anchor": 8,
+    "minimum_unique_reads": 1,
+    "sample_id": "SRR36710387",
+    "strandedness": "unstranded"
+  },
+  "status": "complete",
+  "tools": {
+    "cleaver": {
+      "path": "/Users/summermalik/.cargo/bin/cleaver",
+      "version_output": "cleaver 1.0.1"
+    },
+    "hisat2": {
+      "path": "/tmp/splice-girl-hisat2-tools/bin/hisat2",
+      "version_output": "/tmp/splice-girl-hisat2-tools/bin/hisat2-align-s version 2.2.3\n64-bit\nBuilt on VM-8b0b7afd3b\nMon Sep  7 00:30:36 GMT 2026\nCompiler: arm64-apple-darwin20.0: error: linker command failed with exit code 1 (use -v to see invocation)\nOptions: -O3   -funroll-loops -g3 -std=c++11\nSizeof {int, long, long long, void*, size_t, off_t}: {4, 8, 8, 8, 8, 8}"
+    }
+  }
+}

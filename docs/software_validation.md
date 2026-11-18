@@ -17,7 +17,7 @@ benchmark.
 
 Rust 1.85 is the minimum because it is the first stable release supporting the
 Rust 2024 edition used by this package. The October 28 suite of 56 tests was
-compiled and run with both Rust 1.85.0 and Rust 1.97.1. The current 94-test
+compiled and run with both Rust 1.85.0 and Rust 1.97.1. The current 98-test
 suite, including reports and the full configured statistics workflow, passes
 on both versions.
 The CI matrix retains Rust 1.85.0 as well as stable.
@@ -63,9 +63,9 @@ after the check; the user's installed executable was not replaced.
 
 ## Automated verification
 
-The current Rust suite contains **94 passing tests**:
+The current Rust suite contains **98 passing tests**:
 
-- 53 library tests for parsing, manifests, graph math, comparisons, outputs,
+- 57 library tests for parsing, manifests, graph math, comparisons, outputs,
   validation summaries, SVG generation, report escaping/missing values, and
   permutation testing, and BH correction (the four toy adjustment vectors
   were independently checked with R's `p.adjust`)
@@ -196,10 +196,10 @@ The default check needs only Cargo/Python; the extra smoke test requires
 Cleaver and HISAT2 on `PATH`. The source test helpers use unique temporary
 folders even when tests start simultaneously.
 
-- Rust: 94 tests, formatting, strict Clippy and release build pass on stable
+- Rust: 95 tests, formatting, strict Clippy and release build pass on stable
   Rust 1.97.1 and the declared minimum 1.85.0.
 - Python: 22 preprocessing tests, 56 gene-evidence helper tests and 5 script
-  tests pass. Total automated Rust/Python tests: **177**.
+  tests pass. Total automated Rust/Python tests: **178**.
   This includes the repository's expanded evidence-helper suite as well as
   the paired-prefix and independent-recount regression tests.
 - The actual Cleaver 1.0.1 / HISAT2 2.2.3 smoke test builds the tiny reference,
@@ -223,3 +223,34 @@ No full human-reference alignment or final cohort result is implied by these
 checks. The tiny reference's intron was corrected to canonical GT/AG for the
 splice-aware alignment fixture; its exonic sequence and expected mapping
 remain synthetic.
+
+## Real-data technical pilot — November 17
+
+The [CDH11 pilot bundle](../data/pilots/SRR36710387_prefix1m_nov17/README.md)
+records an actual alignment against the complete verified human reference,
+using the first 1,000,000 cleaned read pairs from control `SRR36710387`.
+HISAT2 reports 97.23% overall alignment. The standard converter exports
+32,575 annotated junction rows across the prefix.
+
+The predeclared coverage/size rule selected CDH11 (`ENSG00000140937.16`), the
+only candidate meeting that pilot rule. Independent indexed-BAM recounting
+matches all six base-table edges and 106 supporting junction observations.
+At support 3, the retained graph has six nodes, four edges and 103 supporting
+observations. Rust and NumPy's independent SVD projection agree edge by edge
+to within approximately 4.6e-11. The graph has cycle rank zero; its zero cycle
+fraction is expected. Supports 1, 3, 5 and 10 give the same qualitative result,
+with a separate Rust run checked against NumPy at each threshold.
+
+The report was inspected in headless Chrome. All recorded input/output hashes,
+local report links, SVG XML and stage-completion manifests were checked.
+Long genomic node names now use distinct plot IDs with a coordinate key;
+the stored node IDs and mathematical calculations are unchanged.
+
+This establishes one bounded real-input technical check, not a cohort
+comparison, a nonzero real-data cycle demonstration, or approval of all
+preprocessing choices. The pilot records a 73.7% ambiguous-observation exclusion
+rate at the annotation-assignment stage, which requires review before expanding.
+The recorded single selected-gene Rust analysis/export took about 0.57 seconds
+including startup and file writing. Full-candidate real-data benchmarking
+remains pending. Optional macOS kernel-level memory profiling was unavailable;
+the actual reference and alignment runs completed and passed verification.

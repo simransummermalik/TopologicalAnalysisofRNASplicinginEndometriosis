@@ -6,6 +6,11 @@ effect, validate the entire sample, or replace the eight-sample study.
 The [written plan](../data/pilots/SRR36710387_prefix1m_nov17/plan.md) records
 the exploratory choices and gene-selection rule before the Hodge result.
 
+**Completed run:** [CDH11 review and findings](../data/pilots/SRR36710387_prefix1m_nov17/README.md)
+and [generated report](../data/pilots/SRR36710387_prefix1m_nov17/verified/report.html).
+The technical checks pass; the review records the zero-cycle result and the
+substantial ambiguity exclusions that still need a team decision.
+
 Run from the repository root. Outputs must use new folder names for a repeat.
 The commands below use the locally available cleaned files; they do not
 download reads. Cleaver and HISAT2 must be on `PATH`.

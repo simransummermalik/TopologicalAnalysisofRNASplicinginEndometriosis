@@ -1,0 +1,51 @@
+<!doctype html>
+<html lang="en">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Splice Girl real-data technical pilot</title>
+<style>
+body { max-width:70rem; margin:3rem auto; padding:0 1rem; font:17px/1.6 Georgia,serif; color:#111 }
+table { border-collapse:collapse } th,td { padding:.4rem 1rem; border-bottom:1px solid #ccc; text-align:left }
+img { width:100%; height:auto } a { color:inherit }
+</style>
+<h1>Splice Girl: real-data technical pilot</h1>
+<p><strong>CDH11</strong> · ENSG00000140937.16 · SRR36710387 (control)</p>
+<p>This report uses the first 1,000,000 cleaned read pairs from one real control
+sample. It checks the processing and mathematics; it contains no case–control
+effect, disease result or statistical significance claim. The prefix may have
+ordering bias. Thresholds are exploratory pilot settings.</p>
+<p>Candidate-list category: environment only. This describes the supplied gene evidence,
+not measurements of the donor's genotype or exposure.</p>
+<h2>Verified result</h2>
+<table>
+<tr><th>Check</th><th>Result</th></tr>
+<tr><td>Independent BAM junction recount</td><td>PASS</td></tr>
+<tr><td>Rust mathematical checks</td><td>PASS</td></tr>
+<tr><td>Independent SVD projection</td><td>PASS</td></tr>
+<tr><td>Exon nodes / junctions</td><td>6 / 4</td></tr>
+<tr><td>Supporting read-junction observations</td><td>103</td></tr>
+<tr><td>Cycle rank</td><td>0</td></tr>
+<tr><td>Cycle fraction</td><td>0.0000000000</td></tr>
+</table>
+<p>Cycle fraction measures alternative-path signal remaining after the gradient
+projection. It does not demonstrate circular RNA or disease causation. Read
+support is not a count of independent molecules.</p>
+<h2>Graph and components</h2>
+<p><a href="graph.svg">Open the full-size graph</a> ·
+<a href="junctions.tsv">Junction counts</a> ·
+<a href="results/junction_components.tsv">Signed components</a></p>
+<img src="graph.svg" alt="Observed, gradient and cycle graphs for the verified real gene">
+<h2>Audit trail</h2>
+<ul>
+<li><a href="verification.json">Input hashes, exact settings and verification errors</a></li>
+<li><a href="support_sensitivity.tsv">Same gene at supports 1, 3, 5 and 10</a></li>
+<li><a href="alignment_summary.txt">HISAT2 alignment summary</a> ·
+<a href="alignment_flagstat.txt">BAM alignment counts</a> ·
+<a href="junction_qc.json">Junction exclusions</a></li>
+<li><a href="plan.md">Predeclared technical-pilot plan</a></li>
+<li><a href="results/run_manifest.json">Rust run manifest</a></li>
+</ul>
+<p>The gene was chosen by coverage and graph size, with gene-ID tie-breaking.
+Its cycle fraction was not used for selection. Final study settings, the
+remaining seven samples, and real case–control comparisons remain separate work.</p>
+</html>

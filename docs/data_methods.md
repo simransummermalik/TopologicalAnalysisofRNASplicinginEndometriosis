@@ -32,10 +32,9 @@ Exact download URL:
 https://ftp.ebi.ac.uk/pub/databases/gencode/Gencode_human/release_50/GRCh38.primary_assembly.genome.fa.gz
 ```
 
-The compressed FASTA remains compressed to conserve local disk space. It is
-ignored by Git and must not be pushed. Decompression and HISAT2 index creation
-will be done only when enough space is available for the 3.15 GB FASTA and the
-index at the same time.
+The original FASTA remains compressed and ignored by Git. On November 17 a
+temporary expanded copy was used to build the full HISAT2 index, then removed
+after successful indexing. The original compressed file was preserved.
 
 ## Matching annotation
 
@@ -71,6 +70,27 @@ not naming conflicts.
 Like the FASTA, the compressed GTF is ignored by Git. The checksums, source,
 and compatibility result above are the reproducible record kept in the
 repository.
+
+## HISAT2 index and first real technical pilot
+
+The November 17 full-human index is complete at the ignored prefix
+`references/hisat2_v50_pilot_nov17/genome`, built using HISAT2 **2.2.3**, two
+threads and `--bmaxdivn 16`. The matching exon map has **698,612 junction keys**
+and **1,229,403 target rows**; repeated keys retain their alternative targets
+for ambiguity checks. The source FASTA/GTF SHA-256 values match the reference
+record above. Eight index files, map and splice-site hints have output hashes
+in `reference_manifest.json`.
+
+The [bounded real pilot](../data/pilots/SRR36710387_prefix1m_nov17/README.md)
+uses the first one million Cleaver-cleaned read pairs from one control,
+`SRR36710387`. It reports 97.23% overall alignment and verifies CDH11 junction
+counts and decomposition independently. Its unstranded alignment, 8-base
+anchors and support thresholds are exploratory technical settings, not final
+cohort approval. In particular, **73.7% of assignment-stage junction
+observations are excluded as ambiguous** under the frozen map rule. Review
+that loss of coverage before expanding; the policy was not relaxed here.
+
+Exact reproduction commands and scope are in [real_pilot.md](real_pilot.md).
 
 ## HGNC symbol reference
 
@@ -193,8 +213,10 @@ a literal directed return path. Therefore a nonzero cycle component can
 describe alternative paths such as exon skipping and does not by itself prove
 circular RNA or a back-splice junction.
 
-## Remaining D5 work
+## D5 completion and remaining processing review
 
 The genome, annotation, coordinate system, node identity, and strand direction
-are now frozen. D5 remains in progress only until the HISAT2 index and known
-splice-site hints are built and verified from this exact FASTA/GTF pair.
+are frozen. The full human index, map and known splice-site hints were built
+and checksum-recorded from this exact pair on November 17, completing D5.
+Final library-strandedness, support/coverage eligibility and ambiguity-policy
+review remain processing decisions; the technical pilot does not approve them.

@@ -1,0 +1,17 @@
+{
+  "ambiguous_junction_observations": 432599,
+  "assigned_junction_observations": 152907,
+  "below_minimum_unique_edges": 0,
+  "count_unit": "primary read alignments",
+  "exclude_duplicates": false,
+  "insufficient_anchor_records": 69028,
+  "minimum_anchor": 8,
+  "minimum_unique_reads": 1,
+  "nonunique_or_missing_NH_records": 36663,
+  "sam_records": 2168724,
+  "sample_id": "SRR36710387",
+  "unannotated_junction_observations": 1583,
+  "unmapped_secondary_qcfail_or_supplementary": 224068,
+  "unspliced_records": 1294663,
+  "written_rows": 32575
+}

@@ -1,0 +1,159 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="2394" height="1052" viewBox="0 0 2394 1052" role="img" aria-labelledby="title description">
+<title id="title">Splice graph decomposition for sample SRR36710387 and gene ENSG00000140937.16</title>
+<desc id="description">Three aligned directed splice graphs show the observed normalized signal, gradient component, and cycle component. Every panel uses the same nodes, edges, direction, edge IDs, and line-width scale.</desc>
+<defs>
+  <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+    <path d="M 0 0 L 10 5 L 0 10 z" fill="#111111"/>
+  </marker>
+  <style>
+    .serif { font-family: Georgia, "Times New Roman", serif; }
+    .mono { font-family: "Courier New", Courier, monospace; }
+  </style>
+</defs>
+<rect width="100%" height="100%" fill="#ffffff"/>
+
+<text class="serif" x="48" y="42" font-size="24" font-weight="700" fill="#111111">Splice graph decomposition: ENSG00000140937.16</text>
+<text class="serif" x="48" y="70" font-size="15" fill="#111111">Sample: SRR36710387</text>
+<line x1="48" y1="88" x2="2346.0" y2="88" stroke="#111111" stroke-width="1"/>
+<text class="serif" x="48" y="113" font-size="14" fill="#111111">Nodes: 6   ·   Junctions: 4   ·   Cycle fraction: 0.0000   ·   Mathematical checks: PASS</text>
+<text class="serif" x="48" y="143" font-size="13" fill="#111111">Same graph layout and edge IDs in every panel. Line width uses one shared absolute-value scale.</text>
+<line x1="48" y1="163" x2="84" y2="163" stroke="#111111" stroke-width="2.2"/>
+<text class="serif" x="92" y="167" font-size="12" fill="#111111">solid = positive</text>
+<line x1="218" y1="163" x2="254" y2="163" stroke="#111111" stroke-width="2.2" stroke-dasharray="7 5"/>
+<text class="serif" x="262" y="167" font-size="12" fill="#111111">dashed = negative</text>
+<text class="serif" x="410" y="167" font-size="12" fill="#111111">Arrows always retain the stored biological junction direction.</text>
+<g aria-label="1. Observed signal">
+<rect x="48.0" y="180.0" width="750.0" height="365.0" fill="#ffffff" stroke="#777777" stroke-width="0.8"/>
+<text class="serif" x="64.0" y="207" font-size="17" font-weight="700" fill="#111111">1. Observed signal</text>
+<text class="serif" x="64.0" y="230" font-size="12" fill="#333333">Normalized junction usage (F)</text>
+<path d="M 186.0 405.0 Q 163.0 483.0 140.0 405.0" fill="none" stroke="#111111" stroke-width="3.38" stroke-dasharray="none" stroke-linecap="round" marker-end="url(#arrow)"/>
+<rect x="126.0" y="462.0" width="74" height="19" fill="#ffffff" stroke="#999999" stroke-width="0.6"/>
+<text class="mono" x="163.0" y="475.0" text-anchor="middle" font-size="10" fill="#111111">J1 +0.233</text>
+<path d="M 446.0 405.0 Q 423.0 483.0 400.0 405.0" fill="none" stroke="#111111" stroke-width="3.18" stroke-dasharray="none" stroke-linecap="round" marker-end="url(#arrow)"/>
+<rect x="386.0" y="462.0" width="74" height="19" fill="#ffffff" stroke="#999999" stroke-width="0.6"/>
+<text class="mono" x="423.0" y="475.0" text-anchor="middle" font-size="10" fill="#111111">J2 +0.194</text>
+<path d="M 576.0 405.0 Q 553.0 483.0 530.0 405.0" fill="none" stroke="#111111" stroke-width="3.23" stroke-dasharray="none" stroke-linecap="round" marker-end="url(#arrow)"/>
+<rect x="516.0" y="462.0" width="74" height="19" fill="#ffffff" stroke="#999999" stroke-width="0.6"/>
+<text class="mono" x="553.0" y="475.0" text-anchor="middle" font-size="10" fill="#111111">J3 +0.204</text>
+<path d="M 706.0 405.0 Q 683.0 483.0 660.0 405.0" fill="none" stroke="#111111" stroke-width="4.00" stroke-dasharray="none" stroke-linecap="round" marker-end="url(#arrow)"/>
+<rect x="646.0" y="462.0" width="74" height="19" fill="#ffffff" stroke="#999999" stroke-width="0.6"/>
+<text class="mono" x="683.0" y="475.0" text-anchor="middle" font-size="10" fill="#111111">J4 +0.369</text>
+<rect x="56.0" y="384.0" width="84.0" height="42.0" fill="#ffffff" stroke="#111111" stroke-width="1.2"/>
+<text class="serif" x="98.0" y="410.0" text-anchor="middle" font-size="13" fill="#111111">N1<title>chr16:64950767-64951018:-</title></text>
+<rect x="186.0" y="384.0" width="84.0" height="42.0" fill="#ffffff" stroke="#111111" stroke-width="1.2"/>
+<text class="serif" x="228.0" y="410.0" text-anchor="middle" font-size="13" fill="#111111">N2<title>chr16:64971579-64971696:-</title></text>
+<rect x="316.0" y="384.0" width="84.0" height="42.0" fill="#ffffff" stroke="#111111" stroke-width="1.2"/>
+<text class="serif" x="358.0" y="410.0" text-anchor="middle" font-size="13" fill="#111111">N3<title>chr16:64972904-64973040:-</title></text>
+<rect x="446.0" y="384.0" width="84.0" height="42.0" fill="#ffffff" stroke="#111111" stroke-width="1.2"/>
+<text class="serif" x="488.0" y="410.0" text-anchor="middle" font-size="13" fill="#111111">N4<title>chr16:64982048-64982301:-</title></text>
+<rect x="576.0" y="384.0" width="84.0" height="42.0" fill="#ffffff" stroke="#111111" stroke-width="1.2"/>
+<text class="serif" x="618.0" y="410.0" text-anchor="middle" font-size="13" fill="#111111">N5<title>chr16:64988157-64988344:-</title></text>
+<rect x="706.0" y="384.0" width="84.0" height="42.0" fill="#ffffff" stroke="#111111" stroke-width="1.2"/>
+<text class="serif" x="748.0" y="410.0" text-anchor="middle" font-size="13" fill="#111111">N6<title>chr16:64991768-64991935:-</title></text>
+</g>
+<g aria-label="2. Gradient component">
+<rect x="822.0" y="180.0" width="750.0" height="365.0" fill="#ffffff" stroke="#777777" stroke-width="0.8"/>
+<text class="serif" x="838.0" y="207" font-size="17" font-weight="700" fill="#111111">2. Gradient component</text>
+<text class="serif" x="838.0" y="230" font-size="12" fill="#333333">Part explained by node values (F_grad)</text>
+<path d="M 960.0 405.0 Q 937.0 483.0 914.0 405.0" fill="none" stroke="#111111" stroke-width="3.38" stroke-dasharray="none" stroke-linecap="round" marker-end="url(#arrow)"/>
+<rect x="900.0" y="462.0" width="74" height="19" fill="#ffffff" stroke="#999999" stroke-width="0.6"/>
+<text class="mono" x="937.0" y="475.0" text-anchor="middle" font-size="10" fill="#111111">J1 +0.233</text>
+<path d="M 1220.0 405.0 Q 1197.0 483.0 1174.0 405.0" fill="none" stroke="#111111" stroke-width="3.18" stroke-dasharray="none" stroke-linecap="round" marker-end="url(#arrow)"/>
+<rect x="1160.0" y="462.0" width="74" height="19" fill="#ffffff" stroke="#999999" stroke-width="0.6"/>
+<text class="mono" x="1197.0" y="475.0" text-anchor="middle" font-size="10" fill="#111111">J2 +0.194</text>
+<path d="M 1350.0 405.0 Q 1327.0 483.0 1304.0 405.0" fill="none" stroke="#111111" stroke-width="3.23" stroke-dasharray="none" stroke-linecap="round" marker-end="url(#arrow)"/>
+<rect x="1290.0" y="462.0" width="74" height="19" fill="#ffffff" stroke="#999999" stroke-width="0.6"/>
+<text class="mono" x="1327.0" y="475.0" text-anchor="middle" font-size="10" fill="#111111">J3 +0.204</text>
+<path d="M 1480.0 405.0 Q 1457.0 483.0 1434.0 405.0" fill="none" stroke="#111111" stroke-width="4.00" stroke-dasharray="none" stroke-linecap="round" marker-end="url(#arrow)"/>
+<rect x="1420.0" y="462.0" width="74" height="19" fill="#ffffff" stroke="#999999" stroke-width="0.6"/>
+<text class="mono" x="1457.0" y="475.0" text-anchor="middle" font-size="10" fill="#111111">J4 +0.369</text>
+<rect x="830.0" y="384.0" width="84.0" height="42.0" fill="#ffffff" stroke="#111111" stroke-width="1.2"/>
+<text class="serif" x="872.0" y="410.0" text-anchor="middle" font-size="13" fill="#111111">N1<title>chr16:64950767-64951018:-</title></text>
+<rect x="960.0" y="384.0" width="84.0" height="42.0" fill="#ffffff" stroke="#111111" stroke-width="1.2"/>
+<text class="serif" x="1002.0" y="410.0" text-anchor="middle" font-size="13" fill="#111111">N2<title>chr16:64971579-64971696:-</title></text>
+<rect x="1090.0" y="384.0" width="84.0" height="42.0" fill="#ffffff" stroke="#111111" stroke-width="1.2"/>
+<text class="serif" x="1132.0" y="410.0" text-anchor="middle" font-size="13" fill="#111111">N3<title>chr16:64972904-64973040:-</title></text>
+<rect x="1220.0" y="384.0" width="84.0" height="42.0" fill="#ffffff" stroke="#111111" stroke-width="1.2"/>
+<text class="serif" x="1262.0" y="410.0" text-anchor="middle" font-size="13" fill="#111111">N4<title>chr16:64982048-64982301:-</title></text>
+<rect x="1350.0" y="384.0" width="84.0" height="42.0" fill="#ffffff" stroke="#111111" stroke-width="1.2"/>
+<text class="serif" x="1392.0" y="410.0" text-anchor="middle" font-size="13" fill="#111111">N5<title>chr16:64988157-64988344:-</title></text>
+<rect x="1480.0" y="384.0" width="84.0" height="42.0" fill="#ffffff" stroke="#111111" stroke-width="1.2"/>
+<text class="serif" x="1522.0" y="410.0" text-anchor="middle" font-size="13" fill="#111111">N6<title>chr16:64991768-64991935:-</title></text>
+</g>
+<g aria-label="3. Cycle component">
+<rect x="1596.0" y="180.0" width="750.0" height="365.0" fill="#ffffff" stroke="#777777" stroke-width="0.8"/>
+<text class="serif" x="1612.0" y="207" font-size="17" font-weight="700" fill="#111111">3. Cycle component</text>
+<text class="serif" x="1612.0" y="230" font-size="12" fill="#333333">Remaining alternative-path structure (F_cycle)</text>
+<path d="M 1734.0 405.0 Q 1711.0 483.0 1688.0 405.0" fill="none" stroke="#111111" stroke-width="0.70" stroke-dasharray="none" stroke-linecap="round" marker-end="url(#arrow)"/>
+<rect x="1674.0" y="462.0" width="74" height="19" fill="#ffffff" stroke="#999999" stroke-width="0.6"/>
+<text class="mono" x="1711.0" y="475.0" text-anchor="middle" font-size="10" fill="#111111">J1 +0.000</text>
+<path d="M 1994.0 405.0 Q 1971.0 483.0 1948.0 405.0" fill="none" stroke="#111111" stroke-width="0.70" stroke-dasharray="none" stroke-linecap="round" marker-end="url(#arrow)"/>
+<rect x="1934.0" y="462.0" width="74" height="19" fill="#ffffff" stroke="#999999" stroke-width="0.6"/>
+<text class="mono" x="1971.0" y="475.0" text-anchor="middle" font-size="10" fill="#111111">J2 +0.000</text>
+<path d="M 2124.0 405.0 Q 2101.0 483.0 2078.0 405.0" fill="none" stroke="#111111" stroke-width="0.70" stroke-dasharray="none" stroke-linecap="round" marker-end="url(#arrow)"/>
+<rect x="2064.0" y="462.0" width="74" height="19" fill="#ffffff" stroke="#999999" stroke-width="0.6"/>
+<text class="mono" x="2101.0" y="475.0" text-anchor="middle" font-size="10" fill="#111111">J3 +0.000</text>
+<path d="M 2254.0 405.0 Q 2231.0 483.0 2208.0 405.0" fill="none" stroke="#111111" stroke-width="0.70" stroke-dasharray="none" stroke-linecap="round" marker-end="url(#arrow)"/>
+<rect x="2194.0" y="462.0" width="74" height="19" fill="#ffffff" stroke="#999999" stroke-width="0.6"/>
+<text class="mono" x="2231.0" y="475.0" text-anchor="middle" font-size="10" fill="#111111">J4 +0.000</text>
+<rect x="1604.0" y="384.0" width="84.0" height="42.0" fill="#ffffff" stroke="#111111" stroke-width="1.2"/>
+<text class="serif" x="1646.0" y="410.0" text-anchor="middle" font-size="13" fill="#111111">N1<title>chr16:64950767-64951018:-</title></text>
+<rect x="1734.0" y="384.0" width="84.0" height="42.0" fill="#ffffff" stroke="#111111" stroke-width="1.2"/>
+<text class="serif" x="1776.0" y="410.0" text-anchor="middle" font-size="13" fill="#111111">N2<title>chr16:64971579-64971696:-</title></text>
+<rect x="1864.0" y="384.0" width="84.0" height="42.0" fill="#ffffff" stroke="#111111" stroke-width="1.2"/>
+<text class="serif" x="1906.0" y="410.0" text-anchor="middle" font-size="13" fill="#111111">N3<title>chr16:64972904-64973040:-</title></text>
+<rect x="1994.0" y="384.0" width="84.0" height="42.0" fill="#ffffff" stroke="#111111" stroke-width="1.2"/>
+<text class="serif" x="2036.0" y="410.0" text-anchor="middle" font-size="13" fill="#111111">N4<title>chr16:64982048-64982301:-</title></text>
+<rect x="2124.0" y="384.0" width="84.0" height="42.0" fill="#ffffff" stroke="#111111" stroke-width="1.2"/>
+<text class="serif" x="2166.0" y="410.0" text-anchor="middle" font-size="13" fill="#111111">N5<title>chr16:64988157-64988344:-</title></text>
+<rect x="2254.0" y="384.0" width="84.0" height="42.0" fill="#ffffff" stroke="#111111" stroke-width="1.2"/>
+<text class="serif" x="2296.0" y="410.0" text-anchor="middle" font-size="13" fill="#111111">N6<title>chr16:64991768-64991935:-</title></text>
+</g>
+<text class="serif" x="48" y="585" font-size="17" font-weight="700" fill="#111111">Junction values (same edge order in every panel)</text>
+<line x1="48" y1="601" x2="2346.0" y2="601" stroke="#111111" stroke-width="1"/>
+<text class="serif" x="60" y="628" font-size="12" font-weight="700" fill="#111111">ID</text>
+<text class="serif" x="112" y="628" font-size="12" font-weight="700" fill="#111111">Junction</text>
+<text class="serif" x="933.7" y="628" font-size="12" font-weight="700" fill="#111111">Read support</text>
+<text class="serif" x="1316.7" y="628" font-size="12" font-weight="700" fill="#111111">Observed F</text>
+<text class="serif" x="1675.8" y="628" font-size="12" font-weight="700" fill="#111111">Gradient F_grad</text>
+<text class="serif" x="2034.9" y="628" font-size="12" font-weight="700" fill="#111111">Cycle F_cycle</text>
+<line x1="48" y1="636" x2="2346.0" y2="636" stroke="#777777" stroke-width="0.7"/>
+<text class="serif" x="60" y="650.0" font-size="12" fill="#111111">J1</text>
+<text class="serif" x="112" y="650.0" font-size="12" fill="#111111">N2 → N1</text>
+<text class="mono" x="933.7" y="650.0" font-size="11" fill="#111111">24</text>
+<text class="mono" x="1316.7" y="650.0" font-size="11" fill="#111111">+0.2330</text>
+<text class="mono" x="1675.8" y="650.0" font-size="11" fill="#111111">+0.2330</text>
+<text class="mono" x="2034.9" y="650.0" font-size="11" fill="#111111">+0.0000</text>
+<line x1="48" y1="658.0" x2="2346.0" y2="658.0" stroke="#cccccc" stroke-width="0.5"/>
+<text class="serif" x="60" y="676.0" font-size="12" fill="#111111">J2</text>
+<text class="serif" x="112" y="676.0" font-size="12" fill="#111111">N4 → N3</text>
+<text class="mono" x="933.7" y="676.0" font-size="11" fill="#111111">20</text>
+<text class="mono" x="1316.7" y="676.0" font-size="11" fill="#111111">+0.1942</text>
+<text class="mono" x="1675.8" y="676.0" font-size="11" fill="#111111">+0.1942</text>
+<text class="mono" x="2034.9" y="676.0" font-size="11" fill="#111111">+0.0000</text>
+<line x1="48" y1="684.0" x2="2346.0" y2="684.0" stroke="#cccccc" stroke-width="0.5"/>
+<text class="serif" x="60" y="702.0" font-size="12" fill="#111111">J3</text>
+<text class="serif" x="112" y="702.0" font-size="12" fill="#111111">N5 → N4</text>
+<text class="mono" x="933.7" y="702.0" font-size="11" fill="#111111">21</text>
+<text class="mono" x="1316.7" y="702.0" font-size="11" fill="#111111">+0.2039</text>
+<text class="mono" x="1675.8" y="702.0" font-size="11" fill="#111111">+0.2039</text>
+<text class="mono" x="2034.9" y="702.0" font-size="11" fill="#111111">+0.0000</text>
+<line x1="48" y1="710.0" x2="2346.0" y2="710.0" stroke="#cccccc" stroke-width="0.5"/>
+<text class="serif" x="60" y="728.0" font-size="12" fill="#111111">J4</text>
+<text class="serif" x="112" y="728.0" font-size="12" fill="#111111">N6 → N5</text>
+<text class="mono" x="933.7" y="728.0" font-size="11" fill="#111111">38</text>
+<text class="mono" x="1316.7" y="728.0" font-size="11" fill="#111111">+0.3689</text>
+<text class="mono" x="1675.8" y="728.0" font-size="11" fill="#111111">+0.3689</text>
+<text class="mono" x="2034.9" y="728.0" font-size="11" fill="#111111">+0.0000</text>
+<line x1="48" y1="736.0" x2="2346.0" y2="736.0" stroke="#cccccc" stroke-width="0.5"/>
+<text class="serif" x="48" y="786.0" font-size="14" font-weight="700">Node key (plot IDs, not transcript exon numbers)</text>
+<text class="mono" x="60" y="812.0" font-size="12">N1</text><text class="mono" x="112" y="812.0" font-size="12">chr16:64950767-64951018:-<title>chr16:64950767-64951018:-</title></text>
+<text class="mono" x="60" y="836.0" font-size="12">N2</text><text class="mono" x="112" y="836.0" font-size="12">chr16:64971579-64971696:-<title>chr16:64971579-64971696:-</title></text>
+<text class="mono" x="60" y="860.0" font-size="12">N3</text><text class="mono" x="112" y="860.0" font-size="12">chr16:64972904-64973040:-<title>chr16:64972904-64973040:-</title></text>
+<text class="mono" x="60" y="884.0" font-size="12">N4</text><text class="mono" x="112" y="884.0" font-size="12">chr16:64982048-64982301:-<title>chr16:64982048-64982301:-</title></text>
+<text class="mono" x="60" y="908.0" font-size="12">N5</text><text class="mono" x="112" y="908.0" font-size="12">chr16:64988157-64988344:-<title>chr16:64988157-64988344:-</title></text>
+<text class="mono" x="60" y="932.0" font-size="12">N6</text><text class="mono" x="112" y="932.0" font-size="12">chr16:64991768-64991935:-<title>chr16:64991768-64991935:-</title></text>
+<line x1="48" y1="976.0" x2="2346.0" y2="976.0" stroke="#111111" stroke-width="1"/>
+<text class="serif" x="48" y="1004.0" font-size="12" fill="#222222">Observed signal = gradient component + cycle component. Signs are relative to the stored edge direction.</text>
+<text class="serif" x="48" y="1026.0" font-size="12" font-style="italic" fill="#444444">Cycle-space structure alone does not establish circular RNA or disease causation.</text>
+</svg>

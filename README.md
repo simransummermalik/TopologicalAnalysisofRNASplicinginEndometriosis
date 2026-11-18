@@ -9,9 +9,10 @@ into graphs. Those graphs let us ask whether RNA connections are organized
 differently in endometriosis and control endometrial tissue.
 
 > **Current status:** the software prototype, graph construction, Hodge
-> decomposition, sample comparison, and mathematical checks are working. The
-> eight public RNA-seq samples are now entering the real-data processing stage,
-> so no final biological result is being claimed yet.
+> decomposition, sample comparison, and mathematical checks are working.
+> A [real CDH11 technical pilot](data/pilots/SRR36710387_prefix1m_nov17/README.md)
+> now passes independent verification on one million cleaned control read pairs.
+> The complete eight-sample analysis and biological interpretation remain open.
 
 ## The project in some short stuff?
 
@@ -182,7 +183,7 @@ In plain language:
 | Support sensitivity | An explicit threshold grid reruns the Rust analysis and keeps disappearing genes visible. |
 | Public dataset selection | Four control and four endometriosis RNA-seq samples have been identified. |
 
-The Rust project currently has **97 automated tests**. Real-data
+The Rust project currently has **98 automated tests**. Real-data
 preprocessing is the next active stage, and the large raw-read files remain
 outside Git.
 

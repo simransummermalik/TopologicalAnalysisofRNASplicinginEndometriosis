@@ -1,0 +1,2 @@
+run_id	sample_id	gene_id	status	node_count	edge_count	total_support	signal_energy	gradient_energy	cycle_energy	cycle_fraction	checks_status	reconstruction_error	kernel_error	orthogonality_error
+splice-girl-1794965094-777887000	SRR36710387	ENSG00000140937.16	passed	9	6	106.0000000000	0.2550729797	0.2550729797	0.0000000000	0.0000000000	PASS	0.0000000000e0	7.8504622934e-17	1.9900224026e-17

@@ -1,0 +1,34 @@
+{
+  "schema_version": "1.0",
+  "run_id": "splice-girl-1794965094-747681000",
+  "created_unix_seconds": 1794965094,
+  "tool": {"name": "splice-girl", "version": "0.1.0"},
+  "mode": "analyze",
+  "command": ["/Users/summermalik/Documents/GitHub/TopologicalAnalysisofRNASplicinginEndometriosis/target/release/splice-girl", "analyze", "/Users/summermalik/Documents/GitHub/TopologicalAnalysisofRNASplicinginEndometriosis/data/pilots/SRR36710387_prefix1m_nov17/verified/junctions.tsv", "--output", "/Users/summermalik/Documents/GitHub/TopologicalAnalysisofRNASplicinginEndometriosis/data/pilots/SRR36710387_prefix1m_nov17/verified/results"],
+  "inputs": [
+    {"role": "junctions", "path": "/Users/summermalik/Documents/GitHub/TopologicalAnalysisofRNASplicinginEndometriosis/data/pilots/SRR36710387_prefix1m_nov17/verified/junctions.tsv", "sha256": "9017df7fb6f3119fd46e0f85fc1bb3978d2beeaa09567cd9252b5777a88c3307"}
+  ],
+  "outputs": ["sample_metrics.tsv", "junction_components.tsv", "run_manifest.json"],
+  "settings": {
+    "normalization": "count / total_gene_support",
+    "solver": "dense normal equations with one pinned node per connected component and partial pivoting",
+    "precision": "f64",
+    "acceptance_tolerance": 1.0e-9,
+    "minimum_total_support": "greater than zero",
+    "random_seed": null
+  },
+  "summary": {
+    "sample_gene_groups": 1,
+    "junction_rows": 4,
+    "included_samples": 0,
+    "excluded_samples": 0,
+    "failure_count": 0
+  },
+  "exclusions": [
+
+  ],
+  "failures": [
+
+  ],
+  "statistics": null
+}

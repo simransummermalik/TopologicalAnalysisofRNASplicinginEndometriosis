@@ -234,7 +234,7 @@ erDiagram
         string language "Rust"
         string executable "splice-girl"
         string version
-        int automated_tests "94"
+        int automated_tests "98"
         string status "COMPLETE"
     }
     ANALYSIS_RUN {
@@ -362,7 +362,7 @@ erDiagram
     ACCEPTANCE_RUN {
         string acceptance_id PK
         string build_id FK
-        int tests_passed "94"
+        int tests_passed "98"
         int tests_failed "0"
         boolean release_gate
         string status "COMPLETE"

@@ -61,14 +61,14 @@ has not been met.
 | D2 | **Done** | GSE315857 and its eight exact run accessions are recorded in [samples.tsv](../endometriosis-splicing/samples.tsv) and the [README](../README.md#the-eight-sample-study). |
 | D3 | In progress | Eight runs were retrieved in Galaxy and one control pilot is local; complete source checksums are still needed. |
 | D4 | **Done** | The standardized [sample manifest](../data/metadata/samples.tsv) records unique run-based sample IDs, internal subject labels, case/control status, tissue, accessions, file locations, QC/Cleaver status, pending reference fields, and eligibility for all eight samples. |
-| D5 | In progress | The verified GENCODE v50 reference and graph conventions are documented in [data_methods.md](../docs/data_methods.md). The [Cleaver/HISAT2 adapter](../preprocessing/HISAT2_GUIDE.md) prepares indexes/maps/hints and passes a tiny actual paired-read test. Full human index and pilot review remain. |
+| D5 | **Done** | The verified GENCODE v50 reference and frozen coordinate/node/strand conventions now have a complete checksummed full-human HISAT2 2.2.3 index, exon map and splice-site hints. Commands and hashes are retained in the [real-pilot bundle](../data/pilots/SRR36710387_prefix1m_nov17/README.md). Final cohort eligibility/settings remain separate. |
 | D6 | In progress | Annotated SAM junction counting, strand/uniqueness/anchor filters and sequential batch export are implemented and tested. Real cohort alignments and QC remain. |
 | D7 | **Done** | The [HISAT2 detection note](../preprocessing/HISAT2_GUIDE.md#counting-rules-and-limits) and [math limitation](../docs/math_spec.md#preprocessing-and-back-splice-detection) document strand availability, excluded alignment classes, and why missing back-splices do not prove biological absence. |
-| D8 | Blocked | Junction QC requires D6 junction counts. |
-| D9 | Blocked | Count and coverage rules require D8. |
-| D10 | Blocked | Standard node/junction tables require D6 and D9. |
+| D8 | In progress | The real prefix pilot exports complete junction QC; 73.7% of assignment-stage junction observations are ambiguous under the frozen exon-pair rule. This needs team review before expanding. |
+| D9 | In progress | Exploratory anchor/support choices and a four-threshold same-gene check are recorded in the pilot. Final cohort coverage/ambiguity thresholds are not approved. |
+| D10 | In progress | The real prefix produces 32,575 standard junction rows and a verified four-edge CDH11 table. The full sample and remaining cohort are pending. |
 | D11 | Blocked | Graph comparability requires standardized real junction tables. |
-| D12 | Blocked | The real integration subset requires D10 and D11. |
+| D12 | In progress | A checksummed one-million-pair control prefix and CDH11 review bundle exist. A multi-sample approved integration subset still needs QC/comparability review. |
 
 ### Mathematics status
 
@@ -117,7 +117,8 @@ has not been met.
 
 | Task IDs | Status | Evidence or next requirement |
 |---|---|---|
-| D/R6.1–D/R6.2 | Blocked | Real junction counts and the matching reference are required. |
+| D/R6.1 | **Done (bounded technical pilot)** | [CDH11 from one real control prefix](../data/pilots/SRR36710387_prefix1m_nov17/README.md) passes BAM recount, Rust checks, independent SVD and support sensitivity. Counts, graph and provenance are saved without hand-editing the junctions. This does not complete the full sample or cohort. |
+| D/R6.2 | In progress | Review the real pilot's mapping ambiguity, exploratory settings and sample/gene joins before expanding to all approved samples/candidates. |
 | C1–C4 | Blocked | Eligible samples and per-sample real gene metrics do not exist yet. |
 | S1 | **Done** | Biological unit, independence, and permutation restrictions are recorded in [statistics_spec.md](../docs/statistics_spec.md) from the real eight-sample manifest (one sample per subject, unpaired, 4 control vs. 4 case). |
 | S4 | **Done** | The primary effect (case mean minus control mean cycle fraction) is recorded in [statistics_spec.md](../docs/statistics_spec.md) as the `compare` command's existing, frozen definition. |
@@ -142,7 +143,7 @@ has not been met.
 | V1 | **Done** | The complete pipeline is shown in the main [README](../README.md#what-splice-girl-does). |
 | V2 | **Done** | `visualize` draws the tested synthetic splice graph with direction and support. |
 | V3 | **Done** | `visualize` generates aligned observed, gradient, and cycle graph panels with fixed node/edge layout, signed values, a shared width scale, and a complete junction table; see [`splice-girl-basic.svg`](../splice-girl-basic.svg). |
-| V4 | In progress | The `report` command draws sample-level case/control plots with linked Hodge graphs and exclusions; the real-gene pilot is still pending. |
+| V4 | In progress | The report and [real CDH11 graph](../data/pilots/SRR36710387_prefix1m_nov17/verified/graph.svg) exist; the real case/control figure still requires additional processed samples. |
 | V5–V8 | Not started | Real results, biological explanations, speaking plan, and demo-gene selection remain. |
 | V9 | **Done** | [examples/demo](../examples/demo/README.md) contains tiny inputs, exact commands, expected output, and runtime guidance. |
 | V10–V11 | Not started | Rehearsal, backup recording, and final figure audit remain. |
