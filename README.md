@@ -14,7 +14,7 @@ differently in endometriosis and control endometrial tissue.
 > now passes independent verification on one million cleaned control read pairs.
 > The complete eight-sample analysis and biological interpretation remain open.
 
-## The project in some short stuff?
+## The project shortened:
 
 1. RNA sequencing shows which parts of a gene were connected in each sample.
 2. Splice Girl represents those connections as a graph.
@@ -27,7 +27,7 @@ The goal is to move from millions of sequencing reads to a small set of
 transparent, mathematically checked measurements that can support biological
 interpretation.
 
-## Explore the project
+## Explore the project:
 
 | If you are interested in... | Read this section |
 |---|---|
@@ -50,7 +50,7 @@ interpretation.
 | An unfamiliar word | [Beginner dictionary](#beginner-dictionary) |
 | Scientific cautions | [How to interpret the results](#how-to-interpret-the-results) |
 
-## The research question
+## The research question:
 
 **Do endometriosis samples organize their RNA splice connections differently
 from control samples?**
@@ -79,7 +79,7 @@ connections. Those connections are called **splice junctions**. Splice Girl
 uses the junctions as evidence; it does not guess connections that were not
 observed.
 
-## From RNA connections to a graph
+## From RNA connections to a graph..
 
 For one gene in one sample:
 
@@ -139,7 +139,7 @@ bioinformatics programs prepare the junction evidence first. Rust then handles
 Splice Girl's input validation, graph construction, mathematical decomposition,
 checks, and comparison output.
 
-## What Splice Girl does
+## What Splice Girl does:
 
 ```mermaid
 flowchart LR
@@ -166,7 +166,7 @@ In plain language:
 8. Numerical checks must pass before a result is reported.
 9. Eligible control and endometriosis samples can then be compared.
 
-## What we have built
+## What we have built:
 
 | Completed work | What it means |
 |---|---|
@@ -192,7 +192,7 @@ The Rust project currently has **100 automated tests**. Real-data
 preprocessing is the next active stage, and the large raw-read files remain
 outside Git.
 
-## The eight-sample study
+## The eight-sample study:
 
 The current dataset is [GEO GSE315857](https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE315857).
 It contains paired-end RNA-seq data from proliferative endometrium.
@@ -228,7 +228,7 @@ Hodge measurements
 control-versus-endometriosis comparison
 ```
 
-## How to interpret the results
+## How to interpret the results:
 
 Splice Girl reports graph measurements, not a diagnosis.
 
@@ -245,7 +245,7 @@ Negative results are also meaningful. If the groups do not differ, or if the
 Hodge measurements do not outperform simpler junction summaries, that should
 be reported honestly.
 
-## Try Splice Girl
+## Try Splice Girl:
 
 The demonstration uses tiny synthetic files included in the repository. It
 does not download patient data.
@@ -463,7 +463,7 @@ silently skip malformed input or replace an existing result.
 The error tests in `tests/cli_errors.rs` run these mistakes through the real
 command and confirm that each one exits unsuccessfully with a useful message.
 
-## What the output means
+## What the output means:
 
 A result includes:
 
@@ -481,7 +481,7 @@ The program also prints each edge's original normalized signal, gradient
 component, and cycle component so the calculation can be inspected rather
 than treated as a black box.
 
-## Beginner dictionary
+## Beginner dictionary:
 
 | Term | Plain-language meaning |
 |---|---|
@@ -513,7 +513,7 @@ than treated as a black box.
 | **CLI** | A program operated by typing commands in a terminal. |
 | **Prototype** | An early working version used to test and validate the main idea. |
 
-## Important limitations
+## Important limitations:
 
 Splice Girl is research software, not a clinical diagnostic tool. It performs
 validated per-sample graph analysis, one-gene and all-gene descriptive group
@@ -528,7 +528,7 @@ reference and annotation, tissue and sample comparability, sequencing quality,
 and the number of biological replicates. These limits will be reported with
 the final analysis.
 
-## Technical documentation
+## Technical documentation:
 
 Audience members who want more detail can continue with:
 
@@ -544,7 +544,7 @@ Audience members who want more detail can continue with:
 - [Contribution logs](logs/README.md) — dated development record
 - [Original README](oldREADME.md) — archived earlier project overview
 
-## Repository map
+## Repository map:
 
 | Location | Purpose |
 |---|---|
@@ -557,7 +557,7 @@ Audience members who want more detail can continue with:
 | `logs/` | Dated contribution records |
 | `assets/` | Proposal and terminal artwork |
 
-## Developer checks
+## Developer checks:
 
 The repository runs the same Rust and preprocessing checks locally and in
 GitHub Actions. From the project folder:
