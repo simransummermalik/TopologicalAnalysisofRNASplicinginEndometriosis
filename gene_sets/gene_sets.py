@@ -13,7 +13,8 @@ Subcommands:
     review   Apply people's recorded decisions on ambiguous/unresolved labels.
     dedupe   Build one membership row per gene from mapped evidence rows.
     check    Schema-check any gene-set table.
-    overlap  Build overlap.tsv and candidate_genes.tsv from both memberships.
+    overlap  Build overlap.tsv and candidate_genes.tsv from both memberships
+             (optionally environment_genes.tsv, one row per environmental gene).
 
 Run ``python3 gene_sets/gene_sets.py <subcommand> --help`` for options.
 """
@@ -104,6 +105,8 @@ ENVIRONMENT_MEMBERSHIP_COLUMNS = [
 ]
 
 OVERLAP_COLUMNS = ["gene_id", "gene_symbol", "risk_source", "environment_source"]
+
+ENVIRONMENT_GENE_COLUMNS = ["gene_id", "gene_symbol", "exposures", "n_membership_rows"]
 
 CANDIDATE_COLUMNS = [
     "gene_id",
@@ -918,6 +921,22 @@ def compute_overlap(
     return overlap_rows, candidate_rows, counts
 
 
+def environment_genes(environment: list[dict[str, str]]) -> list[dict[str, str]]:
+    """One row per environmental gene, so the set can be a stats gene family."""
+    by_gene: dict[str, list[dict[str, str]]] = defaultdict(list)
+    for row in environment:
+        by_gene[row["gene_id"]].append(row)
+    return [
+        {
+            "gene_id": gene_id,
+            "gene_symbol": rows[0]["gene_symbol"],
+            "exposures": join_unique(row["exposure"] for row in rows),
+            "n_membership_rows": str(len(rows)),
+        }
+        for gene_id, rows in sorted(by_gene.items())
+    ]
+
+
 def command_overlap(args: argparse.Namespace) -> int:
     problems = []
     loaded = {}
@@ -936,6 +955,12 @@ def command_overlap(args: argparse.Namespace) -> int:
     )
     write_tsv(args.overlap, OVERLAP_COLUMNS, overlap_rows)
     write_tsv(args.candidates, CANDIDATE_COLUMNS, candidate_rows)
+    if args.environment_genes:
+        write_tsv(
+            args.environment_genes,
+            ENVIRONMENT_GENE_COLUMNS,
+            environment_genes(loaded["environment_membership"]),
+        )
     print(json.dumps(counts, indent=2))
     return 0
 
@@ -991,6 +1016,8 @@ def build_parser() -> argparse.ArgumentParser:
     p.add_argument("--environment", type=Path, required=True, help="environment_response.tsv")
     p.add_argument("--overlap", type=Path, required=True, help="output overlap.tsv")
     p.add_argument("--candidates", type=Path, required=True, help="output candidate_genes.tsv")
+    p.add_argument("--environment-genes", type=Path,
+                   help="optional output: one row per environmental gene (a stats gene family)")
     p.set_defaults(func=command_overlap)
     return parser
 

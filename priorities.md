@@ -83,18 +83,20 @@ reproducible Splice Girl result.
 ## Priority 4 — Freeze and validate the statistics
 
 **Task IDs:** S1--S8 and R11  
-**Status:** In progress: `stats` now connects exact permutation tests and BH
-correction to the CLI, saved tables, provenance, and offline report, with
-explicit configuration and synthetic acceptance tests. Final real-study
-eligibility, testing-family, and inference rules remain open.
+**Status:** In progress: `stats` connects exact permutation tests, BH
+correction and a gene-set test to the CLI, saved tables, provenance, and
+offline report. The inference rules are frozen (2026-11-17): two-sided, 4 per
+group, one primary gene-set test on the candidate set; see
+[statistics_spec.md](docs/statistics_spec.md#inference-rules-decided-2026-11-17).
+Real-data eligibility and thresholds remain open.
 
 - [x] Record the biological unit and unpaired cohort design in the statistics specification.
 - [ ] Freeze eligible samples, genes, thresholds, and missing-value rules.
 - [x] Define the main case-minus-control effect size.
 - [x] Implement the exact permutation calculation; exhaustive enumeration uses no random seed.
 - [x] Test permutation and BH correction calculations on tiny known examples.
-- [ ] Freeze when inference is allowed and the final test direction.
-- [ ] Define the multiple-testing correction and its gene family.
+- [x] Freeze when inference is allowed and the final test direction.
+- [x] Define the multiple-testing correction and its gene family.
 - [x] Connect explicitly configured statistics fields to saved CLI output and the report.
 
 **Finished when:** another person can reproduce the toy answers and explain

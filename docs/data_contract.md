@@ -307,6 +307,18 @@ The latter includes `run_id`, `family_id`, `gene_id`, `status`, `case_n`,
 Adjusted values are BH-adjusted p-values, not estimates of the probability
 that an individual gene is a false discovery. No cutoff is selected.
 
+`stats` also saves one gene-set test for the whole requested family in
+`set_test.tsv`: `run_id`, `family_id`, `statistic`, `alternative`,
+`genes_used`, `tested_genes_left_out`, `case_n`, `control_n`,
+`set_statistic`, `signed_effect_case_minus_control`, `p_value`,
+`permutations_considered`, `extreme_count`, and `reason`. A gene enters only
+when it was tested and has every sample present in the tested genes; others
+are counted in `tested_genes_left_out`. The two-sided statistic
+(`mean_absolute_effect`) is the mean over genes of the absolute
+case-minus-control effect; one-sided alternatives use `mean_signed_effect`.
+Each relabeling is applied to every gene at once. `set_scores.tsv` lists each
+sample's mean cycle fraction over the genes used, for description.
+
 Stats bundles also save `baseline_metrics.tsv`, `baseline_comparisons.tsv`,
 and an exact copy of the supplied `gene_family.tsv`, including any evidence
 columns. Baselines use exactly the comparison's included samples and retain

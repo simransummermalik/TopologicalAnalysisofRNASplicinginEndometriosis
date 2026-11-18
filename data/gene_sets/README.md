@@ -23,6 +23,7 @@ the overlap. It never decides whether a gene counts.
 | `environment_response.tsv` | `dedupe --kind environment` | One gene × chemical × tissue × context |
 | `overlap.tsv` | `overlap` | One gene in both sets |
 | `candidate_genes.tsv` | `overlap` | One gene in either set, with category flags |
+| `environment_genes.tsv` | `overlap` | One environmental gene per row (565), so the set can be a `stats` gene family |
 | `*_mapping.tsv` | `map` | One original label and its candidate IDs, for G7 review |
 
 `risk_evidence.tsv` holds the GWAS Catalog and Koller Supplementary Table 4
@@ -177,7 +178,8 @@ python3 gene_sets/gene_sets.py overlap \
   --risk data/gene_sets/endometriosis_risk.tsv \
   --environment data/gene_sets/environment_response.tsv \
   --overlap data/gene_sets/overlap.tsv \
-  --candidates data/gene_sets/candidate_genes.tsv
+  --candidates data/gene_sets/candidate_genes.tsv \
+  --environment-genes data/gene_sets/environment_genes.tsv
 ```
 
 `map`, `dedupe`, and `overlap` print counts as JSON. Copy them into the

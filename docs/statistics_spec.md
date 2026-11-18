@@ -1,9 +1,10 @@
 # Splice Girl statistics specification
 
-**Spec version:** 0.4 (2026-11-17) — records S1 (biological unit), S4 (primary
-effect), S5/S6 (exact permutation design and validation), and the configured
-statistics CLI connecting permutation testing and S8 correction for the study in
-[`data/metadata/samples.tsv`](../data/metadata/samples.tsv).
+**Spec version:** 0.5 (2026-11-17) — records S1 (biological unit), S4 (primary
+effect), S5/S6 (exact permutation design and validation), the configured
+statistics CLI, and the [inference rules](#inference-rules-decided-2026-11-17)
+(two-sided tests, 4 samples per group, one primary gene-set test) for the study
+in [`data/metadata/samples.tsv`](../data/metadata/samples.tsv).
 
 The exact permutation and S8 correction code is connected to the `stats`
 command, exports, and offline report. Its biological testing family and final
@@ -107,13 +108,11 @@ already is, by `compare`'s existing output.
   numerator is always at least 1, so this procedure can never report `p = 0`
   — no separate correction is needed to avoid that failure mode (the kind
   sampled permutation testing needs a "+1" correction for; see S6).
-- **One-sided vs. two-sided: open decision, not yet made.** The research
+- **One-sided vs. two-sided: two-sided (decided 2026-11-17).** The research
   question ("do endometriosis samples organize splicing differently") has no
   committed direction — cycle fraction could plausibly be higher or lower in
-  cases. A two-sided test is the more defensible default given that, but this
-  is a scientific judgment call, not a mechanical one, and should be
-  confirmed by the group before real testing. The CLI requires the choice
-  explicitly. For reference: two-sided extremity is counted symmetrically,
+  cases. See [inference rules](#inference-rules-decided-2026-11-17). The CLI
+  still requires the choice explicitly. For reference: two-sided extremity is counted symmetrically,
   since every permutation's exact complement (swap which 4 subjects are
   "case") produces the exact negation of its effect — extremes always come
   in matched pairs under this design.
@@ -178,12 +177,92 @@ boundary values, and an example consuming the exact permutation module's
 output. The field is called `adjusted_p_value`: it is a BH adjustment rather
 than a probability that an individual gene is a false discovery.
 
-**Still required before S8 is complete:** freeze the eligible tested-gene
-family and missing-test policy before examining results; review whether BH's
-assumptions fit that family; and review the configured outputs before a real
-study run. The helper does not choose biological genes, a test
+**Decided 2026-11-17:** gene-level BH covers all testable candidate genes and
+is exploratory; untested genes stay out of the denominator. The confirmatory
+test is a single gene-set test, so no correction across tests is needed. See
+[inference rules](#inference-rules-decided-2026-11-17). **Still required:**
+review the configured outputs on real data before the study run. The helper does not choose biological genes, a test
 direction, or a significance cutoff. Current `compare` and `report` commands
 continue to provide descriptive results.
+
+## Inference rules (decided 2026-11-17)
+
+These rules were fixed before any real splicing result existed. Changing them
+needs a new dated entry in [`decisions.md`](decisions.md).
+
+### Why the design is shaped by the 70 relabelings
+
+With 4 cases and 4 controls there are 70 relabelings, so a two-sided p-value
+can only be 2/70 (0.029), 4/70 (0.057), or larger. Only the single most extreme
+split is below 0.05. Two consequences follow:
+
+- **Gene-by-gene correction cannot succeed.** Under BH at 0.05 with `m`
+  tested genes, a gene at p = 2/70 passes only if at least
+  `0.0286 m / 0.05 ≈ 0.57 m` genes are also at 2/70. With hundreds of genes
+  that will not happen, however real the biology.
+- **Only one confirmatory test is possible.** Any correction over 2 or more
+  tests (Bonferroni or Holm) needs a per-test p of at most 0.025, which is
+  below 2/70.
+
+### Rules
+
+1. **Direction:** every test is two-sided (`--alternative two-sided`).
+2. **Testable gene:** all 4 cases and all 4 controls must be eligible
+   (`--min-per-group 4`). With 3 versus 4 there are 35 relabelings and the
+   smallest two-sided p is 2/35 = 0.057, so such a gene could never pass.
+3. **Primary (confirmatory) test:** one gene-set test on the full candidate
+   set, [`candidate_genes.tsv`](../data/gene_sets/candidate_genes.tsv), at
+   α = 0.05. This is the only result that may be called significant.
+4. **Set statistic:** the mean over genes of the absolute case-minus-control
+   cycle-fraction effect. For each of the 70 relabelings, the same relabeling
+   is applied to every gene and the statistic is recomputed; `p` is the
+   fraction at least as large as the observed value. Genes changing in
+   opposite directions do not cancel. Applying one relabeling to all genes
+   keeps the correlation between genes, so the test stays exact. A small
+   `p` means the set's genes differ between groups more than under almost
+   every relabeling; it does not give a direction. The signed mean effect is
+   reported beside it for direction only.
+5. **Genes in the set test:** genes that pass rule 2 and have every common
+   sample. Others are counted as left out, never imputed.
+6. **Secondary (exploratory) results**, reported with raw p-values and no
+   significance claim:
+   - set tests for the risk set
+     ([`endometriosis_risk.tsv`](../data/gene_sets/endometriosis_risk.tsv),
+     103 genes), the environmental set
+     ([`environment_genes.tsv`](../data/gene_sets/environment_genes.tsv),
+     565 genes), and the overlap set
+     ([`overlap.tsv`](../data/gene_sets/overlap.tsv), 7 genes);
+   - gene-level p-values with BH across all testable candidate genes
+     (untested genes excluded from the denominator, as implemented).
+7. **Reporting:** state the 2/70 floor, the number of testable genes and genes
+   used, and that gene-level results are for ranking and follow-up, not
+   discovery claims.
+
+### Commands
+
+```sh
+# Primary
+splice-girl stats junctions.tsv data/metadata/samples.tsv \
+  --genes data/gene_sets/candidate_genes.tsv --family candidates-primary \
+  --alternative two-sided --design independent --min-per-group 4 \
+  --output runs/stats-candidates
+# Secondary: repeat with endometriosis_risk.tsv, environment_genes.tsv and
+# overlap.tsv, each with its own --family label and output folder.
+```
+
+The primary result is `set_test.tsv` from the candidate run.
+
+### Limits to keep in mind
+
+- Every gene in a set shares the same 8 samples. One unusual sample (depth,
+  RNA quality, batch) can shift many genes at once and drive the set test.
+  Check `baseline_comparisons.tsv` and the per-sample scores in
+  `set_scores.tsv` before interpreting a small set p-value.
+- The set statistic weights every gene equally, so many unchanged genes dilute
+  a few strongly changed ones.
+- Still open: junction support and coverage thresholds (S2/S3), the real-data
+  exchangeability review (S7), and the final candidate table (pending spot
+  checks and the G1 cold read).
 
 ## Configured statistics workflow (R11 and software parts of S7/S12)
 

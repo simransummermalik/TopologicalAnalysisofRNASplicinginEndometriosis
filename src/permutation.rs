@@ -97,6 +97,69 @@ pub fn permutation_test(
     })
 }
 
+/// Exact gene-set permutation test. `values[g][s]` is gene `g`'s cycle
+/// fraction in sample `s`; every gene must cover the same samples, labeled by
+/// `is_case`. One relabeling is applied to all genes at once, which preserves
+/// correlation between genes.
+///
+/// The set statistic depends on the alternative:
+/// - two-sided: mean over genes of |case mean − control mean|, so genes that
+///   change in opposite directions do not cancel; larger is more extreme;
+/// - one-sided: mean over genes of the signed effect, in the stated direction.
+///
+/// `observed_effect` in the result is that set statistic.
+pub fn set_permutation_test(
+    values: &[Vec<f64>],
+    is_case: &[bool],
+    sidedness: Sidedness,
+) -> Result<PermutationResult, String> {
+    let n = is_case.len();
+    if values.is_empty() {
+        return Err("gene-set test requires at least one gene".to_owned());
+    }
+    if values.iter().any(|gene| gene.len() != n) {
+        return Err("every gene in the set test must cover the same samples".to_owned());
+    }
+    let observed_cases: Vec<usize> = (0..n).filter(|&index| is_case[index]).collect();
+    let k = observed_cases.len();
+    if k == 0 || k == n {
+        return Err(
+            "permutation test requires at least one eligible sample in each group".to_owned(),
+        );
+    }
+    let statistic = |cases: &[usize]| {
+        let effects = values
+            .iter()
+            .map(|gene| group_difference(gene, cases, n))
+            .map(|effect| match sidedness {
+                Sidedness::TwoSided => effect.abs(),
+                _ => effect,
+            });
+        mean_of(effects)
+    };
+    let observed = statistic(&observed_cases);
+    let permutations_considered = binomial_coefficient(n, k)?;
+    let tolerance = TOLERANCE * observed.abs().max(1.0);
+    let extreme_count = combinations(n, k)
+        .iter()
+        .filter(|cases| {
+            let value = statistic(cases);
+            match sidedness {
+                Sidedness::TwoSided | Sidedness::OneSidedCaseGreater => {
+                    value >= observed - tolerance
+                }
+                Sidedness::OneSidedCaseLess => value <= observed + tolerance,
+            }
+        })
+        .count();
+    Ok(PermutationResult {
+        observed_effect: observed,
+        permutations_considered,
+        extreme_count,
+        p_value: extreme_count as f64 / permutations_considered as f64,
+    })
+}
+
 /// Case mean minus control mean, where `case_indices` names which positions
 /// in `values` (length `n`) are labeled case for this particular relabeling.
 fn group_difference(values: &[f64], case_indices: &[usize], n: usize) -> f64 {
@@ -336,5 +399,57 @@ mod tests {
         ];
         let error = permutation_test(&samples, Sidedness::TwoSided).unwrap_err();
         assert!(error.contains("at least one eligible sample in each group"));
+    }
+
+    #[test]
+    fn set_test_two_sided_does_not_cancel_opposite_changes() {
+        // Gene A is higher in cases, gene B equally lower: the signed mean is
+        // zero, but both genes changed.
+        let is_case = [true, true, true, true, false, false, false, false];
+        let a = vec![1.0, 1.0, 1.0, 1.0, 0.0, 0.0, 0.0, 0.0];
+        let b: Vec<f64> = a.iter().map(|value| 1.0 - value).collect();
+        let values = vec![a, b];
+        let absolute = set_permutation_test(&values, &is_case, Sidedness::TwoSided).unwrap();
+        assert!((absolute.observed_effect - 1.0).abs() < 1e-12);
+        assert_eq!(
+            (absolute.extreme_count, absolute.permutations_considered),
+            (2, 70)
+        );
+        let signed =
+            set_permutation_test(&values, &is_case, Sidedness::OneSidedCaseGreater).unwrap();
+        assert!(signed.observed_effect.abs() < 1e-12);
+        assert_eq!(signed.extreme_count, 70);
+    }
+
+    #[test]
+    fn set_test_single_gene_matches_gene_test() {
+        let samples: Vec<IncludedSample> = [0.9, 0.7, 0.4, 0.8, 0.1, 0.5, 0.2, 0.3]
+            .iter()
+            .enumerate()
+            .map(|(index, &value)| {
+                let condition = if index < 4 {
+                    Condition::Case
+                } else {
+                    Condition::Control
+                };
+                sample(&format!("s{index}"), condition, value)
+            })
+            .collect();
+        let values = vec![samples.iter().map(|s| s.cycle_fraction).collect::<Vec<_>>()];
+        let is_case: Vec<bool> = samples
+            .iter()
+            .map(|s| s.condition == Condition::Case)
+            .collect();
+        for sidedness in [
+            Sidedness::TwoSided,
+            Sidedness::OneSidedCaseGreater,
+            Sidedness::OneSidedCaseLess,
+        ] {
+            let gene = permutation_test(&samples, sidedness).unwrap();
+            let set = set_permutation_test(&values, &is_case, sidedness).unwrap();
+            assert_eq!(gene.extreme_count, set.extreme_count, "{sidedness:?}");
+        }
+        assert!(set_permutation_test(&[vec![1.0]], &[true, false], Sidedness::TwoSided).is_err());
+        assert!(set_permutation_test(&[], &[true, false], Sidedness::TwoSided).is_err());
     }
 }

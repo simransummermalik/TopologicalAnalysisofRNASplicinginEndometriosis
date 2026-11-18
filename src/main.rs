@@ -341,6 +341,19 @@ fn run_stats_command(arguments: Vec<String>, command: &[String]) -> Result<(), S
             row.reason
         );
     }
+    let set = &statistics.set_test;
+    match &set.permutation {
+        Some(test) => println!(
+            "gene-set test: genes_used={}; left_out={}; {}={}; signed_effect_case_minus_control={}; p_value={}",
+            set.genes_used,
+            set.genes_left_out,
+            splice_girl::statistics::set_statistic_name(statistics.options.alternative),
+            terminal_number(Some(test.observed_effect)),
+            terminal_number(set.signed_effect),
+            terminal_number(Some(test.p_value))
+        ),
+        None => println!("gene-set test: untested ({})", set.reason),
+    }
     println!(
         "Open in your browser: {}",
         output_dir.join("report.html").display()

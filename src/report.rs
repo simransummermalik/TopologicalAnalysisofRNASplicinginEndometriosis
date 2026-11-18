@@ -194,6 +194,12 @@ fn render_statistics(html: &mut String, run: &StatisticsRun) {
         writeln!(html, "<tr><th scope=row><a href=\"#gene-{}\">{}</a>{}</th><td>{}</td><td>{}</td><td>{}</td><td>{}</td><td>{}</td></tr>", index + 1, label, category, row.status, number(row.permutation.as_ref().map(|test| test.p_value)), number(row.adjusted_p_value), counts, escape(&row.reason)).unwrap();
     }
     html.push_str("</tbody></table></div>\n");
+    let set = &run.set_test;
+    html.push_str("<h3>Gene-set test</h3>");
+    match &set.permutation {
+        Some(test) => writeln!(html, "<p>One exact permutation test for the whole family, relabeling samples for all {} tested genes at once ({} tested genes left out for missing samples). Statistic: <strong>{}</strong> = {}. Signed case-minus-control effect, for direction only: {}. Raw p: {} ({} / {} permutations). This is a single test, so no correction is applied within this run. <a href=\"set_test.tsv\">Set test</a> · <a href=\"set_scores.tsv\">Per-sample mean cycle fraction</a></p>", set.genes_used, set.genes_left_out, crate::statistics::set_statistic_name(run.options.alternative), number(Some(test.observed_effect)), number(set.signed_effect), number(Some(test.p_value)), test.extreme_count, test.permutations_considered).unwrap(),
+        None => writeln!(html, "<p>Not tested: {}.</p>", escape(&set.reason)).unwrap(),
+    }
     html.push_str("<h3>Baseline checks</h3><p>Compare cycle fraction with total junction read support, observed node and junction counts, and graph cycle rank (edges minus nodes plus connected components). These descriptive baselines use the same included samples; they have no separate significance tests. Raw support depends on sequencing depth and is not a gene-expression estimate. Different observed topologies require review: missing edges may reflect coverage rather than biology.</p><p><a href=\"baseline_metrics.tsv\">Per-sample baselines</a> · <a href=\"baseline_comparisons.tsv\">Baseline group comparisons and topology flags</a> · <a href=\"gene_family.tsv\">Original gene family and annotations</a></p>\n");
 }
 

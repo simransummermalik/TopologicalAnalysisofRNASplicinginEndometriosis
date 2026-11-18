@@ -182,7 +182,7 @@ In plain language:
 | Support sensitivity | An explicit threshold grid reruns the Rust analysis and keeps disappearing genes visible. |
 | Public dataset selection | Four control and four endometriosis RNA-seq samples have been identified. |
 
-The Rust project currently has **94 automated tests**. Real-data
+The Rust project currently has **97 automated tests**. Real-data
 preprocessing is the next active stage, and the large raw-read files remain
 outside Git.
 
@@ -401,7 +401,8 @@ cargo run -- stats examples/demo/all_genes.tsv examples/demo/manifest.tsv \
 
 Open `target/demo-stats/report.html` to see raw and BH-adjusted p-values along
 with the sample plots and graph links. `statistics.tsv` records each gene's
-effect, group sizes, permutation counts, and any untested reason. The same
+effect, group sizes, permutation counts, and any untested reason.
+`set_test.tsv` holds one exact test for the whole family. The same
 workflow is available as menu option **7**.
 
 These inputs are synthetic. The flags make the scientific choices explicit;

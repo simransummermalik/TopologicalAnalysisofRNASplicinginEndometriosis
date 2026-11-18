@@ -15,7 +15,7 @@ use crate::compare::{GeneComparison, GeneComparisonSummary};
 use crate::hodge::TOLERANCE;
 use crate::permutation::MAX_PERMUTATIONS;
 use crate::report::{graph_filename, render_report, render_stats_report};
-use crate::statistics::{StatisticsRun, alternative_name};
+use crate::statistics::{StatisticsRun, alternative_name, set_statistic_name};
 use crate::visualize::render_svg;
 
 const SAMPLE_METRICS: &str = "sample_metrics.tsv";
@@ -281,6 +281,14 @@ fn write_comparison_bundle(
     ];
     if let Some((path, run)) = statistics {
         files.push((STATISTICS.to_owned(), statistics_tsv(&metadata.run_id, run)));
+        files.push((
+            "set_test.tsv".to_owned(),
+            set_test_tsv(&metadata.run_id, run),
+        ));
+        files.push((
+            "set_scores.tsv".to_owned(),
+            set_scores_tsv(&metadata.run_id, run),
+        ));
         let (sample_baselines, baseline_comparisons) =
             crate::baselines::tables(&metadata.run_id, results, run);
         files.push(("baseline_metrics.tsv".to_owned(), sample_baselines));
@@ -409,7 +417,7 @@ fn statistics_settings_json(run: &StatisticsRun) -> String {
         TOLERANCE,
     );
     settings.pop();
-    write!(settings, ", \"ranking_rule\": {}, \"baseline_sample_policy\": \"same included samples as Hodge comparison; no missing-value imputation\"}}", run.options.rank_by.map(|rule| json_string(rule.name())).unwrap_or_else(|| "null".to_owned())).unwrap();
+    write!(settings, ", \"ranking_rule\": {}, \"baseline_sample_policy\": \"same included samples as Hodge comparison; no missing-value imputation\", \"set_test\": {{\"statistic\": {}, \"definition\": \"exact relabeling of all genes at once; two-sided uses the mean over genes of |case mean - control mean|, one-sided the mean signed effect; genes must be tested and have every common sample\", \"genes_used\": {}, \"tested_genes_left_out\": {}, \"p_value\": {}}}}}", run.options.rank_by.map(|rule| json_string(rule.name())).unwrap_or_else(|| "null".to_owned()), json_string(set_statistic_name(run.options.alternative)), run.set_test.genes_used, run.set_test.genes_left_out, run.set_test.permutation.as_ref().map(|test| format!("{:.10}", test.p_value)).unwrap_or_else(|| "null".to_owned())).unwrap();
     settings
 }
 
@@ -455,6 +463,55 @@ fn annotation_fields(run: &StatisticsRun, gene: &str) -> String {
         .get(gene)
         .map(|row| row.fields().map(tsv).join("\t"))
         .unwrap_or_else(|| "\t\t\t\t".to_owned())
+}
+
+fn set_test_tsv(run_id: &str, run: &StatisticsRun) -> String {
+    let set = &run.set_test;
+    let count = |condition: crate::manifest::Condition| {
+        set.samples
+            .iter()
+            .filter(|sample| sample.condition == condition)
+            .count()
+    };
+    let test = set.permutation.as_ref();
+    format!(
+        "run_id\tfamily_id\tstatistic\talternative\tgenes_used\ttested_genes_left_out\tcase_n\tcontrol_n\tset_statistic\tsigned_effect_case_minus_control\tp_value\tpermutations_considered\textreme_count\treason\n{}\t{}\t{}\t{}\t{}\t{}\t{}\t{}\t{}\t{}\t{}\t{}\t{}\t{}\n",
+        tsv(run_id),
+        tsv(&run.family.family_id),
+        set_statistic_name(run.options.alternative),
+        alternative_name(run.options.alternative),
+        set.genes_used,
+        set.genes_left_out,
+        count(crate::manifest::Condition::Case),
+        count(crate::manifest::Condition::Control),
+        optional_number(test.map(|test| test.observed_effect)),
+        optional_number(set.signed_effect),
+        optional_number(test.map(|test| test.p_value)),
+        test.map(|test| test.permutations_considered.to_string())
+            .unwrap_or_default(),
+        test.map(|test| test.extreme_count.to_string())
+            .unwrap_or_default(),
+        tsv(&set.reason),
+    )
+}
+
+fn set_scores_tsv(run_id: &str, run: &StatisticsRun) -> String {
+    let mut table =
+        String::from("run_id\tfamily_id\tsample_id\tcondition\tmean_cycle_fraction\tgenes_used\n");
+    for sample in &run.set_test.samples {
+        writeln!(
+            table,
+            "{}\t{}\t{}\t{}\t{:.10}\t{}",
+            tsv(run_id),
+            tsv(&run.family.family_id),
+            tsv(&sample.sample_id),
+            sample.condition,
+            sample.cycle_fraction,
+            run.set_test.genes_used
+        )
+        .unwrap();
+    }
+    table
 }
 
 fn write_bundle<S: AsRef<str>>(

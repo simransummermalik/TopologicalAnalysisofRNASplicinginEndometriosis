@@ -456,9 +456,14 @@ class OverlapTests(GeneSetTestCase):
         gs.write_tsv(env_path, gs.ENVIRONMENT_MEMBERSHIP_COLUMNS, env_rows)
         overlap_path, cand_path = self.temp / "overlap.tsv", self.temp / "candidate_genes.tsv"
 
+        genes_path = self.temp / "environment_genes.tsv"
         code, out, err = self.run_cli("overlap", "--risk", str(risk_path), "--environment", str(env_path),
-                                      "--overlap", str(overlap_path), "--candidates", str(cand_path))
+                                      "--overlap", str(overlap_path), "--candidates", str(cand_path),
+                                      "--environment-genes", str(genes_path))
         self.assertEqual(code, 0, err)
+        _, env_genes = gs.read_tsv(genes_path)
+        self.assertEqual([g["gene_id"] for g in env_genes], ["ENSG00000000001.5", "ENSG00000000008.4"])
+        self.assertEqual(len({g["gene_id"] for g in env_genes}), len(env_genes))
         for expected in ('"risk_only": 1', '"environment_only": 1', '"overlap": 1', '"union": 3'):
             self.assertIn(expected, out)
 

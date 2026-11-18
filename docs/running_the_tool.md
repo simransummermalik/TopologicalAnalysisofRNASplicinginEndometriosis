@@ -30,6 +30,8 @@ are not evidence of statistical significance.
 | `comparisons.tsv` | Which samples were included or excluded, and why? |
 | `gene_summaries.tsv` | What are the case/control means and their difference? |
 | `statistics.tsv` | What are the exact permutation p-values and BH-adjusted values? |
+| `set_test.tsv` | Does the requested family as a whole differ? One exact gene-set test (mean absolute effect when two-sided) |
+| `set_scores.tsv` | What is each sample's mean cycle fraction over the genes in the set test? |
 | `baseline_metrics.tsv` | What are each eligible sample's simpler graph/count measurements? |
 | `baseline_comparisons.tsv` | Do simpler measurements also differ, and do observed topologies match? |
 | `gene_family.tsv` | Which original gene list and evidence annotations were supplied? |

@@ -139,6 +139,27 @@ fn stats_runs_exact_tests_bh_exports_reports_and_preserves_missing_genes() {
         assert!(row["p_value"].is_empty() && row["adjusted_p_value"].is_empty());
         assert!(!row["untested_reason"].is_empty());
     }
+    // Gene-set test: HIGH (effect 1) and FLAT (effect 0) are tested and
+    // complete, so the mean absolute effect is 0.5; only the observed split
+    // and its complement reach it: p = 2/70.
+    let set = rows(&folder.join("set_test.tsv"));
+    assert_eq!(set.len(), 1);
+    assert_eq!(set[0]["statistic"], "mean_absolute_effect");
+    assert_eq!(set[0]["genes_used"], "2");
+    assert_eq!(set[0]["tested_genes_left_out"], "0");
+    assert_eq!(
+        (set[0]["case_n"].as_str(), set[0]["control_n"].as_str()),
+        ("4", "4")
+    );
+    assert!((set[0]["set_statistic"].parse::<f64>().unwrap() - 0.5).abs() < 1e-9);
+    assert!((set[0]["p_value"].parse::<f64>().unwrap() - 2.0 / 70.0).abs() < 1e-9);
+    assert_eq!(set[0]["extreme_count"], "2");
+    let scores = rows(&folder.join("set_scores.tsv"));
+    assert_eq!(scores.len(), 8);
+    for row in &scores {
+        let expected = if row["condition"] == "case" { 0.5 } else { 0.0 };
+        assert!((row["mean_cycle_fraction"].parse::<f64>().unwrap() - expected).abs() < 1e-9);
+    }
     let decisions = rows(&folder.join("comparisons.tsv"));
     assert_eq!(decisions.len(), 32);
     assert!(
@@ -152,6 +173,7 @@ fn stats_runs_exact_tests_bh_exports_reports_and_preserves_missing_genes() {
     assert!(html.contains("0.0571428571"));
     assert!(html.contains("2 / 70"));
     assert!(html.contains("href=\"statistics.tsv\""));
+    assert!(html.contains("Gene-set test") && html.contains("href=\"set_scores.tsv\""));
     assert!(!html.contains("No p-values or adjusted p-values were calculated"));
     let manifest = fs::read_to_string(folder.join("run_manifest.json")).unwrap();
     assert!(manifest.contains("\"mode\": \"stats\""));
