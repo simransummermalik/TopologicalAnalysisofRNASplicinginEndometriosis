@@ -60,3 +60,22 @@ system settings, or run any commands in a visitor's browser. Links to the
 repository and Rust setup are ordinary external links.
 
 The website is local only. Nothing in this folder deploys or publishes it.
+
+## Checked November 18, 2026
+
+- All five pages load successfully, with working local links and section anchors.
+- Desktop (1280 px) and phone (390 px) layouts have no horizontal page overflow.
+- The original embedded ASCII matches `assets/splice_girl_banner.txt` exactly.
+- Guide navigation works with keyboard Enter, Previous/Next, direct step links,
+  browser Back, URL fragments and direct `file://` opening.
+- With JavaScript disabled, all seven steps remain readable and inactive
+  copy/navigation controls stay hidden. Native troubleshooting disclosures work.
+- Copy success and denied-permission fallback were checked with controlled
+  browser clipboard implementations; the operating system clipboard was not changed.
+- The ten setup/analysis/menu/export command invocations copied from the guide
+  passed in an isolated local source copy. Expected cycle fractions, both
+  comparison effects and eight exported report SVGs were checked. The macOS
+  `open` commands were checked for existing destinations, without launching
+  the user's normal browser profile. Optional global installation was not rerun.
+
+These are developer checks, not independent first-time reader feedback.
