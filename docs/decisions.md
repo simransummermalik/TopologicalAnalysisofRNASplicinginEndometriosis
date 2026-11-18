@@ -57,7 +57,7 @@ synthetic smoke test as approval of the full human pilot or its thresholds.
 
 | Question | Why it matters | What must be recorded before implementation |
 |---|---|---|
-| Which exact support and coverage thresholds define an eligible junction? | Thresholds change which graphs and samples enter the analysis. | Threshold values, rationale, and a small sensitivity plan. |
+| Which exact support and coverage thresholds define an eligible junction? | Thresholds change which graphs and samples enter the analysis. | Threshold values, rationale, and a small sensitivity plan. A [proposal](threshold_proposal.md) (2026-11-18) awaits team approval. |
 | Does the real HISAT2 pilot pass the production-method review? | The implemented adapter now matches the data methods; full-cohort suitability remains unverified. Bowtie2 alone is not the splice-junction extractor. | Reviewed human alignment/QC, frozen tool versions and thresholds, and a checked real gene before D6 is marked done. |
 | Which reviewed candidate-gene table is final? | Ranking and interpretation must use a frozen, source-linked set. | Stable gene IDs, evidence sources, and inclusion rules. |
 | What are the course midpoint and final deadlines? | The task board cannot assign realistic due dates without them. | Dates, owner, and the required artifact at each checkpoint. |
