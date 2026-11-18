@@ -303,3 +303,18 @@ supposed to fail. The opening script now validates the junction table alone,
 then lets the report show the intentional exclusion. The corrected commands
 were run successfully. This is developer acceptance, not the independent
 beginner or biological review requested in the task guide.
+
+## Documented beginner walkthrough — November 17
+
+The dedicated [beginner_test folder](../beginner_test/README.md) now records
+25 passing CLI walkthrough checks in a fresh local source copy, including
+installation, menu input, known-answer analysis, validation, exports, exact
+statistics and expected errors. `cargo test` passed all 100 Rust tests inside
+that copy. The record retains full command logs, source hashes, inputs and
+copied report/graph artifacts. Report links and SVGs were checked after copying.
+A separate Chrome follow-up rendered the local report successfully and saved
+a visually inspected screenshot; the initial sandbox/browser failure is also
+retained. See [the findings](../beginner_test/RESULTS.md) for instruction fixes,
+scope and evidence. This is an assistant-run walkthrough, not independent
+first-time human usability sign-off. Application logic and the automated
+unit-test count were not changed by this documentation task.

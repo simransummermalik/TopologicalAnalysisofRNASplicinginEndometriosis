@@ -111,7 +111,7 @@ has not been met.
 | R14 | **Done** | [`tests/cli_errors.rs`](../tests/cli_errors.rs) checks missing/empty files, headers, counts, manifests, metadata mismatches, zero support, comparison groups, overwrite protection, corrections, and failure exit codes; solver failure is unit-tested. |
 | R15 | **Done (current software scope)** | [Software validation](../docs/software_validation.md) records synthetic performance and a five-run real-prefix benchmark across 243 observed candidates/1,388 rows: median 11.194 ms and maximum child RSS 4.05 MiB. This does not measure alignment or full-cohort performance. |
 | R16 | **Done** | README/demo installation instructions, Rust 1.85 minimum, isolated `cargo install --path .`, installed command checks, examples, and limitations are recorded in [software validation](../docs/software_validation.md). |
-| R17 | Not started | A clean-checkout review by another person has not been recorded. |
+| R17 | In progress | The [assistant-run beginner walkthrough](../beginner_test/README.md) records a fresh-copy install, 25 passing CLI checks, 100 passing Rust tests, saved artifacts and a browser follow-up. Documentation gaps were corrected. An independent first-time person's review remains pending. |
 
 ### Real-data integration and comparison status
 
@@ -139,7 +139,7 @@ has not been met.
 | U2 | **Done** | The input contract includes valid, invalid, and runnable examples in beginner-readable language. |
 | U3 | **Done** | CLI input failures name the file, relevant line and column, invalid value, expected form, and likely correction; command-level tests confirm nonzero failure statuses. |
 | U4 | **Done** | R13 records run IDs, commands, versions, SHA-256 input checksums, settings, exclusions, and failures. |
-| U5 | Not started | An independent beginner usability review has not been recorded. |
+| U5 | In progress | A detailed [walkthrough and findings](../beginner_test/RESULTS.md) document installation, every prompt, expected results, errors and fixes. This assistant review does not replace the independent beginner feedback still required. |
 | V1 | **Done** | The complete pipeline is shown in the main [README](../README.md#what-splice-girl-does). |
 | V2 | **Done** | `visualize` draws the tested synthetic splice graph with direction and support. |
 | V3 | **Done** | `visualize` generates aligned observed, gradient, and cycle graph panels with fixed node/edge layout, signed values, a shared width scale, and a complete junction table; see [`splice-girl-basic.svg`](../splice-girl-basic.svg). |

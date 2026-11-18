@@ -1,0 +1,36 @@
+{
+  "schema_version": "1.0",
+  "run_id": "splice-girl-1794975832-983592000",
+  "created_unix_seconds": 1794975832,
+  "tool": {"name": "splice-girl", "version": "0.1.0"},
+  "mode": "report",
+  "command": ["target/debug/splice-girl", "report", "examples/demo/all_genes.tsv", "examples/demo/manifest.tsv", "--output", "target/demo-report"],
+  "inputs": [
+    {"role": "junctions", "path": "examples/demo/all_genes.tsv", "sha256": "627ff6b603fe3c25aa2b99bfe34a50f683bbbf51b826bf7688380d35a7d2d2f6"},
+    {"role": "sample_manifest", "path": "examples/demo/manifest.tsv", "sha256": "93ac731c27b62f2d54a22161d1a46f3a5965a7039073927f32412aea7880d74a"}
+  ],
+  "outputs": ["sample_metrics.tsv", "junction_components.tsv", "comparisons.tsv", "gene_summaries.tsv", "report.html", "graphs/graph-000001.svg", "graphs/graph-000002.svg", "graphs/graph-000003.svg", "graphs/graph-000004.svg", "graphs/graph-000005.svg", "graphs/graph-000006.svg", "graphs/graph-000007.svg", "graphs/graph-000008.svg", "run_manifest.json"],
+  "settings": {
+    "normalization": "count / total_gene_support",
+    "solver": "dense normal equations with one pinned node per connected component and partial pivoting",
+    "precision": "f64",
+    "acceptance_tolerance": 1.0e-9,
+    "minimum_total_support": "greater than zero",
+    "random_seed": null
+  },
+  "summary": {
+    "sample_gene_groups": 8,
+    "junction_rows": 22,
+    "included_samples": 8,
+    "excluded_samples": 2,
+    "failure_count": 0
+  },
+  "exclusions": [
+    {"gene_id": "GENE_HIGH_CYCLE", "sample_id": "control_03", "reason": "no junction data for gene 'GENE_HIGH_CYCLE'"},
+    {"gene_id": "GENE_LOW_CYCLE", "sample_id": "control_03", "reason": "no junction data for gene 'GENE_LOW_CYCLE'"}
+  ],
+  "failures": [
+
+  ],
+  "statistics": null
+}

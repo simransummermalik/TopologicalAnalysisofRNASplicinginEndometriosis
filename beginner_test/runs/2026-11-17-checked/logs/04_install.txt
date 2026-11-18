@@ -1,0 +1,14 @@
+$ cargo install --path .
+Working folder: /var/folders/tv/_11343vn6153sfykk5r11dq40000gn/T/splice-girl-beginner-fu47wh_w/source
+Typed input: None
+Expected exit: 0
+Actual exit: 0
+
+--- stdout ---
+
+--- stderr ---
+  Installing splice-girl v0.1.0 (/private/var/folders/tv/_11343vn6153sfykk5r11dq40000gn/T/splice-girl-beginner-fu47wh_w/source)
+   Compiling splice-girl v0.1.0 (/private/var/folders/tv/_11343vn6153sfykk5r11dq40000gn/T/splice-girl-beginner-fu47wh_w/source)
+    Finished `release` profile [optimized] target(s) in 6.19s
+  Installing /var/folders/tv/_11343vn6153sfykk5r11dq40000gn/T/splice-girl-beginner-fu47wh_w/installed/bin/splice-girl
+   Installed package `splice-girl v0.1.0 (/private/var/folders/tv/_11343vn6153sfykk5r11dq40000gn/T/splice-girl-beginner-fu47wh_w/source)` (executable `splice-girl`)

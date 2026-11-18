@@ -1,0 +1,2 @@
+run_id	family_id	statistic	alternative	genes_used	tested_genes_left_out	case_n	control_n	set_statistic	signed_effect_case_minus_control	p_value	permutations_considered	extreme_count	reason
+splice-girl-1794975833-393705000	synthetic-demo	mean_absolute_effect	two-sided	2	0	2	2	0.5555555556	0.0000000000	0.3333333333	6	2	

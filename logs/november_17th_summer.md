@@ -52,3 +52,17 @@ LaTeX roadmap without changing its basic look. The latest checks pass 100 Rust
 and 88 Python tests. We still need the other read files, enough storage,
 reviewed processing settings and the independent team checks before claiming
 full disease results. Nothing from this follow-up was committed or pushed.
+
+## Beginner walkthrough
+
+I made a `beginner_test` folder and tried the demo from a fresh local copy,
+starting with checking Rust and installing the command. I tested the menu,
+the example answers, graphs, saved results, reports and statistics, plus the
+errors someone might hit if they use the wrong folder or reuse an output
+name. All 25 CLI checks passed, including the full 100-test Rust suite. I saved
+the actual terminal logs and example outputs, wrote each step in plain language,
+and fixed missing instructions about the menu prompts and opening files. The
+first automated browser attempt was blocked by the sandbox; a separate follow-up
+opened the report and saved a screenshot successfully. This is an assistant-run
+walkthrough, so another person's beginner feedback is still needed. No commit
+or push was performed.

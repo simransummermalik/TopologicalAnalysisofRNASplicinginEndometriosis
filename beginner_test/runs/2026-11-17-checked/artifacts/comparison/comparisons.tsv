@@ -1,0 +1,11 @@
+run_id	gene_id	sample_id	condition	status	cycle_fraction	exclusion_reason
+splice-girl-1794975826-459282000	GENE_HIGH_CYCLE	case_01	case	included	1.0000000000	
+splice-girl-1794975826-459282000	GENE_HIGH_CYCLE	case_02	case	included	0.1111111111	
+splice-girl-1794975826-459282000	GENE_HIGH_CYCLE	control_01	control	included	0.0000000000	
+splice-girl-1794975826-459282000	GENE_HIGH_CYCLE	control_02	control	included	0.0000000000	
+splice-girl-1794975826-459282000	GENE_HIGH_CYCLE	control_03	control	excluded		no junction data for gene 'GENE_HIGH_CYCLE'
+splice-girl-1794975826-459282000	GENE_LOW_CYCLE	case_01	case	included	0.0000000000	
+splice-girl-1794975826-459282000	GENE_LOW_CYCLE	case_02	case	included	0.0000000000	
+splice-girl-1794975826-459282000	GENE_LOW_CYCLE	control_01	control	included	1.0000000000	
+splice-girl-1794975826-459282000	GENE_LOW_CYCLE	control_02	control	included	0.1111111111	
+splice-girl-1794975826-459282000	GENE_LOW_CYCLE	control_03	control	excluded		no junction data for gene 'GENE_LOW_CYCLE'

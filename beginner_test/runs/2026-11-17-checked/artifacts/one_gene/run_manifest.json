@@ -1,0 +1,36 @@
+{
+  "schema_version": "1.0",
+  "run_id": "splice-girl-1794975825-614224000",
+  "created_unix_seconds": 1794975825,
+  "tool": {"name": "splice-girl", "version": "0.1.0"},
+  "mode": "gene",
+  "command": ["target/debug/splice-girl", "gene", "GENE_DEMO", "examples/demo/junctions.tsv", "examples/demo/manifest.tsv", "--output", "demo_results"],
+  "inputs": [
+    {"role": "junctions", "path": "examples/demo/junctions.tsv", "sha256": "42954380ec1ce7546192e37e3bd0cc27294dd3ca9eb992a6a9a780e1518be99e"},
+    {"role": "sample_manifest", "path": "examples/demo/manifest.tsv", "sha256": "93ac731c27b62f2d54a22161d1a46f3a5965a7039073927f32412aea7880d74a"}
+  ],
+  "outputs": ["sample_metrics.tsv", "junction_components.tsv", "comparisons.tsv", "run_manifest.json"],
+  "settings": {
+    "normalization": "count / total_gene_support",
+    "solver": "dense normal equations with one pinned node per connected component and partial pivoting",
+    "precision": "f64",
+    "acceptance_tolerance": 1.0e-9,
+    "minimum_total_support": "greater than zero",
+    "random_seed": null
+  },
+  "summary": {
+    "sample_gene_groups": 5,
+    "junction_rows": 12,
+    "included_samples": 4,
+    "excluded_samples": 2,
+    "failure_count": 0
+  },
+  "exclusions": [
+    {"gene_id": "GENE_DEMO", "sample_id": "control_03", "reason": "no junction data for gene 'GENE_DEMO'"},
+    {"gene_id": "GENE_DEMO", "sample_id": "orphan_01", "reason": "no manifest entry for this sample_id"}
+  ],
+  "failures": [
+
+  ],
+  "statistics": null
+}

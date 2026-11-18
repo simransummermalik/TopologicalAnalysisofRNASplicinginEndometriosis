@@ -1,0 +1,10 @@
+$ rustc --version
+Working folder: /var/folders/tv/_11343vn6153sfykk5r11dq40000gn/T/splice-girl-beginner-fu47wh_w/source
+Typed input: None
+Expected exit: 0
+Actual exit: 0
+
+--- stdout ---
+rustc 1.97.1 (8bab26f4f 2026-07-14)
+
+--- stderr ---

@@ -1,0 +1,7 @@
+run_id	gene_id	sample_id	condition	status	cycle_fraction	exclusion_reason
+splice-girl-1794975825-614224000	GENE_DEMO	case_01	case	included	1.0000000000	
+splice-girl-1794975825-614224000	GENE_DEMO	case_02	case	included	0.1111111111	
+splice-girl-1794975825-614224000	GENE_DEMO	control_01	control	included	0.0000000000	
+splice-girl-1794975825-614224000	GENE_DEMO	control_02	control	included	0.0000000000	
+splice-girl-1794975825-614224000	GENE_DEMO	control_03	control	excluded		no junction data for gene 'GENE_DEMO'
+splice-girl-1794975825-614224000	GENE_DEMO	orphan_01		excluded		no manifest entry for this sample_id

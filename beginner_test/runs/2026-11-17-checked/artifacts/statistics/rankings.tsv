@@ -1,0 +1,3 @@
+run_id	family_id	rank	gene_id	status	mean_difference_case_minus_control	p_value	adjusted_p_value	rule	untested_reason	gene_symbol	is_risk	is_environment	is_overlap	category
+splice-girl-1794975833-393705000	synthetic-demo	1	GENE_HIGH_CYCLE	tested	0.5555555556	0.3333333333	0.3333333333	absolute-effect						
+splice-girl-1794975833-393705000	synthetic-demo	2	GENE_LOW_CYCLE	tested	-0.5555555556	0.3333333333	0.3333333333	absolute-effect						

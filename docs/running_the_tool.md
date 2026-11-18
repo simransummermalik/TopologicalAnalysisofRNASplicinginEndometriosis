@@ -107,8 +107,12 @@ Python, with no Galaxy account or full human dataset.
 ## What still requires the group
 
 The software can process inputs, but the real eight-sample analysis is not
-finished: the full local FASTQ collection and human index, reviewed gene
-evidence, approved support/coverage and inference settings, and a checked
-real-gene pilot are still needed. Independent beginner review, final biological
+finished: the full local FASTQ collection, reviewed preprocessing/coverage
+choices and comparable cohort junction tables are still needed. The human
+index, candidate evidence tables and bounded CDH11 pilot now exist; independent
+evidence sign-offs remain. The inference policy is recorded in the statistics
+specification, while its real-data assumptions still need review. The
+[assistant-run beginner walkthrough](../beginner_test/README.md) records the
+installation/demo checks; an independent human usability review, final biological
 interpretation, license choice and final presentation are separate remaining
 tasks. No final disease or exposure claim follows from the synthetic demo.

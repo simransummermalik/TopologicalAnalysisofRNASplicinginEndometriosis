@@ -23,6 +23,9 @@ Anyone can pick up any available task; there are no assigned leads.
 - [x] Prepare an unpublished source-package workflow and release-review notes.
 - [x] Pass the full offline check from an extracted source snapshot, verify
   its archive/file hashes, and run the isolated installed CLI and live demo.
+- [x] Complete and document an [assistant-run beginner walkthrough](beginner_test/README.md):
+  25 CLI checks, the 100-test Rust suite, copied outputs and a browser screenshot.
+  Independent first-time human feedback remains open.
 - [x] Pass 100 Rust and 88 Python tests, strict Clippy, formatting and release
   build; Rust tests/Clippy also pass on the minimum 1.85.0 compiler.
 
@@ -162,7 +165,8 @@ an approved analysis rule, and a versioned output file.
 **Task IDs:** R14--R17 and U1, U3, and U5  
 **Status:** The developer-run installation, compatibility, candidate-sized
 synthetic benchmark, real-prefix observed-candidate benchmark, CI checks, and
-CLI checks are complete; an independent beginner review remains. Full-cohort
+CLI checks and the documented assistant walkthrough are complete; an independent
+beginner review remains. Full-cohort
 performance is not measured.
 
 - [x] Finish tests for missing files, empty files, bad columns, invalid values,
@@ -176,6 +180,8 @@ performance is not measured.
   `splice-girl --start` after installation.
 - [x] Provide one complete software check command, including an optional actual
   Cleaver/HISAT2 paired-read batch-to-report smoke test.
+- [x] Run the beginner guide in a fresh local source copy, save each command's
+  evidence and correct instruction gaps; see `beginner_test/RESULTS.md`.
 - [ ] Ask a beginner to run a clean copy and fix anything that confuses them.
 
 **Finished when:** a new user can install, run, and troubleshoot the tool from

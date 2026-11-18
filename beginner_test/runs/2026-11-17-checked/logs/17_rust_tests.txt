@@ -1,0 +1,153 @@
+$ cargo test
+Working folder: /var/folders/tv/_11343vn6153sfykk5r11dq40000gn/T/splice-girl-beginner-fu47wh_w/source
+Typed input: None
+Expected exit: 0
+Actual exit: 0
+
+--- stdout ---
+
+running 59 tests
+test compare::tests::excludes_a_manifest_sample_with_no_data_for_the_gene ... ok
+test annotations::tests::ambiguous_annotation_headers_are_rejected ... ok
+test compare::tests::excludes_a_sample_whose_decomposition_checks_failed ... ok
+test compare::tests::excludes_a_result_sample_with_no_manifest_entry ... ok
+test compare::tests::all_gene_comparisons_are_sorted_and_keep_exclusions ... ok
+test compare::tests::includes_samples_present_in_both_sources ... ok
+test annotations::tests::annotations_join_by_id_with_no_category_inference ... ok
+test audit::tests::summarizes_rows_samples_genes_support_and_checks ... ok
+test audit::tests::reports_manifest_mismatches_in_both_directions ... ok
+test compare::tests::missing_group_is_explicit_and_has_no_effect_value ... ok
+test compare::tests::summarizes_case_control_values_without_pooling_samples ... ok
+test compare::tests::end_to_end_with_real_parsing_for_one_gene_among_several ... ok
+test fdr::tests::matches_hand_calculated_unsorted_family ... ok
+test fdr::tests::handles_empty_untested_singleton_and_boundary_families ... ok
+test fdr::tests::rejects_unnamed_families_and_empty_or_duplicate_genes ... ok
+test fdr::tests::rejects_invalid_p_values_with_the_gene_id ... ok
+test fdr::tests::reverse_minimum_prevents_nonmonotone_adjustments ... ok
+test fdr::tests::tied_values_are_equal_and_row_order_does_not_change_answers ... ok
+test fdr::tests::untested_genes_remain_missing_and_do_not_expand_the_test_denominator ... ok
+test manifest::tests::condition_is_matched_case_insensitively ... ok
+test manifest::tests::parses_a_valid_manifest_with_extra_columns ... ok
+test manifest::tests::rejects_a_header_missing_a_required_column ... ok
+test fdr::tests::accepts_exact_permutation_results_without_changing_their_raw_values ... ok
+test manifest::tests::rejects_a_header_with_a_duplicated_required_column ... ok
+test manifest::tests::rejects_a_row_with_the_wrong_number_of_fields ... ok
+test manifest::tests::rejects_duplicate_sample_ids ... ok
+test manifest::tests::rejects_invalid_condition_values ... ok
+test matrix::tests::singular_system_returns_an_actionable_error ... ok
+test parser::tests::rejects_empty_sample_ids ... ok
+test output::tests::sha256_matches_known_vectors ... ok
+test parser::tests::rejects_negative_counts ... ok
+test parser::tests::rejects_non_finite_counts ... ok
+test parser::tests::rejects_rows_with_the_wrong_number_of_fields ... ok
+test parser::tests::rejects_self_loops ... ok
+test permutation::tests::binomial_coefficient_matches_known_small_values ... ok
+test permutation::tests::binomial_coefficient_refuses_an_infeasible_enumeration ... ok
+test permutation::tests::combinations_of_four_choose_two_match_hand_enumeration ... ok
+test permutation::tests::no_difference_fixture_gives_p_value_of_one ... ok
+test permutation::tests::one_sided_p_value_matches_hand_enumeration ... ok
+test permutation::tests::rejects_a_comparison_with_an_empty_group ... ok
+test output::tests::refuses_to_overwrite_an_existing_output_folder ... ok
+test fdr::tests::coarse_balanced_permutation_p_values_can_still_pass_bh ... ok
+test permutation::tests::full_cohort_reaches_the_documented_p_value_floor ... ok
+test permutation::tests::p_value_does_not_depend_on_input_order ... ok
+test permutation::tests::two_sided_p_value_matches_hand_enumeration ... ok
+test output::tests::analysis_bundle_contains_metrics_components_and_manifest ... ok
+test permutation::tests::unequal_three_vs_four_groups_do_not_have_a_two_over_35_floor ... ok
+test statistics::tests::explicit_thresholds_keep_requested_missing_genes_untested ... ok
+test statistics::tests::family_parser_accepts_extra_columns_and_rejects_bad_rows ... ok
+test report::tests::report_preserves_missing_values_and_escapes_input_as_text ... ok
+test permutation::tests::set_test_two_sided_does_not_cancel_opposite_changes ... ok
+test statistics::tests::set_test_averages_complete_genes_and_matches_mean_gene_effect ... ok
+test visualize::tests::genomic_nodes_get_distinct_plot_ids_and_a_coordinate_key ... ok
+test output::tests::gene_bundle_records_inclusions_and_exclusions ... ok
+test visualize::tests::svg_escapes_identifiers_and_preserves_full_node_in_title ... ok
+test output::tests::all_gene_bundle_records_descriptive_effects_and_no_inference ... ok
+test visualize::tests::svg_values_change_with_the_selected_sample ... ok
+test permutation::tests::set_test_single_gene_matches_gene_test ... ok
+test visualize::tests::svg_contains_graph_metrics_and_junction_values ... ok
+
+test result: ok. 59 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.01s
+
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+
+running 9 tests
+test zero_support_names_the_sample_gene_and_correction ... ok
+test missing_input_names_the_path_and_suggests_a_fix ... ok
+test invalid_count_names_the_file_line_column_value_and_fix ... ok
+test empty_input_names_the_file_and_required_header ... ok
+test missing_sample_metadata_is_reported_without_silent_dropping ... ok
+test existing_output_folder_is_not_overwritten ... ok
+test invalid_manifest_names_the_file_line_column_and_accepted_values ... ok
+test malformed_header_names_the_file_and_expected_columns ... ok
+test comparison_requires_at_least_one_case_and_one_control ... ok
+
+test result: ok. 9 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.37s
+
+
+running 11 tests
+test repeated_subjects_cannot_enter_an_independent_test ... ok
+test gene_family_input_errors_are_actionable_and_do_not_create_outputs ... ok
+test baselines_use_identical_samples_and_leave_missing_values_blank ... ok
+test all_untestable_genes_save_diagnostics_but_exit_unsuccessfully ... ok
+test evidence_annotations_join_directly_to_tested_and_untested_results_by_gene_id ... ok
+test exact_enumeration_limit_is_reported_as_untested_without_a_fake_p_value ... ok
+test menu_option_seven_runs_the_same_statistics_workflow ... ok
+test sidedness_is_applied_instead_of_silently_using_two_sided ... ok
+test stats_runs_exact_tests_bh_exports_reports_and_preserves_missing_genes ... ok
+test every_scientific_option_is_required_and_invalid_flags_fail_before_writing ... ok
+test requested_ranking_is_deterministic_and_does_not_rank_untested_genes ... ok
+
+test result: ok. 11 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.08s
+
+
+running 9 tests
+test report_requires_an_explicit_destination ... ok
+test validate_reports_compact_input_and_math_summary ... ok
+test validate_manifest_mismatches_are_visible_and_fail_the_audit ... ok
+test compare_reports_every_gene_and_a_descriptive_effect ... ok
+test compare_writes_a_reproducible_five_file_bundle ... ok
+test report_keeps_missing_groups_visible_in_a_diagnostic_bundle ... ok
+test report_does_not_use_identifiers_as_paths_or_markup ... ok
+test interactive_menu_can_generate_a_report_then_return_to_menu ... ok
+test report_exports_the_same_values_as_compare_with_linked_graphs ... ok
+
+test result: ok. 9 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.03s
+
+
+running 12 tests
+test duplicate_directed_edges_are_rejected ... ok
+test incidence_columns_use_negative_source_and_positive_destination ... ok
+test equal_weight_directed_cycle_is_entirely_cyclic ... ok
+test exon_skipping_graph_has_nonzero_cycle_component_despite_no_directed_cycle ... ok
+test linear_graph_has_no_cycle_component ... ok
+test branching_tree_has_no_cycle_component ... ok
+test shuffled_rows_preserve_graph_and_metrics ... ok
+test zero_total_support_is_rejected ... ok
+test back_splice_weight_sweep_matches_reviewed_expectations ... ok
+test fixed_noise_fixture_matches_independent_expectation ... ok
+test incidence_dimensions_match_cycle_rank ... ok
+test edge_case_fixtures_have_explicit_statuses ... ok
+
+test result: ok. 12 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+
+--- stderr ---
+   Compiling splice-girl v0.1.0 (/private/var/folders/tv/_11343vn6153sfykk5r11dq40000gn/T/splice-girl-beginner-fu47wh_w/source)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 3.57s
+     Running unittests src/lib.rs (target/debug/deps/splice_girl-a6ec5d1414c01b54)
+     Running unittests src/main.rs (target/debug/deps/splice_girl-042d25cde5fb9c44)
+     Running tests/cli_errors.rs (target/debug/deps/cli_errors-e319cac41debf28a)
+     Running tests/cli_stats.rs (target/debug/deps/cli_stats-c1cf78f32ccd16a3)
+     Running tests/cli_workflows.rs (target/debug/deps/cli_workflows-6c5918aa90e22efd)
+     Running tests/synthetic.rs (target/debug/deps/synthetic-82323724cebd2a84)
+   Doc-tests splice_girl

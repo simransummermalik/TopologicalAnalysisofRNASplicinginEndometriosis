@@ -1,0 +1,9 @@
+run_id	gene_id	metric	case_n	control_n	case_mean	control_mean	mean_difference_case_minus_control	observed_topology
+splice-girl-1794975833-393705000	GENE_HIGH_CYCLE	total_junction_support	2	2	300.0000000000	140.0000000000	160.0000000000	different_review_required
+splice-girl-1794975833-393705000	GENE_HIGH_CYCLE	node_count	2	2	3.0000000000	3.5000000000	-0.5000000000	different_review_required
+splice-girl-1794975833-393705000	GENE_HIGH_CYCLE	junction_count	2	2	3.0000000000	2.5000000000	0.5000000000	different_review_required
+splice-girl-1794975833-393705000	GENE_HIGH_CYCLE	cycle_rank	2	2	1.0000000000	0.0000000000	1.0000000000	different_review_required
+splice-girl-1794975833-393705000	GENE_LOW_CYCLE	total_junction_support	2	2	140.0000000000	300.0000000000	-160.0000000000	different_review_required
+splice-girl-1794975833-393705000	GENE_LOW_CYCLE	node_count	2	2	3.5000000000	3.0000000000	0.5000000000	different_review_required
+splice-girl-1794975833-393705000	GENE_LOW_CYCLE	junction_count	2	2	2.5000000000	3.0000000000	-0.5000000000	different_review_required
+splice-girl-1794975833-393705000	GENE_LOW_CYCLE	cycle_rank	2	2	0.0000000000	1.0000000000	-1.0000000000	different_review_required

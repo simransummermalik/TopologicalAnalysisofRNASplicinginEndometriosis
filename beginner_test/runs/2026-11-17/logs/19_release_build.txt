@@ -1,0 +1,10 @@
+$ cargo build --release
+Working folder: /var/folders/tv/_11343vn6153sfykk5r11dq40000gn/T/splice-girl-beginner-pn2hrztr/source
+Typed input: None
+Expected exit: 0
+Actual exit: 0
+
+--- stdout ---
+
+--- stderr ---
+    Finished `release` profile [optimized] target(s) in 0.00s

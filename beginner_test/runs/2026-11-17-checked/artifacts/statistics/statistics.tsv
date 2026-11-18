@@ -1,0 +1,3 @@
+run_id	family_id	gene_id	status	case_n	control_n	mean_difference_case_minus_control	alternative	p_value	adjusted_p_value	permutations_considered	extreme_count	tested_family_size	excluded_samples	untested_reason	gene_symbol	is_risk	is_environment	is_overlap	category
+splice-girl-1794975833-393705000	synthetic-demo	GENE_HIGH_CYCLE	tested	2	2	0.5555555556	two-sided	0.3333333333	0.3333333333	6	2	2	1						
+splice-girl-1794975833-393705000	synthetic-demo	GENE_LOW_CYCLE	tested	2	2	-0.5555555556	two-sided	0.3333333333	0.3333333333	6	2	2	1						

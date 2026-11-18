@@ -39,6 +39,7 @@ interpretation.
 | Our progress | [What we have built](#what-we-have-built) |
 | The public data | [The eight-sample study](#the-eight-sample-study) |
 | A live demonstration | [Try Splice Girl](#try-splice-girl) |
+| Every demo step, expected answer and troubleshooting | [Documented beginner walkthrough](beginner_test/README.md) |
 | Running the complete software workflow | [Step-by-step software guide](docs/running_the_tool.md) |
 | Processing local FASTQ samples | [Cleaver/HISAT2 guide](preprocessing/HISAT2_GUIDE.md) |
 | Checking one real sample end to end | [Bounded real-data pilot](docs/real_pilot.md) |
@@ -248,6 +249,18 @@ be reported honestly.
 The demonstration uses tiny synthetic files included in the repository. It
 does not download patient data.
 
+Open a terminal in the project folder before running these commands. Check:
+
+```sh
+pwd
+ls Cargo.toml README.md
+```
+
+`pwd` prints your current folder. The second command should list both files;
+if it cannot find them, move into the downloaded project folder first.
+The [beginner walkthrough](beginner_test/README.md) explains each command,
+shows expected answers, and records an actual fresh-copy run.
+
 ### 1. Check Rust
 
 ```sh
@@ -280,11 +293,19 @@ From the repository folder, run:
 cargo run -- --start
 ```
 
-Choose **Analyze a junction TSV** and enter:
+Type `1`, press Return, then enter this at **Junction TSV path**:
 
 ```text
 tests/fixtures/cycle.tsv
 ```
+
+When asked for **Output folder**, press Return to leave it blank; this example
+prints its results in the terminal. Expect `cycle_fraction: 1.0000000000` and
+`checks: PASS`. Press Return to return to the menu, then type `q` to quit.
+
+In the commands below, `cargo run --` builds/runs Splice Girl from its source.
+Arguments after `--` are passed to Splice Girl. If you installed the command,
+you can replace `cargo run --` with `splice-girl` while staying in this folder.
 
 ### 3. Run a direct example
 
@@ -309,7 +330,9 @@ cargo run -- validate examples/demo/junctions.tsv examples/demo/manifest.tsv
 
 The second command intentionally reports the demo's `control_03` and
 `orphan_01` mismatch. This proves missing metadata and missing junction data
-are visible instead of silently discarded.
+are visible instead of silently discarded. It exits with status `1`, an
+expected failure for this deliberately mismatched example. The first command
+should pass with status `0`.
 
 ### 5. Compare every observed gene
 
@@ -318,8 +341,9 @@ cargo run -- compare examples/demo/all_genes.tsv examples/demo/manifest.tsv
 ```
 
 This reports sample-level case/control counts, means, medians, ranges, and the
-case-minus-control mean difference. It does not calculate p-values, q-values,
-or rankings before those statistical rules are approved.
+case-minus-control mean difference. `compare` is descriptive; use the separately
+configured `stats` command for exact tests and optional rankings, as shown in
+the [complete software guide](docs/running_the_tool.md).
 
 ### 6. Draw the splice graph
 
@@ -329,6 +353,10 @@ self-contained SVG that opens in any web browser:
 ```sh
 cargo run -- visualize case_02 GENE_DEMO examples/demo/junctions.tsv splice-girl-demo.svg
 ```
+
+On macOS, run `open splice-girl-demo.svg`; on other systems, open that file in
+a web browser. No server is needed. For a second run, choose a new SVG filename;
+the command protects an existing figure from being overwritten.
 
 The figure is generated from the sample and gene named in the command. It shows
 the same splice graph three times: the observed normalized signal, the gradient
@@ -384,6 +412,7 @@ cargo run -- report examples/demo/all_genes.tsv examples/demo/manifest.tsv \
 Open `target/demo-report/report.html` in your browser. Each gene has a plot
 with one point per eligible sample, the exact cycle fractions, the
 case-minus-control difference, and an expandable list of excluded samples.
+On macOS, `open target/demo-report/report.html` opens it directly.
 Click **View decomposition** beside a sample to inspect its observed,
 gradient, and cycle graph panels. The figures come from that run's data.
 

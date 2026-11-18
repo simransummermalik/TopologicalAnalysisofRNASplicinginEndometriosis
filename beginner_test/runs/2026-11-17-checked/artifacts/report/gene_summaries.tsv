@@ -1,0 +1,3 @@
+run_id	gene_id	status	case_n	control_n	case_mean	control_mean	mean_difference_case_minus_control	case_median	control_median	case_min	case_max	control_min	control_max	excluded_count	note
+splice-girl-1794975832-983592000	GENE_HIGH_CYCLE	complete	2	2	0.5555555556	0.0000000000	0.5555555556	0.5555555556	0.0000000000	0.1111111111	1.0000000000	0.0000000000	0.0000000000	1	descriptive effect only; no p-value or q-value calculated
+splice-girl-1794975832-983592000	GENE_LOW_CYCLE	complete	2	2	0.0000000000	0.5555555556	-0.5555555556	0.0000000000	0.5555555556	0.0000000000	0.0000000000	0.1111111111	1.0000000000	1	descriptive effect only; no p-value or q-value calculated

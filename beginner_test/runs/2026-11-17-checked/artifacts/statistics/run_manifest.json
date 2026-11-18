@@ -1,0 +1,37 @@
+{
+  "schema_version": "1.0",
+  "run_id": "splice-girl-1794975833-393705000",
+  "created_unix_seconds": 1794975833,
+  "tool": {"name": "splice-girl", "version": "0.1.0"},
+  "mode": "stats",
+  "command": ["target/release/splice-girl", "stats", "examples/demo/all_genes.tsv", "examples/demo/manifest.tsv", "--genes", "examples/demo/stats_genes.tsv", "--family", "synthetic-demo", "--alternative", "two-sided", "--design", "independent", "--min-per-group", "2", "--rank-by", "absolute-effect", "--output", "target/demo_complete"],
+  "inputs": [
+    {"role": "junctions", "path": "examples/demo/all_genes.tsv", "sha256": "627ff6b603fe3c25aa2b99bfe34a50f683bbbf51b826bf7688380d35a7d2d2f6"},
+    {"role": "sample_manifest", "path": "examples/demo/manifest.tsv", "sha256": "93ac731c27b62f2d54a22161d1a46f3a5965a7039073927f32412aea7880d74a"},
+    {"role": "gene_family", "path": "examples/demo/stats_genes.tsv", "sha256": "56fa707ec26a9a5685ca3e2848bd6536230a78795f2d6b6f0d5d0886d9645423"}
+  ],
+  "outputs": ["sample_metrics.tsv", "junction_components.tsv", "comparisons.tsv", "gene_summaries.tsv", "statistics.tsv", "set_test.tsv", "set_scores.tsv", "baseline_metrics.tsv", "baseline_comparisons.tsv", "gene_family.tsv", "rankings.tsv", "report.html", "graphs/graph-000001.svg", "graphs/graph-000002.svg", "graphs/graph-000003.svg", "graphs/graph-000004.svg", "graphs/graph-000005.svg", "graphs/graph-000006.svg", "graphs/graph-000007.svg", "graphs/graph-000008.svg", "run_manifest.json"],
+  "settings": {
+    "normalization": "count / total_gene_support",
+    "solver": "dense normal equations with one pinned node per connected component and partial pivoting",
+    "precision": "f64",
+    "acceptance_tolerance": 1.0e-9,
+    "minimum_total_support": "greater than zero",
+    "random_seed": null
+  },
+  "summary": {
+    "sample_gene_groups": 8,
+    "junction_rows": 22,
+    "included_samples": 8,
+    "excluded_samples": 2,
+    "failure_count": 0
+  },
+  "exclusions": [
+    {"gene_id": "GENE_HIGH_CYCLE", "sample_id": "control_03", "reason": "no junction data for gene 'GENE_HIGH_CYCLE'"},
+    {"gene_id": "GENE_LOW_CYCLE", "sample_id": "control_03", "reason": "no junction data for gene 'GENE_LOW_CYCLE'"}
+  ],
+  "failures": [
+
+  ],
+  "statistics": {"design": "independent (caller-declared)", "alternative": "two-sided", "family_id": "synthetic-demo", "requested_genes": 2, "tested_genes": 2, "untested_genes": 0, "correction": "Benjamini-Hochberg", "correction_denominator": "successfully tested genes only", "minimum_samples_per_group": 2, "permutation_method": "exhaustive label enumeration including observed assignment", "extremity_tolerance": 1.0e-9, "maximum_permutations": 1000000, "random_seed": null, "ranking_rule": "absolute-effect", "baseline_sample_policy": "same included samples as Hodge comparison; no missing-value imputation", "set_test": {"statistic": "mean_absolute_effect", "definition": "exact relabeling of all genes at once; two-sided uses the mean over genes of |case mean - control mean|, one-sided the mean signed effect; genes must be tested and have every common sample", "genes_used": 2, "tested_genes_left_out": 0, "p_value": 0.3333333333}}
+}

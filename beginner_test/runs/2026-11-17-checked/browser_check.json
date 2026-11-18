@@ -1,0 +1,27 @@
+{
+  "status": "PASS",
+  "scope": "automated local browser rendering; separate from 25 CLI walkthrough checks",
+  "command": [
+    "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome",
+    "--headless",
+    "--disable-gpu",
+    "--no-sandbox",
+    "--disable-background-networking",
+    "--no-first-run",
+    "--no-default-browser-check",
+    "--hide-scrollbars",
+    "--window-size=1400,1100",
+    "--user-data-dir=/var/folders/tv/_11343vn6153sfykk5r11dq40000gn/T/splice-girl-beginner-browser-of77d95s",
+    "--screenshot=/Users/summermalik/Documents/GitHub/TopologicalAnalysisofRNASplicinginEndometriosis/beginner_test/runs/2026-11-17-checked/artifacts/report-preview.png",
+    "--dump-dom",
+    "file:///Users/summermalik/Documents/GitHub/TopologicalAnalysisofRNASplicinginEndometriosis/beginner_test/runs/2026-11-17-checked/artifacts/report/report.html"
+  ],
+  "exit_code": 0,
+  "seconds": 1.874,
+  "source_report": "/Users/summermalik/Documents/GitHub/TopologicalAnalysisofRNASplicinginEndometriosis/beginner_test/runs/2026-11-17-checked/artifacts/report/report.html",
+  "source_sha256": "ae866e104d679029bf879167cc6680c03ae48d9efa95258d3202b7c003af5323",
+  "screenshot": "artifacts/report-preview.png",
+  "screenshot_sha256": "0e43d53adadde4b7a5f95d8bb6bad9241614840061fa918df229acc3fe1af8d0",
+  "log": "logs/26_browser_followup.txt",
+  "initial_attempt": "browser aborted inside sandbox; follow-up used an isolated profile outside that restriction"
+}

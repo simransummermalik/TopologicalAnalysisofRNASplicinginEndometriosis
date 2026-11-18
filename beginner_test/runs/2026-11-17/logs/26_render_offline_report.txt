@@ -1,0 +1,9 @@
+$ '/Applications/Google Chrome.app/Contents/MacOS/Google Chrome' --headless --disable-gpu --no-sandbox --no-pdf-header-footer --user-data-dir=/var/folders/tv/_11343vn6153sfykk5r11dq40000gn/T/splice-girl-beginner-pn2hrztr/chrome-profile --no-first-run --no-default-browser-check --hide-scrollbars --window-size=1400,1100 --screenshot=/Users/summermalik/Documents/GitHub/TopologicalAnalysisofRNASplicinginEndometriosis/beginner_test/runs/2026-11-17/artifacts/report-preview.png file:///var/folders/tv/_11343vn6153sfykk5r11dq40000gn/T/splice-girl-beginner-pn2hrztr/source/target/demo-report
+Working folder: /var/folders/tv/_11343vn6153sfykk5r11dq40000gn/T/splice-girl-beginner-pn2hrztr/source
+Typed input: None
+Expected exit: 0
+Actual exit: -6
+
+--- stdout ---
+
+--- stderr ---

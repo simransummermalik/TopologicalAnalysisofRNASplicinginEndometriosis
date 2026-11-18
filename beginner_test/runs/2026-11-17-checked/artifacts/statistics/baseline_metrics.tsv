@@ -1,0 +1,9 @@
+run_id	gene_id	sample_id	condition	total_junction_support	node_count	junction_count	cycle_rank
+splice-girl-1794975833-393705000	GENE_HIGH_CYCLE	case_01	case	300.0000000000	3	3	1
+splice-girl-1794975833-393705000	GENE_HIGH_CYCLE	case_02	case	300.0000000000	3	3	1
+splice-girl-1794975833-393705000	GENE_HIGH_CYCLE	control_01	control	180.0000000000	3	2	0
+splice-girl-1794975833-393705000	GENE_HIGH_CYCLE	control_02	control	100.0000000000	4	3	0
+splice-girl-1794975833-393705000	GENE_LOW_CYCLE	case_01	case	180.0000000000	3	2	0
+splice-girl-1794975833-393705000	GENE_LOW_CYCLE	case_02	case	100.0000000000	4	3	0
+splice-girl-1794975833-393705000	GENE_LOW_CYCLE	control_01	control	300.0000000000	3	3	1
+splice-girl-1794975833-393705000	GENE_LOW_CYCLE	control_02	control	300.0000000000	3	3	1
