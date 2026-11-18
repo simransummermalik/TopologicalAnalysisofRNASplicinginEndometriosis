@@ -1,0 +1,185 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Run the Splice Girl demo one step at a time, with commands, explanations and expected answers.">
+  <title>Splice Girl · Run the demo</title>
+  <link rel="stylesheet" href="styles.css">
+  <script src="script.js" defer></script>
+</head>
+<body>
+  <a class="skip-link" href="#content">Skip to the page</a>
+  <div class="site-shell">
+    <header class="site-header">
+      <p class="site-name"><a href="index.html">splice girl</a> <span>* RNA, graphs &amp; a little math *</span></p>
+      <nav aria-label="Main navigation">
+        <a href="index.html">About</a><a href="learn.html">How it works</a><a href="guide.html" aria-current="page">Run the demo</a><a href="results.html">Read the results</a><a href="dictionary.html">Word list</a>
+      </nav>
+    </header>
+    <main id="content" class="text-page">
+      <p class="eyebrow">small files, known answers</p>
+      <h1>Let’s run Splice Girl.</h1>
+      <p>Keep your terminal open beside this page. These commands use the
+        project’s synthetic examples; you do not need to download sequencing
+        data. The website explains the commands. It does not run them for you.</p>
+      <nav aria-label="Demo steps">
+        <ol class="step-list">
+          <li><a href="#ready" data-step-link>1. Set up</a></li>
+          <li><a href="#first-run" data-step-link>2. First run</a></li>
+          <li><a href="#menu" data-step-link>3. Menu</a></li>
+          <li><a href="#check-input" data-step-link>4. Check input</a></li>
+          <li><a href="#compare" data-step-link>5. Compare</a></li>
+          <li><a href="#graph" data-step-link>6. Draw</a></li>
+          <li><a href="#report" data-step-link>7. Save a report</a></li>
+        </ol>
+      </nav>
+      <p id="step-progress" class="step-progress" aria-live="polite">Seven steps. Start with set up.</p>
+      <noscript><p>JavaScript is off, so all seven steps are shown below. The commands still work.</p></noscript>
+
+      <section class="step-panel" id="ready" data-step aria-labelledby="ready-title">
+        <h2 id="ready-title" tabindex="-1">1. Get the project and check Rust</h2>
+        <p>Download or clone <a href="https://github.com/simransummermalik/TopologicalAnalysisofRNASplicinginEndometriosis">the repository</a>,
+          then open its folder in your terminal. You want the folder containing
+          <code>Cargo.toml</code> and <code>README.md</code>, not <code>website/</code>.</p>
+        <div class="command"><span class="command-label">terminal · check the folder</span><button type="button" class="copy-button" data-copy="folder-code" aria-label="Copy folder checks" hidden>Copy</button><pre><code id="folder-code">pwd
+ls Cargo.toml README.md</code></pre></div>
+        <p><code>pwd</code> prints your current folder. <code>ls</code> should
+          list both files. If it cannot find them, use <code>cd</code> to move
+          into the actual project folder first.</p>
+        <div class="command"><span class="command-label">terminal · check Rust</span><button type="button" class="copy-button" data-copy="rust-code" aria-label="Copy Rust version checks" hidden>Copy</button><pre><code id="rust-code">rustc --version
+cargo --version</code></pre></div>
+        <p>You need <strong>Rust 1.85 or newer</strong>. Cargo comes with Rust.
+          If either command is missing, follow the
+          <a href="https://rustup.rs/">Rust installation instructions</a>,
+          reopen the terminal, and check again.</p>
+        <p class="expected"><strong>Ready when:</strong> both project files
+          exist and both version commands print a version.</p>
+      </section>
+
+      <section class="step-panel" id="first-run" data-step aria-labelledby="first-run-title">
+        <h2 id="first-run-title" tabindex="-1">2. Try one graph with a known answer</h2>
+        <div class="command"><span class="command-label">terminal · from the project root</span><button type="button" class="copy-button" data-copy="first-code" aria-label="Copy first analysis command" hidden>Copy</button><pre><code id="first-code">cargo run -- analyze tests/fixtures/exon_skip.tsv</code></pre></div>
+        <p>The first run compiles the program, so allow it to finish.
+          <code>cargo run --</code> runs Splice Girl from the project source;
+          everything after <code>--</code> is an instruction to Splice Girl.</p>
+        <p><strong>What is the data?</strong> A made-up, three-exon graph with
+          two routes: E1–E2–E3 and E1–E3. The junctions have equal read support.</p>
+        <p><strong>What does the code do?</strong> Read the table, build the
+          graph, normalize its counts, separate gradient/cycle signals and
+          check the calculation.</p>
+        <pre aria-label="Expected result excerpt">cycle_fraction: 0.1111111111
+checks: PASS</pre>
+        <p class="expected"><strong>Look for:</strong> about 0.1111, or one
+          ninth. That is this toy graph’s expected mathematical answer, not
+          a disease score.</p>
+        <details><summary>Do I have to type “cargo run” every time?</summary><p>No.
+          You can install the shorter command from this project folder:</p>
+          <pre><code>cargo install --path .
+splice-girl --version</code></pre>
+          <p>Then replace <code>cargo run --</code> with <code>splice-girl</code>.
+            Keep running from the project root so the example paths still
+            resolve. An installed command must be reinstalled after source
+            changes; it does not update itself.</p></details>
+      </section>
+
+      <section class="step-panel" id="menu" data-step aria-labelledby="menu-title">
+        <h2 id="menu-title" tabindex="-1">3. Use the terminal menu</h2>
+        <div class="command"><span class="command-label">terminal</span><button type="button" class="copy-button" data-copy="menu-code" aria-label="Copy menu command" hidden>Copy</button><pre><code id="menu-code">cargo run -- --start</code></pre></div>
+        <p>You should see our ASCII banner and a numbered menu. Follow each
+          prompt in order:</p>
+        <ol>
+          <li>Type <code>1</code> for “Analyze a junction TSV” and press Return.</li>
+          <li>At “Junction TSV path”, enter <code>tests/fixtures/cycle.tsv</code>.</li>
+          <li>At “Output folder”, press Return without typing anything.
+            This prints the result without saving a folder.</li>
+          <li>Read the result, then press Return to go back to the menu.</li>
+          <li>Type <code>q</code> and press Return to quit.</li>
+        </ol>
+        <p class="expected"><strong>Look for:</strong>
+          <code>cycle_fraction: 1.0000000000</code> and <code>checks: PASS</code>.
+          This second fixture is an equal-weight directed cycle, so its
+          expected answer is one.</p>
+      </section>
+
+      <section class="step-panel" id="check-input" data-step aria-labelledby="check-input-title">
+        <h2 id="check-input-title" tabindex="-1">4. Check an input before using it</h2>
+        <div class="command"><span class="command-label">terminal</span><button type="button" class="copy-button" data-copy="validate-code" aria-label="Copy validation command" hidden>Copy</button><pre><code id="validate-code">cargo run -- validate examples/demo/junctions.tsv</code></pre></div>
+        <p>The program checks the table, graphs and mathematical identities.
+          Expect <code>validation_status: PASS</code>.</p>
+        <p>The input has five columns. Here is one illustrative row:</p>
+        <pre><code>sample_id   gene_id     from   to   count
+case_01     GENE_DEMO   E1     E2   100</code></pre>
+        <p>The real file uses <strong>tabs</strong> between columns. The
+          count says how much read support that sample has for that junction.
+          You do not need to type this table; it is already in the project.</p>
+        <details><summary>Why does adding the demo manifest produce an error?</summary>
+          <pre><code>cargo run -- validate examples/demo/junctions.tsv examples/demo/manifest.tsv</code></pre>
+          <p>This intentionally fails with exit status 1. The demo contains
+            <code>orphan_01</code> without metadata, and <code>control_03</code>
+            in the metadata without junctions. The error shows that the
+            program noticed both. It is an expected demonstration, not a
+            failed installation.</p></details>
+      </section>
+
+      <section class="step-panel" id="compare" data-step aria-labelledby="compare-title">
+        <h2 id="compare-title" tabindex="-1">5. Compare the example groups</h2>
+        <div class="command"><span class="command-label">terminal</span><button type="button" class="copy-button" data-copy="compare-code" aria-label="Copy comparison command" hidden>Copy</button><pre><code id="compare-code">cargo run -- compare examples/demo/all_genes.tsv examples/demo/manifest.tsv</code></pre></div>
+        <p><code>all_genes.tsv</code> contains two synthetic genes and four
+          measured samples. <code>manifest.tsv</code> supplies the case/control
+          labels. Its extra <code>control_03</code> has no data and is explicitly excluded.</p>
+        <table><caption>Expected case-minus-control differences</caption><thead><tr><th scope="col">Gene</th><th scope="col">Difference</th></tr></thead><tbody>
+          <tr><td><code>GENE_HIGH_CYCLE</code></td><td>+0.5555555556</td></tr>
+          <tr><td><code>GENE_LOW_CYCLE</code></td><td>−0.5555555556</td></tr>
+        </tbody></table>
+        <p>A positive difference means the example case group has a larger
+          mean cycle fraction. Negative means the control group has a larger
+          mean. <strong>These are descriptive differences, not p-values.</strong></p>
+        <p class="expected"><strong>Look for:</strong> two cases and two
+          controls contributing to each gene. A missing measurement must not
+          become an invented zero.</p>
+      </section>
+
+      <section class="step-panel" id="graph" data-step aria-labelledby="graph-title">
+        <h2 id="graph-title" tabindex="-1">6. Draw a graph from the input</h2>
+        <div class="command"><span class="command-label">terminal</span><button type="button" class="copy-button" data-copy="graph-code" aria-label="Copy graph command" hidden>Copy</button><pre><code id="graph-code">cargo run -- visualize case_02 GENE_DEMO \
+  examples/demo/junctions.tsv target/website-demo-graph.svg</code></pre></div>
+        <p><code>case_02</code> chooses the sample; <code>GENE_DEMO</code>
+          chooses the gene. The final path is the new file to create.</p>
+        <p>On macOS, open it with:</p>
+        <div class="command"><span class="command-label">terminal · macOS only</span><button type="button" class="copy-button" data-copy="open-graph-code" aria-label="Copy macOS graph-opening command" hidden>Copy</button><pre><code id="open-graph-code">open target/website-demo-graph.svg</code></pre></div>
+        <p>On another system, open the SVG in a web browser using your file
+          manager. You should see the same graph’s observed, gradient and
+          cycle signals side by side, plus a junction table.</p>
+        <p class="expected"><strong>Repeating the step?</strong> Use a new
+          filename, such as <code>target/website-demo-graph-2.svg</code>.
+          Splice Girl refuses to replace an existing figure.</p>
+      </section>
+
+      <section class="step-panel" id="report" data-step aria-labelledby="report-title">
+        <h2 id="report-title" tabindex="-1">7. Save a report you can read</h2>
+        <div class="command"><span class="command-label">terminal</span><button type="button" class="copy-button" data-copy="report-code" aria-label="Copy report command" hidden>Copy</button><pre><code id="report-code">cargo run -- report examples/demo/all_genes.tsv \
+  examples/demo/manifest.tsv --output target/website-demo-report</code></pre></div>
+        <p>This creates a folder containing tables, graph files and an HTML
+          report. On macOS:</p>
+        <div class="command"><span class="command-label">terminal · macOS only</span><button type="button" class="copy-button" data-copy="open-report-code" aria-label="Copy macOS report-opening command" hidden>Copy</button><pre><code id="open-report-code">open target/website-demo-report/report.html</code></pre></div>
+        <p>On other systems, open that HTML file in a browser. No web server
+          or internet connection is needed to view the saved report. Keep
+          its whole folder together when sharing it.</p>
+        <p class="expected"><strong>Look for:</strong> two gene summaries,
+          individual sample values, eight generated graph files and the
+          explicit exclusions. Choose a new output-folder name for a repeat run.</p>
+        <p>You’ve finished the basic demo. <a href="results.html">Now read
+          what the output files and numbers mean</a>.</p>
+      </section>
+
+      <div class="step-controls" id="step-controls" hidden>
+        <button type="button" id="previous-step">Previous step</button>
+        <button type="button" id="next-step">Next step</button>
+      </div>
+      <p class="copy-status" id="copy-status" role="status" aria-live="polite"></p>
+    </main>
+    <footer class="site-footer"><p>Team Splice Girl · BINF-2111 · 2026</p><p><a href="https://github.com/simransummermalik/TopologicalAnalysisofRNASplicinginEndometriosis/blob/main/beginner_test/README.md">The detailed beginner walkthrough</a> · <a href="results.html#help">Stuck? Read the troubleshooting notes</a></p></footer>
+  </div>
+</body>
+</html>

@@ -3,21 +3,28 @@
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <meta name="description" content="About Splice Girl, an RNA splicing and graph Hodge theory project.">
-    <title>Splice Girl :: About</title>
+    <meta name="description" content="A beginner's guide to Splice Girl: RNA splicing, graph Hodge theory, and a small command-line demo.">
+    <title>Splice Girl · About the project</title>
     <link rel="stylesheet" href="styles.css">
   </head>
   <body>
-    <main class="about-page">
-      <header class="top-line">
-        <span>[ BINF-2111 ]</span>
-        <span>~*~ SPLICE GIRL PROJECT FILE ~*~</span>
-        <span>[ 2026 ]</span>
+    <a class="skip-link" href="#content">Skip to the page</a>
+    <div class="site-shell">
+      <header class="site-header">
+        <p class="site-name"><a href="index.html">splice girl</a> <span>* RNA, graphs &amp; a little math *</span></p>
+        <nav aria-label="Main navigation">
+          <a href="index.html" aria-current="page">About</a>
+          <a href="learn.html">How it works</a>
+          <a href="guide.html">Run the demo</a>
+          <a href="results.html">Read the results</a>
+          <a href="dictionary.html">Word list</a>
+        </nav>
       </header>
-
+      <main id="content">
+        <div class="home-layout">
       <figure class="ascii-side">
-        <figcaption>FILE: splice_girl_banner.txt&nbsp;&nbsp;|&nbsp;&nbsp;VIEW: 100%</figcaption>
-        <pre class="ascii-banner" aria-label="Splice Girl ASCII portrait">                             .,
+        <figcaption>from our terminal: splice_girl_banner.txt</figcaption>
+        <pre class="ascii-banner" role="img" aria-label="Splice Girl's original ASCII portrait">                             .,
                               sr,        ..                                               ,
                  ;:           itr;,      ,s,                                             rs          :.
                  ,*s:,        ,??i;:.    .?s:.                                          rti.       ,+s.
@@ -113,41 +120,39 @@
                                                         2 0 2 6</pre>
       </figure>
 
-      <section class="about-copy" aria-labelledby="about-title">
-        <p class="hello">introducing...</p>
-        <h1 id="about-title">TEAM<br>SPLICE GIRL</h1>
-        <p class="tagline">RNA SPLICING + GRAPH THEORY + ENDOMETRIOSIS</p>
-
-        <p class="summary">
-          Splice Girl is a student-built tool for studying how pieces of RNA
-          connect. We represent exons or splice sites as <b>nodes</b>, observed
-          splice junctions as <b>edges</b>, and read support as <b>weights</b>.
-        </p>
-
-        <div class="divider" aria-hidden="true">+ . ･ ｡ﾟ☆: *.☽ .* :☆ﾟ. +</div>
-
-        <h2>WHY HODGE THEORY?</h2>
-        <p>
-          Hodge theory helps us separate ordinary start-to-finish flow from
-          signal that remains around alternative paths in the graph. We can
-          then compare those patterns between control and endometriosis
-          samples for the same gene.
-        </p>
-
-        <p class="flow" aria-label="Project workflow">
-          [ RNA-SEQ ] &gt;&gt; [ SPLICE JUNCTIONS ] &gt;&gt; [ GRAPH ] &gt;&gt; [ HODGE ]
-        </p>
-
-        <p class="careful">
-          * A graph pattern can show a structural difference, but it does not
-          by itself prove circular RNA or disease causation.
-        </p>
-
-        <footer>
-          <span>SYDNEY HOLMES</span> · <span>VANIA ZELEDON</span> ·
-          <span>SUMMER MALIK</span> · <span>WYNN OO</span>
-        </footer>
+      <section class="home-copy" aria-labelledby="about-title">
+        <p class="eyebrow">a BINF-2111 student project / 2026</p>
+        <h1 id="about-title">Same gene.<br>Different connections?</h1>
+        <p>Cells can join pieces of a gene in different ways when making RNA.
+          We’re building <strong>Splice Girl</strong> to study those connections
+          in endometriosis and control tissue.</p>
+        <p>The tool turns counted RNA splice junctions into a graph, uses
+          Hodge theory to measure its signal, and saves the results as tables
+          and figures you can inspect.</p>
+        <p><a href="learn.html">Start with the biology and graph idea</a>, or
+          <a href="guide.html">try the small demo</a>. You don’t need to know
+          Hodge theory before you start.</p>
+        <h2>What’s working?</h2>
+        <p>The command-line tool and synthetic demo work. We also checked one
+          real gene, CDH11, using one million cleaned read pairs from one
+          control sample. <strong>The full eight-sample disease comparison
+          is still in progress.</strong></p>
+        <p class="margin-note">The demo uses made-up data with known answers.
+          Its case/control labels are examples, not findings about patients.</p>
       </section>
-    </main>
+        </div>
+        <section class="reading-note" aria-labelledby="first-visit">
+          <h2 id="first-visit">First visit?</h2>
+          <p>Read <a href="learn.html">How it works</a>, then follow
+            <a href="guide.html">Run the demo</a> with your terminal open.
+            <a href="dictionary.html">The word list</a> is here whenever a
+            term gets in the way.</p>
+        </section>
+      </main>
+      <footer class="site-footer">
+        <p>Sydney Holmes · Vania Zeledon · Summer Malik · Wynn Oo</p>
+        <p><a href="https://github.com/simransummermalik/TopologicalAnalysisofRNASplicinginEndometriosis">Project files on GitHub</a> · Made for learning, 2026</p>
+      </footer>
+    </div>
   </body>
 </html>

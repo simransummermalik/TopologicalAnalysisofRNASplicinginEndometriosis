@@ -1,0 +1,99 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="RNA splicing, graphs, and Hodge theory explained for a first-time Splice Girl user.">
+  <title>Splice Girl · How it works</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <a class="skip-link" href="#content">Skip to the page</a>
+  <div class="site-shell">
+    <header class="site-header">
+      <p class="site-name"><a href="index.html">splice girl</a> <span>* RNA, graphs &amp; a little math *</span></p>
+      <nav aria-label="Main navigation">
+        <a href="index.html">About</a><a href="learn.html" aria-current="page">How it works</a><a href="guide.html">Run the demo</a><a href="results.html">Read the results</a><a href="dictionary.html">Word list</a>
+      </nav>
+    </header>
+    <main id="content" class="text-page">
+      <p class="eyebrow">the idea, before the commands</p>
+      <h1>What are we measuring?</h1>
+      <h2>Start with RNA splicing</h2>
+      <p>When a cell first copies a gene into RNA, that RNA includes sections
+        called <strong>exons</strong> and <strong>introns</strong>. Splicing
+        removes introns and joins selected exons. Different joining choices can
+        make different finished RNAs from the same gene.</p>
+      <p>RNA sequencing gives us short <strong>reads</strong>. Some cross an
+        exon-to-exon join, giving evidence for a <strong>splice junction</strong>.
+        We count the reads supporting each observed junction.</p>
+      <h2>Turn the connections into a graph</h2>
+      <p>In our real-data representation, an annotated exon interval is a
+        <strong>node</strong>, and a junction is a directed <strong>edge</strong>.
+        Its count is the edge’s read support. Here is a small exon-skipping example:</p>
+      <figure>
+        <svg class="graph-example" viewBox="0 0 520 170" role="img" aria-labelledby="graph-title graph-desc">
+          <title id="graph-title">Three exons with an alternative splice path</title>
+          <desc id="graph-desc">Edges join E1 to E2, E2 to E3, and directly E1 to E3. All biological arrows point forward.</desc>
+          <defs><marker id="arrow" markerWidth="8" markerHeight="8" refX="7" refY="3" orient="auto"><path d="M0 0 L7 3 L0 6" fill="none" stroke="#713e5a"/></marker></defs>
+          <g fill="none" stroke="#713e5a" stroke-width="2">
+            <path d="M100 115 H222" marker-end="url(#arrow)"/>
+            <path d="M300 115 H422" marker-end="url(#arrow)"/>
+            <path d="M70 88 C100 2 405 2 460 88" marker-end="url(#arrow)"/>
+            <rect x="25" y="90" width="75" height="50"/>
+            <rect x="225" y="90" width="75" height="50"/>
+            <rect x="425" y="90" width="75" height="50"/>
+          </g>
+          <g fill="#352632" font-family="Verdana, sans-serif" font-size="17" text-anchor="middle">
+            <text x="62" y="121">E1</text><text x="262" y="121">E2</text><text x="462" y="121">E3</text>
+            <text x="260" y="29">skip E2</text>
+          </g>
+        </svg>
+        <figcaption>A teaching example: RNA can follow E1–E2–E3 or join E1
+          directly to E3. The drawing is illustrative, not a patient result.</figcaption>
+      </figure>
+      <h2>Why normalize the counts?</h2>
+      <p>One sample may have more sequencing reads than another. Splice Girl
+        divides each junction count by the total support for that sample and
+        gene. Counts of 100, 100 and 100 become relative weights of one third
+        each. This describes usage within the observed gene graph; it does
+        not remove every sequencing or coverage difference.</p>
+      <h2>Where Hodge theory comes in</h2>
+      <p>Hodge decomposition separates the graph’s edge signal into two parts:</p>
+      <ol>
+        <li><strong>Gradient:</strong> the part that can be explained by
+          assigning values to nodes and taking differences along edges.</li>
+        <li><strong>Cycle space:</strong> the part left over after that best
+          node-based explanation. It can capture signal around graph loops
+          or alternative paths.</li>
+      </ol>
+      <p>The <strong>cycle fraction</strong> compares the squared size of the
+        cycle-space part with the squared size of the original signal. It lies
+        between zero and one. A tree-shaped graph has no cycle space, so its
+        cycle fraction is zero.</p>
+      <p class="margin-note">A graph loop does not have to be a directed
+        biological loop. The example above can have a nonzero cycle component
+        even though none of its arrows points backward. Cycle fraction is
+        <strong>not the percentage of circular RNA</strong>.</p>
+      <h2>Why Rust?</h2>
+      <p>Rust lets us build a reusable command-line program with input checks
+        and automated tests. It handles the graphs and math. Separate tools
+        prepare the sequencing evidence: Cleaver cleans reads, HISAT2 aligns
+        them, and our converter counts eligible annotated junctions.</p>
+      <h2>What can the study tell us?</h2>
+      <p>The planned analysis compares four endometriosis and four control
+        samples of proliferative-phase eutopic endometrium. It asks whether
+        their graph measurements differ, and whether Hodge summaries add
+        information beyond simpler counts and graph measurements.</p>
+      <p>The candidate genes come from genetic-risk and environmental-response
+        evidence. The samples have no measured exposure histories, so those
+        gene labels do not show that a donor was exposed. Neither a graph
+        difference nor a small p-value establishes disease causation.</p>
+      <p>Our checked real CDH11 example is one control prefix, not a completed
+        case/control study. The full biological comparison remains pending.</p>
+      <p class="page-next"><a href="guide.html">Next: run the small synthetic demo</a></p>
+    </main>
+    <footer class="site-footer"><p>Team Splice Girl · BINF-2111 · 2026</p><p><a href="https://github.com/simransummermalik/TopologicalAnalysisofRNASplicinginEndometriosis/blob/main/docs/math_spec.md">The math specification</a> · <a href="dictionary.html">Look up a word</a></p></footer>
+  </div>
+</body>
+</html>

@@ -1,0 +1,98 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Understand Splice Girl's demo report, cycle fractions, output files and common errors.">
+  <title>Splice Girl · Read the results</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <a class="skip-link" href="#content">Skip to the page</a>
+  <div class="site-shell">
+    <header class="site-header">
+      <p class="site-name"><a href="index.html">splice girl</a> <span>* RNA, graphs &amp; a little math *</span></p>
+      <nav aria-label="Main navigation"><a href="index.html">About</a><a href="learn.html">How it works</a><a href="guide.html">Run the demo</a><a href="results.html" aria-current="page">Read the results</a><a href="dictionary.html">Word list</a></nav>
+    </header>
+    <main id="content" class="text-page">
+      <p class="eyebrow">you ran it. what now?</p>
+      <h1>Read the answer, not just “PASS”.</h1>
+      <p>Open <code>target/website-demo-report/report.html</code>, the file you
+        made in <a href="guide.html#report">the last demo step</a>. The report
+        brings the figures, measurements and exclusions together.</p>
+      <h2>What to look at first</h2>
+      <ol>
+        <li><strong>Gene summary:</strong> both synthetic genes should have
+          two eligible cases and two eligible controls. Their differences
+          should be about +0.5556 and −0.5556.</li>
+        <li><strong>Individual samples:</strong> inspect the points and exact
+          values. A group average does not tell you whether its samples agree.</li>
+        <li><strong>Excluded samples:</strong> <code>control_03</code> has no
+          junction data and must remain excluded, not assigned a zero.</li>
+        <li><strong>View decomposition:</strong> open a sample’s generated
+          graph to see the observed, gradient and cycle signals together.</li>
+      </ol>
+      <h2>What does the cycle fraction mean?</h2>
+      <p>It measures how much squared edge signal lies in cycle space after
+        removing the gradient projection. Zero means the observed signal has
+        no cycle-space part; one means all its signal is in that space.
+        Our equal-weight exon-skipping fixture gives one ninth.</p>
+      <p class="margin-note"><code>checks: PASS</code> means the numerical
+        identities passed. It does not mean a gene is disease-associated,
+        the samples are biologically comparable, or circular RNA was detected.</p>
+      <h2>Which file is which?</h2>
+      <table><thead><tr><th scope="col">File in the report folder</th><th scope="col">What you can find there</th></tr></thead><tbody>
+        <tr><td><code>report.html</code></td><td>The readable report. Open this first.</td></tr>
+        <tr><td><code>sample_metrics.tsv</code></td><td>Each sample/gene’s graph size, support, cycle fraction and math checks.</td></tr>
+        <tr><td><code>junction_components.tsv</code></td><td>Each junction’s count, normalized signal, gradient and cycle component.</td></tr>
+        <tr><td><code>comparisons.tsv</code></td><td>Which samples were included or excluded, and why.</td></tr>
+        <tr><td><code>gene_summaries.tsv</code></td><td>Group summaries and the case-minus-control difference for each gene.</td></tr>
+        <tr><td><code>run_manifest.json</code></td><td>The command, input checksums and settings used for this run.</td></tr>
+        <tr><td><code>graphs/</code></td><td>The generated SVG graph files linked from the report.</td></tr>
+      </tbody></table>
+      <p>A TSV can be opened as text or in a spreadsheet. Choose tabs as the
+        column separator if asked. Keep all report files together so its
+        relative links keep working.</p>
+      <h2>Where are the p-values?</h2>
+      <p>The basic <code>compare</code> and <code>report</code> commands are
+        descriptive. The separate <code>stats</code> command requires a gene
+        list and explicit testing settings. It adds raw and BH-adjusted
+        p-values, a gene-set test, and other tables.</p>
+      <p>In the two-gene statistical demo, both raw and adjusted p-values are
+        one third. That example checks the calculation; large-looking toy
+        effects do not automatically give strong statistical evidence.</p>
+      <p><a href="https://github.com/simransummermalik/TopologicalAnalysisofRNASplicinginEndometriosis/blob/main/docs/running_the_tool.md">See the complete statistics and preprocessing commands</a>
+        after the basic demo. Real data need reviewed QC, eligibility and
+        design rules before those tests are interpreted.</p>
+      <h2 id="help">If something goes wrong</h2>
+      <details><summary>“cargo: command not found”</summary><p>Rust/Cargo is
+        missing or unavailable in this terminal. Follow the Rust setup link
+        in <a href="guide.html#ready">step 1</a>, reopen the terminal and check
+        the versions again.</p></details>
+      <details><summary>“splice-girl: command not found”</summary><p>The installed
+        executable may not be on PATH. You can run the demo with
+        <code>cargo run --</code> from the project folder instead. Installing
+        the shorter command is optional.</p></details>
+      <details><summary>It cannot find the input file</summary><p>Run
+        <code>pwd</code> and <code>ls Cargo.toml README.md</code>. You should
+        be in the project root. The demo paths are relative to that folder.
+        Check spelling and do not paste the terminal’s prompt as part of a command.</p></details>
+      <details><summary>“already exists”</summary><p>The output is protected.
+        Choose a new filename or folder, such as
+        <code>target/website-demo-report-2</code>. You do not need to delete
+        an old result to try again.</p></details>
+      <details><summary>Validation failed when I added the demo manifest</summary><p>That
+        is an intentional mismatch example: <code>orphan_01</code> has no
+        metadata and <code>control_03</code> has no junction data. The first
+        validation command in <a href="guide.html#check-input">step 4</a>
+        should pass; the example with the manifest should report failure.</p></details>
+      <details><summary>I clicked Copy but it says the text is selected</summary><p>Your
+        browser did not allow clipboard access. Press Command+C on macOS or
+        Ctrl+C on other systems, then paste into your terminal. Copying never
+        runs a command automatically.</p></details>
+      <p class="page-next"><a href="guide.html">Return to the demo</a> · <a href="dictionary.html">Look up an unfamiliar word</a></p>
+    </main>
+    <footer class="site-footer"><p>Team Splice Girl · BINF-2111 · 2026</p><p>The demo is synthetic. The full biological comparison is still in progress.</p></footer>
+  </div>
+</body>
+</html>

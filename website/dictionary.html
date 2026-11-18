@@ -1,0 +1,85 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="A plain-language word list for RNA splicing, graphs, files and the Splice Girl terminal demo.">
+  <title>Splice Girl · Word list</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <a class="skip-link" href="#content">Skip to the page</a>
+  <div class="site-shell">
+    <header class="site-header">
+      <p class="site-name"><a href="index.html">splice girl</a> <span>* RNA, graphs &amp; a little math *</span></p>
+      <nav aria-label="Main navigation"><a href="index.html">About</a><a href="learn.html">How it works</a><a href="guide.html">Run the demo</a><a href="results.html">Read the results</a><a href="dictionary.html" aria-current="page">Word list</a></nav>
+    </header>
+    <main id="content" class="text-page">
+      <p class="eyebrow">keep this nearby</p>
+      <h1>A small word list</h1>
+      <p>You don’t have to learn every term before trying the demo. Come back
+        when a word gets in the way.</p>
+      <h2>The biology</h2>
+      <dl>
+        <dt>RNA splicing</dt><dd>Removing introns and joining selected exons
+          from an early RNA molecule.</dd>
+        <dt>Exon / intron</dt><dd>Exons are sections that can remain in finished
+          RNA. Introns are intervening sections usually removed during splicing.</dd>
+        <dt>Read</dt><dd>A short sequence reported by an RNA-sequencing experiment.
+          A read crossing an exon join can support a splice junction.</dd>
+        <dt>Splice junction</dt><dd>A connection between exons, supported by
+          sequencing evidence. It becomes an edge in the graph.</dd>
+        <dt>Case / control</dt><dd>In the real study, a case has endometriosis;
+          a control is from the comparison group. The demo uses made-up samples
+          and labels, not patient measurements.</dd>
+        <dt>Eutopic endometrium</dt><dd>The uterine lining in its usual location.
+          This is the tissue selected for both groups in the planned comparison.</dd>
+      </dl>
+      <h2>The graph and math</h2>
+      <dl>
+        <dt>Node / edge</dt><dd>A node is a graph point; an edge connects two
+          points. Here, annotated exons are nodes and splice junctions are edges.</dd>
+        <dt>Read support / count</dt><dd>The number of eligible read alignments
+          supporting a junction. It is not a count of subjects or necessarily
+          independent RNA molecules.</dd>
+        <dt>Normalization</dt><dd>Dividing each junction count by the total
+          support in that sample/gene. The weights then describe relative usage.</dd>
+        <dt>Gradient component</dt><dd>The part of an edge signal explained by
+          differences between values assigned to nodes.</dd>
+        <dt>Cycle-space component</dt><dd>The remaining signal after the gradient
+          projection. Graph loops and alternative paths can support this component.</dd>
+        <dt>Cycle fraction</dt><dd>The squared size of the cycle-space component
+          divided by the squared size of the original signal. It is not a
+          circular-RNA percentage or a diagnosis.</dd>
+        <dt>Effect size</dt><dd>A numerical group difference. Here, the basic
+          effect is mean case cycle fraction minus mean control cycle fraction.</dd>
+        <dt>P-value</dt><dd>A measure of how unusual the observed statistic is
+          under the test’s null assumptions. It is not the probability that
+          a gene causes disease. The basic report does not calculate it.</dd>
+      </dl>
+      <h2>The files and terminal</h2>
+      <dl>
+        <dt>Terminal / CLI</dt><dd>The terminal is where you type commands.
+          A command-line interface, or CLI, is a program used that way.</dd>
+        <dt>Rust / Cargo</dt><dd>Rust is the language used for the graph tool.
+          Cargo builds and runs Rust projects.</dd>
+        <dt>Project root</dt><dd>The main repository folder containing
+          <code>Cargo.toml</code> and <code>README.md</code>. Run the demo commands here.</dd>
+        <dt>TSV / manifest</dt><dd>A TSV is a table separated by tabs. A sample
+          manifest lists sample IDs and group labels. A run manifest records
+          the files and settings used for an analysis; they have different jobs.</dd>
+        <dt>FASTQ / SAM / BAM</dt><dd>FASTQ stores sequence reads and quality
+          scores. SAM stores alignments as text; BAM is a binary alignment
+          format. Preprocessing turns this evidence into junction counts.</dd>
+        <dt>SVG / HTML</dt><dd>SVG is the graph image format. HTML is the report
+          format. Both can be opened in a browser; the saved report works offline.</dd>
+        <dt>Exit status</dt><dd>A command’s result code. Zero usually means
+          success; a nonzero code means a reported problem. The demo includes
+          an explicitly labeled intentional validation failure.</dd>
+      </dl>
+      <p class="page-next"><a href="guide.html">Back to running the demo</a></p>
+    </main>
+    <footer class="site-footer"><p>Team Splice Girl · BINF-2111 · 2026</p><p><a href="https://github.com/simransummermalik/TopologicalAnalysisofRNASplicinginEndometriosis">Project files and longer explanations</a></p></footer>
+  </div>
+</body>
+</html>
