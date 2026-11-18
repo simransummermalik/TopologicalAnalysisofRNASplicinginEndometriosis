@@ -44,7 +44,8 @@ if (panels.length) {
     previous.disabled = current === 0;
     next.disabled = current === panels.length - 1;
     progress.textContent = "Step " + (current + 1) + " of " + panels.length;
-    if (focusHeading) panels[current].querySelector("h2").focus({ preventScroll: true });
+    document.getElementById("copy-status").textContent = "";
+    if (focusHeading) panels[current].querySelector("h2").focus();
   }
 
   function goTo(index) {

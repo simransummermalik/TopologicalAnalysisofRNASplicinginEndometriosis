@@ -45,11 +45,11 @@ li { margin-bottom: 8px; }
 .site-footer p { margin: 0 0 5px; }
 code, pre { font-family: "Courier New", Courier, monospace; }
 code { overflow-wrap: anywhere; }
-pre { margin: 10px 0 20px; padding: 15px; border: 1px solid var(--line); background: #faf2f6; font-size: 15px; line-height: 1.6; white-space: pre-wrap; overflow-wrap: anywhere; }
+pre { margin: 10px 0 20px; padding: 15px; border: 1px solid var(--line); background: #faf2f6; font-size: 16px; line-height: 1.6; white-space: pre-wrap; overflow-wrap: anywhere; }
 pre code { font: inherit; }
 .command { position: relative; margin: 16px 0 22px; }
 .command pre { margin-bottom: 0; padding-top: 42px; }
-.command-label { position: absolute; top: 7px; left: 15px; font: 14px/1.5 "Courier New", monospace; color: var(--plum); }
+.command-label { position: absolute; top: 7px; left: 15px; max-width: calc(100% - 90px); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; font: 14px/1.5 "Courier New", monospace; color: var(--plum); }
 button { padding: 7px 12px; border: 1px solid var(--plum); border-radius: 0; color: var(--plum); background: #f5e5ed; font: 15px/1.4 Verdana, sans-serif; cursor: pointer; }
 button:hover { background: var(--pink); }
 button:disabled { opacity: 0.5; cursor: default; }
