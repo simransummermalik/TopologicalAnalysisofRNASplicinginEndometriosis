@@ -50,12 +50,15 @@ raw FASTQ
 
 ## Install the command-line tools
 
-Cleaver-X's official installation command is:
+Install the RAW Lab Cleaver-X command-line tool from its source repository:
 
 ```sh
-cargo install cleaver
+cargo install --git https://github.com/raw-lab/cleaver-x --bin cleaver
 cleaver doctor
 ```
+
+Do not use `cargo install cleaver` by itself: that resolves a different,
+library-only crate from crates.io rather than installing the Cleaver-X binary.
 
 The production dependencies are listed in `environment.yml` (HISAT2). Install
 STAR separately only if deliberately reproducing this legacy prototype:

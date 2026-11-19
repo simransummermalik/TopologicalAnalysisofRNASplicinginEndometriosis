@@ -18,14 +18,16 @@ one sample's FASTQ file(s)
 From the repository root, with Cargo and Conda installed:
 
 ```sh
-cargo install cleaver
+cargo install --git https://github.com/raw-lab/cleaver-x --bin cleaver
 conda env create -f preprocessing/environment.yml
 conda activate splice-girl-preprocessing
 python3 preprocessing/hisat2_pipeline.py check
 ```
 
-The environment supplies HISAT2 2.2.3 and samtools. Cleaver must also be on
-`PATH`. This guide does not require Galaxy or download any reads automatically.
+Install Cleaver-X from the RAW Lab Git repository; the similarly named crate on
+crates.io is a library and does not install the `cleaver` command. The
+environment supplies HISAT2 2.2.3 and samtools. Cleaver must also be on `PATH`.
+This guide does not require Galaxy or download any reads automatically.
 
 ## 2. Test the complete workflow without human data
 
