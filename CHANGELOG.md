@@ -1,5 +1,10 @@
 # Changelog
 
+## 0.2.1 — 2026-11-19
+
+- Fix the configured-analysis report footer to use the package's declared
+  license instead of stale MIT wording.
+
 ## 0.2.0 — 2026-11-19
 
 - Set the source release license to Creative Commons Attribution 4.0
