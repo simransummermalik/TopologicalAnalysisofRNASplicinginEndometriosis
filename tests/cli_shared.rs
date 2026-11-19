@@ -490,7 +490,7 @@ fn installed_config_runs_from_another_folder_and_citation_is_clean() {
     let result = work.run(&["cite"]);
     assert!(result.status.success());
     assert!(String::from_utf8_lossy(&result.stdout).starts_with("cff-version: 1.2.0"));
-    assert!(String::from_utf8_lossy(&result.stdout).contains("license: MIT"));
+    assert!(String::from_utf8_lossy(&result.stdout).contains("license: CC-BY-4.0"));
     assert!(
         !work
             .run(&["run", "--config", "inputs/analysis.json"])
