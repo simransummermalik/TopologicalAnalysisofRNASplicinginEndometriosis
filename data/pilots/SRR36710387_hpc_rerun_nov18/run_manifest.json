@@ -1,0 +1,34 @@
+{
+  "schema_version": "1.0",
+  "run_id": "splice-girl-1795063716-654698247",
+  "created_unix_seconds": 1795063716,
+  "tool": {"name": "splice-girl", "version": "0.1.0"},
+  "mode": "analyze",
+  "command": ["target/release/splice-girl", "data/pilots/SRR36710387_real_validation_nov18/checked/junctions.tsv", "--output", "/users/smalik12/splice-girl-real-test-nov18"],
+  "inputs": [
+    {"role": "junctions", "path": "data/pilots/SRR36710387_real_validation_nov18/checked/junctions.tsv", "sha256": "771e56e060f1046d0dc8d84009abdb2d866810499b6cca66448ea1c855dc2219"}
+  ],
+  "outputs": ["sample_metrics.tsv", "junction_components.tsv", "run_manifest.json"],
+  "settings": {
+    "normalization": "count / total_gene_support",
+    "solver": "dense normal equations with one pinned node per connected component and partial pivoting",
+    "precision": "f64",
+    "acceptance_tolerance": 1.0e-9,
+    "minimum_total_support": "greater than zero",
+    "random_seed": null
+  },
+  "summary": {
+    "sample_gene_groups": 243,
+    "junction_rows": 1388,
+    "included_samples": 0,
+    "excluded_samples": 0,
+    "failure_count": 0
+  },
+  "exclusions": [
+
+  ],
+  "failures": [
+
+  ],
+  "statistics": null
+}
