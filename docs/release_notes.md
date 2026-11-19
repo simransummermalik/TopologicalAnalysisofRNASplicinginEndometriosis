@@ -1,4 +1,21 @@
-# Splice Girl 0.1.0 — experimental crate release candidate
+# Splice Girl crate releases
+
+## 0.2.1 — patch release, published November 19, 2026
+
+This CC BY 4.0 patch release fixes the configured-analysis report footer so it
+uses the package's declared license instead of stale MIT wording. The 64-file
+crate archive passed Cargo's dry-run verification and the
+[GitHub checks](https://github.com/simransummermalik/TopologicalAnalysisofRNASplicinginEndometriosis/actions/runs/44615757528),
+including the extracted crate acceptance workflow. Install it with
+`cargo install splice-girl --version 0.2.1`.
+
+## 0.2.0 — license update, published November 19, 2026
+
+The source release changed the license from MIT to Creative Commons
+Attribution 4.0 International (CC BY 4.0), with approval from all four named
+contributors. Version 0.1.0 remains under its original MIT license.
+
+## Historical: 0.1.0 experimental release
 
 Prepared November 17, updated November 19, 2026. This is the experimental
 0.1.0 crate release, published to crates.io on November 19. MIT with a
@@ -6,8 +23,7 @@ separate citation request was selected November 18. Package acceptance and
 Cargo's publish dry-run passed before publication. The release commit is on
 GitHub `main`; no release tag was created.
 
-This page documents the historical 0.1.0 release. The authorized 0.2.0 source
-release changes the license to CC BY 4.0; see the [release checklist](release_checklist.md).
+This section records the original 0.1.0 release and its contents.
 
 ## Included software
 
@@ -44,9 +60,9 @@ can run offline after building.
 
 The real-input validation is one deterministic control prefix. Full-cohort
 preprocessing, comparability, eligibility, case/control results and biological
-interpretation remain pending. The high exon-pair ambiguity rate and library
-methods discrepancy require review. Independent evidence and beginner reviews,
-the main Overleaf source and final scientific/release review are still outstanding.
+interpretation remain pending. Residual junction-assignment and coverage
+questions require review. Independent evidence and beginner reviews, the main
+Overleaf source and final scientific review are still outstanding.
 
 The exact crate archive passed offline package tests and isolated installed-
 guide acceptance; see the [November 19 archive record](software_validation.md#010-crate-archive-acceptance--november-19-2026).

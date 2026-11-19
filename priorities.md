@@ -8,10 +8,10 @@ Anyone can pick up any available task; there are no assigned leads.
 
 ## Latest completed work — November 19
 
-- [x] Prepare a local 0.2.0 release draft under CC BY 4.0, following the
-  project's advice to allow commercial reuse with attribution. The published
-  0.1.0 crate remains MIT-licensed. All four named contributors approved the
-  0.2.0 license update on November 19; the registry publication is in progress.
+- [x] Publish v0.2.0 under CC BY 4.0 with all four named contributors' approval,
+  then publish v0.2.1 with the configured-report license-footer correction.
+  Version 0.1.0 remains MIT-licensed. Both source versions are on GitHub and
+  v0.2.1 is available from crates.io.
 
 - [x] Run the current packaged tool on all 243 candidate genes observed in
   the real control prefix; independently recount all 1,388 edges from BAM
@@ -20,9 +20,9 @@ Anyone can pick up any available task; there are no assigned leads.
   the final cohort protocol. See the [real-data validation](data/pilots/SRR36710387_real_validation_nov18/README.md).
 - [x] Add saved JSON configuration, read-only preflight and configured reports,
   including completed sample/batch/reference/map identity and count checks.
-- [x] Publish 0.1.0 under MIT with a separate citation request, provide
-  CITATION.cff and `cite`, and restrict the crate to software, fixtures and
-  relevant guides. A local 0.2.0 CC BY 4.0 license update is now drafted.
+- [x] Publish 0.1.0 under MIT and 0.2.0/0.2.1 under CC BY 4.0, with a separate
+  citation request; provide CITATION.cff and `cite`, and restrict the crate to
+  software, fixtures and relevant guides.
 - [x] Build, inspect, test and install the actual unpublished crate archive;
   exercise the installed guide outside the checkout. Independent human
   acceptance remains pending in [the reviewer exercise](docs/user_acceptance.md).
@@ -293,10 +293,9 @@ source provenance, and a matching limitation.
   eligibility and preprocessing choices are resolved.
 - [ ] Finalize the [technical results draft](docs/results_draft.md) after the
   full cohort analysis; do not substitute pilot measurements for disease results.
-- [ ] Finalize the [prepared release review](docs/release_notes.md) after
-  independent feedback. Version 0.1.0 is published on crates.io; version
-  0.2.0 is prepared under CC BY 4.0 with contributor authorization, and is
-  being published now.
+- [ ] Finalize the [release review](docs/release_notes.md) after independent
+  feedback. Versions 0.2.0 and 0.2.1 are published under CC BY 4.0; full
+  biological validation remains separate.
 - [ ] Compile the missing Overleaf parent. The available roadmap section is
   compiled, inspected and saved in `roadmap-preview.pdf`.
 - [ ] Run the complete acceptance checklist from a clean checkout.

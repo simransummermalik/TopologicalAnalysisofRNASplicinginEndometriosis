@@ -3,14 +3,12 @@
 This checklist describes the smallest honest software release. It does not
 claim that the biological study is finished.
 
-The [release notes](release_notes.md) describe the 0.1.0 experimental crate.
-MIT and a separate citation request were selected November 18. On November 19,
-the exact 64-file crate archive, extracted tests/install walkthrough, and
-`cargo publish --dry-run --locked` passed, and version 0.1.0 was published to
-crates.io. The release commit is on GitHub `main`; no GitHub release tag was
-created.
-Independent reader feedback and full biological validation remain open and
-are clearly identified as limits of this experimental release.
+The [release notes](release_notes.md) cover the current crate and its history.
+Version 0.1.0 was published under MIT. Version 0.2.0 changed the source license
+to CC BY 4.0, and version 0.2.1 with the report-footer correction was published
+to crates.io on November 19, 2026. The v0.2.1 package dry-run and GitHub CI
+passed; no GitHub release tag was created. Independent reader feedback and
+full biological validation remain open and are clearly identified as limits.
 
 Version 0.2.0 uses CC BY 4.0, following the user's direction based on Dr.
 White's advice. CC BY permits commercial and noncommercial reuse with
@@ -45,7 +43,7 @@ on November 19 that all four named contributors approved the license change.
 7. Update the version, changelog, and software-validation date together.
 8. Record contributor authorization for a license change before publishing it.
 
-`Cargo.toml` and `LICENSE` record CC BY 4.0 for 0.2.0; the already-published
+`Cargo.toml` and `LICENSE` record CC BY 4.0 for 0.2.1; the already-published
 0.1.0 crate remains under MIT. `CITATION.cff` and `splice-girl cite` provide
 the requested paper citation. The paper-citation request is separate from CC
 BY's legal attribution requirements.

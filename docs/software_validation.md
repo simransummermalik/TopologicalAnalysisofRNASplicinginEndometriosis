@@ -1,7 +1,7 @@
 # Splice Girl software validation
 
 **Validation date:** November 19, 2026
-**Package version:** `0.1.0`
+**Package version:** `0.2.1`
 
 This note records installation, compatibility, workflow, test, and performance
 checks for the current Rust tool. It is development evidence, not a biological
@@ -518,3 +518,13 @@ contributors authorized the 0.2.0 CC BY 4.0 license update, as confirmed by
 the user on November 19. License selection and software acceptance do not
 finish the full biological study, method comparisons or scientific
 interpretation. The assistant did not create a release tag.
+
+## 0.2.1 package verification — November 19, 2026
+
+The 64-file v0.2.1 package passed `cargo publish --dry-run --locked`, including
+verification build. GitHub CI passed on Rust 1.85.0 and stable, including
+formatting, all-target Rust tests, strict Clippy, release build, benchmark,
+Python checks and stable-toolchain extracted-crate acceptance. The published
+patch replaces the generated report's stale MIT footer with the license value
+from Cargo package metadata. Version 0.2.1 was published to crates.io after CI
+passed; no GitHub release tag was created.
