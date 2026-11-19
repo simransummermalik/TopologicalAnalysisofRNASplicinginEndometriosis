@@ -809,48 +809,41 @@ fn prompt(message: &str) -> Result<Option<String>, String> {
 }
 
 fn print_results(results: &[splice_girl::GroupResult]) -> Result<(), String> {
-    // One block of metrics per (sample, gene) group found in the input.
-    for result in results {
-        let decomposition = &result.decomposition;
-        println!("sample: {}", result.sample_id);
-        println!("gene: {}", result.gene_id);
-        println!("nodes: {}", result.graph.nodes.len());
-        println!("edges: {}", result.graph.edges.len());
-        println!("signal_energy: {:.10}", decomposition.signal_energy);
-        println!("gradient_energy: {:.10}", decomposition.gradient_energy);
-        println!("cycle_energy: {:.10}", decomposition.cycle_energy);
-        println!("cycle_fraction: {:.10}", decomposition.cycle_fraction);
-        println!("components:");
-        println!("  from\tto\tsignal\tgradient\tcycle");
-        for (index, edge) in result.graph.edges.iter().enumerate() {
-            println!(
-                "  {}\t{}\t{:.10}\t{:.10}\t{:.10}",
-                result.graph.nodes[edge.from],
-                result.graph.nodes[edge.to],
-                result.graph.signal[index],
-                decomposition.gradient[index],
-                decomposition.cycle[index]
-            );
-        }
-        println!(
-            "checks: {} (reconstruction={:.3e}, kernel={:.3e}, orthogonality={:.3e})",
-            if decomposition.checks.passed {
-                "PASS"
-            } else {
-                "FAIL"
-            },
-            decomposition.checks.reconstruction_error,
-            decomposition.checks.kernel_error,
-            decomposition.checks.orthogonality_error
-        );
-        println!();
+    // Keep the terminal readable for large runs. Per-gene metrics and
+    // per-junction components are already available in the TSV bundle.
+    let samples: BTreeSet<&str> = results
+        .iter()
+        .map(|result| result.sample_id.as_str())
+        .collect();
+    let junctions: usize = results
+        .iter()
+        .map(|result| result.graph.edges.len())
+        .sum();
+    let passed = results
+        .iter()
+        .filter(|result| result.decomposition.checks.passed)
+        .count();
+    let failed = results.len() - passed;
+    let cycle_signal = results
+        .iter()
+        .filter(|result| result.decomposition.cycle_fraction > 1e-8)
+        .count();
 
-        if !decomposition.checks.passed {
-            return Err(format!(
-                "mathematical checks failed for sample {} and gene {}",
-                result.sample_id, result.gene_id
-            ));
-        }
+    println!("Analysis complete");
+    println!("  samples: {}", samples.len());
+    println!("  sample/gene graphs: {}", results.len());
+    println!("  splice junctions: {junctions}");
+    println!("  math checks: {passed} passed, {failed} failed");
+    println!("  graphs with measurable cycle fraction (>1e-8): {cycle_signal}");
+
+    if let Some(failure) = results
+        .iter()
+        .find(|result| !result.decomposition.checks.passed)
+    {
+        return Err(format!(
+            "mathematical checks failed for sample {} and gene {}",
+            failure.sample_id, failure.gene_id
+        ));
     }
 
     Ok(())
