@@ -203,8 +203,9 @@ The archive SHA-256 is
 `f3a5f0041de1606b0a3694d64242f72a1c74ecfe8e71afeaf0bc36d73ce1f48a`.
 
 `cargo publish --dry-run --locked` also passed package verification and
-reached Cargo's intentional “aborting upload due to dry run” message. No crate
-was uploaded. These checks cover the 0.1.0 software archive, not the full
+reached Cargo's intentional “aborting upload due to dry run” message. The
+verified archive was then published to crates.io as `splice-girl 0.1.0` on
+November 19. These checks cover the 0.1.0 software archive, not the full
 biological study or independent user acceptance.
 
 ## November 17 — connected software acceptance check

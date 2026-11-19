@@ -1,9 +1,10 @@
 # Splice Girl 0.1.0 — experimental crate release candidate
 
 Prepared November 17, updated November 19, 2026. This is the experimental
-0.1.0 crate candidate. MIT with a separate citation request was selected
-November 18. Package acceptance and Cargo's publish dry-run pass; no tag or
-release publication has been performed.
+0.1.0 crate release, published to crates.io on November 19. MIT with a
+separate citation request was selected November 18. Package acceptance and
+Cargo's publish dry-run passed before publication. The source commit and tag
+have not been pushed to GitHub.
 
 ## Included software
 

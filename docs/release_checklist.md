@@ -6,9 +6,10 @@ claim that the biological study is finished.
 The [release notes](release_notes.md) describe the 0.1.0 experimental crate.
 MIT and a separate citation request were selected November 18. On November 19,
 the exact 64-file crate archive, extracted tests/install walkthrough, and
-`cargo publish --dry-run --locked` passed. No upload or release tag has been
-performed. Independent reader feedback and full biological validation remain
-open and are clearly identified as limits of this experimental release.
+`cargo publish --dry-run --locked` passed, and version 0.1.0 was published to
+crates.io. The release commit remains local and no GitHub tag was pushed.
+Independent reader feedback and full biological validation remain open and
+are clearly identified as limits of this experimental release.
 
 ## Included now
 
