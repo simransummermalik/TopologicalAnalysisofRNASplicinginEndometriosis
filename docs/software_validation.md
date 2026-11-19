@@ -479,6 +479,22 @@ guide commands passed with PATH empty. These are macOS results, not a claim
 that the Linux GitHub check has already passed.
 
 The [reader exercise](user_acceptance.md) and blank feedback template are ready.
+
+On November 18 the reviewed installed crate executable also passed a
+[real-data follow-up](../data/pilots/SRR36710387_real_validation_nov18/README.md):
+243 observed candidate genes from the historical one-million-pair control
+prefix. All 1,388 candidate edges (19,983 read-junction observations) matched
+an independent BAM recount. Every gene passed a separate NumPy SVD check;
+the largest exported-component difference was 4.96e-11 at tolerance 1e-8.
+Six graphs have cycle rank one; five have cycle fraction above 1e-8. Outputs,
+script/executable/input hashes, commands and example graphs are retained in
+the linked bundle, and all saved output hashes/report links were checked.
+This extends the earlier CDH11 numerical validation to all observed candidates,
+including nonzero cycle signals. It preserves the historical exon-interval,
+unstranded pilot protocol; it does not validate the adopted RF/shared graph
+cohort analysis or estimate a case/control effect. No new reads were downloaded
+or aligned, and no inference or independent human usability review was performed.
+
 No independent human review has been completed or invented. MIT/citation
 selection and software acceptance do not finish the full biological study,
 method comparisons or scientific interpretation. No tag, commit, push or

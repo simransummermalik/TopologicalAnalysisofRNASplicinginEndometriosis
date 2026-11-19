@@ -1,0 +1,205 @@
+{
+  "status": "complete",
+  "started_utc": "2026-11-19T04:20:34.291784+00:00",
+  "scope": "SRR36710387 control; first 1,000,000 cleaned pairs (2.02% of one sample)",
+  "node_rule": "historical exon-interval",
+  "alignment_strandedness": "historical unstranded",
+  "minimum_anchor": 8,
+  "minimum_unique_support": 1,
+  "exclude_duplicates": false,
+  "inputs": {
+    "junctions": {
+      "path": "/Users/summermalik/Documents/GitHub/TopologicalAnalysisofRNASplicinginEndometriosis/preprocessing/runs/SRR36710387_pilot_nov17/alignment/junctions.tsv",
+      "bytes": 2761948,
+      "sha256": "fdb67969ef48439d884dd3ff3f7eb5cc866626cc8e31de634e9b1c50675b02ff"
+    },
+    "gene_map": {
+      "path": "/Users/summermalik/Documents/GitHub/TopologicalAnalysisofRNASplicinginEndometriosis/references/hisat2_v50_pilot_nov17/junction_exon_map.tsv",
+      "bytes": 118288244,
+      "sha256": "1e2199753dbb46cd63ee8906fb79918d9bff4ff06583a864969858056b7dbc60"
+    },
+    "bam": {
+      "path": "/Users/summermalik/Documents/GitHub/TopologicalAnalysisofRNASplicinginEndometriosis/preprocessing/runs/SRR36710387_pilot_nov17/alignment/aligned.bam",
+      "bytes": 111416174,
+      "sha256": "3a9eb27b70d1f265600c3c906a53f5847e073984a76167f64b9c91b45311bd2b"
+    },
+    "candidates": {
+      "path": "/Users/summermalik/Documents/GitHub/TopologicalAnalysisofRNASplicinginEndometriosis/data/gene_sets/candidate_genes.tsv",
+      "bytes": 30901,
+      "sha256": "0aacc70364351a8d28189410a0c24111958a219c13daad4614f8c73b42b787c0"
+    }
+  },
+  "binary": {
+    "path": "/Users/summermalik/Documents/GitHub/TopologicalAnalysisofRNASplicinginEndometriosis/target/crate-busy-fix/installed/install/bin/splice-girl",
+    "bytes": 1619920,
+    "sha256": "f3777f13c69db7dd3f47937f96de059ccef8eafb5a4cfc8d26ad32d2d39780b8"
+  },
+  "script": {
+    "path": "/Users/summermalik/Documents/GitHub/TopologicalAnalysisofRNASplicinginEndometriosis/data/pilots/SRR36710387_real_validation_nov18/reproduce.py",
+    "bytes": 13130,
+    "sha256": "70edec6fac8ad4a4bc76f0e18df803dba89f4dcb7b0eb6f71b606fc487aa85b5"
+  },
+  "prior_verification": {
+    "path": "/Users/summermalik/Documents/GitHub/TopologicalAnalysisofRNASplicinginEndometriosis/data/pilots/SRR36710387_prefix1m_nov17/verified/verification.json",
+    "bytes": 19940,
+    "sha256": "7f8831841bc9e238cf1cf90727ee73e59dace379bb40169e8206ccac111d2a2c"
+  },
+  "numpy_version": "2.4.6",
+  "commands": [
+    [
+      "/Users/summermalik/Documents/GitHub/TopologicalAnalysisofRNASplicinginEndometriosis/target/crate-busy-fix/installed/install/bin/splice-girl",
+      "validate",
+      "/Users/summermalik/Documents/GitHub/TopologicalAnalysisofRNASplicinginEndometriosis/data/pilots/SRR36710387_real_validation_nov18/checked/junctions.tsv"
+    ],
+    [
+      "/Users/summermalik/Documents/GitHub/TopologicalAnalysisofRNASplicinginEndometriosis/target/crate-busy-fix/installed/install/bin/splice-girl",
+      "analyze",
+      "/Users/summermalik/Documents/GitHub/TopologicalAnalysisofRNASplicinginEndometriosis/data/pilots/SRR36710387_real_validation_nov18/checked/junctions.tsv",
+      "--output",
+      "/Users/summermalik/Documents/GitHub/TopologicalAnalysisofRNASplicinginEndometriosis/data/pilots/SRR36710387_real_validation_nov18/checked/rust"
+    ],
+    [
+      "/private/tmp/splice-girl-hisat2-tools/bin/samtools",
+      "quickcheck",
+      "-v",
+      "/Users/summermalik/Documents/GitHub/TopologicalAnalysisofRNASplicinginEndometriosis/preprocessing/runs/SRR36710387_pilot_nov17/alignment/aligned.bam"
+    ],
+    [
+      "/private/tmp/splice-girl-hisat2-tools/bin/samtools",
+      "view",
+      "-F",
+      "2820",
+      "/Users/summermalik/Documents/GitHub/TopologicalAnalysisofRNASplicinginEndometriosis/preprocessing/runs/SRR36710387_pilot_nov17/alignment/aligned.bam"
+    ],
+    [
+      "/Users/summermalik/Documents/GitHub/TopologicalAnalysisofRNASplicinginEndometriosis/target/crate-busy-fix/installed/install/bin/splice-girl",
+      "visualize",
+      "SRR36710387",
+      "ENSG00000196924.21",
+      "/Users/summermalik/Documents/GitHub/TopologicalAnalysisofRNASplicinginEndometriosis/data/pilots/SRR36710387_real_validation_nov18/checked/junctions.tsv",
+      "/Users/summermalik/Documents/GitHub/TopologicalAnalysisofRNASplicinginEndometriosis/data/pilots/SRR36710387_real_validation_nov18/checked/cyclic.svg"
+    ],
+    [
+      "/Users/summermalik/Documents/GitHub/TopologicalAnalysisofRNASplicinginEndometriosis/target/crate-busy-fix/installed/install/bin/splice-girl",
+      "visualize",
+      "SRR36710387",
+      "ENSG00000108821.16",
+      "/Users/summermalik/Documents/GitHub/TopologicalAnalysisofRNASplicinginEndometriosis/data/pilots/SRR36710387_real_validation_nov18/checked/junctions.tsv",
+      "/Users/summermalik/Documents/GitHub/TopologicalAnalysisofRNASplicinginEndometriosis/data/pilots/SRR36710387_real_validation_nov18/checked/acyclic.svg"
+    ]
+  ],
+  "limitations": [
+    "One control and no cases; no disease effect or p-value is calculated.",
+    "A deterministic prefix is not a full sample or random subsample.",
+    "Historical ambiguity exclusions remain; no discarded reads are rescued.",
+    "This does not validate the adopted RF/shared-splice-site cohort workflow.",
+    "Independent numerical checks and recount reuse the same underlying reads/reference."
+  ],
+  "candidate_genes": 661,
+  "observed_genes": 243,
+  "unobserved_genes": 418,
+  "junction_rows": 1388,
+  "recounted_observations": 19983,
+  "recount_differences": 0,
+  "independent_checks_passed": 243,
+  "cyclic_genes": 6,
+  "maximum_component_difference": 4.956297525171571e-11,
+  "maximum_cycle_fraction_difference": 4.536043762826125e-11,
+  "example_graphs": [
+    {
+      "path": "cyclic.svg",
+      "gene_id": "ENSG00000196924.21",
+      "gene_symbol": "FLNA",
+      "selection": "highest support among cyclic graphs; gene ID breaks ties"
+    },
+    {
+      "path": "acyclic.svg",
+      "gene_id": "ENSG00000108821.16",
+      "gene_symbol": "COL1A1",
+      "selection": "highest support among acyclic graphs; gene ID breaks ties"
+    }
+  ],
+  "biological_comparison_performed": false,
+  "outputs": [
+    {
+      "path": "/Users/summermalik/Documents/GitHub/TopologicalAnalysisofRNASplicinginEndometriosis/data/pilots/SRR36710387_real_validation_nov18/checked/acyclic.svg",
+      "bytes": 87027,
+      "sha256": "05a2e7dfbec98918a9458d6c8437c9d50f35ebbc5ceefd0bfca2a669544e5288"
+    },
+    {
+      "path": "/Users/summermalik/Documents/GitHub/TopologicalAnalysisofRNASplicinginEndometriosis/data/pilots/SRR36710387_real_validation_nov18/checked/acyclic_graph.log",
+      "bytes": 204,
+      "sha256": "90a52dbaccfb128a31a8793afe85aebbb9460056b8c1a0458365eeff51b81e08"
+    },
+    {
+      "path": "/Users/summermalik/Documents/GitHub/TopologicalAnalysisofRNASplicinginEndometriosis/data/pilots/SRR36710387_real_validation_nov18/checked/analyze.log",
+      "bytes": 203021,
+      "sha256": "a7348dc2d7401d4bdbe68d3e289b1012e0e5351841ac848c9efc4e9ef0bd1875"
+    },
+    {
+      "path": "/Users/summermalik/Documents/GitHub/TopologicalAnalysisofRNASplicinginEndometriosis/data/pilots/SRR36710387_real_validation_nov18/checked/bam_integrity.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "/Users/summermalik/Documents/GitHub/TopologicalAnalysisofRNASplicinginEndometriosis/data/pilots/SRR36710387_real_validation_nov18/checked/candidate_coverage.tsv",
+      "bytes": 28198,
+      "sha256": "010826f1e01b8a1e86af526ef6d760a69db97202633fb4692a890d8d2e62b8f7"
+    },
+    {
+      "path": "/Users/summermalik/Documents/GitHub/TopologicalAnalysisofRNASplicinginEndometriosis/data/pilots/SRR36710387_real_validation_nov18/checked/cyclic.svg",
+      "bytes": 73406,
+      "sha256": "b342357c9a4c40a000c273b1701d8de04f743d3ae432978a6ce284b1f6f446dd"
+    },
+    {
+      "path": "/Users/summermalik/Documents/GitHub/TopologicalAnalysisofRNASplicinginEndometriosis/data/pilots/SRR36710387_real_validation_nov18/checked/cyclic_graph.log",
+      "bytes": 203,
+      "sha256": "79e992264eb938dab39f3b334a0f56be6bcb86ca946822f0d8be3de10b6caf60"
+    },
+    {
+      "path": "/Users/summermalik/Documents/GitHub/TopologicalAnalysisofRNASplicinginEndometriosis/data/pilots/SRR36710387_real_validation_nov18/checked/independent_checks.tsv",
+      "bytes": 59337,
+      "sha256": "5f4984c26d5cd044a2025cab3f2e479febed0e2125b2ac92c2de8fe7452f8b69"
+    },
+    {
+      "path": "/Users/summermalik/Documents/GitHub/TopologicalAnalysisofRNASplicinginEndometriosis/data/pilots/SRR36710387_real_validation_nov18/checked/junctions.tsv",
+      "bytes": 118152,
+      "sha256": "771e56e060f1046d0dc8d84009abdb2d866810499b6cca66448ea1c855dc2219"
+    },
+    {
+      "path": "/Users/summermalik/Documents/GitHub/TopologicalAnalysisofRNASplicinginEndometriosis/data/pilots/SRR36710387_real_validation_nov18/checked/recount.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "/Users/summermalik/Documents/GitHub/TopologicalAnalysisofRNASplicinginEndometriosis/data/pilots/SRR36710387_real_validation_nov18/checked/recount_differences.tsv",
+      "bytes": 35,
+      "sha256": "f23c31bee86f9b6990f05fa64b3132cde16afedb6f3fa706c884ad6ae5a7afb1"
+    },
+    {
+      "path": "/Users/summermalik/Documents/GitHub/TopologicalAnalysisofRNASplicinginEndometriosis/data/pilots/SRR36710387_real_validation_nov18/checked/report.html",
+      "bytes": 25893,
+      "sha256": "417f7a63a871397a2c1b221aa05950b33fd38904d56f35b42e22640836b044d3"
+    },
+    {
+      "path": "/Users/summermalik/Documents/GitHub/TopologicalAnalysisofRNASplicinginEndometriosis/data/pilots/SRR36710387_real_validation_nov18/checked/rust/junction_components.tsv",
+      "bytes": 233642,
+      "sha256": "85d97a15c0908a61cd305fb0c2df4e32e69e2d80a175ef78c633394d7fd61a42"
+    },
+    {
+      "path": "/Users/summermalik/Documents/GitHub/TopologicalAnalysisofRNASplicinginEndometriosis/data/pilots/SRR36710387_real_validation_nov18/checked/rust/run_manifest.json",
+      "bytes": 1580,
+      "sha256": "6361b82b7c38d14564c61de63b3aea090086743e4b603370f67a2918bcbbc35b"
+    },
+    {
+      "path": "/Users/summermalik/Documents/GitHub/TopologicalAnalysisofRNASplicinginEndometriosis/data/pilots/SRR36710387_real_validation_nov18/checked/rust/sample_metrics.tsv",
+      "bytes": 46954,
+      "sha256": "ff1221469398d57df4cdcd2a630de52444d55b459e0f93e0499b924228de026f"
+    },
+    {
+      "path": "/Users/summermalik/Documents/GitHub/TopologicalAnalysisofRNASplicinginEndometriosis/data/pilots/SRR36710387_real_validation_nov18/checked/validate.log",
+      "bytes": 279,
+      "sha256": "df63bc3ff0d74273a1f67117fc48e28730f4d546cb45cf3b870d6aac6e1c274f"
+    }
+  ]
+}

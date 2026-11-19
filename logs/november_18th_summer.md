@@ -55,3 +55,13 @@ passes 239 tests and the actual synthetic preprocessing check. A first-time
 reviewer exercise and blank feedback sheet are ready, but a real person still
 needs to try them; I did not mark that review complete or invent feedback.
 Nothing was committed, pushed or published by the assistant.
+
+I ran the current packaged version on our real control sample's saved million-
+pair pilot, this time checking all 243 candidate genes that showed up instead
+of just CDH11. All 1,388 junction counts matched a separate recount from the
+BAM, and all 243 Hodge results matched an independent NumPy SVD calculation.
+Six graphs had loops, and five had a nonzero cycle signal. I saved the actual
+outputs, two graph examples, a report and a script to repeat the check. This
+still uses the older pilot's node and alignment settings and only one control,
+so it is not our eight-sample disease comparison. I did not download more
+reads, start a new alignment or change the original data. Nothing was pushed.

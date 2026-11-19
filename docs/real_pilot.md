@@ -16,6 +16,14 @@ and [generated report](../data/pilots/SRR36710387_prefix1m_nov17/verified/report
 The technical checks pass; the review records the zero-cycle result and the
 substantial ambiguity exclusions that still need a team decision.
 
+**November 18 follow-up:** the current packaged executable was run on all
+243 observed candidate genes in this same real prefix. Every one of the 1,388
+candidate edge counts matched an independent BAM recount, and all 243 Hodge
+results matched a separate SVD calculation. Six graphs have a cycle and five
+have a nonzero cycle component. See the [report and exact reproduction steps](../data/pilots/SRR36710387_real_validation_nov18/README.md).
+This extends numerical/count validation, while retaining the historical
+node/alignment rules and the one-control scope.
+
 Run from the repository root. Outputs must use new folder names for a repeat.
 The commands below use the locally available cleaned files; they do not
 download reads. Cleaver and HISAT2 must be on `PATH`.

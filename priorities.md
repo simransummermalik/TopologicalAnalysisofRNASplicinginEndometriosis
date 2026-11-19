@@ -8,6 +8,11 @@ Anyone can pick up any available task; there are no assigned leads.
 
 ## Latest completed work — November 18
 
+- [x] Run the current packaged tool on all 243 candidate genes observed in
+  the real control prefix; independently recount all 1,388 edges from BAM
+  and check every gene against SVD. Six graphs have cycles and five have
+  nonzero cycle components. This uses the historical pilot protocol, not
+  the final cohort protocol. See the [real-data validation](data/pilots/SRR36710387_real_validation_nov18/README.md).
 - [x] Add saved JSON configuration, read-only preflight and configured reports,
   including completed sample/batch/reference/map identity and count checks.
 - [x] Select MIT with a separate citation request, provide CITATION.cff and

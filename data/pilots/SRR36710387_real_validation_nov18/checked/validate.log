@@ -1,0 +1,11 @@
+validation summary
+  junction_rows: 1388
+  samples: 1
+  genes: 243
+  sample_gene_groups: 243
+  total_read_support: 19983.0000000000
+  group_support_range: 1.0000000000 to 12061.0000000000
+  mathematical_checks_passed: 243
+  mathematical_checks_failed: 0
+validation_status: PASS
+
