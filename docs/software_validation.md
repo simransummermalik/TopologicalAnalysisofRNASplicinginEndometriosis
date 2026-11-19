@@ -1,6 +1,6 @@
 # Splice Girl software validation
 
-**Validation date:** November 18, 2026
+**Validation date:** November 19, 2026
 **Package version:** `0.1.0`
 
 This note records installation, compatibility, workflow, test, and performance
@@ -13,13 +13,14 @@ benchmark.
 - Current compiler: `rustc 1.97.1`
 - Declared and tested minimum: `rustc 1.85.0`
 - Rust edition: 2024
-- External Rust dependencies: none
+- External Rust dependencies: `serde` and `serde_json` for strict JSON
+  configuration and provenance parsing.
 
 Rust 1.85 is the minimum because it is the first stable release supporting the
 Rust 2024 edition used by this package. The October 28 suite of 56 tests was
-compiled and run with both Rust 1.85.0 and Rust 1.97.1. The current 100-test
-suite, including reports and the full configured statistics workflow, passes
-on both versions.
+compiled and run with both Rust 1.85.0 and Rust 1.97.1. The earlier 100-test
+suite, including reports and configured statistics, also passed on both
+versions. The November 19 exact-archive run with 123 tests is recorded below.
 The CI matrix retains Rust 1.85.0 as well as stable.
 
 ## Isolated installation check
@@ -63,13 +64,14 @@ after the check; the user's installed executable was not replaced.
 
 ## Automated verification
 
-The current Rust suite contains **100 passing tests**:
+The current repository snapshot contains **123 passing Rust tests** in the
+crate archive:
 
-- 59 library tests for parsing, manifests, graph math, comparisons, outputs,
-  validation summaries, SVG generation, report escaping/missing values, and
-  permutation testing, and BH correction (the four toy adjustment vectors
+- 71 library tests for parsing, manifests, graph math, comparisons, outputs,
+  reports, permutation testing and BH correction (four toy adjustment vectors
   were independently checked with R's `p.adjust`)
-- 9 command-level error tests
+- 9 command-line error tests
+- 11 installed shared-workflow tests
 - 9 command-level workflow tests, including report/table agreement, links,
   overwrite protection, missing groups, unsafe identifiers, and menu execution
 - 11 statistics CLI acceptance tests covering independently known p-values,
@@ -189,6 +191,21 @@ exists.
 - The independent beginner clean-checkout review in task R17 is still pending.
 - Successful software validation does not validate RNA-seq preprocessing,
   biological comparability, statistical inference, or gene interpretation.
+
+## 0.1.0 crate archive acceptance — November 19, 2026
+
+The exact allowlisted crate archive was checked from a clean extraction with
+`python3 scripts/check_crate.py --output-dir target/crate-review` using
+`rustc 1.97.1`. Packaging succeeded with 64 files (118.6 KiB compressed); all
+123 packaged Rust tests passed. The extracted install also passed all seven
+documented installed-guide commands with an empty `PATH` outside the checkout.
+The archive SHA-256 is
+`f3a5f0041de1606b0a3694d64242f72a1c74ecfe8e71afeaf0bc36d73ce1f48a`.
+
+`cargo publish --dry-run --locked` also passed package verification and
+reached Cargo's intentional “aborting upload due to dry run” message. No crate
+was uploaded. These checks cover the 0.1.0 software archive, not the full
+biological study or independent user acceptance.
 
 ## November 17 — connected software acceptance check
 

@@ -1,8 +1,9 @@
-# Splice Girl 0.1.0 — release review draft
+# Splice Girl 0.1.0 — experimental crate release candidate
 
-Prepared November 17, updated November 18, 2026. This is an unpublished review
-candidate. MIT with a separate citation request was selected November 18.
-No tag or release publication has been performed.
+Prepared November 17, updated November 19, 2026. This is the experimental
+0.1.0 crate candidate. MIT with a separate citation request was selected
+November 18. Package acceptance and Cargo's publish dry-run pass; no tag or
+release publication has been performed.
 
 ## Included software
 
@@ -11,28 +12,29 @@ No tag or release publication has been performed.
   candidate-set testing, BH correction and optional rankings.
 - Saved signed components, same-sample count/topology baselines, provenance,
   three-panel graph figures and plain offline reports.
-- Sequential Cleaver/HISAT2 adapter, checked exon-pair assignment, independent
-  prefix/recount validation and a diagnostic ambiguity/strand audit.
-- Explicit support/coverage sensitivity runner, synthetic acceptance examples,
-  real-prefix benchmark, storage preflight and scientific plotting helper.
 - Installed native `prepare-shared`, `sensitivity` and `example` commands:
   shared topology, eligibility audits, one-factor grids, optional statistics
   and embedded synthetic inputs work without Python or the checkout.
 - Saved JSON configuration, read-only `check`, configured `run`, frozen input
   identities and completed pipeline/reference/map provenance checks.
 - MIT license, CITATION.cff and `cite`, a focused crate README/payload, actual
-  archive installation acceptance and a pending independent-reader exercise.
+  64-file archive installation acceptance and a pending independent-reader
+  exercise.
+
+The Cargo package is the Rust junction-analysis CLI. The repository also has
+Python/Cleaver/HISAT2 preprocessing, validation and plotting workflows; these
+are not installed by `cargo install splice-girl` and are outside the crate
+archive.
 
 ## Requirements
 
-Rust 1.85 or newer for building the CLI. Serde/serde_json handle strict JSON
-configuration/provenance parsing; numerical Hodge code remains unchanged.
-Dependencies are locked and downloaded for the initial build. Python is
-needed for preprocessing/helper scripts (Python 3.11+ for the release packer).
-Cleaver, HISAT2 and compatible BAM
-tools are needed for processing reads. NumPy is optional for independent SVD
-verification; Matplotlib is optional for scientific figures. The core CLI,
-saved reports and shipped synthetic examples can run offline after building.
+Rust 1.85 or newer for building the CLI. Locked `serde` and `serde_json`
+dependencies handle configuration/provenance JSON. Python is needed only for
+the repository preprocessing/helper scripts (Python 3.11+ for the release
+packer); Cleaver, HISAT2 and compatible BAM tools are needed only for read
+processing. NumPy is optional for independent SVD verification and Matplotlib
+for scientific figures. The installed core CLI, reports and synthetic examples
+can run offline after building.
 
 ## Current limits
 
@@ -42,8 +44,8 @@ interpretation remain pending. The high exon-pair ambiguity rate and library
 methods discrepancy require review. Independent evidence and beginner reviews,
 the main Overleaf source and final scientific/release review are still outstanding.
 
-The local source snapshot passed the full offline check and isolated install/
-demo commands. See the [acceptance record](software_validation.md#isolated-source-package-acceptance--november-17).
+The exact crate archive passed offline package tests and isolated installed-
+guide acceptance; see the [November 19 archive record](software_validation.md#010-crate-archive-acceptance--november-19-2026).
 
 ## Prepare a local source archive
 

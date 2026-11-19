@@ -1,6 +1,10 @@
 # Changelog
 
-## Unreleased
+## 0.1.0 — 2026-11-19
+
+First experimental crates.io release of the Splice Girl Rust analysis CLI.
+This release does not claim full-cohort validation or provide the raw FASTQ
+preprocessing tools in the installed crate; those remain repository workflows.
 
 - Added strict saved JSON configuration, read-only `check` and configured `run`
   with frozen file hashes, completed upstream provenance and merged/per-sample
@@ -64,9 +68,9 @@
 - Added workflow checks for report/table agreement, missing groups, escaped
   input identifiers, figure links, and interactive report generation.
 
-## 0.1.0 — release candidate
+### Prototype baseline included in 0.1.0
 
-The first release candidate contains the reusable Splice Girl Rust prototype.
+The experimental crate contains the reusable Splice Girl Rust CLI.
 
 - Added strict five-column junction TSV parsing with line-specific errors.
 - Added deterministic directed splice graphs and Hodge gradient/cycle
@@ -80,7 +84,7 @@ The first release candidate contains the reusable Splice Girl Rust prototype.
 - Added beginner documentation, a source map, decisions log, release checklist,
   and automated Rust checks.
 
-This version is a software release candidate, not a claim that the GSE315857
+This version is an experimental software release, not a claim that the GSE315857
 biological analysis is complete. Real preprocessing, final junction tables,
 approved statistical inference, and biological interpretation remain separate
 study milestones.
