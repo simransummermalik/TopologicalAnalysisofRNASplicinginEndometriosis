@@ -61,6 +61,7 @@ def count_junctions(
         raise ValueError("min-anchor and min-unique must both be positive")
     mapping = load_gene_map(gene_map_path)
     stats = Counter()
+    ambiguous_target_multiplicity = Counter()
     counts = Counter()
     for line_number, raw in enumerate(lines, 1):
         if not raw.strip() or raw.startswith("@"):
@@ -112,6 +113,11 @@ def count_junctions(
                 stats["unannotated_junction_observations"] += 1
             elif len(targets) != 1:
                 stats["ambiguous_junction_observations"] += 1
+                ambiguous_target_multiplicity[len(targets)] += 1
+                if len({target[0] for target in targets}) > 1:
+                    stats["ambiguous_across_genes"] += 1
+                else:
+                    stats["ambiguous_within_one_gene"] += 1
             elif next(iter(targets))[1] == next(iter(targets))[2]:
                 # Both ends fall in one node; a self-loop has no graph meaning.
                 stats["same_node_junction_observations"] += 1
@@ -121,6 +127,49 @@ def count_junctions(
     filtered = {key: count for key, count in counts.items() if count >= min_unique}
     stats["below_minimum_unique_edges"] = len(counts) - len(filtered)
     stats["written_rows"] = len(filtered)
+    assignment_counts = {
+        "assigned": stats.get("assigned_junction_observations", 0),
+        "ambiguous": stats.get("ambiguous_junction_observations", 0),
+        "unannotated": stats.get("unannotated_junction_observations", 0),
+        "same_node": stats.get("same_node_junction_observations", 0),
+    }
+    assignment_total = sum(assignment_counts.values())
+    stats["junction_assignment_summary"] = {
+        "denominator": assignment_total,
+        "denominator_unit": (
+            "anchor-qualified junction observations after primary, unique-alignment "
+            "and known-strand filters"
+        ),
+        **assignment_counts,
+        "ambiguous_across_genes": stats.get("ambiguous_across_genes", 0),
+        "ambiguous_within_one_gene": stats.get("ambiguous_within_one_gene", 0),
+        "fraction_assigned": (
+            assignment_counts["assigned"] / assignment_total
+            if assignment_total
+            else None
+        ),
+        "fraction_ambiguous": (
+            assignment_counts["ambiguous"] / assignment_total
+            if assignment_total
+            else None
+        ),
+        "fraction_unannotated": (
+            assignment_counts["unannotated"] / assignment_total
+            if assignment_total
+            else None
+        ),
+        "fraction_same_node": (
+            assignment_counts["same_node"] / assignment_total
+            if assignment_total
+            else None
+        ),
+        "ambiguous_target_multiplicity": {
+            str(target_count): observations
+            for target_count, observations in sorted(
+                ambiguous_target_multiplicity.items()
+            )
+        },
+    }
     return filtered, {
         **dict(stats),
         "sample_id": sample_id,
@@ -214,6 +263,26 @@ def main():
     print(
         f"Wrote {stats['written_rows']} uniquely supported junctions to {args.output}"
     )
+    summary = stats["junction_assignment_summary"]
+    denominator = summary["denominator"]
+    if denominator:
+        print(
+            "Junction assignment QC (eligible observations): "
+            f"{summary['assigned']:,}/{denominator:,} uniquely assigned "
+            f"({summary['fraction_assigned']:.1%}); "
+            f"{summary['ambiguous']:,} ambiguous "
+            f"({summary['fraction_ambiguous']:.1%}); "
+            f"{summary['unannotated']:,} unannotated "
+            f"({summary['fraction_unannotated']:.1%}); "
+            f"{summary['same_node']:,} same-node."
+        )
+        if summary["ambiguous"]:
+            print(
+                "Ambiguous mappings: "
+                f"{summary['ambiguous_across_genes']:,} across genes, "
+                f"{summary['ambiguous_within_one_gene']:,} within one gene; "
+                "target multiplicities are recorded in the QC JSON."
+            )
     return 0
 
 

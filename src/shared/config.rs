@@ -684,7 +684,10 @@ impl Plan {
             if primary.join("statistics/report.html").is_file() {
                 html.push_str("<li><a href=\"analysis/primary/statistics/report.html\">Primary statistics report</a></li>");
             }
-            html.push_str("</ul><p>A cycle component does not prove circular RNA or observed use of a zero-count edge. MIT-licensed software; please cite the version or commit used.</p></body></html>\n");
+            html.push_str(&format!(
+                "</ul><p>A cycle component does not prove circular RNA or observed use of a zero-count edge. Software is licensed under {}. Please cite the version or commit used.</p></body></html>\n",
+                env!("CARGO_PKG_LICENSE")
+            ));
             run.write("report.html", &html)?;
             self.verify_frozen()?;
             run.summary = format!(

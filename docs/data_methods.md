@@ -232,8 +232,14 @@ collapsed.
 
 These exclusions favor a graph with clear biological node identities over
 silently assigning a junction to the wrong exon or gene. The conversion QC
-must report the number of input, unannotated, ambiguous, same-node, filtered,
-and written junctions.
+reports input-record filters separately from junction-assignment outcomes. Its
+assignment denominator is the number of anchor-qualified junction observations
+remaining after primary-alignment, unique-alignment, and known-strand filters.
+Assigned, ambiguous, unannotated, and same-node observations are reported as
+counts and fractions of that denominator; it is not a percentage of all reads.
+Ambiguous mappings are also split into cross-gene and within-one-gene cases,
+with the number of candidate targets recorded in the QC JSON. The converter
+does not change its counting rules based on these summaries.
 
 ### Node-rule review (2026-11-18)
 
