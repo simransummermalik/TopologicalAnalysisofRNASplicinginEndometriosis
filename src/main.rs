@@ -815,10 +815,7 @@ fn print_results(results: &[splice_girl::GroupResult]) -> Result<(), String> {
         .iter()
         .map(|result| result.sample_id.as_str())
         .collect();
-    let junctions: usize = results
-        .iter()
-        .map(|result| result.graph.edges.len())
-        .sum();
+    let junctions: usize = results.iter().map(|result| result.graph.edges.len()).sum();
     let passed = results
         .iter()
         .filter(|result| result.decomposition.checks.passed)
