@@ -15,6 +15,7 @@ pub mod parser;
 pub mod permutation;
 pub mod ranking;
 pub mod report;
+pub mod shared;
 pub mod statistics;
 pub mod visualize;
 

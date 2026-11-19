@@ -10,7 +10,7 @@ the most favorable result afterward.
 ## What the extra step does
 
 The existing Rust commands build a graph from every row supplied for one
-sample/gene, including rows with count zero. `scripts/shared_graph.py` prepares
+sample/gene, including rows with count zero. `splice-girl prepare-shared` prepares
 those rows so covered samples share the same nodes and edges for each gene:
 
 1. Read complete counts from every cohort sample and the requested gene list.
@@ -58,24 +58,32 @@ cannot establish an eight-sample shared graph by itself.
 
 ## Start with the small example
 
-The [eight-sample synthetic walkthrough](../examples/shared_graph/README.md)
-includes copyable commands and expected answers. It downloads nothing and
-uses no human reads. The scripts use Python's standard library and the
-existing Rust executable, built with `cargo build --release`.
+After installing the CLI, run this from any working folder:
+
+```sh
+splice-girl example --output demo-inputs
+```
+
+Open `demo-inputs/README.md`, then follow its preparation, statistics and
+sensitivity commands from that folder. These native commands use no Python,
+subprocesses or repository paths. The [installed walkthrough](../examples/shared_graph/INSTALLED.md)
+is also readable in the source tree. It downloads nothing and uses no human reads.
+The older [repository-script walkthrough](../examples/shared_graph/README.md)
+remains available, with automated Rust/Python parity checks across every scenario.
 
 For a real approved cohort, replace the example paths. The parameter structure
 is:
 
 ```sh
-python3 scripts/shared_graph.py \
+splice-girl prepare-shared \
   --junctions COMPLETE_COHORT_COUNTS.tsv --manifest COHORT_SAMPLES.tsv \
   --genes data/gene_sets/candidate_genes.tsv --complete-counts \
   --minimum-edge-count 5 --minimum-samples-per-edge 4 \
-  --minimum-gene-support 50 --output-dir target/cohort_shared_review
+  --minimum-gene-support 50 --output cohort_shared_review
 ```
 
 These numbers demonstrate the proposal; they are not silently installed as
-production defaults. Every threshold is a required argument. The script
+production defaults. Every threshold is a required argument. The command
 protects existing output folders and records checksums, settings and the
 completion/failure status in `run_manifest.json`.
 
@@ -102,12 +110,15 @@ minimum to make them eligible for the predeclared eight-sample test.
 
 ## Seven sensitivity scenarios
 
-`scripts/sensitivity.py --mode shared` runs the explicit primary setting,
+`splice-girl sensitivity` runs the explicit primary setting,
 then changes only one setting at a time. With the proposed grids
 `3,5,10` edge counts, `2,4,6` supporting samples and `20,50,100` coverage,
 there are seven unique scenarios. The primary is not repeated when it occurs
-inside the grids. The old per-sample Cartesian grid remains available in
-the default `--mode sample` for reproducing earlier exploratory work.
+inside the grids. Use `splice-girl sensitivity --help` for required flags.
+The older `scripts/sensitivity.py --mode shared` produces the same scientific
+tables. Its default `--mode sample` retains the earlier per-sample Cartesian
+grid for reproducing exploratory work; that historical mode is not part of
+the new native shared-graph command.
 
 Each shared scenario saves its prepared tables, Rust comparison bundle and
 logs. The top-level `sensitivity.tsv` retains every requested gene in every
@@ -149,3 +160,12 @@ threshold boundaries, disconnected cycle rank, measured-zero preservation,
 coverage exclusions, missing exports, all-excluded scenarios and actual Rust
 statistics handoff. See `scripts/test_shared_graph.py` and the dated
 [software validation record](software_validation.md).
+
+Native manifests additionally record the executable SHA-256 and tool version.
+Eight CLI acceptance tests copy only the binary to an external temporary
+folder, clear PATH and exercise the commands there. The developer check
+`python3 scripts/check_installed_cli.py --output-dir target/installed-review`
+also performs an isolated `cargo install --path .`, runs every shipped guide
+command outside the checkout and retains logs/artifacts. It does not replace
+the normally installed command, commit or publish anything. Python orchestrates
+that developer check; the installed application itself runs without it.

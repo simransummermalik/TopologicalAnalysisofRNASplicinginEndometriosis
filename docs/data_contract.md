@@ -205,6 +205,9 @@ biological study approval and ranking remain separate work.
 | `splice-girl report <junctions.tsv> <manifest.tsv> --output <folder>` | saves the comparison bundle, an offline HTML report, individual sample plots, and one SVG per mathematically valid sample/gene |
 | `splice-girl stats <junctions.tsv> <manifest.tsv> --genes <family.tsv> --family <label> --alternative <direction> --design independent --min-per-group <n> --output <folder> [--rank-by <absolute-effect|adjusted-p>]` | runs selected-family exact permutation tests and BH adjustment, preserving untested genes and producing an offline statistics report with baselines and optional ordering |
 | `splice-girl visualize <SAMPLE_ID> <GENE_ID> <junctions.tsv> <output.svg>` | renders one sample/gene's splice graph as a standalone SVG |
+| `splice-girl prepare-shared --help` | native common-topology preparation, explicit support/coverage thresholds, zero-count selected edges and eligibility exports; all input/output flags are documented in command help |
+| `splice-girl sensitivity --help` | native shared-graph one-factor scenarios with optional explicitly configured statistics and reports; no Python or subprocesses |
+| `splice-girl example --output <new-folder>` | writes embedded invented eight-sample inputs and an installed-command walkthrough without downloading anything |
 | `splice-girl --start` | interactive menu wrapping analysis, validation, comparisons, visualization, report generation (option 6), and statistics (option 7) |
 | `splice-girl --help`, `-h`, `help` | prints usage and the command list |
 | `splice-girl --version`, `-V` | prints the Cargo package version |

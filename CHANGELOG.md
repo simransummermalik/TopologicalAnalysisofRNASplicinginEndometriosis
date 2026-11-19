@@ -2,6 +2,10 @@
 
 ## Unreleased
 
+- Added installed native Rust `prepare-shared`, `sensitivity` and `example`
+  commands, replacing repository/Python dependencies for the shared-graph
+  workflow. Added binary-only acceptance tests, seven-scenario Python parity,
+  executable/input/output checksums and an isolated installed-guide check.
 - Added explicit shared-topology preparation with edge/support/coverage audits,
   zero-count selected edges, cycle eligibility and an annotated full-cohort
   statistics family. Added shared one-factor sensitivity with optional Rust

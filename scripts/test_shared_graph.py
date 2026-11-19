@@ -3,6 +3,8 @@
 import argparse
 import csv
 import json
+import hashlib
+import subprocess
 import tempfile
 import unittest
 from pathlib import Path
@@ -307,6 +309,100 @@ class SharedGraphTests(unittest.TestCase):
         record = json.loads((args.output_dir / "run_manifest.json").read_text())
         self.assertEqual(record["status"], "failed")
         self.assertNotEqual(record["scenarios"][0].get("status"), "complete")
+
+    def test_native_cli_matches_python_scenarios_and_records_valid_checksums(self):
+        args = self.sensitivity_options()
+        run(args)
+        native = self.root / "native"
+        process = subprocess.run(
+            [
+                str(args.binary),
+                "sensitivity",
+                "--junctions",
+                str(args.junctions),
+                "--manifest",
+                str(args.manifest),
+                "--genes",
+                str(args.genes),
+                "--complete-counts",
+                "--primary-edge-count",
+                "5",
+                "--primary-sample-count",
+                "4",
+                "--primary-gene-support",
+                "50",
+                "--minimum-junction-counts",
+                "3,5,10",
+                "--minimum-samples-per-edge",
+                "2,4,6",
+                "--minimum-gene-support",
+                "20,50,100",
+                "--run-stats",
+                "--family",
+                args.family,
+                "--alternative",
+                "two-sided",
+                "--design",
+                "independent",
+                "--min-per-group",
+                "4",
+                "--output",
+                str(native),
+            ],
+            capture_output=True,
+            text=True,
+            check=False,
+        )
+        self.assertEqual(process.returncode, 0, process.stderr)
+        self.assertEqual(
+            (native / "sensitivity.tsv").read_text(),
+            (args.output_dir / "sensitivity.tsv").read_text(),
+        )
+        record = json.loads((native / "run_manifest.json").read_text())
+        self.assertEqual(record["status"], "complete")
+        self.assertEqual(record["implementation"], "native Rust")
+        self.assertEqual(
+            record["tool"]["executable_sha256"],
+            hashlib.sha256(args.binary.read_bytes()).hexdigest(),
+        )
+        for scenario in record["scenarios"]:
+            name = scenario["scenario"]
+            for file in (
+                "junctions.tsv",
+                "samples.tsv",
+                "edges.tsv",
+                "sample_eligibility.tsv",
+                "gene_eligibility.tsv",
+                "eligible_genes.tsv",
+            ):
+                self.assertEqual(
+                    (native / name / file).read_text(),
+                    (args.output_dir / name / file).read_text(),
+                )
+            if scenario["statistics_status"] == "complete":
+                # Run IDs differ; every scientific value and supplied annotation must agree.
+                for file in ("statistics.tsv", "set_test.tsv", "set_scores.tsv"):
+                    _, expected = read_table(
+                        args.output_dir / name / "statistics" / file, ["run_id"]
+                    )
+                    _, actual = read_table(
+                        native / name / "statistics" / file, ["run_id"]
+                    )
+                    for rows in (expected, actual):
+                        for row in rows:
+                            row.pop("run_id")
+                    self.assertEqual(actual, expected)
+        for manifest in [native / "run_manifest.json"] + list(
+            native.glob("*/run_manifest.json")
+        ):
+            metadata = json.loads(manifest.read_text())
+            for output in metadata["outputs"]:
+                self.assertEqual(
+                    output["sha256"],
+                    hashlib.sha256(
+                        (manifest.parent / output["path"]).read_bytes()
+                    ).hexdigest(),
+                )
 
 
 if __name__ == "__main__":

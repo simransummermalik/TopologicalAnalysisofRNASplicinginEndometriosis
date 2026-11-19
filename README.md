@@ -281,6 +281,18 @@ splice-girl --version
 splice-girl --help
 ```
 
+After installation, the junction-analysis workflow works from your own folder:
+
+```sh
+splice-girl example --output splice-girl-example
+```
+
+Open `splice-girl-example/README.md` for complete copyable commands. The
+installed `prepare-shared` and `sensitivity` commands prepare common graphs,
+record exclusions and run the threshold grid directly in Rust. They need no
+Python or repository checkout. See the [installed walkthrough](examples/shared_graph/INSTALLED.md).
+Raw FASTQ preprocessing still uses the separate Cleaver/HISAT2 tools.
+
 Cargo normally places installed commands in `$HOME/.cargo/bin`. If the install
 succeeds but `splice-girl` is not found, add that directory to your shell's
 `PATH`, restart the terminal, and try `splice-girl --version` again. You can

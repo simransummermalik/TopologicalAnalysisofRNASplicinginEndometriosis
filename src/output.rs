@@ -841,7 +841,7 @@ fn tsv(value: &str) -> String {
         .collect()
 }
 
-fn json_string(value: &str) -> String {
+pub(crate) fn json_string(value: &str) -> String {
     let mut escaped = String::with_capacity(value.len() + 2);
     escaped.push('"');
     for character in value.chars() {
@@ -861,7 +861,7 @@ fn json_string(value: &str) -> String {
     escaped
 }
 
-fn sha256_file(path: &Path) -> Result<String, String> {
+pub(crate) fn sha256_file(path: &Path) -> Result<String, String> {
     let mut file = File::open(path)
         .map_err(|error| format!("could not open {} for checksum: {error}", path.display()))?;
     let mut hasher = Sha256::new();

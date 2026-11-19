@@ -68,6 +68,9 @@ usage:\n  \
   {program} report <junctions.tsv> <manifest.tsv> --output <folder>\n  \
   {program} stats <junctions.tsv> <manifest.tsv> --genes <family.tsv> --family <label> --alternative <two-sided|case-greater|case-less> --design independent --min-per-group <n> --output <folder> [--rank-by <absolute-effect|adjusted-p>]\n  \
   {program} visualize <SAMPLE_ID> <GENE_ID> <junctions.tsv> <output.svg>\n\n\
+  {program} prepare-shared --help\n  \
+  {program} sensitivity --help\n  \
+  {program} example --output <new-folder>\n\n\
 commands:\n  \
   analyze     calculate graph and Hodge measurements\n  \
   validate    audit inputs, sample matching, graphs, and math checks\n  \
@@ -76,6 +79,9 @@ commands:\n  \
   report      save comparison tables, an offline report, and graph figures\n  \
   stats       run explicit-family exact permutation tests and BH correction\n  \
   visualize   save one sample/gene graph as a browser-ready SVG\n  \
+  prepare-shared  prepare common graphs, zeros and eligibility tables\n  \
+  sensitivity    run shared-graph scenarios and optional statistics\n  \
+  example        write small synthetic inputs for the installed tool\n  \
   --start     open the interactive menu"
     )
 }
@@ -107,6 +113,17 @@ fn run(command: &[String]) -> Result<(), String> {
 
     if first_argument == "stats" {
         return run_stats_command(arguments.collect(), command);
+    }
+
+    if matches!(
+        first_argument.as_str(),
+        "prepare-shared" | "sensitivity" | "example"
+    ) {
+        return splice_girl::shared::run_command(
+            &first_argument,
+            &arguments.collect::<Vec<_>>(),
+            command,
+        );
     }
 
     if first_argument == "gene" {

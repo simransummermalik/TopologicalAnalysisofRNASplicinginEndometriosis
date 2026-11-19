@@ -4,6 +4,19 @@ All counts, genes and samples here are invented. S0–S3 are labeled case and
 S4–S7 control solely to exercise the four-versus-four software workflow.
 These are not GSE315857 results.
 
+## Using the installed Rust command
+
+```sh
+splice-girl example --output demo-inputs
+```
+
+Read `demo-inputs/README.md` and run its commands from that new folder. The
+installed `prepare-shared` and `sensitivity` commands include this entire
+analysis workflow without Python or a repository checkout. See the
+[installed guide](INSTALLED.md) for all commands and expected results.
+
+## Reproduce the earlier Python workflow
+
 From the repository root:
 
 ```sh

@@ -35,6 +35,18 @@ has been created.
 7. Update the version, changelog, and software-validation date together.
 8. Record the license decision before publishing a release artifact.
 
+The installed shared-graph workflow has its own reproducible developer check:
+
+```sh
+python3 scripts/check_installed_cli.py --output-dir target/installed-review
+```
+
+It installs into a private review folder, executes every command in the
+embedded guide from a temporary folder outside the checkout with PATH empty,
+and retains reports, checksums and logs. This verifies that installed
+preparation/sensitivity do not depend on Python or repository scripts at
+runtime. Publishing metadata and crate payload review remain separate.
+
 ## Current scope boundary
 
 The current release candidate supports validated synthetic analysis,

@@ -79,12 +79,16 @@ or replace rerunning alignments to test anchor/aligner sensitivity.
 
 ### Compare the same graph across all samples
 
-For the proposed shared-topology method, use the separate
-[eight-sample synthetic example](../examples/shared_graph/README.md). The
+For the proposed shared-topology method, run `splice-girl example --output
+demo-inputs` after installing the CLI, then follow `demo-inputs/README.md`.
+The [installed walkthrough](../examples/shared_graph/INSTALLED.md) contains
+the full commands. The
 [shared-graph guide](shared_graphs.md) explains input completeness, explicit
 thresholds, measured zeros, missing samples and cycle eligibility.
-`scripts/sensitivity.py --mode shared` adds the seven one-factor scenarios
-and optional Rust statistics using only fully covered cyclic genes. The
+native `splice-girl prepare-shared` and `splice-girl sensitivity` commands
+prepare the shared graphs and run the seven one-factor scenarios with optional
+statistics using only fully covered cyclic genes. Python and the checkout
+are not needed after installation. The
 study threshold proposal still awaits team sign-off; these commands exercise
 the software without processing the human cohort.
 

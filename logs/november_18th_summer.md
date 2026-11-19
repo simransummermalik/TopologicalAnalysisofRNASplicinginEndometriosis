@@ -29,3 +29,15 @@ mocked batch tests so low laptop disk space does not stop them before they
 reach the behavior they test; the real disk protection stays in place. The
 group still needs to approve the actual study cutoffs before applying them to
 the human cohort. No commit or push was performed by the assistant.
+
+I moved shared-graph preparation and sensitivity into the Rust command itself,
+so someone who installs Splice Girl can use them without finding our Python
+scripts or staying in the project folder. There are now `prepare-shared`,
+`sensitivity` and `example` commands. The example writes the small made-up
+inputs and a step-by-step guide, and sensitivity can run the existing Rust
+statistics and reports directly. I installed it into a separate review folder
+and ran the guide outside the repository with PATH empty; everything passed.
+I checked that all seven scenarios match the earlier Python results, including
+exclusions and statistics. The complete check now passes 226 tests, and the
+Rust tests and Clippy also pass on Rust 1.85. The usual installed command was
+not replaced, and I did not commit, push or publish anything.

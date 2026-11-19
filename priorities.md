@@ -8,6 +8,10 @@ Anyone can pick up any available task; there are no assigned leads.
 
 ## Latest completed work — November 18
 
+- [x] Make shared preparation and sensitivity available in the installed Rust
+  CLI, including embedded example inputs, explicit statistics, provenance and
+  binary-only checks with PATH empty. No Python or checkout is required for
+  this junction-table analysis workflow; raw-read preprocessing stays separate.
 - [x] Implement the [proposed shared-graph workflow](docs/shared_graphs.md):
   explicit edge/coverage thresholds, measured zeros only for covered samples,
   cycle eligibility, full-cohort gene-family handoff, and seven one-factor

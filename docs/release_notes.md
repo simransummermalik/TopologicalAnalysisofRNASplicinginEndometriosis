@@ -14,6 +14,9 @@ release publication or license selection has been performed.
   prefix/recount validation and a diagnostic ambiguity/strand audit.
 - Explicit support/coverage sensitivity runner, synthetic acceptance examples,
   real-prefix benchmark, storage preflight and scientific plotting helper.
+- Installed native `prepare-shared`, `sensitivity` and `example` commands:
+  shared topology, eligibility audits, one-factor grids, optional statistics
+  and embedded synthetic inputs work without Python or the checkout.
 
 ## Requirements
 

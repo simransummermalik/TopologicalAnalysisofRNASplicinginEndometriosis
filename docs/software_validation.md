@@ -372,3 +372,41 @@ on host free disk space below the production 2 GiB reserve. Those mocked-job
 unit tests now mock available disk; production guard logic is unchanged and
 its dedicated refusal/reserve tests still pass. No external-tool or human
 cohort run was required by this change.
+
+## Installed native shared-graph workflow — November 18
+
+`prepare-shared`, `sensitivity` and `example` are now part of the installed
+Rust executable. The first two call Rust library functions directly; they do
+not shell out to Python, Cargo or another executable. The example's small
+inputs and installed-command guide are embedded at compile time.
+
+The full project check passes **109 Rust and 117 Python tests (226 total)**,
+formatting, strict Clippy, the release build and synthetic benchmark. All
+109 Rust tests and strict Clippy also pass on Rust 1.85.0. Eight new CLI tests
+copy only the binary into external temporary folders and clear PATH before
+testing native preparation, seven sensitivity scenarios, optional statistics,
+descriptive mode, zero/missing handling, invariant edge selection, malformed
+inputs, repeated subjects and output protection. A separate writer regression
+checks retained files and a failed manifest after an attempted overwrite.
+
+The added Python parity test compares every scientific row against the
+earlier Python implementation: all seven scenario summaries, prepared
+junction/edge/sample/gene/family tables, gene statistics, gene-set tests and
+set scores agree. Run IDs are excluded from comparisons because they are
+expected to differ. Native executable and output checksums are independently
+verified with Python's hashlib.
+
+The isolated installation check was executed with
+`python3 scripts/check_installed_cli.py --output-dir target/native-cli-review-outside`.
+It installed with `cargo install --path . --locked --offline` into its own
+review root, then executed the embedded guide's five commands from an external
+temporary folder with PATH empty. Preparation, direct statistics, sensitivity,
+both help commands and reports passed. One gene qualifies in the primary
+synthetic setup; three of seven scenarios correctly skip statistics. Logs,
+`acceptance.json`, the isolated binary and copied synthetic artifacts remain
+in that ignored review folder. The regular installed binary was not replaced.
+
+This establishes an installable junction-table analysis workflow. Raw-read
+preprocessing still needs the separately documented tools. It does not finish
+crate payload/licensing review, independent human usability review or the
+eight-sample biological analysis, and nothing was published.
