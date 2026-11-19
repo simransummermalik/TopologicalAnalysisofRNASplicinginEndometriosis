@@ -1,0 +1,35 @@
+{
+  "schema_version": "1.0",
+  "run_id": "splice-girl-1795106851-481493000",
+  "created_unix_seconds": 1795106851,
+  "tool": {"name": "splice-girl", "version": "0.1.0"},
+  "mode": "compare",
+  "command": ["splice-girl", "run", "--config", "analysis.json"],
+  "inputs": [
+    {"role": "junctions", "path": "/Users/summermalik/Documents/GitHub/TopologicalAnalysisofRNASplicinginEndometriosis/sg-live-demo/configured-results/analysis/primary/junctions.tsv", "sha256": "e100af3603a366a79155fb4616dc5d3656e53dcab6bac199243dd920c6884b32"},
+    {"role": "sample_manifest", "path": "/Users/summermalik/Documents/GitHub/TopologicalAnalysisofRNASplicinginEndometriosis/sg-live-demo/configured-results/analysis/primary/samples.tsv", "sha256": "fdd607597b8c1358090f1cca14175d392f055ad8288bdc03e32c4e3f1dbf5248"}
+  ],
+  "outputs": ["sample_metrics.tsv", "junction_components.tsv", "comparisons.tsv", "gene_summaries.tsv", "run_manifest.json"],
+  "settings": {
+    "normalization": "count / total_gene_support",
+    "solver": "dense normal equations with one pinned node per connected component and partial pivoting",
+    "precision": "f64",
+    "acceptance_tolerance": 1.0e-9,
+    "minimum_total_support": "greater than zero",
+    "random_seed": null
+  },
+  "summary": {
+    "sample_gene_groups": 15,
+    "junction_rows": 45,
+    "included_samples": 15,
+    "excluded_samples": 1,
+    "failure_count": 0
+  },
+  "exclusions": [
+    {"gene_id": "LOW_COVERAGE", "sample_id": "S7", "reason": "no junction data for gene 'LOW_COVERAGE'"}
+  ],
+  "failures": [
+
+  ],
+  "statistics": null
+}

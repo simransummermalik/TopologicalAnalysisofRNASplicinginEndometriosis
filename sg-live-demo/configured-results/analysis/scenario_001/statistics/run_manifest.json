@@ -1,0 +1,36 @@
+{
+  "schema_version": "1.0",
+  "run_id": "splice-girl-1795106851-495826000",
+  "created_unix_seconds": 1795106851,
+  "tool": {"name": "splice-girl", "version": "0.1.0"},
+  "mode": "stats",
+  "command": ["splice-girl", "run", "--config", "analysis.json"],
+  "inputs": [
+    {"role": "junctions", "path": "/Users/summermalik/Documents/GitHub/TopologicalAnalysisofRNASplicinginEndometriosis/sg-live-demo/configured-results/analysis/scenario_001/junctions.tsv", "sha256": "e100af3603a366a79155fb4616dc5d3656e53dcab6bac199243dd920c6884b32"},
+    {"role": "sample_manifest", "path": "/Users/summermalik/Documents/GitHub/TopologicalAnalysisofRNASplicinginEndometriosis/sg-live-demo/configured-results/analysis/scenario_001/samples.tsv", "sha256": "fdd607597b8c1358090f1cca14175d392f055ad8288bdc03e32c4e3f1dbf5248"},
+    {"role": "gene_family", "path": "/Users/summermalik/Documents/GitHub/TopologicalAnalysisofRNASplicinginEndometriosis/sg-live-demo/configured-results/analysis/scenario_001/eligible_genes.tsv", "sha256": "dd2e2ca8bd782a23749dcf654c1b9d09724a3a4e698e56bd1a3440e94e431bd4"}
+  ],
+  "outputs": ["sample_metrics.tsv", "junction_components.tsv", "comparisons.tsv", "gene_summaries.tsv", "statistics.tsv", "set_test.tsv", "set_scores.tsv", "baseline_metrics.tsv", "baseline_comparisons.tsv", "gene_family.tsv", "report.html", "graphs/graph-000001.svg", "graphs/graph-000002.svg", "graphs/graph-000003.svg", "graphs/graph-000004.svg", "graphs/graph-000005.svg", "graphs/graph-000006.svg", "graphs/graph-000007.svg", "graphs/graph-000008.svg", "run_manifest.json"],
+  "settings": {
+    "normalization": "count / total_gene_support",
+    "solver": "dense normal equations with one pinned node per connected component and partial pivoting",
+    "precision": "f64",
+    "acceptance_tolerance": 1.0e-9,
+    "minimum_total_support": "greater than zero",
+    "random_seed": null
+  },
+  "summary": {
+    "sample_gene_groups": 8,
+    "junction_rows": 24,
+    "included_samples": 8,
+    "excluded_samples": 0,
+    "failure_count": 0
+  },
+  "exclusions": [
+
+  ],
+  "failures": [
+
+  ],
+  "statistics": {"design": "independent (caller-declared)", "alternative": "two-sided", "family_id": "synthetic-shared", "requested_genes": 1, "tested_genes": 1, "untested_genes": 0, "correction": "Benjamini-Hochberg", "correction_denominator": "successfully tested genes only", "minimum_samples_per_group": 4, "permutation_method": "exhaustive label enumeration including observed assignment", "extremity_tolerance": 1.0e-9, "maximum_permutations": 1000000, "random_seed": null, "ranking_rule": null, "baseline_sample_policy": "same included samples as Hodge comparison; no missing-value imputation", "set_test": {"statistic": "mean_absolute_effect", "definition": "exact relabeling of all genes at once; two-sided uses the mean over genes of |case mean - control mean|, one-sided the mean signed effect; genes must be tested and have every common sample", "genes_used": 1, "tested_genes_left_out": 0, "p_value": 0.0285714286}}
+}

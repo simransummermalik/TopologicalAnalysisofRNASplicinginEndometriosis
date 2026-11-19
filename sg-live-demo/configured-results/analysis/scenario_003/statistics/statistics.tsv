@@ -1,0 +1,2 @@
+run_id	family_id	gene_id	status	case_n	control_n	mean_difference_case_minus_control	alternative	p_value	adjusted_p_value	permutations_considered	extreme_count	tested_family_size	excluded_samples	untested_reason	gene_symbol	is_risk	is_environment	is_overlap	category
+splice-girl-1795106851-520957000	synthetic-shared	TRIANGLE	tested	4	4	-0.1141552511	two-sided	0.0285714286	0.0285714286	70	2	1	0		Synthetic_triangle				

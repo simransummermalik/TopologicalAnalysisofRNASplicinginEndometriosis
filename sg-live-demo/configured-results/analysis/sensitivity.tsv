@@ -1,0 +1,29 @@
+scenario	minimum_junction_count	minimum_samples_per_edge	minimum_gene_support	gene_id	status	shared_edges	cycle_rank	covered_samples	required_samples	case_n	control_n	mean_difference_case_minus_control
+primary	5	4	50	ABSENT	no_shared_edges	0	0	0	8	0	0	
+primary	5	4	50	LOW_COVERAGE	incomplete_coverage	3	1	7	8	4	3	
+primary	5	4	50	TREE	no_cycle_in_shared_graph	2	0	8	8	0	0	
+primary	5	4	50	TRIANGLE	eligible	3	1	8	8	4	4	-0.1141552511
+scenario_001	3	4	50	ABSENT	no_shared_edges	0	0	0	8	0	0	
+scenario_001	3	4	50	LOW_COVERAGE	incomplete_coverage	3	1	7	8	4	3	
+scenario_001	3	4	50	TREE	no_cycle_in_shared_graph	2	0	8	8	0	0	
+scenario_001	3	4	50	TRIANGLE	eligible	3	1	8	8	4	4	-0.1141552511
+scenario_002	10	4	50	ABSENT	no_shared_edges	0	0	0	8	0	0	
+scenario_002	10	4	50	LOW_COVERAGE	incomplete_coverage	3	1	7	8	4	3	
+scenario_002	10	4	50	TREE	no_cycle_in_shared_graph	2	0	8	8	0	0	
+scenario_002	10	4	50	TRIANGLE	no_cycle_in_shared_graph	2	0	8	8	0	0	
+scenario_003	5	2	50	ABSENT	no_shared_edges	0	0	0	8	0	0	
+scenario_003	5	2	50	LOW_COVERAGE	incomplete_coverage	3	1	7	8	4	3	
+scenario_003	5	2	50	TREE	no_cycle_in_shared_graph	2	0	8	8	0	0	
+scenario_003	5	2	50	TRIANGLE	eligible	3	1	8	8	4	4	-0.1141552511
+scenario_004	5	6	50	ABSENT	no_shared_edges	0	0	0	8	0	0	
+scenario_004	5	6	50	LOW_COVERAGE	incomplete_coverage	3	1	7	8	4	3	
+scenario_004	5	6	50	TREE	no_cycle_in_shared_graph	2	0	8	8	0	0	
+scenario_004	5	6	50	TRIANGLE	no_cycle_in_shared_graph	2	0	8	8	0	0	
+scenario_005	5	4	20	ABSENT	no_shared_edges	0	0	0	8	0	0	
+scenario_005	5	4	20	LOW_COVERAGE	incomplete_coverage	3	1	7	8	4	3	
+scenario_005	5	4	20	TREE	no_cycle_in_shared_graph	2	0	8	8	0	0	
+scenario_005	5	4	20	TRIANGLE	eligible	3	1	8	8	4	4	-0.1141552511
+scenario_006	5	4	100	ABSENT	no_shared_edges	0	0	0	8	0	0	
+scenario_006	5	4	100	LOW_COVERAGE	incomplete_coverage	3	1	0	8	0	0	
+scenario_006	5	4	100	TREE	no_cycle_in_shared_graph	2	0	8	8	0	0	
+scenario_006	5	4	100	TRIANGLE	incomplete_coverage	3	1	0	8	0	0	

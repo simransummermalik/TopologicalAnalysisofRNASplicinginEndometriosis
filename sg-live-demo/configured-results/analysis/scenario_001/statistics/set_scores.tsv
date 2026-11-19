@@ -1,0 +1,9 @@
+run_id	family_id	sample_id	condition	mean_cycle_fraction	genes_used
+splice-girl-1795106851-495826000	synthetic-shared	S0	case	0.5525114155	1
+splice-girl-1795106851-495826000	synthetic-shared	S1	case	0.5525114155	1
+splice-girl-1795106851-495826000	synthetic-shared	S2	case	0.5525114155	1
+splice-girl-1795106851-495826000	synthetic-shared	S3	case	0.5525114155	1
+splice-girl-1795106851-495826000	synthetic-shared	S4	control	0.6666666667	1
+splice-girl-1795106851-495826000	synthetic-shared	S5	control	0.6666666667	1
+splice-girl-1795106851-495826000	synthetic-shared	S6	control	0.6666666667	1
+splice-girl-1795106851-495826000	synthetic-shared	S7	control	0.6666666667	1

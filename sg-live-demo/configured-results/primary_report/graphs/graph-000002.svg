@@ -1,0 +1,118 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1224" height="826" viewBox="0 0 1224 826" role="img" aria-labelledby="title description">
+<title id="title">Splice graph decomposition for sample S0 and gene TRIANGLE</title>
+<desc id="description">Three aligned directed splice graphs show the observed normalized signal, gradient component, and cycle component. Every panel uses the same nodes, edges, direction, edge IDs, and line-width scale.</desc>
+<defs>
+  <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+    <path d="M 0 0 L 10 5 L 0 10 z" fill="#111111"/>
+  </marker>
+  <style>
+    .serif { font-family: Georgia, "Times New Roman", serif; }
+    .mono { font-family: "Courier New", Courier, monospace; }
+  </style>
+</defs>
+<rect width="100%" height="100%" fill="#ffffff"/>
+
+<text class="serif" x="48" y="42" font-size="24" font-weight="700" fill="#111111">Splice graph decomposition: TRIANGLE</text>
+<text class="serif" x="48" y="70" font-size="15" fill="#111111">Sample: S0</text>
+<line x1="48" y1="88" x2="1176.0" y2="88" stroke="#111111" stroke-width="1"/>
+<text class="serif" x="48" y="113" font-size="14" fill="#111111">Nodes: 3   ·   Junctions: 3   ·   Cycle fraction: 0.5525   ·   Mathematical checks: PASS</text>
+<text class="serif" x="48" y="143" font-size="13" fill="#111111">Same graph layout and edge IDs in every panel. Line width uses one shared absolute-value scale.</text>
+<line x1="48" y1="163" x2="84" y2="163" stroke="#111111" stroke-width="2.2"/>
+<text class="serif" x="92" y="167" font-size="12" fill="#111111">solid = positive</text>
+<line x1="218" y1="163" x2="254" y2="163" stroke="#111111" stroke-width="2.2" stroke-dasharray="7 5"/>
+<text class="serif" x="262" y="167" font-size="12" fill="#111111">dashed = negative</text>
+<text class="serif" x="410" y="167" font-size="12" fill="#111111">Arrows always retain the stored biological junction direction.</text>
+<g aria-label="1. Observed signal">
+<rect x="48.0" y="180.0" width="360.0" height="365.0" fill="#ffffff" stroke="#777777" stroke-width="0.8"/>
+<text class="serif" x="64.0" y="207" font-size="17" font-weight="700" fill="#111111">1. Observed signal</text>
+<text class="serif" x="64.0" y="230" font-size="12" fill="#333333">Normalized junction usage (F)</text>
+<path d="M 140.0 405.0 Q 163.0 327.0 186.0 405.0" fill="none" stroke="#111111" stroke-width="4.00" stroke-dasharray="none" stroke-linecap="round" marker-end="url(#arrow)"/>
+<rect x="126.0" y="332.0" width="74" height="19" fill="#ffffff" stroke="#999999" stroke-width="0.6"/>
+<text class="mono" x="163.0" y="345.0" text-anchor="middle" font-size="10" fill="#111111">J1 +0.462</text>
+<path d="M 140.0 405.0 Q 228.0 309.0 316.0 405.0" fill="none" stroke="#111111" stroke-width="2.22" stroke-dasharray="none" stroke-linecap="round" marker-end="url(#arrow)"/>
+<rect x="191.0" y="314.0" width="74" height="19" fill="#ffffff" stroke="#999999" stroke-width="0.6"/>
+<text class="mono" x="228.0" y="327.0" text-anchor="middle" font-size="10" fill="#111111">J2 +0.077</text>
+<path d="M 270.0 405.0 Q 293.0 327.0 316.0 405.0" fill="none" stroke="#111111" stroke-width="4.00" stroke-dasharray="none" stroke-linecap="round" marker-end="url(#arrow)"/>
+<rect x="256.0" y="332.0" width="74" height="19" fill="#ffffff" stroke="#999999" stroke-width="0.6"/>
+<text class="mono" x="293.0" y="345.0" text-anchor="middle" font-size="10" fill="#111111">J3 +0.462</text>
+<rect x="56.0" y="384.0" width="84.0" height="42.0" fill="#ffffff" stroke="#111111" stroke-width="1.2"/>
+<text class="serif" x="98.0" y="410.0" text-anchor="middle" font-size="13" fill="#111111">A<title>A</title></text>
+<rect x="186.0" y="384.0" width="84.0" height="42.0" fill="#ffffff" stroke="#111111" stroke-width="1.2"/>
+<text class="serif" x="228.0" y="410.0" text-anchor="middle" font-size="13" fill="#111111">B<title>B</title></text>
+<rect x="316.0" y="384.0" width="84.0" height="42.0" fill="#ffffff" stroke="#111111" stroke-width="1.2"/>
+<text class="serif" x="358.0" y="410.0" text-anchor="middle" font-size="13" fill="#111111">C<title>C</title></text>
+</g>
+<g aria-label="2. Gradient component">
+<rect x="432.0" y="180.0" width="360.0" height="365.0" fill="#ffffff" stroke="#777777" stroke-width="0.8"/>
+<text class="serif" x="448.0" y="207" font-size="17" font-weight="700" fill="#111111">2. Gradient component</text>
+<text class="serif" x="448.0" y="230" font-size="12" fill="#333333">Part explained by node values (F_grad)</text>
+<path d="M 524.0 405.0 Q 547.0 327.0 570.0 405.0" fill="none" stroke="#111111" stroke-width="2.87" stroke-dasharray="none" stroke-linecap="round" marker-end="url(#arrow)"/>
+<rect x="510.0" y="332.0" width="74" height="19" fill="#ffffff" stroke="#999999" stroke-width="0.6"/>
+<text class="mono" x="547.0" y="345.0" text-anchor="middle" font-size="10" fill="#111111">J1 +0.179</text>
+<path d="M 524.0 405.0 Q 612.0 309.0 700.0 405.0" fill="none" stroke="#111111" stroke-width="3.65" stroke-dasharray="none" stroke-linecap="round" marker-end="url(#arrow)"/>
+<rect x="575.0" y="314.0" width="74" height="19" fill="#ffffff" stroke="#999999" stroke-width="0.6"/>
+<text class="mono" x="612.0" y="327.0" text-anchor="middle" font-size="10" fill="#111111">J2 +0.359</text>
+<path d="M 654.0 405.0 Q 677.0 327.0 700.0 405.0" fill="none" stroke="#111111" stroke-width="2.87" stroke-dasharray="none" stroke-linecap="round" marker-end="url(#arrow)"/>
+<rect x="640.0" y="332.0" width="74" height="19" fill="#ffffff" stroke="#999999" stroke-width="0.6"/>
+<text class="mono" x="677.0" y="345.0" text-anchor="middle" font-size="10" fill="#111111">J3 +0.179</text>
+<rect x="440.0" y="384.0" width="84.0" height="42.0" fill="#ffffff" stroke="#111111" stroke-width="1.2"/>
+<text class="serif" x="482.0" y="410.0" text-anchor="middle" font-size="13" fill="#111111">A<title>A</title></text>
+<rect x="570.0" y="384.0" width="84.0" height="42.0" fill="#ffffff" stroke="#111111" stroke-width="1.2"/>
+<text class="serif" x="612.0" y="410.0" text-anchor="middle" font-size="13" fill="#111111">B<title>B</title></text>
+<rect x="700.0" y="384.0" width="84.0" height="42.0" fill="#ffffff" stroke="#111111" stroke-width="1.2"/>
+<text class="serif" x="742.0" y="410.0" text-anchor="middle" font-size="13" fill="#111111">C<title>C</title></text>
+</g>
+<g aria-label="3. Cycle component">
+<rect x="816.0" y="180.0" width="360.0" height="365.0" fill="#ffffff" stroke="#777777" stroke-width="0.8"/>
+<text class="serif" x="832.0" y="207" font-size="17" font-weight="700" fill="#111111">3. Cycle component</text>
+<text class="serif" x="832.0" y="230" font-size="12" fill="#333333">Remaining alternative-path structure (F_cycle)</text>
+<path d="M 908.0 405.0 Q 931.0 327.0 954.0 405.0" fill="none" stroke="#111111" stroke-width="3.35" stroke-dasharray="none" stroke-linecap="round" marker-end="url(#arrow)"/>
+<rect x="894.0" y="332.0" width="74" height="19" fill="#ffffff" stroke="#999999" stroke-width="0.6"/>
+<text class="mono" x="931.0" y="345.0" text-anchor="middle" font-size="10" fill="#111111">J1 +0.282</text>
+<path d="M 908.0 405.0 Q 996.0 309.0 1084.0 405.0" fill="none" stroke="#111111" stroke-width="3.35" stroke-dasharray="7 5" stroke-linecap="round" marker-end="url(#arrow)"/>
+<rect x="959.0" y="314.0" width="74" height="19" fill="#ffffff" stroke="#999999" stroke-width="0.6"/>
+<text class="mono" x="996.0" y="327.0" text-anchor="middle" font-size="10" fill="#111111">J2 -0.282</text>
+<path d="M 1038.0 405.0 Q 1061.0 327.0 1084.0 405.0" fill="none" stroke="#111111" stroke-width="3.35" stroke-dasharray="none" stroke-linecap="round" marker-end="url(#arrow)"/>
+<rect x="1024.0" y="332.0" width="74" height="19" fill="#ffffff" stroke="#999999" stroke-width="0.6"/>
+<text class="mono" x="1061.0" y="345.0" text-anchor="middle" font-size="10" fill="#111111">J3 +0.282</text>
+<rect x="824.0" y="384.0" width="84.0" height="42.0" fill="#ffffff" stroke="#111111" stroke-width="1.2"/>
+<text class="serif" x="866.0" y="410.0" text-anchor="middle" font-size="13" fill="#111111">A<title>A</title></text>
+<rect x="954.0" y="384.0" width="84.0" height="42.0" fill="#ffffff" stroke="#111111" stroke-width="1.2"/>
+<text class="serif" x="996.0" y="410.0" text-anchor="middle" font-size="13" fill="#111111">B<title>B</title></text>
+<rect x="1084.0" y="384.0" width="84.0" height="42.0" fill="#ffffff" stroke="#111111" stroke-width="1.2"/>
+<text class="serif" x="1126.0" y="410.0" text-anchor="middle" font-size="13" fill="#111111">C<title>C</title></text>
+</g>
+<text class="serif" x="48" y="585" font-size="17" font-weight="700" fill="#111111">Junction values (same edge order in every panel)</text>
+<line x1="48" y1="601" x2="1176.0" y2="601" stroke="#111111" stroke-width="1"/>
+<text class="serif" x="60" y="628" font-size="12" font-weight="700" fill="#111111">ID</text>
+<text class="serif" x="112" y="628" font-size="12" font-weight="700" fill="#111111">Junction</text>
+<text class="serif" x="477.4" y="628" font-size="12" font-weight="700" fill="#111111">Read support</text>
+<text class="serif" x="673.2" y="628" font-size="12" font-weight="700" fill="#111111">Observed F</text>
+<text class="serif" x="856.8" y="628" font-size="12" font-weight="700" fill="#111111">Gradient F_grad</text>
+<text class="serif" x="1040.4" y="628" font-size="12" font-weight="700" fill="#111111">Cycle F_cycle</text>
+<line x1="48" y1="636" x2="1176.0" y2="636" stroke="#777777" stroke-width="0.7"/>
+<text class="serif" x="60" y="650.0" font-size="12" fill="#111111">J1</text>
+<text class="serif" x="112" y="650.0" font-size="12" fill="#111111">A → B</text>
+<text class="mono" x="477.4" y="650.0" font-size="11" fill="#111111">30</text>
+<text class="mono" x="673.2" y="650.0" font-size="11" fill="#111111">+0.4615</text>
+<text class="mono" x="856.8" y="650.0" font-size="11" fill="#111111">+0.1795</text>
+<text class="mono" x="1040.4" y="650.0" font-size="11" fill="#111111">+0.2821</text>
+<line x1="48" y1="658.0" x2="1176.0" y2="658.0" stroke="#cccccc" stroke-width="0.5"/>
+<text class="serif" x="60" y="676.0" font-size="12" fill="#111111">J2</text>
+<text class="serif" x="112" y="676.0" font-size="12" fill="#111111">A → C</text>
+<text class="mono" x="477.4" y="676.0" font-size="11" fill="#111111">5</text>
+<text class="mono" x="673.2" y="676.0" font-size="11" fill="#111111">+0.0769</text>
+<text class="mono" x="856.8" y="676.0" font-size="11" fill="#111111">+0.3590</text>
+<text class="mono" x="1040.4" y="676.0" font-size="11" fill="#111111">-0.2821</text>
+<line x1="48" y1="684.0" x2="1176.0" y2="684.0" stroke="#cccccc" stroke-width="0.5"/>
+<text class="serif" x="60" y="702.0" font-size="12" fill="#111111">J3</text>
+<text class="serif" x="112" y="702.0" font-size="12" fill="#111111">B → C</text>
+<text class="mono" x="477.4" y="702.0" font-size="11" fill="#111111">30</text>
+<text class="mono" x="673.2" y="702.0" font-size="11" fill="#111111">+0.4615</text>
+<text class="mono" x="856.8" y="702.0" font-size="11" fill="#111111">+0.1795</text>
+<text class="mono" x="1040.4" y="702.0" font-size="11" fill="#111111">+0.2821</text>
+<line x1="48" y1="710.0" x2="1176.0" y2="710.0" stroke="#cccccc" stroke-width="0.5"/>
+<line x1="48" y1="750.0" x2="1176.0" y2="750.0" stroke="#111111" stroke-width="1"/>
+<text class="serif" x="48" y="778.0" font-size="12" fill="#222222">Observed signal = gradient component + cycle component. Signs are relative to the stored edge direction.</text>
+<text class="serif" x="48" y="800.0" font-size="12" font-style="italic" fill="#444444">Cycle-space structure alone does not establish circular RNA or disease causation.</text>
+</svg>

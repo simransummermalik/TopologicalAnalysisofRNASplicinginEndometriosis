@@ -1,0 +1,5 @@
+run_id	gene_id	metric	case_n	control_n	case_mean	control_mean	mean_difference_case_minus_control	observed_topology
+splice-girl-1795106851-482350000	TRIANGLE	total_junction_support	4	4	65.0000000000	60.0000000000	5.0000000000	same
+splice-girl-1795106851-482350000	TRIANGLE	node_count	4	4	3.0000000000	3.0000000000	0.0000000000	same
+splice-girl-1795106851-482350000	TRIANGLE	junction_count	4	4	3.0000000000	3.0000000000	0.0000000000	same
+splice-girl-1795106851-482350000	TRIANGLE	cycle_rank	4	4	1.0000000000	1.0000000000	0.0000000000	same

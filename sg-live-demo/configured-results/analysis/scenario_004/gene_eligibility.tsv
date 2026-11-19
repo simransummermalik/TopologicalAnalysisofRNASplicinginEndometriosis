@@ -1,0 +1,5 @@
+gene_id	shared_edges	cycle_rank	covered_samples	required_samples	status
+ABSENT	0	0	0	8	no_shared_edges
+LOW_COVERAGE	3	1	7	8	incomplete_coverage
+TREE	2	0	8	8	no_cycle_in_shared_graph
+TRIANGLE	2	0	8	8	no_cycle_in_shared_graph

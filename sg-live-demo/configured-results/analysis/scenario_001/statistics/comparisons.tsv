@@ -1,0 +1,9 @@
+run_id	gene_id	sample_id	condition	status	cycle_fraction	exclusion_reason
+splice-girl-1795106851-495826000	TRIANGLE	S0	case	included	0.5525114155	
+splice-girl-1795106851-495826000	TRIANGLE	S1	case	included	0.5525114155	
+splice-girl-1795106851-495826000	TRIANGLE	S2	case	included	0.5525114155	
+splice-girl-1795106851-495826000	TRIANGLE	S3	case	included	0.5525114155	
+splice-girl-1795106851-495826000	TRIANGLE	S4	control	included	0.6666666667	
+splice-girl-1795106851-495826000	TRIANGLE	S5	control	included	0.6666666667	
+splice-girl-1795106851-495826000	TRIANGLE	S6	control	included	0.6666666667	
+splice-girl-1795106851-495826000	TRIANGLE	S7	control	included	0.6666666667	

@@ -1,0 +1,17 @@
+run_id	gene_id	sample_id	condition	status	cycle_fraction	exclusion_reason
+splice-girl-1795106851-481493000	LOW_COVERAGE	S0	case	included	0.3333333333	
+splice-girl-1795106851-481493000	LOW_COVERAGE	S1	case	included	0.3333333333	
+splice-girl-1795106851-481493000	LOW_COVERAGE	S2	case	included	0.3333333333	
+splice-girl-1795106851-481493000	LOW_COVERAGE	S3	case	included	0.3333333333	
+splice-girl-1795106851-481493000	LOW_COVERAGE	S4	control	included	0.3333333333	
+splice-girl-1795106851-481493000	LOW_COVERAGE	S5	control	included	0.3333333333	
+splice-girl-1795106851-481493000	LOW_COVERAGE	S6	control	included	0.3333333333	
+splice-girl-1795106851-481493000	LOW_COVERAGE	S7	control	excluded		no junction data for gene 'LOW_COVERAGE'
+splice-girl-1795106851-481493000	TRIANGLE	S0	case	included	0.5525114155	
+splice-girl-1795106851-481493000	TRIANGLE	S1	case	included	0.5525114155	
+splice-girl-1795106851-481493000	TRIANGLE	S2	case	included	0.5525114155	
+splice-girl-1795106851-481493000	TRIANGLE	S3	case	included	0.5525114155	
+splice-girl-1795106851-481493000	TRIANGLE	S4	control	included	0.6666666667	
+splice-girl-1795106851-481493000	TRIANGLE	S5	control	included	0.6666666667	
+splice-girl-1795106851-481493000	TRIANGLE	S6	control	included	0.6666666667	
+splice-girl-1795106851-481493000	TRIANGLE	S7	control	included	0.6666666667	

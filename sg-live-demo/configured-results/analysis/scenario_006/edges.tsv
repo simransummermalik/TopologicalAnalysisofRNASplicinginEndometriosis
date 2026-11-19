@@ -1,0 +1,10 @@
+gene_id	from	to	samples_meeting_support	selected
+LOW_COVERAGE	A	B	7	true
+LOW_COVERAGE	A	C	7	true
+LOW_COVERAGE	B	C	7	true
+LOW_COVERAGE	X	Y	1	false
+TREE	A	B	8	true
+TREE	B	C	8	true
+TRIANGLE	A	B	8	true
+TRIANGLE	A	C	4	true
+TRIANGLE	B	C	8	true

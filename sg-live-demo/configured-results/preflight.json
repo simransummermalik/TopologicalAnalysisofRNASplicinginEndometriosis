@@ -1,0 +1,35 @@
+{
+  "checked_files": [
+    {
+      "path": "/Users/summermalik/Documents/GitHub/TopologicalAnalysisofRNASplicinginEndometriosis/sg-live-demo/analysis.json",
+      "sha256": "6fd7197ff73b0bd85d37ae884ffd013a852f224385405b656d26a3bac880e399"
+    },
+    {
+      "path": "/Users/summermalik/Documents/GitHub/TopologicalAnalysisofRNASplicinginEndometriosis/sg-live-demo/genes.tsv",
+      "sha256": "bc586abb3b951c49cc294724f9f551f07720c1fc18fb49ddad960f11eeb7cfeb"
+    },
+    {
+      "path": "/Users/summermalik/Documents/GitHub/TopologicalAnalysisofRNASplicinginEndometriosis/sg-live-demo/junctions.tsv",
+      "sha256": "f6a7b2769bbb7411b8f7fcefbd58eb006679d4bbd1152e0706b2e9ad1a0e0625"
+    },
+    {
+      "path": "/Users/summermalik/Documents/GitHub/TopologicalAnalysisofRNASplicinginEndometriosis/sg-live-demo/samples.tsv",
+      "sha256": "fdd607597b8c1358090f1cca14175d392f055ad8288bdc03e32c4e3f1dbf5248"
+    }
+  ],
+  "cohort_samples": 8,
+  "configuration": "/Users/summermalik/Documents/GitHub/TopologicalAnalysisofRNASplicinginEndometriosis/sg-live-demo/analysis.json",
+  "input_identity": "synthetic caller declaration; no biological provenance verified",
+  "input_kind": "synthetic",
+  "limitations": [
+    "Checks do not approve biological thresholds, donor independence or study conclusions.",
+    "Reference sequence/index hashes are compared from recorded manifests; large raw/reference files are not reread.",
+    "Human usability review is separate from this software check."
+  ],
+  "output": "/Users/summermalik/Documents/GitHub/TopologicalAnalysisofRNASplicinginEndometriosis/sg-live-demo/configured-results",
+  "primary_eligible_genes": 1,
+  "requested_genes": 4,
+  "scenarios": 7,
+  "schema_version": 1,
+  "status": "PASS"
+}

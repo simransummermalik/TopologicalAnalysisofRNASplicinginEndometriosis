@@ -1,0 +1,38 @@
+{
+  "complete_counts": true,
+  "genes": "/Users/summermalik/Documents/GitHub/TopologicalAnalysisofRNASplicinginEndometriosis/sg-live-demo/genes.tsv",
+  "input_kind": "synthetic",
+  "junctions": "/Users/summermalik/Documents/GitHub/TopologicalAnalysisofRNASplicinginEndometriosis/sg-live-demo/junctions.tsv",
+  "manifest": "/Users/summermalik/Documents/GitHub/TopologicalAnalysisofRNASplicinginEndometriosis/sg-live-demo/samples.tsv",
+  "output": "/Users/summermalik/Documents/GitHub/TopologicalAnalysisofRNASplicinginEndometriosis/sg-live-demo/configured-results",
+  "provenance": null,
+  "schema_version": 1,
+  "sensitivity": {
+    "edge_counts": [
+      3,
+      5,
+      10
+    ],
+    "gene_support": [
+      20,
+      50,
+      100
+    ],
+    "sample_counts": [
+      2,
+      4,
+      6
+    ]
+  },
+  "shared_graph": {
+    "minimum_edge_count": 5,
+    "minimum_gene_support": 50,
+    "minimum_samples_per_edge": 4
+  },
+  "statistics": {
+    "alternative": "two-sided",
+    "design": "independent",
+    "family": "synthetic-shared",
+    "min_per_group": 4
+  }
+}
