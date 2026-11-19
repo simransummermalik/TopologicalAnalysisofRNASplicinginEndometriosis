@@ -338,3 +338,37 @@ per sample and forced actual sort spill to disk; both samples retained exactly
 partial-file protection, disk refusal, reserve checks, real SIGTERM propagation
 and batch interruption. The detailed [storage validation record](../preprocessing/validation/2026-11-18-storage-mode/README.md)
 contains commands, logs, source hashes and scope. No human-read run was launched.
+
+## Shared topology and eligibility — November 18
+
+`scripts/shared_graph.py` now prepares a common selected edge set for every
+covered sample of a gene, including explicit zero-count selected edges. Its
+audit separates support, coverage and cycle eligibility; its statistics family
+requires coverage in every manifest sample and preserves gene annotations.
+No threshold is a hidden production default. The proposed numeric settings
+remain subject to team approval before biological cohort use.
+
+The eight new script tests check label/row-order invariance, exact cutoff
+boundaries, disconnected/cyclic/acyclic topology, rejection of missing exports
+and malformed counts, measured zeros versus missing samples, output protection,
+failed-run provenance and a complete Rust statistics handoff. In particular,
+the synthetic control's signal on the shared triangle has cycle fraction
+2/3, matching an independent projection calculation even though its shortcut
+count is zero. Incomplete and acyclic genes are absent from the tested family;
+their reasons remain in the eligibility tables.
+
+The [runnable example](../examples/shared_graph/README.md) was executed through
+preparation, direct Rust statistics and all seven shared sensitivity scenarios.
+All four requested genes remain visible in each scenario; three scenarios
+have no eligible genes and correctly skip statistics. The original per-sample
+sensitivity test still passes. Anchor sensitivity was not evaluated: it needs
+separate read-counter exports rather than refiltering this count table.
+
+`python3 scripts/check_project.py` passes **100 Rust and 116 Python tests
+(216 total)**, formatting, strict Clippy, the release build and the existing
+synthetic benchmark. The Python split is 47 preprocessing, 56 evidence-helper
+and 13 script tests. The first attempt exposed an existing batch-test reliance
+on host free disk space below the production 2 GiB reserve. Those mocked-job
+unit tests now mock available disk; production guard logic is unchanged and
+its dedicated refusal/reserve tests still pass. No external-tool or human
+cohort run was required by this change.

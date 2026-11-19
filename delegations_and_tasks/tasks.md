@@ -67,7 +67,7 @@ has not been met.
 | D8 | In progress | The [tested assignment audit](../data/pilots/SRR36710387_prefix1m_nov17/assignment_audit/README.md) exactly reproduces converter QC and separates exon-pair ambiguity from cross-gene ambiguity: 94.69% of ambiguous observations identify one gene. Full-cohort filter/coverage review remains; no observations were rescued. |
 | D9 | In progress | Exploratory anchor/support choices and a four-threshold same-gene check are recorded in the pilot. Final cohort coverage/ambiguity thresholds are not approved. *2026-11-18:* the ambiguity rule is settled: exons sharing a splice site are one node, which maps 98.5% of candidate junctions uniquely. Strandedness is RF (2026-11-18). Support/coverage thresholds remain; a [proposal](../docs/threshold_proposal.md) awaits team approval. |
 | D10 | In progress | The real prefix produces 32,575 standard junction rows and a verified four-edge CDH11 table. The full sample and remaining cohort are pending. |
-| D11 | Blocked | Graph comparability requires standardized real junction tables. |
+| D11 | In progress | The [shared-graph preparation and sensitivity workflow](../docs/shared_graphs.md) is implemented with explicit settings and checked on eight synthetic samples. It retains zero-count selected edges, excludes low coverage/no-cycle graphs and preserves eligibility reasons. Standardized real cohort tables and study threshold sign-off remain. |
 | D12 | In progress | A checksummed one-million-pair control prefix and CDH11 review bundle exist. A multi-sample approved integration subset still needs QC/comparability review. |
 
 ### Mathematics status
@@ -128,7 +128,7 @@ has not been met.
 | S8 | In progress | BH correction now runs in `stats`, preserving raw/adjusted values, untested reasons, and family counts in TSV/JSON/HTML; final biological family and missing-test policy approval remain. *2026-11-17:* family and policy decided: one primary gene-set test on `candidate_genes.tsv` (mean absolute effect, exact 70 relabelings), implemented in `stats` as `set_test.tsv`; gene-level BH and the risk, environmental and overlap set tests are exploratory. Remaining: review outputs on real data. |
 | S12 | In progress | The generic statistics TSV, run manifest, sample decisions, and report are implemented and tested; the final real-study report and baseline/sensitivity results remain. |
 | S2, S3 | Not started | Real eligibility and support/coverage thresholds still require scientific review. |
-| S9–S11 | In progress | Same-sample graph/count baselines and the [support-grid runner](../scripts/sensitivity.py) are implemented and tested. Real-input validation, approved alternate thresholds and biological method comparisons remain. |
+| S9–S11 | In progress | Same-sample graph/count baselines and the [support-grid runner](../scripts/sensitivity.py) are implemented and tested, including shared topology, seven one-factor scenarios and optional Rust statistics on fully eligible genes. Real-input validation, approved alternate thresholds and biological method comparisons remain. |
 | I1–I3 | Blocked | Biological interpretation must wait for reviewed real results and provenance tables. |
 
 ### Usability, presentation, and final work status

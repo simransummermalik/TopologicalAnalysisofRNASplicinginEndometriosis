@@ -6,6 +6,7 @@ import sys
 import tempfile
 import unittest
 from pathlib import Path
+from types import SimpleNamespace
 from unittest.mock import patch
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
@@ -14,6 +15,15 @@ from batch_preprocessing import batch, load_samples
 
 class BatchTests(unittest.TestCase):
     def setUp(self):
+        # These tests mock the external jobs; host disk fullness must not
+        # prevent them reaching merge/failure/interruption behavior. Disk
+        # refusal and reserve enforcement have dedicated storage tests.
+        disk = patch(
+            "pipeline_runtime.shutil.disk_usage",
+            return_value=SimpleNamespace(free=10 * 1024**3),
+        )
+        disk.start()
+        self.addCleanup(disk.stop)
         self.temp = tempfile.TemporaryDirectory()
         self.root = Path(self.temp.name)
         for name in ["a.fastq", "b.fastq", "map.tsv", "hints.tsv"]:

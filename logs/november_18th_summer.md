@@ -16,3 +16,16 @@ logs, source hashes and usage instructions. These tests did
 not process our human read files or change personal files or laptop settings;
 the full eight-sample analysis still needs the remaining inputs, reviewed
 settings and sufficient storage.
+
+I also built the software for Vania's shared-graph proposal. It takes complete
+counts from the cohort, chooses the same edges for each sample of a gene,
+keeps real zero counts separate from samples with too little coverage, and
+records why each sample or gene was left out. It only passes fully covered
+genes with a shared graph cycle into the statistics family. I added a small
+eight-sample made-up example and a runner for the seven proposed sensitivity
+settings, including optional Rust statistics and reports. The example and new
+tests pass, and the full project check now passes 216 tests. I also fixed the
+mocked batch tests so low laptop disk space does not stop them before they
+reach the behavior they test; the real disk protection stays in place. The
+group still needs to approve the actual study cutoffs before applying them to
+the human cohort. No commit or push was performed by the assistant.

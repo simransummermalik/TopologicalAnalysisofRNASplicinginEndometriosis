@@ -2,6 +2,11 @@
 
 ## Unreleased
 
+- Added explicit shared-topology preparation with edge/support/coverage audits,
+  zero-count selected edges, cycle eligibility and an annotated full-cohort
+  statistics family. Added shared one-factor sensitivity with optional Rust
+  statistics, failure provenance and an eight-sample synthetic walkthrough.
+  The proposed biological thresholds still await team sign-off.
 - Added optional `--storage-mode stream-bam` for single-sample and sequential
   batch preprocessing: supervised HISAT2/samtools pipes avoid SAM files while
   preserving junction-counting rules and Cleaver cleaning/indexing.

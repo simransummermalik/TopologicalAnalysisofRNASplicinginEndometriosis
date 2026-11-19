@@ -1,0 +1,5 @@
+gene_id	gene_symbol
+TRIANGLE	Synthetic_triangle
+TREE	Synthetic_tree
+LOW_COVERAGE	Synthetic_low_coverage
+ABSENT	Synthetic_absent

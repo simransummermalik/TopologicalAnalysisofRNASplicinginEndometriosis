@@ -77,6 +77,17 @@ grid, binary/input hashes and output checksum. This is descriptive: it does
 not select the most favorable threshold, perform extra significance tests,
 or replace rerunning alignments to test anchor/aligner sensitivity.
 
+### Compare the same graph across all samples
+
+For the proposed shared-topology method, use the separate
+[eight-sample synthetic example](../examples/shared_graph/README.md). The
+[shared-graph guide](shared_graphs.md) explains input completeness, explicit
+thresholds, measured zeros, missing samples and cycle eligibility.
+`scripts/sensitivity.py --mode shared` adds the seven one-factor scenarios
+and optional Rust statistics using only fully covered cyclic genes. The
+study threshold proposal still awaits team sign-off; these commands exercise
+the software without processing the human cohort.
+
 ## Then: real reads
 
 Follow the [Cleaver/HISAT2 guide](../preprocessing/HISAT2_GUIDE.md) to prepare

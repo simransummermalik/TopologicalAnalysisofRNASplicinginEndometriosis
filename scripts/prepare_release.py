@@ -43,6 +43,7 @@ def prepare(output):
         "data/gene_sets",
         "docs",
         "examples/demo",
+        "examples/shared_graph",
         ".github/workflows",
         "assets/splice_girl_banner.txt",
         "assets/hodgetheorynew.pdf",

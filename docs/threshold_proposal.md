@@ -1,8 +1,11 @@
 # Proposal: junction support and coverage thresholds
 
-**Status:** proposal for team approval (drafted 2026-11-18). Nothing here is
-applied until the team records a decision in [`decisions.md`](decisions.md).
-These are the last settings needed before the full eight-sample run.
+**Status:** proposal for team approval (drafted 2026-11-18). Biological cohort
+use awaits a recorded decision in [`decisions.md`](decisions.md). The
+[shared-graph implementation](shared_graphs.md) and synthetic example are
+available with explicit settings; this does not sign off the study thresholds.
+Complete inputs, storage/compute and final QC review are also needed for the
+full eight-sample run.
 
 **Must be decided before any case/control result is seen.** Every rule below
 uses read counts only, never the case/control labels.
@@ -31,9 +34,10 @@ range from 49.5 to 80.0 million read pairs, so this would be a real confound.
 
 With one shared edge set, every sample of a gene has the same graph and only
 the read proportions on its edges differ. A difference in cycle fraction then
-reflects how splicing is distributed, not which junctions happened to be
-sampled. The edge set is chosen from all eight samples together without the
-labels, so it cannot favor either group.
+reflects signal on a common topology. The edge set is chosen from all eight
+samples together without the labels, so selection is unchanged when those
+labels are permuted. Sequencing depth and unequal detection can still affect
+the counts and require QC and sensitivity review.
 
 "At least 5 reads in at least 4 of 8 samples" keeps an edge that is
 reproducibly present in half the cohort. Five reads is enough that an edge
@@ -71,14 +75,22 @@ Each setting is varied one at a time, giving 6 extra runs. All are reported,
 including settings where a gene drops out. A result that appears only at one
 setting is described as such.
 
-## What has to be built after approval
+## Implementation available for review
 
-- A step that builds each gene's shared edge set from the eight junction
-  tables and writes each sample's counts on that set, adding measured zeros
-  and recording coverage exclusions.
-- The cycle-rank-≥ 1 eligibility check before statistics.
-- Extending `scripts/sensitivity.py`, which currently filters each sample on
-  its own, to the shared-edge-set rule and the grid above.
+- `scripts/shared_graph.py` builds each gene's shared edge set, writes covered
+  samples' counts including measured zeros, and records sample/gene exclusions.
+- The eligible statistics family requires cycle rank ≥ 1 and coverage in every
+  manifest sample. Its original gene annotations are retained.
+- `scripts/sensitivity.py --mode shared` runs the seven one-factor scenarios
+  above, with optional explicitly configured Rust statistics. The earlier
+  per-sample mode remains available to reproduce previous results.
+
+The [synthetic walkthrough](../examples/shared_graph/README.md) exercises four
+cases and four controls without human reads. A zero-count shared edge remains
+part of the mathematical graph; a nonzero cycle component does not prove
+observed use of that edge in that sample. See [interpretation changes](shared_graphs.md#interpretation-changes-to-explain).
+Anchor sensitivity requires separately recounted junction exports and is not
+evaluated by the count-table grid.
 
 ## Sign-off
 

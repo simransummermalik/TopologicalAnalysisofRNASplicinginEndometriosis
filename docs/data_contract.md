@@ -66,6 +66,15 @@ claim genomic coordinates.
 - Node and edge order is sorted by the text identifiers. Reordering valid input
   rows must not change the result.
 
+An explicitly supplied zero-count edge remains part of the graph topology;
+only the group's total support must be positive. The optional
+[shared-graph preparation step](shared_graphs.md) uses this to keep a common
+edge set across covered samples. It requires declared complete cohort counts,
+records all exclusions, and never writes an all-zero sample/gene group.
+Its `eligible_genes.tsv` includes only cyclic genes covered in every manifest
+sample; it preserves original family annotations. Low-coverage samples and
+genes without a shared cycle stay visible in separate eligibility tables.
+
 The parser reports the line number for malformed rows. The command returns a
 failure status instead of silently dropping invalid data.
 
