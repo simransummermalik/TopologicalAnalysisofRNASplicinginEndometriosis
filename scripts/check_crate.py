@@ -55,9 +55,9 @@ def check(output):
 
     try:
         package = tomllib.loads((ROOT / "Cargo.toml").read_text())["package"]
-        if package.get("license") != "MIT" or not (ROOT / "LICENSE").is_file():
+        if package.get("license") != "CC-BY-4.0" or not (ROOT / "LICENSE").is_file():
             raise ValueError(
-                "the approved MIT license must be present before release review"
+                "the approved CC BY 4.0 license must be present before release review"
             )
         call(
             ["cargo", "package", "--allow-dirty", "--locked", "--offline"],
@@ -157,7 +157,7 @@ def check(output):
         check_installed(output / "installed", source=destination)
         record.update(
             status="complete",
-            license="MIT",
+            license=package["license"],
             citation="CITATION.cff",
             upload_performed=False,
             file_count=len(names),

@@ -21,7 +21,9 @@ class ReleaseDiagnosticsTests(unittest.TestCase):
         ]:
             with self.subTest(script=module.__name__), tempfile.TemporaryDirectory() as folder:
                 root = Path(folder)
-                (root / "Cargo.toml").write_text('[package]\nlicense = "MIT"\n')
+                (root / "Cargo.toml").write_text(
+                    '[package]\nlicense = "CC-BY-4.0"\n'
+                )
                 (root / "LICENSE").write_text("fixture license\n")
                 output = root / "review"
                 stderr = io.StringIO()
