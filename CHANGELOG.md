@@ -1,12 +1,13 @@
 # Changelog
 
-## 0.2.0 — license update (prepared, not yet published)
+## 0.2.0 — 2026-11-19
 
 - Set the source release license to Creative Commons Attribution 4.0
   International (CC BY 4.0), permitting commercial and noncommercial reuse
   with attribution under its terms.
 - Preserve the published `0.1.0` crate under its original MIT license.
 - Update crate metadata, citation metadata, and license notices.
+- Record authorization from all four named contributors for the license update.
 
 ## 0.1.0 — 2026-11-19
 

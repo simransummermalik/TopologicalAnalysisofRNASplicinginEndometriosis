@@ -153,7 +153,7 @@ has not been met.
 | V11 | In progress | Current pilot graph/audit plots and captions were checked against saved counts and visually inspected. Repeat for the final cohort figures. |
 | F1 | In progress | [Methods draft](../docs/methods_draft.md) assembled from specifications; final data settings and sign-offs remain. |
 | F2 | In progress | [Results draft](../docs/results_draft.md) reports the completed technical pilot and benchmark; biological comparisons remain explicitly pending. |
-| F3 | In progress | Version 0.1.0 was published under MIT with a separate paper-citation request. A local 0.2.0 CC BY 4.0 draft and updated release notes are prepared; contributor authorization, independent feedback and final release review remain before publishing that version. |
+| F3 | In progress | Version 0.1.0 was published under MIT with a separate paper-citation request. Version 0.2.0 is prepared under CC BY 4.0 with authorization confirmed from all four named contributors; independent feedback and final release review remain. |
 | F4 | In progress | The simple roadmap section compiles in a standard temporary article wrapper with no box/reference warnings and three visually checked pages. Main Overleaf source remains missing. |
 | F5 | In progress | Current automated checks pass with 121 Rust + 118 Python tests, actual synthetic preprocessing and exact-crate installation. The [independent reader exercise](../docs/user_acceptance.md) and feedback template are prepared; independent human acceptance and final cohort review remain. |
 | X1–X4 | Not started | These are optional extensions after the required workflow works. |

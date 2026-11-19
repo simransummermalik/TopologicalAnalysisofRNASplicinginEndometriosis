@@ -3,12 +3,11 @@
 Prepared November 17, updated November 19, 2026. This is the experimental
 0.1.0 crate release, published to crates.io on November 19. MIT with a
 separate citation request was selected November 18. Package acceptance and
-Cargo's publish dry-run passed before publication. The source commit and tag
-have not been pushed to GitHub.
+Cargo's publish dry-run passed before publication. The release commit is on
+GitHub `main`; no release tag was created.
 
-This page documents the historical 0.1.0 release. The current local 0.2.0
-draft changes the source-release license to CC BY 4.0, pending authorization
-from all relevant contributors; see the [release checklist](release_checklist.md).
+This page documents the historical 0.1.0 release. The authorized 0.2.0 source
+release changes the license to CC BY 4.0; see the [release checklist](release_checklist.md).
 
 ## Included software
 

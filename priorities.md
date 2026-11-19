@@ -10,8 +10,8 @@ Anyone can pick up any available task; there are no assigned leads.
 
 - [x] Prepare a local 0.2.0 release draft under CC BY 4.0, following the
   project's advice to allow commercial reuse with attribution. The published
-  0.1.0 crate remains MIT-licensed. The 0.2.0 draft has not been published;
-  confirm contributor authorization before release.
+  0.1.0 crate remains MIT-licensed. All four named contributors approved the
+  0.2.0 license update on November 19; the registry publication is in progress.
 
 - [x] Run the current packaged tool on all 243 candidate genes observed in
   the real control prefix; independently recount all 1,388 edges from BAM
@@ -294,9 +294,9 @@ source provenance, and a matching limitation.
 - [ ] Finalize the [technical results draft](docs/results_draft.md) after the
   full cohort analysis; do not substitute pilot measurements for disease results.
 - [ ] Finalize the [prepared release review](docs/release_notes.md) after
-  independent feedback and contributor authorization for the drafted 0.2.0
-  CC BY 4.0 license. Version 0.1.0 is published on crates.io; 0.2.0 is only a
-  local draft and has not been tagged or published.
+  independent feedback. Version 0.1.0 is published on crates.io; version
+  0.2.0 is prepared under CC BY 4.0 with contributor authorization, and is
+  being published now.
 - [ ] Compile the missing Overleaf parent. The available roadmap section is
   compiled, inspected and saved in `roadmap-preview.pdf`.
 - [ ] Run the complete acceptance checklist from a clean checkout.

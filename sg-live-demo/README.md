@@ -95,8 +95,8 @@ still requires the separately documented Cleaver/HISAT2 preprocessing tools.
 Select primary settings before inspecting biological case/control effects;
 report sensitivity results without selecting the most favorable scenario.
 
-The published Splice Girl 0.1.0 crate is MIT-licensed. A local 0.2.0 source
-release draft uses CC BY 4.0, which permits commercial reuse with attribution
-and notice of changes; it has not been published. If the software contributes
-to a paper, please cite it and record the version or commit. `splice-girl cite`
-prints the citation metadata.
+The published Splice Girl 0.1.0 crate is MIT-licensed. The authorized 0.2.0
+source release uses CC BY 4.0, which permits commercial reuse with attribution
+and notice of changes. If the software contributes to a paper, please cite it
+and record the version or commit. `splice-girl cite` prints the citation
+metadata.

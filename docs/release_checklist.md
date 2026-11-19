@@ -7,15 +7,16 @@ The [release notes](release_notes.md) describe the 0.1.0 experimental crate.
 MIT and a separate citation request were selected November 18. On November 19,
 the exact 64-file crate archive, extracted tests/install walkthrough, and
 `cargo publish --dry-run --locked` passed, and version 0.1.0 was published to
-crates.io. The release commit remains local and no GitHub tag was pushed.
+crates.io. The release commit is on GitHub `main`; no GitHub release tag was
+created.
 Independent reader feedback and full biological validation remain open and
 are clearly identified as limits of this experimental release.
 
-A local 0.2.0 draft now uses CC BY 4.0, following the user's direction based
-on Dr. White's advice. CC BY permits commercial and noncommercial reuse with
+Version 0.2.0 uses CC BY 4.0, following the user's direction based on Dr.
+White's advice. CC BY permits commercial and noncommercial reuse with
 attribution and notice of changes; it does not require derivative releases to
-use the same license. The 0.1.0 crate remains MIT-licensed. Do not publish the
-0.2.0 draft until all relevant contributors have authorized the license change.
+use the same license. The 0.1.0 crate remains MIT-licensed. The user confirmed
+on November 19 that all four named contributors approved the license change.
 
 ## Included now
 
@@ -42,13 +43,12 @@ use the same license. The 0.1.0 crate remains MIT-licensed. Do not publish the
 6. Confirm that no raw reads, references, BAM files, or generated run folders
    are staged.
 7. Update the version, changelog, and software-validation date together.
-8. Confirm that all relevant contributors have authorized the 0.2.0 license
-   change, and record that approval before publishing it.
+8. Record contributor authorization for a license change before publishing it.
 
-The current local `Cargo.toml` and `LICENSE` draft record CC BY 4.0 for 0.2.0;
-the already-published 0.1.0 crate remains under MIT. `CITATION.cff` and
-`splice-girl cite` provide the requested paper citation. The paper-citation
-request is separate from CC BY's legal attribution requirements.
+`Cargo.toml` and `LICENSE` record CC BY 4.0 for 0.2.0; the already-published
+0.1.0 crate remains under MIT. `CITATION.cff` and `splice-girl cite` provide
+the requested paper citation. The paper-citation request is separate from CC
+BY's legal attribution requirements.
 
 ## Check the exact crate payload
 

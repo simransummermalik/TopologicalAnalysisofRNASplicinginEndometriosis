@@ -513,9 +513,8 @@ unstranded pilot protocol; it does not validate the adopted RF/shared graph
 cohort analysis or estimate a case/control effect. No new reads were downloaded
 or aligned, and no inference or independent human usability review was performed.
 
-No independent human review has been completed or invented. The 0.2.0 CC BY
-4.0 license update is a local draft and has not been published; contributor
-authorization is still needed. License selection and software acceptance do
-not finish the full biological study, method comparisons or scientific
-interpretation. The assistant did not create a release tag or publish the
-crate.
+No independent human review has been completed or invented. All four named
+contributors authorized the 0.2.0 CC BY 4.0 license update, as confirmed by
+the user on November 19. License selection and software acceptance do not
+finish the full biological study, method comparisons or scientific
+interpretation. The assistant did not create a release tag.
