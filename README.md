@@ -305,10 +305,12 @@ Open `splice-girl-example/configured-results/report.html`. The
 pipeline provenance and saved settings. The [first-time reviewer exercise](docs/user_acceptance.md)
 remains available for an independent reader to complete.
 
-Splice Girl is [MIT licensed](LICENSE). If you use it in a paper, please cite
-the software and record the version or commit; `splice-girl cite` prints
-the metadata in [CITATION.cff](CITATION.cff). Citation is requested separately
-from MIT's license/copyright notice requirements.
+Splice Girl 0.2.0 and later source releases are licensed under
+[CC BY 4.0](https://creativecommons.org/licenses/by/4.0/), which allows
+commercial and noncommercial reuse with attribution and notice of changes.
+The published 0.1.0 crate remains MIT-licensed. If you use the software in a
+paper, please cite it and record the version or commit; `splice-girl cite`
+prints the metadata in [CITATION.cff](CITATION.cff).
 
 Cargo normally places installed commands in `$HOME/.cargo/bin`. If the install
 succeeds but `splice-girl` is not found, add that directory to your shell's

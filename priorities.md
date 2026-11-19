@@ -1,12 +1,17 @@
 # Splice Girl project priorities
 
-Updated November 18, 2026.
+Updated November 19, 2026.
 
 This is the short, ordered version of the full
 [task guide](delegations_and_tasks/tasks.md). It covers the entire project.
 Anyone can pick up any available task; there are no assigned leads.
 
-## Latest completed work — November 18
+## Latest completed work — November 19
+
+- [x] Prepare a local 0.2.0 release draft under CC BY 4.0, following the
+  project's advice to allow commercial reuse with attribution. The published
+  0.1.0 crate remains MIT-licensed. The 0.2.0 draft has not been published;
+  confirm contributor authorization before release.
 
 - [x] Run the current packaged tool on all 243 candidate genes observed in
   the real control prefix; independently recount all 1,388 edges from BAM
@@ -15,8 +20,9 @@ Anyone can pick up any available task; there are no assigned leads.
   the final cohort protocol. See the [real-data validation](data/pilots/SRR36710387_real_validation_nov18/README.md).
 - [x] Add saved JSON configuration, read-only preflight and configured reports,
   including completed sample/batch/reference/map identity and count checks.
-- [x] Select MIT with a separate citation request, provide CITATION.cff and
-  `cite`, and restrict the crate to software, fixtures and relevant guides.
+- [x] Publish 0.1.0 under MIT with a separate citation request, provide
+  CITATION.cff and `cite`, and restrict the crate to software, fixtures and
+  relevant guides. A local 0.2.0 CC BY 4.0 license update is now drafted.
 - [x] Build, inspect, test and install the actual unpublished crate archive;
   exercise the installed guide outside the checkout. Independent human
   acceptance remains pending in [the reviewer exercise](docs/user_acceptance.md).
@@ -288,8 +294,9 @@ source provenance, and a matching limitation.
 - [ ] Finalize the [technical results draft](docs/results_draft.md) after the
   full cohort analysis; do not substitute pilot measurements for disease results.
 - [ ] Finalize the [prepared release review](docs/release_notes.md) after
-  independent feedback. MIT/citation and crate acceptance are complete;
-  no tag or publication has been performed.
+  independent feedback and contributor authorization for the drafted 0.2.0
+  CC BY 4.0 license. Version 0.1.0 is published on crates.io; 0.2.0 is only a
+  local draft and has not been tagged or published.
 - [ ] Compile the missing Overleaf parent. The available roadmap section is
   compiled, inspected and saved in `roadmap-preview.pdf`.
 - [ ] Run the complete acceptance checklist from a clean checkout.

@@ -1,12 +1,12 @@
 [package]
 name = "splice-girl"
-version = "0.1.0"
+version = "0.2.0"
 edition = "2024"
 rust-version = "1.85"
 description = "Graph and Hodge analysis of RNA splice-junction data"
 repository = "https://github.com/simransummermalik/TopologicalAnalysisofRNASplicinginEndometriosis"
 readme = "CRATE_README.md"
-license = "MIT"
+license = "CC-BY-4.0"
 keywords = ["bioinformatics", "rna-seq", "splicing", "graphs", "hodge"]
 categories = ["science", "command-line-utilities"]
 include = [

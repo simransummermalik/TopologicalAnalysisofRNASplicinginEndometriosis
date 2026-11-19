@@ -23,8 +23,9 @@ validation of a biological finding.
 7. Try the same output folder again. Does the error explain what to change?
 8. Change `output` to a new folder, set `statistics` to null, check and run
    again. Can you locate the descriptive results and exclusions?
-9. Find how to cite the software and explain the distinction between its
-   citation request and MIT license requirements.
+9. Find the license for the installed version. Explain how its license notices
+   or attribution differ from the separate request to cite the software in a
+   paper.
 
 ## Record actual observations
 

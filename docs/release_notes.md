@@ -6,6 +6,10 @@ separate citation request was selected November 18. Package acceptance and
 Cargo's publish dry-run passed before publication. The source commit and tag
 have not been pushed to GitHub.
 
+This page documents the historical 0.1.0 release. The current local 0.2.0
+draft changes the source-release license to CC BY 4.0, pending authorization
+from all relevant contributors; see the [release checklist](release_checklist.md).
+
 ## Included software
 
 - Rust CLI for validated junction tables, graph Hodge

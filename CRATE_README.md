@@ -69,7 +69,11 @@ Report reproducible software problems through the
 
 ## License and citation
 
-MIT licensed. If this software contributes to a paper, please cite it and
-record the version or commit used. Run `splice-girl cite` for the supplied
-software citation metadata, also shipped as `CITATION.cff`.
-Citation is a request separate from the MIT license's notice requirements.
+Splice Girl 0.2.0 and later source releases are licensed under CC BY 4.0.
+Commercial and noncommercial reuse are allowed with attribution and notice of
+changes under the license terms. The published 0.1.0 crate remains MIT-licensed.
+
+If this software contributes to a paper, please cite it and record the version
+or commit used. Run `splice-girl cite` for the supplied citation metadata,
+also shipped as `CITATION.cff`. The paper-citation request is separate from
+the license's attribution requirement.

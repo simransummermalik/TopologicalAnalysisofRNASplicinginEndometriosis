@@ -11,6 +11,12 @@ crates.io. The release commit remains local and no GitHub tag was pushed.
 Independent reader feedback and full biological validation remain open and
 are clearly identified as limits of this experimental release.
 
+A local 0.2.0 draft now uses CC BY 4.0, following the user's direction based
+on Dr. White's advice. CC BY permits commercial and noncommercial reuse with
+attribution and notice of changes; it does not require derivative releases to
+use the same license. The 0.1.0 crate remains MIT-licensed. Do not publish the
+0.2.0 draft until all relevant contributors have authorized the license change.
+
 ## Included now
 
 - Rust CLI source and locked JSON-parsing dependencies in `Cargo.lock`.
@@ -36,11 +42,13 @@ are clearly identified as limits of this experimental release.
 6. Confirm that no raw reads, references, BAM files, or generated run folders
    are staged.
 7. Update the version, changelog, and software-validation date together.
-8. Record the license decision before publishing a release artifact.
+8. Confirm that all relevant contributors have authorized the 0.2.0 license
+   change, and record that approval before publishing it.
 
-MIT is recorded in Cargo.toml and LICENSE; CITATION.cff provides the requested
-software citation. Citation in papers is requested rather than imposed as an
-additional MIT condition.
+The current local `Cargo.toml` and `LICENSE` draft record CC BY 4.0 for 0.2.0;
+the already-published 0.1.0 crate remains under MIT. `CITATION.cff` and
+`splice-girl cite` provide the requested paper citation. The paper-citation
+request is separate from CC BY's legal attribution requirements.
 
 ## Check the exact crate payload
 
