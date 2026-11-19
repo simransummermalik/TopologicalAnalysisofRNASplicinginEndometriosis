@@ -453,6 +453,17 @@ Rust tests and strict Clippy also pass on the minimum Rust 1.85.0 compiler.
 The stable CI workflow now repeats exact-crate
 acceptance; this local record does not claim a remote CI run has occurred.
 
+The subsequent [GitHub run for a72d8e4](https://github.com/simransummermalik/TopologicalAnalysisofRNASplicinginEndometriosis/actions/runs/44455147638)
+passed both Rust toolchains' build, tests, Clippy and benchmark steps, and the
+Python preprocessing job. Stable Rust's extracted-crate tests failed. Their
+output was redirected into an unretained file, so the public job log does not
+identify the failing test. The same archive check passed locally under
+`target/crate-ci-investigation`; that does not resolve the Linux CI failure.
+Release checks now print failed subprocess logs and CI preserves acceptance
+logs for seven days, including on failure. A regression test confirms that
+errors stay visible and acceptance remains failed. Another CI run is required
+to diagnose the original failure; remote package acceptance is still pending.
+
 The [reader exercise](user_acceptance.md) and blank feedback template are ready.
 No independent human review has been completed or invented. MIT/citation
 selection and software acceptance do not finish the full biological study,

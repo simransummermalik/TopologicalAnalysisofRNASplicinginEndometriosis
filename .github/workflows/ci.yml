@@ -27,6 +27,16 @@ jobs:
       - name: Test and install the actual crate archive
         if: matrix.toolchain == 'stable'
         run: python3 scripts/check_crate.py --output-dir target/crate-review
+      - name: Preserve crate acceptance logs
+        if: always() && matrix.toolchain == 'stable'
+        uses: actions/upload-artifact@v4
+        with:
+          name: crate-acceptance-logs
+          path: |
+            target/crate-review/**/*.log
+            target/crate-review/**/acceptance.json
+          if-no-files-found: ignore
+          retention-days: 7
 
   preprocessing:
     name: Python preprocessing tests

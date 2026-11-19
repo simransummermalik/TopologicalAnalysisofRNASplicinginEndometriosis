@@ -54,6 +54,11 @@ def check(output, source=ROOT):
             )
         item["returncode"] = process.returncode
         if process.returncode:
+            print(f"--- {name}: last 100 lines ---", file=sys.stderr)
+            print(
+                "\n".join((output / name).read_text(errors="replace").splitlines()[-100:]),
+                file=sys.stderr,
+            )
             raise ValueError(f"command failed; see {output / name}")
 
     try:
