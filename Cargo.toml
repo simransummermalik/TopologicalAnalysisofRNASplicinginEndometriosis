@@ -5,6 +5,18 @@ edition = "2024"
 rust-version = "1.85"
 description = "Graph and Hodge analysis of RNA splice-junction data"
 repository = "https://github.com/simransummermalik/TopologicalAnalysisofRNASplicinginEndometriosis"
-readme = "README.md"
+readme = "CRATE_README.md"
+license = "MIT"
+keywords = ["bioinformatics", "rna-seq", "splicing", "graphs", "hodge"]
+categories = ["science", "command-line-utilities"]
+include = [
+    "/Cargo.toml", "/Cargo.lock", "/src/**", "/tests/**",
+    "/examples/demo/**", "/examples/shared_graph/**",
+    "/assets/splice_girl_banner.txt", "/CRATE_README.md", "/CHANGELOG.md",
+    "/LICENSE*", "/CITATION.cff", "/docs/data_contract.md", "/docs/math_spec.md",
+    "/docs/shared_graphs.md", "/docs/configuration.md", "/docs/user_acceptance.md",
+]
 
 [dependencies]
+serde = { version = "1.0", features = ["derive"] }
+serde_json = "1.0"

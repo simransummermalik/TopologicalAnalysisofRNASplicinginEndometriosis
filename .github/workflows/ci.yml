@@ -24,6 +24,9 @@ jobs:
       - run: cargo build --release
       - run: python3 scripts/benchmark_candidate.py --runs 3
       - run: python3 -m unittest discover -s scripts -p 'test_*.py'
+      - name: Test and install the actual crate archive
+        if: matrix.toolchain == 'stable'
+        run: python3 scripts/check_crate.py --output-dir target/crate-review
 
   preprocessing:
     name: Python preprocessing tests

@@ -63,6 +63,26 @@ separate count exports and is not evaluated by these grids.
 For descriptive sensitivity only, omit `--run-stats`, `--family`,
 `--alternative`, `--design`, and `--min-per-group` together.
 
+## 4. Use a saved configuration
+
+The example includes `analysis.json`. It records the same settings above in
+one file, with `input_kind` explicitly set to `synthetic`.
+
+```sh
+splice-girl check --config analysis.json
+splice-girl run --config analysis.json
+```
+
+`check` validates without creating output files. `run` saves the configuration,
+checksums, exclusions and reports in `configured-results`. Open
+`configured-results/report.html` in your browser. Paths in the configuration
+are relative to that file, so it also works when your terminal is elsewhere.
+Choose a new `output` folder in the JSON before repeating the run.
+
+For biological counts, use `input_kind: "pipeline"` and the documented
+completed batch/reference/map manifests; the synthetic example does not
+verify biological processing. See the project configuration guide.
+
 ## Help and requirements
 
 ```sh
@@ -74,3 +94,7 @@ These commands start from standardized junction counts. Processing raw FASTQ
 still requires the separately documented Cleaver/HISAT2 preprocessing tools.
 Select primary settings before inspecting biological case/control effects;
 report sensitivity results without selecting the most favorable scenario.
+
+Splice Girl is MIT licensed. If it contributes to a paper, please cite it and
+record the version or commit. `splice-girl cite` prints the citation metadata.
+Citation is requested separately from the MIT license's notice requirements.

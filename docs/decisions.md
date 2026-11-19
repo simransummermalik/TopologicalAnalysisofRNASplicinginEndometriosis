@@ -38,6 +38,15 @@ the team records an owner and a reasoned choice.
 
 ## Open decisions that still need a team answer
 
+Software-release decisions, November 18: the user selected MIT licensing with
+a separate request to cite the software in papers. LICENSE, CITATION.cff and
+`splice-girl cite` record that choice; citation is not an added MIT condition.
+Strict JSON configuration/provenance parsing uses Serde/serde_json with locked
+dependencies, superseding the November 2 dependency-free packaging statement.
+Numerical Hodge calculations and frozen biological/statistical choices are
+unchanged. A software-only crate allowlist excludes research inputs, PDFs,
+website files and class logs; publication and human acceptance remain separate.
+
 **Mathematical clarification, November 17:** the statistical-policy row above
 retains its historical rationale, but two claims in that rationale were too
 broad. BH discoveries are possible with balanced p-values of 2/70 when enough

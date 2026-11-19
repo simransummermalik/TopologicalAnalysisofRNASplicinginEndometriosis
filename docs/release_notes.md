@@ -1,11 +1,12 @@
 # Splice Girl 0.1.0 — release review draft
 
-Prepared November 17, 2026. This is an unpublished review candidate. No tag,
-release publication or license selection has been performed.
+Prepared November 17, updated November 18, 2026. This is an unpublished review
+candidate. MIT with a separate citation request was selected November 18.
+No tag or release publication has been performed.
 
 ## Included software
 
-- Dependency-free Rust CLI for validated junction tables, graph Hodge
+- Rust CLI for validated junction tables, graph Hodge
   decomposition, descriptive comparisons, explicit-family exact tests,
   candidate-set testing, BH correction and optional rankings.
 - Saved signed components, same-sample count/topology baselines, provenance,
@@ -17,10 +18,16 @@ release publication or license selection has been performed.
 - Installed native `prepare-shared`, `sensitivity` and `example` commands:
   shared topology, eligibility audits, one-factor grids, optional statistics
   and embedded synthetic inputs work without Python or the checkout.
+- Saved JSON configuration, read-only `check`, configured `run`, frozen input
+  identities and completed pipeline/reference/map provenance checks.
+- MIT license, CITATION.cff and `cite`, a focused crate README/payload, actual
+  archive installation acceptance and a pending independent-reader exercise.
 
 ## Requirements
 
-Rust 1.85 or newer for building the CLI; no external Rust crates. Python is
+Rust 1.85 or newer for building the CLI. Serde/serde_json handle strict JSON
+configuration/provenance parsing; numerical Hodge code remains unchanged.
+Dependencies are locked and downloaded for the initial build. Python is
 needed for preprocessing/helper scripts (Python 3.11+ for the release packer).
 Cleaver, HISAT2 and compatible BAM
 tools are needed for processing reads. NumPy is optional for independent SVD
@@ -33,7 +40,7 @@ The real-input validation is one deterministic control prefix. Full-cohort
 preprocessing, comparability, eligibility, case/control results and biological
 interpretation remain pending. The high exon-pair ambiguity rate and library
 methods discrepancy require review. Independent evidence and beginner reviews,
-the main Overleaf source and the team's license choice are still outstanding.
+the main Overleaf source and final scientific/release review are still outstanding.
 
 The local source snapshot passed the full offline check and isolated install/
 demo commands. See the [acceptance record](software_validation.md#isolated-source-package-acceptance--november-17).

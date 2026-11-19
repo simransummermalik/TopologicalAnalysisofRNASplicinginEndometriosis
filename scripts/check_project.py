@@ -79,6 +79,8 @@ def smoke(pairs=1):
                 "1",
                 "--output-dir",
                 output,
+                "--min-free-gb",
+                "0.05",  # Bounded synthetic fixtures, not production settings.
             ]
         )
         call(
@@ -100,9 +102,9 @@ def smoke(pairs=1):
         with (output / "junctions.tsv").open() as handle:
             rows = list(csv.DictReader(handle, delimiter="\t"))
         assert {row["sample_id"] for row in rows} == {"CASE", "CONTROL"}
-        assert len(rows) == 2 and all(int(row["count"]) == 2 * pairs for row in rows), (
-            rows
-        )
+        assert len(rows) == 2 and all(
+            int(row["count"]) == 2 * pairs for row in rows
+        ), rows
         assert (
             json.loads((output / "batch_manifest.json").read_text())["status"]
             == "complete"
@@ -136,6 +138,8 @@ def smoke(pairs=1):
                 "1",
                 "--output-dir",
                 streamed,
+                "--min-free-gb",
+                "0.05",
             ]
         )
         assert (streamed / "junctions.tsv").read_bytes() == (
@@ -179,6 +183,48 @@ def smoke(pairs=1):
             ]
         )
         assert (root / "streamed_report/report.html").is_file()
+        # Check the new saved-configuration preflight against real generated
+        # pipeline manifests/counts, not just hand-built metadata fixtures.
+        config = root / "pipeline-config.json"
+        config.write_text(
+            json.dumps(
+                {
+                    "schema_version": 1,
+                    "input_kind": "pipeline",
+                    "junctions": str(streamed / "junctions.tsv"),
+                    "manifest": str(streamed / "samples.tsv"),
+                    "genes": None,
+                    "output": str(root / "configured-report"),
+                    "complete_counts": True,
+                    "shared_graph": {
+                        "minimum_edge_count": 1,
+                        "minimum_samples_per_edge": 1,
+                        "minimum_gene_support": 1,
+                    },
+                    "sensitivity": None,
+                    "statistics": None,
+                    "provenance": {
+                        "batch_manifest": str(streamed / "batch_manifest.json"),
+                        "reference_manifest": str(
+                            reference / "reference_manifest.json"
+                        ),
+                        "gene_map_manifest": str(
+                            reference / "junction_exon_map.tsv.manifest.json"
+                        ),
+                        "node_rule": "shared-splice-site",
+                        "strandedness": "unstranded",
+                        "minimum_anchor": 8,
+                        "exclude_duplicates": False,
+                    },
+                },
+                indent=2,
+            )
+        )
+        binary = ROOT / "target/release/splice-girl"
+        call([binary, "check", "--config", config])
+        assert not (root / "configured-report").exists()
+        call([binary, "run", "--config", config])
+        assert (root / "configured-report/report.html").is_file()
     print(
         "External-tool synthetic smoke test passed in retain-sam and stream-bam modes; counts and QC agree."
     )

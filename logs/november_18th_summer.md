@@ -41,3 +41,17 @@ I checked that all seven scenarios match the earlier Python results, including
 exclusions and statistics. The complete check now passes 226 tests, and the
 Rust tests and Clippy also pass on Rust 1.85. The usual installed command was
 not replaced, and I did not commit, push or publish anything.
+
+I finished the release-preparation work by adding one saved JSON configuration
+and commands to check it and run the analysis. The check catches incomplete
+pipeline runs, different references/maps or filtering settings, and counts
+that disagree between combined and individual sample files. The run saves the
+settings, checked hashes, exclusions and reports. We chose MIT with a separate
+citation request, so I added the license, citation file and citation command.
+I also cut the crate down to 64 software/example/guide files, about 118 KiB,
+and tested installation from the actual extracted archive. All seven installed
+guide commands passed outside the repo with PATH empty. The full check now
+passes 239 tests and the actual synthetic preprocessing check. A first-time
+reviewer exercise and blank feedback sheet are ready, but a real person still
+needs to try them; I did not mark that review complete or invent feedback.
+Nothing was committed, pushed or published by the assistant.

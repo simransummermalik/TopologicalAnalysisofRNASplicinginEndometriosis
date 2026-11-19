@@ -4,6 +4,7 @@ import argparse
 import contextlib
 import io
 import json
+import hashlib
 import sys
 import tempfile
 import unittest
@@ -11,7 +12,7 @@ from unittest.mock import patch
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
-from build_junction_gene_map import build_gene_map
+from build_junction_gene_map import build_gene_map, write_map_manifest
 from hisat2_pipeline import configuration, index_files, reference, splice_hints
 from sam_junctions import convert_sam, count_junctions, skipped_intervals
 
@@ -99,6 +100,25 @@ class HisatTests(unittest.TestCase):
         splice_hints(self.map, hints)
         self.assertIn("chr1\t198\t299\t+", hints.read_text())
         self.assertIn("chr2\t148\t249\t-", hints.read_text())
+
+    def test_map_provenance_records_gtf_rule_and_exact_map_without_overwriting(self):
+        target = self.root / "provenance-map.tsv"
+        gtf = FIXTURES / "annotation.gtf"
+        summary = build_gene_map(gtf, target, "shared-splice-site")
+        path = write_map_manifest(gtf, target, summary)
+        record = json.loads(path.read_text())
+        self.assertEqual(record["status"], "complete")
+        self.assertEqual(record["node_rule"], "shared-splice-site")
+        self.assertEqual(
+            record["input"]["sha256"], hashlib.sha256(gtf.read_bytes()).hexdigest()
+        )
+        self.assertEqual(
+            record["output"]["sha256"], hashlib.sha256(target.read_bytes()).hexdigest()
+        )
+        original = path.read_bytes()
+        with self.assertRaises(FileExistsError):
+            write_map_manifest(gtf, target, summary)
+        self.assertEqual(path.read_bytes(), original)
 
     def test_complete_index_and_explicit_paired_plan(self):
         prefix = self.root / "genome"

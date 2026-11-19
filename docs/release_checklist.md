@@ -4,13 +4,13 @@ This checklist describes the smallest honest software release. It does not
 claim that the biological study is finished.
 
 The [release notes](release_notes.md) and `scripts/prepare_release.py` prepare
-an unpublished, allowlisted source archive with a checksum manifest. A license
-choice and final review remain necessary before publication; no release tag
-has been created.
+an unpublished, allowlisted source archive with a checksum manifest. MIT and a
+separate citation request were selected November 18. Final release review
+remains; no release tag has been created.
 
 ## Included now
 
-- Rust CLI source and dependency-free `Cargo.lock`.
+- Rust CLI source and locked JSON-parsing dependencies in `Cargo.lock`.
 - Synthetic fixtures and runnable demo inputs in `examples/demo/`.
 - Parser, graph, Hodge, comparison, validation, export, and SVG tests.
 - Beginner installation and command instructions in [`README.md`](../README.md).
@@ -35,6 +35,23 @@ has been created.
 7. Update the version, changelog, and software-validation date together.
 8. Record the license decision before publishing a release artifact.
 
+MIT is recorded in Cargo.toml and LICENSE; CITATION.cff provides the requested
+software citation. Citation in papers is requested rather than imposed as an
+additional MIT condition.
+
+## Check the exact crate payload
+
+```sh
+python3 scripts/check_crate.py --output-dir target/crate-review
+```
+
+This packages without uploading, checks the archive against the software-only
+allowlist, extracts it, runs its Rust tests and installs that extracted source.
+It then runs all seven installed-guide commands outside the checkout with
+PATH empty and retains logs/artifacts. Research data, PDFs, class logs, website
+files, preprocessing scripts and generated runs are outside the crate payload.
+The stable CI job repeats this check; no publishing credentials are used.
+
 The installed shared-graph workflow has its own reproducible developer check:
 
 ```sh
@@ -45,7 +62,8 @@ It installs into a private review folder, executes every command in the
 embedded guide from a temporary folder outside the checkout with PATH empty,
 and retains reports, checksums and logs. This verifies that installed
 preparation/sensitivity do not depend on Python or repository scripts at
-runtime. Publishing metadata and crate payload review remain separate.
+runtime. The exact-crate check above covers distribution payloads; independent
+human feedback and scientific validation remain separate.
 
 ## Current scope boundary
 

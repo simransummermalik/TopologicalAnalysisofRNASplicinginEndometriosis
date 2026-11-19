@@ -1,0 +1,18 @@
+cff-version: 1.2.0
+message: "If you use Splice Girl in a paper, please cite this software and record the version or commit used."
+type: software
+title: "Splice Girl: graph and Hodge analysis of RNA splice-junction data"
+version: 0.1.0
+license: MIT
+authors:
+  - family-names: Holmes
+    given-names: Sydney
+  - family-names: Zeledon
+    given-names: Vania
+  - family-names: Malik
+    given-names: Summer
+  - family-names: Oo
+    given-names: Wynn
+repository-code: "https://github.com/simransummermalik/TopologicalAnalysisofRNASplicinginEndometriosis"
+url: "https://github.com/simransummermalik/TopologicalAnalysisofRNASplicinginEndometriosis"
+abstract: "Experimental research software for shared splice-graph preparation, graph Hodge decomposition, sample comparisons, explicitly configured permutation tests and offline reports."

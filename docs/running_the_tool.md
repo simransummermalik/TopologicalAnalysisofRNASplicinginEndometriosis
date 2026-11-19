@@ -5,6 +5,13 @@ Result folders must be new; change their names for a repeat run.
 
 ## First: a complete demonstration with synthetic data
 
+The installed tool can also run from one saved configuration: create inputs
+with `splice-girl example --output demo-inputs`, then use `splice-girl check
+--config demo-inputs/analysis.json` and `splice-girl run --config
+demo-inputs/analysis.json`. Open `demo-inputs/configured-results/report.html`.
+See the [configuration guide](configuration.md) for strict settings and real
+pipeline provenance requirements. No output is written during preflight.
+
 ```sh
 cargo build --release
 cargo run --release -- stats examples/demo/all_genes.tsv \
@@ -137,5 +144,6 @@ evidence sign-offs remain. The inference policy is recorded in the statistics
 specification, while its real-data assumptions still need review. The
 [assistant-run beginner walkthrough](../beginner_test/README.md) records the
 installation/demo checks; an independent human usability review, final biological
-interpretation, license choice and final presentation are separate remaining
+interpretation and final presentation are separate remaining
 tasks. No final disease or exposure claim follows from the synthetic demo.
+MIT and a separate citation request are recorded in LICENSE and CITATION.cff.

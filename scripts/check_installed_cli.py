@@ -26,7 +26,8 @@ def digest(path):
         return hashlib.file_digest(source, "sha256").hexdigest()
 
 
-def check(output):
+def check(output, source=ROOT):
+    source = source.resolve()
     output = output.resolve()
     if output.exists():
         raise ValueError("output folder already exists; choose a new folder")
@@ -61,7 +62,7 @@ def check(output):
                 "cargo",
                 "install",
                 "--path",
-                ROOT,
+                source,
                 "--root",
                 output / "install",
                 "--locked",
@@ -69,7 +70,7 @@ def check(output):
                 "--target-dir",
                 ROOT / "target",
             ],
-            ROOT,
+            source,
             "install.log",
         )
         binary = (
@@ -97,8 +98,8 @@ def check(output):
                     raise ValueError("unexpected executable in installed guide")
                 number += 1
                 call([binary, *command[1:]], demo, f"guide-{number:02d}.log", env)
-        if number != 5:
-            raise ValueError(f"expected 5 installed guide commands, found {number}")
+        if number != 7:
+            raise ValueError(f"expected 7 installed guide commands, found {number}")
         prepared = json.loads((demo / "prepared/run_manifest.json").read_text())
         sensitivity = json.loads((demo / "sensitivity/run_manifest.json").read_text())
         if (
@@ -109,6 +110,7 @@ def check(output):
         for path in [
             demo / "statistics/report.html",
             demo / "sensitivity/primary/statistics/report.html",
+            demo / "configured-results/report.html",
         ]:
             if not path.is_file():
                 raise ValueError(f"missing report: {path}")

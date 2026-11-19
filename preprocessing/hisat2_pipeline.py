@@ -20,7 +20,7 @@ import sys
 from datetime import datetime, timezone
 from pathlib import Path
 
-from build_junction_gene_map import build_gene_map
+from build_junction_gene_map import build_gene_map, write_map_manifest
 from pipeline_runtime import (
     RunInterrupted,
     add_storage_arguments,
@@ -159,6 +159,9 @@ def reference(args):
         record["annotation_summary"] = build_gene_map(
             args.gtf, map_path, getattr(args, "node_rule", "shared-splice-site")
         )
+        map_manifest = write_map_manifest(
+            args.gtf, map_path, record["annotation_summary"]
+        )
         splice_hints(map_path, output / "splice_sites.tsv")
         with (output / "index.log").open("w") as log:
             subprocess.run(command, stdout=log, stderr=subprocess.STDOUT, check=True)
@@ -167,6 +170,7 @@ def reference(args):
             for path in [
                 *index_files(prefix, check_manifest=False),
                 map_path,
+                map_manifest,
                 output / "splice_sites.tsv",
             ]
         ]

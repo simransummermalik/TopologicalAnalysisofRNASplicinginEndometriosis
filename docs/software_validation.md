@@ -410,3 +410,51 @@ This establishes an installable junction-table analysis workflow. Raw-read
 preprocessing still needs the separately documented tools. It does not finish
 crate payload/licensing review, independent human usability review or the
 eight-sample biological analysis, and nothing was published.
+
+## Configuration, provenance and exact-crate acceptance — November 18
+
+The installed tool now supports strict `analysis.json` configuration with
+read-only `check` and configured `run`. Paths follow the config's folder;
+original and runnable resolved snapshots are saved with hashes. Checked files
+are rechecked before and after execution. Synthetic inputs are labeled;
+pipeline inputs require complete compatible sample/batch/reference/map records,
+matching recorded arguments and exact agreement between merged and individual
+sample counts. Large FASTQ/BAM/genome/index files are not reread by preflight.
+
+The complete check with actual tools passes **121 Rust and 118 Python tests
+(239 total)**, formatting, strict Clippy, release build and the synthetic
+benchmark. The Python split is 48 preprocessing, 56 evidence-helper and 14
+script tests. Eleven configuration regressions cover strict schema/duplicate
+keys, frozen inputs, output protection, no eligible genes, incomplete/hash-
+mismatched manifests, wrong reference/map/strand/anchor/support metadata,
+contradictory recorded commands and mismatched merged/per-sample counts.
+The installed CLI test also checks config-relative execution and clean citation
+output. Mathematical output parity with the earlier Python workflow still passes.
+
+`python3 scripts/check_project.py --with-tools` additionally built a tiny real
+synthetic reference/map, ran Cleaver/HISAT2 in both storage modes and confirmed
+matching counts/QC. The new map provenance was then used by native preflight
+and a configured report on the actual streamed batch. This check correctly
+reported two samples, no cyclic eligible genes and no inference. The bounded
+synthetic smoke uses a 0.05 GiB reserve; production's 2 GiB default is unchanged.
+
+The reviewed crate check was run with
+`python3 scripts/check_crate.py --output-dir target/crate-reviewed-final`.
+It packaged and verified the actual crate, inspected the allowlist, tested the
+extracted source and installed that source into a private review root. All
+seven embedded guide commands then passed outside the checkout with PATH empty.
+The payload has **64 files and is about 118 KiB compressed**, including MIT,
+CITATION.cff, the focused crate README and tiny examples. It excludes research
+data, PDF assets, class logs, website/preprocessing files and generated runs.
+The archive itself, hashes, logs and installed-guide artifacts are retained in
+that ignored review folder. The final workspace payload was rechecked under
+`target/crate-release-verified` after updating the shipped changelog. All 121
+Rust tests and strict Clippy also pass on the minimum Rust 1.85.0 compiler.
+The stable CI workflow now repeats exact-crate
+acceptance; this local record does not claim a remote CI run has occurred.
+
+The [reader exercise](user_acceptance.md) and blank feedback template are ready.
+No independent human review has been completed or invented. MIT/citation
+selection and software acceptance do not finish the full biological study,
+method comparisons or scientific interpretation. No tag, commit, push or
+publication was performed by the assistant.

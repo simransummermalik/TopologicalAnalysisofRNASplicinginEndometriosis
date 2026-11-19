@@ -8,6 +8,13 @@ Anyone can pick up any available task; there are no assigned leads.
 
 ## Latest completed work — November 18
 
+- [x] Add saved JSON configuration, read-only preflight and configured reports,
+  including completed sample/batch/reference/map identity and count checks.
+- [x] Select MIT with a separate citation request, provide CITATION.cff and
+  `cite`, and restrict the crate to software, fixtures and relevant guides.
+- [x] Build, inspect, test and install the actual unpublished crate archive;
+  exercise the installed guide outside the checkout. Independent human
+  acceptance remains pending in [the reviewer exercise](docs/user_acceptance.md).
 - [x] Make shared preparation and sensitivity available in the installed Rust
   CLI, including embedded example inputs, explicit statistics, provenance and
   binary-only checks with PATH empty. No Python or checkout is required for
@@ -74,7 +81,7 @@ The [November 17 storage preflight](docs/cohort_execution.md) estimated about
 Streaming BAM now avoids SAM, but does not establish that all samples fit
 this laptop. Final preprocessing choices, independent
 evidence/beginner reviews, the Overleaf parent source, course dates and the
-team's license choice also remain. These are not marked complete by software
+final release review also remain. These are not marked complete by software
 tests or by writing a draft.
 
 ## What matters most
@@ -275,8 +282,9 @@ source provenance, and a matching limitation.
   eligibility and preprocessing choices are resolved.
 - [ ] Finalize the [technical results draft](docs/results_draft.md) after the
   full cohort analysis; do not substitute pilot measurements for disease results.
-- [ ] Finalize the [prepared release review](docs/release_notes.md), including
-  the team's license choice. No tag or publication has been performed.
+- [ ] Finalize the [prepared release review](docs/release_notes.md) after
+  independent feedback. MIT/citation and crate acceptance are complete;
+  no tag or publication has been performed.
 - [ ] Compile the missing Overleaf parent. The available roadmap section is
   compiled, inspected and saved in `roadmap-preview.pdf`.
 - [ ] Run the complete acceptance checklist from a clean checkout.

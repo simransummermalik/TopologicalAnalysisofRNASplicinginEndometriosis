@@ -41,7 +41,7 @@ const EXAMPLE_HELP: &str = "Write small invented eight-sample inputs for the ins
 
 usage: splice-girl example --output <new-folder>
 
-Writes junctions.tsv, samples.tsv, genes.tsv and a README with complete commands.
+Writes junctions.tsv, samples.tsv, genes.tsv, analysis.json and a README.
 No downloads or human data. Existing folders are protected.";
 
 /// Dispatch three standalone commands, with errors before output creation.
@@ -247,6 +247,10 @@ fn write_example(output: &Path, command: &[String]) -> Result<(), String> {
         (
             "README.md",
             include_str!("../../examples/shared_graph/INSTALLED.md"),
+        ),
+        (
+            "analysis.json",
+            include_str!("../../examples/shared_graph/analysis.json"),
         ),
     ];
     // The example has no biological completeness declaration or cohort inputs.

@@ -28,6 +28,8 @@ from __future__ import annotations
 import argparse
 import csv
 import gzip
+import hashlib
+import json
 from bisect import bisect_right
 from collections import defaultdict
 from pathlib import Path
@@ -131,10 +133,16 @@ def shared_site_nodes(chromosome: str, strand: str, exons, introns):
     for root, positions in members.items():
         node = exon_node(chromosome, min(positions), max(positions), strand)
         if node in seen_ids:
-            raise ValueError(f"node ID collision for {node}; refine the node naming rule")
+            raise ValueError(
+                f"node ID collision for {node}; refine the node naming rule"
+            )
         seen_ids.add(node)
         node_of_root[root] = node
-    return {key: node_of_root[groups.find(key)] for key in groups.parent}, retained, len(members)
+    return (
+        {key: node_of_root[groups.find(key)] for key in groups.parent},
+        retained,
+        len(members),
+    )
 
 
 def build_gene_map(
@@ -276,12 +284,39 @@ def parse_args() -> argparse.Namespace:
     return parser.parse_args()
 
 
+def write_map_manifest(gtf_path: Path, output_path: Path, summary: dict) -> Path:
+    """Save enough identity to check a rebuilt map against its source GTF."""
+
+    def identity(path):
+        digest = hashlib.sha256()
+        with path.open("rb") as source:
+            for block in iter(lambda: source.read(1024 * 1024), b""):
+                digest.update(block)
+        return {"path": str(path.resolve()), "sha256": digest.hexdigest()}
+
+    path = Path(str(output_path) + ".manifest.json")
+    record = {
+        "schema_version": 1,
+        "status": "complete",
+        "node_rule": summary["node_rule"],
+        "input": identity(gtf_path),
+        "output": identity(output_path),
+    }
+    with path.open("x", encoding="utf-8") as target:
+        json.dump(record, target, indent=2, sort_keys=True)
+        target.write("\n")
+    return path
+
+
 def main() -> int:
     args = parse_args()
     if not args.gtf.is_file():
         raise SystemExit(f"GTF file does not exist: {args.gtf}")
+    if args.output.exists() or Path(str(args.output) + ".manifest.json").exists():
+        raise SystemExit("Output map or provenance already exists; choose a new path")
     try:
         stats = build_gene_map(args.gtf, args.output, args.node_rule)
+        write_map_manifest(args.gtf, args.output, stats)
     except (OSError, ValueError) as error:
         raise SystemExit(str(error)) from error
 

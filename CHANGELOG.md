@@ -2,6 +2,12 @@
 
 ## Unreleased
 
+- Added strict saved JSON configuration, read-only `check` and configured `run`
+  with frozen file hashes, completed upstream provenance and merged/per-sample
+  count checks. Reference/map identities and recorded command settings must agree.
+- Selected MIT with a separate citation request; shipped CITATION.cff, `cite`,
+  a focused crate README/payload, exact-archive acceptance and a pending human
+  reviewer exercise. Kept the ASCII banner in interactive startup only.
 - Added installed native Rust `prepare-shared`, `sensitivity` and `example`
   commands, replacing repository/Python dependencies for the shared-graph
   workflow. Added binary-only acceptance tests, seven-scenario Python parity,

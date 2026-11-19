@@ -34,7 +34,9 @@ use splice_girl::visualize::write_svg;
 
 fn main() -> ExitCode {
     let command: Vec<String> = env::args().collect();
-    print_banner();
+    if command.get(1).is_some_and(|argument| argument == "--start") {
+        print_banner();
+    }
     match run(&command) {
         Ok(()) => ExitCode::SUCCESS,
         Err(error) => {
@@ -71,6 +73,9 @@ usage:\n  \
   {program} prepare-shared --help\n  \
   {program} sensitivity --help\n  \
   {program} example --output <new-folder>\n\n\
+  {program} check --config <analysis.json>\n  \
+  {program} run --config <analysis.json>\n  \
+  {program} cite\n\n\
 commands:\n  \
   analyze     calculate graph and Hodge measurements\n  \
   validate    audit inputs, sample matching, graphs, and math checks\n  \
@@ -82,6 +87,9 @@ commands:\n  \
   prepare-shared  prepare common graphs, zeros and eligibility tables\n  \
   sensitivity    run shared-graph scenarios and optional statistics\n  \
   example        write small synthetic inputs for the installed tool\n  \
+  check          validate a saved configuration without writing outputs\n  \
+  run            run a checked configuration and save a report\n  \
+  cite           print software citation metadata\n  \
   --start     open the interactive menu"
     )
 }
@@ -113,6 +121,21 @@ fn run(command: &[String]) -> Result<(), String> {
 
     if first_argument == "stats" {
         return run_stats_command(arguments.collect(), command);
+    }
+
+    if matches!(first_argument.as_str(), "check" | "run") {
+        return splice_girl::shared::run_config_command(
+            &first_argument,
+            &arguments.collect::<Vec<_>>(),
+            command,
+        );
+    }
+    if first_argument == "cite" {
+        if arguments.next().is_some() {
+            return Err("usage: splice-girl cite".to_owned());
+        }
+        print!("{}", include_str!("../CITATION.cff"));
+        return Ok(());
     }
 
     if matches!(

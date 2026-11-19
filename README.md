@@ -293,6 +293,23 @@ record exclusions and run the threshold grid directly in Rust. They need no
 Python or repository checkout. See the [installed walkthrough](examples/shared_graph/INSTALLED.md).
 Raw FASTQ preprocessing still uses the separate Cleaver/HISAT2 tools.
 
+The example also contains a saved configuration:
+
+```sh
+splice-girl check --config splice-girl-example/analysis.json
+splice-girl run --config splice-girl-example/analysis.json
+```
+
+Open `splice-girl-example/configured-results/report.html`. The
+[configuration guide](docs/configuration.md) explains the read-only checks,
+pipeline provenance and saved settings. The [first-time reviewer exercise](docs/user_acceptance.md)
+remains available for an independent reader to complete.
+
+Splice Girl is [MIT licensed](LICENSE). If you use it in a paper, please cite
+the software and record the version or commit; `splice-girl cite` prints
+the metadata in [CITATION.cff](CITATION.cff). Citation is requested separately
+from MIT's license/copyright notice requirements.
+
 Cargo normally places installed commands in `$HOME/.cargo/bin`. If the install
 succeeds but `splice-girl` is not found, add that directory to your shell's
 `PATH`, restart the terminal, and try `splice-girl --version` again. You can

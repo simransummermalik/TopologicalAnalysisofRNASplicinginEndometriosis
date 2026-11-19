@@ -30,6 +30,8 @@ def prepare(output):
         "Cargo.lock",
         "CHANGELOG.md",
         "README.md",
+        "CRATE_README.md",
+        "CITATION.cff",
         "ROADMAP.md",
         "priorities.md",
         "mermaid.md",
@@ -44,6 +46,7 @@ def prepare(output):
         "docs",
         "examples/demo",
         "examples/shared_graph",
+        "user_testing",
         ".github/workflows",
         "assets/splice_girl_banner.txt",
         "assets/hodgetheorynew.pdf",
@@ -79,9 +82,11 @@ def prepare(output):
         "version": package["version"],
         "base_commit": git("rev-parse", "HEAD"),
         "working_tree_status": git("status", "--short"),
-        "license": "present; review before release"
-        if (ROOT / "LICENSE").is_file()
-        else "team choice pending; not ready to publish",
+        "license": (
+            package.get("license", "present; review before release")
+            if (ROOT / "LICENSE").is_file()
+            else "team choice pending; not ready to publish"
+        ),
         "archive": checksum(archive),
         "files": [
             {**checksum(ROOT / relative), "path": str(relative)}

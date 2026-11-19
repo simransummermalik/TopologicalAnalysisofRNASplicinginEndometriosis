@@ -413,3 +413,31 @@ fn optional_family_and_descriptive_sensitivity_work_without_statistics() {
     );
     assert!(!work.root.join("descriptive/primary/statistics").exists());
 }
+
+#[test]
+fn installed_config_runs_from_another_folder_and_citation_is_clean() {
+    let work = Workspace::new();
+    work.example();
+    work.ok(&["check", "--config", "inputs/analysis.json"]);
+    assert!(!work.root.join("inputs/configured-results").exists());
+    work.ok(&["run", "--config", "inputs/analysis.json"]);
+    assert!(
+        work.root
+            .join("inputs/configured-results/report.html")
+            .is_file()
+    );
+    assert!(
+        work.text("inputs/configured-results/report.html")
+            .contains("Synthetic demonstration")
+    );
+    let result = work.run(&["cite"]);
+    assert!(result.status.success());
+    assert!(String::from_utf8_lossy(&result.stdout).starts_with("cff-version: 1.2.0"));
+    assert!(String::from_utf8_lossy(&result.stdout).contains("license: MIT"));
+    assert!(
+        !work
+            .run(&["run", "--config", "inputs/analysis.json"])
+            .status
+            .success()
+    );
+}

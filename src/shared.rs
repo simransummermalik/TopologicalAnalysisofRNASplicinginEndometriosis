@@ -2,6 +2,7 @@
 //! These are explicit analysis choices, not implicit biological defaults.
 
 mod cli;
+mod config;
 mod sensitivity;
 
 use std::collections::{BTreeMap, BTreeSet};
@@ -14,6 +15,7 @@ use crate::output::{json_string, sha256_file};
 use crate::parser::Junction;
 
 pub use cli::run_command;
+pub use config::run_config_command;
 pub use sensitivity::{SensitivityOptions, StatisticsSettings, run_sensitivity};
 
 const HEADER: &str = "sample_id\tgene_id\tfrom\tto\tcount\n";
