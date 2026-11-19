@@ -1,10 +1,27 @@
 //! Installed-style acceptance: copy only the binary to a new working folder,
 //! remove PATH, then use embedded example inputs and native analysis commands.
 use std::fs;
+use std::io;
 use std::path::PathBuf;
 use std::process::{Command, Output};
 use std::sync::atomic::{AtomicUsize, Ordering};
-use std::time::{SystemTime, UNIX_EPOCH};
+use std::time::{Duration, SystemTime, UNIX_EPOCH};
+
+// Parallel Unix tests can briefly retain a writable descriptor for a copied
+// executable across another thread's fork. exec then returns ETXTBSY (26).
+// Retry only that pre-launch error, for at most one second. A command which
+// actually starts is never rerun, and all other errors propagate immediately.
+fn retry_busy_executable<T>(mut launch: impl FnMut() -> io::Result<T>) -> io::Result<T> {
+    for attempt in 0..=100 {
+        match launch() {
+            Err(error) if cfg!(unix) && error.raw_os_error() == Some(26) && attempt < 100 => {
+                std::thread::sleep(Duration::from_millis(10));
+            }
+            result => return result,
+        }
+    }
+    unreachable!("the last launch attempt always returns")
+}
 
 struct Workspace {
     root: PathBuf,
@@ -31,12 +48,14 @@ impl Workspace {
     }
 
     fn run(&self, args: &[&str]) -> Output {
-        Command::new(&self.binary)
-            .args(args)
-            .current_dir(&self.root)
-            .env("PATH", "")
-            .output()
-            .unwrap()
+        retry_busy_executable(|| {
+            Command::new(&self.binary)
+                .args(args)
+                .current_dir(&self.root)
+                .env("PATH", "")
+                .output()
+        })
+        .expect("isolated splice-girl executable should start")
     }
 
     fn ok(&self, args: &[&str]) {
@@ -111,6 +130,44 @@ impl Workspace {
             "--output",
             output,
         ]
+    }
+}
+
+#[test]
+#[cfg(unix)]
+fn busy_executable_launch_recovers_without_repeating_a_started_command() {
+    let mut launches = 0;
+    let output = retry_busy_executable(|| {
+        launches += 1;
+        if launches < 3 {
+            Err(io::Error::from_raw_os_error(26))
+        } else {
+            Ok("started")
+        }
+    })
+    .unwrap();
+    assert_eq!(output, "started");
+    assert_eq!(launches, 3);
+}
+
+#[test]
+fn launch_errors_remain_failures_and_retries_are_bounded() {
+    let mut launches = 0;
+    let result: io::Result<()> = retry_busy_executable(|| {
+        launches += 1;
+        Err(io::Error::new(io::ErrorKind::PermissionDenied, "denied"))
+    });
+    assert_eq!(result.unwrap_err().kind(), io::ErrorKind::PermissionDenied);
+    assert_eq!(launches, 1);
+
+    if cfg!(unix) {
+        launches = 0;
+        let result: io::Result<()> = retry_busy_executable(|| {
+            launches += 1;
+            Err(io::Error::from_raw_os_error(26))
+        });
+        assert_eq!(result.unwrap_err().raw_os_error(), Some(26));
+        assert_eq!(launches, 101);
     }
 }
 

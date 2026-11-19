@@ -461,8 +461,22 @@ identify the failing test. The same archive check passed locally under
 `target/crate-ci-investigation`; that does not resolve the Linux CI failure.
 Release checks now print failed subprocess logs and CI preserves acceptance
 logs for seven days, including on failure. A regression test confirms that
-errors stay visible and acceptance remains failed. Another CI run is required
-to diagnose the original failure; remote package acceptance is still pending.
+errors stay visible and acceptance remains failed.
+
+The [next GitHub run for 8be95c6](https://github.com/simransummermalik/TopologicalAnalysisofRNASplicinginEndometriosis/actions/runs/44456054685)
+exposed `ExecutableFileBusy` / `Text file busy` (Unix error 26) when two
+`cli_shared` tests launched their freshly copied executable. All 71 library
+tests passed in that archive run. The isolated CLI test harness now retries
+only this pre-launch error, with a one-second bound. It never retries a command
+that has started, ignores no assertions and immediately propagates other
+launch errors. Regressions cover recovery, immediate permission failures and
+exhausted retries. Remote package acceptance still needs a run of this fix;
+the preceding failed runs have not been relabeled successful.
+Local verification of the fix passed all 123 Rust tests, formatting and strict
+Clippy. `target/crate-busy-fix/acceptance.json` records a successful archive
+check, extracted-source tests and isolated installation; all seven shipped
+guide commands passed with PATH empty. These are macOS results, not a claim
+that the Linux GitHub check has already passed.
 
 The [reader exercise](user_acceptance.md) and blank feedback template are ready.
 No independent human review has been completed or invented. MIT/citation
