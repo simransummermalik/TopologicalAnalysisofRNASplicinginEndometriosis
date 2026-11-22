@@ -43,5 +43,6 @@ commits authored with Summer's university email through October 24, 2026.
 | November 16, 2026 | Summer | Prepared locally | [Configured statistics CLI, exports, and report integration](november_16th_summer.md) |
 | November 17, 2026 | Summer | Prepared locally | [Connected preprocessing, baselines, ranking, sensitivity and project checks](november_17th_summer.md) |
 | November 18, 2026 | Summer | Prepared locally | [Streaming BAM, disk checks, subprocess supervision and interruption handling](november_18th_summer.md) |
+| November 19, 2026 | Summer | HPC analysis and crate releases; log prepared locally | [Rust release, reference map, and first full-sample HPC run](november_19th_summer.md) |
 | November 20, 2026 | Summer | HPC processing; log prepared locally | [Exploratory comparison review and SRR36710385 download](november_20th_summer.md) |
 | November 21, 2026 | Summer | HPC sample completed; log prepared locally | [SRR36710385 preprocessing completion](november_21st_summer.md) |
