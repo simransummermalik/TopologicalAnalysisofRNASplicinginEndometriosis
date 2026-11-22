@@ -37,7 +37,8 @@ folders are protected. No raw-read processing or downloads are started.
 
 See `examples/shared_graph/analysis.json` for a complete example. The settings
 there exercise a proposal; choose primary settings before seeing biological
-case/control effects. The study still requires team threshold approval.
+case/control effects. The example's thresholds match the study values
+provisionally approved on 2026-11-22 (team confirmation pending).
 
 ## Verify biological pipeline exports
 

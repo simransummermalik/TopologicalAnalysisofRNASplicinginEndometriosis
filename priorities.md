@@ -34,7 +34,8 @@ Anyone can pick up any available task; there are no assigned leads.
   explicit edge/coverage thresholds, measured zeros only for covered samples,
   cycle eligibility, full-cohort gene-family handoff, and seven one-factor
   sensitivity runs with optional Rust statistics. An eight-sample synthetic
-  example checks the whole path; biological threshold approval remains open.
+  example checks the whole path. The proposed thresholds were provisionally
+  approved without changes on 2026-11-22; team confirmation pending.
 - [x] Settle library strandedness: all eight runs are RF (read 1 antisense in
   98.1–99.5% of matched reads, both groups), checked by streaming 200,000
   reads per mate from ENA. The cohort alignment uses `--strandedness RF`. See

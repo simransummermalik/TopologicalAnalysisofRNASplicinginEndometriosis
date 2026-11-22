@@ -2,9 +2,9 @@
 
 Implemented November 18, 2026. The software implements the
 [threshold proposal](threshold_proposal.md) with explicit caller settings.
-Implementation and synthetic checks do not approve the proposed values for
-the biological study. Choose and record the primary settings before seeing
-case/control effects; report the declared sensitivity grid without choosing
+The proposed values were provisionally approved without changes on 2026-11-22
+(team confirmation pending; see [decisions](decisions.md)). Any change must be
+recorded before seeing case/control effects; report the declared sensitivity grid without choosing
 the most favorable result afterward.
 
 ## What the extra step does

@@ -1,11 +1,13 @@
 # Proposal: junction support and coverage thresholds
 
-**Status:** proposal for team approval (drafted 2026-11-18). Biological cohort
-use awaits a recorded decision in [`decisions.md`](decisions.md). The
-[shared-graph implementation](shared_graphs.md) and synthetic example are
-available with explicit settings; this does not sign off the study thresholds.
-Complete inputs, storage/compute and final QC review are also needed for the
-full eight-sample run.
+**Status:** provisionally approved without changes on 2026-11-22 by Vania
+Zeledon; confirmation by the rest of the team is pending (drafted 2026-11-18).
+Recorded in [`decisions.md`](decisions.md). These are the primary settings for
+the eight-sample run; if the team changes any value, record a new dated
+decision before any case/control result is seen. The
+[shared-graph implementation](shared_graphs.md) takes these values as explicit
+settings. Complete inputs, storage/compute and final QC review are still needed
+for the full eight-sample run.
 
 **Must be decided before any case/control result is seen.** Every rule below
 uses read counts only, never the case/control labels.
@@ -94,6 +96,9 @@ evaluated by the count-table grid.
 
 ## Sign-off
 
-- **Approved by:**
-- **Date:**
-- **Changes from this proposal, if any:**
+- **Approved by:** Vania Zeledon (provisional); other team members to confirm:
+  - [ ] Sydney Holmes
+  - [ ] Summer Malik
+  - [ ] Wynn Oo
+- **Date:** 2026-11-22
+- **Changes from this proposal, if any:** none
