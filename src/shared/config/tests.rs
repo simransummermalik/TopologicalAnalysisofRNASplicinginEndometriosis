@@ -264,6 +264,22 @@ fn incomplete_or_tampered_sample_provenance_fails_before_outputs() {
 }
 
 #[test]
+fn sample_held_by_the_strand_check_is_refused() {
+    let fixture = Fixture::new();
+    fixture.pipeline();
+    fixture.change("batch/S0/run_manifest.json", |run| {
+        run["strand_check"] = json!({"status": "pass", "read1_agreement": 0.99})
+    });
+    fixture.refresh_child();
+    assert!(fixture.plan().is_ok());
+    fixture.change("batch/S0/run_manifest.json", |run| {
+        run["strand_check"] = json!({"status": "hold_for_review", "read1_agreement": 0.9})
+    });
+    fixture.refresh_child();
+    fixture.fails("failed the strand check");
+}
+
+#[test]
 fn mismatched_reference_and_node_rules_are_rejected() {
     let fixture = Fixture::new();
     fixture.pipeline();

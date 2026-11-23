@@ -461,7 +461,8 @@ def run(args):
     print(f"Splice Girl junction input: {output / 'junctions.tsv'}")
     if record["strand_check"]["status"] == "hold_for_review":
         print(
-            "WARNING: strand check failed; hold this sample for review "
+            "WARNING: strand check failed; this sample is held for review and "
+            "a batch leaves it out of the combined table "
             f"(read 1 agreement {record['strand_check']['read1_agreement']:.2%}, "
             f"expected {args.strandedness}, minimum 95%)."
         )

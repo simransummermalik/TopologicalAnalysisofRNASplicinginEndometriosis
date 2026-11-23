@@ -121,6 +121,9 @@ struct SampleManifest {
     outputs: Vec<Identity>,
     commands: Vec<Vec<String>>,
     stages: Vec<Stage>,
+    /// Post-alignment strand check; absent in runs made before 2026-11-23.
+    #[serde(default)]
+    strand_check: Option<Stage>,
 }
 #[derive(Deserialize)]
 struct Stage {
@@ -471,6 +474,15 @@ fn verify_pipeline(
                 && !run.stages.is_empty()
                 && run.stages.iter().all(|stage| stage.status == "complete"),
             format!("sample {} processing is incomplete", sample.sample_id),
+        )?;
+        require(
+            run.strand_check
+                .as_ref()
+                .is_none_or(|check| check.status != "hold_for_review"),
+            format!(
+                "sample {} failed the strand check and is held for review",
+                sample.sample_id
+            ),
         )?;
         let methods = run.settings;
         require(

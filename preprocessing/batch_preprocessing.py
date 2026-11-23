@@ -9,6 +9,7 @@ from __future__ import annotations
 
 import argparse
 import csv
+import json
 import re
 import subprocess
 import sys
@@ -84,6 +85,12 @@ def load_samples(path: Path):
     return samples
 
 
+def strand_status(run_manifest: Path) -> dict:
+    """The run's post-alignment strand check; {} for runs without one."""
+    with run_manifest.open(encoding="utf-8") as handle:
+        return json.load(handle).get("strand_check") or {}
+
+
 def batch(args):
     samples = load_samples(args.samples)
     output = args.output_dir.resolve()
@@ -145,7 +152,35 @@ def batch(args):
                 raise
             item["status"] = "complete"
             item["run_manifest"] = checksum(job.output_dir / "run_manifest.json")
+            check = strand_status(job.output_dir / "run_manifest.json")
+            if check.get("status") == "hold_for_review":
+                # 2026-11-18 rule: held for review, not analyzed. The run's
+                # files stay in place for inspection.
+                item["status"] = "excluded"
+                item["exclusion_reason"] = "strand_check_hold_for_review"
+                item["strand_check"] = check
+                print(
+                    f"WARNING: {job.sample_id} excluded from the combined table: "
+                    f"read 1 agreement {check['read1_agreement']:.2%} is below "
+                    f"{check['minimum_read1_agreement']:.0%} for {check['expected']}.",
+                    file=sys.stderr,
+                )
             save(manifest, record)
+        kept = [
+            (job, sample)
+            for job, sample, item in zip(jobs, samples, record["samples"])
+            if item["status"] == "complete"
+        ]
+        if not kept:
+            raise ValueError("every sample was excluded by the strand check")
+        # Excluded samples are listed separately so the published sample list
+        # matches the combined table exactly.
+        record["excluded_samples"] = [
+            item for item in record["samples"] if item["status"] == "excluded"
+        ]
+        record["samples"] = [
+            item for item in record["samples"] if item["status"] == "complete"
+        ]
         # Publish a combined table only when every job completed. Identity is
         # preserved; absent genes/edges are not filled with fabricated zeros.
         temporary = output / "junctions.tsv.tmp"
@@ -153,7 +188,7 @@ def batch(args):
             writer = csv.writer(dest, delimiter="\t", lineterminator="\n")
             header = ["sample_id", "gene_id", "from", "to", "count"]
             writer.writerow(header)
-            for job in jobs:
+            for job, _ in kept:
                 with (job.output_dir / "junctions.tsv").open(
                     encoding="utf-8", newline=""
                 ) as source:
@@ -171,7 +206,7 @@ def batch(args):
         temporary.replace(output / "junctions.tsv")
         with (output / "samples.tsv").open("x", encoding="utf-8") as handle:
             handle.write("sample_id\tcondition\n")
-            for sample in samples:
+            for _, sample in kept:
                 handle.write(f"{sample['sample_id']}\t{sample['condition']}\n")
         record["outputs"] = [
             checksum(output / name) for name in ("junctions.tsv", "samples.tsv")
@@ -188,6 +223,9 @@ def batch(args):
     print(
         f"Ready for Splice Girl: {output / 'junctions.tsv'} and {output / 'samples.tsv'}"
     )
+    if record["excluded_samples"]:
+        names = ", ".join(item["sample_id"] for item in record["excluded_samples"])
+        print(f"Excluded by the strand check (see batch_manifest.json): {names}")
 
 
 def main():

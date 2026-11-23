@@ -72,7 +72,9 @@ Preflight checks:
 4. The map's GTF matches that reference's GTF, the map hash matches every
    sample's conversion input, and the node rule matches the configuration.
 5. Every sample used the configured strand, anchor and duplicate policy,
-   retained read-counter support 1, and completed its recorded stages.
+   retained read-counter support 1, and completed its recorded stages. A
+   sample whose run manifest records a strand check of `hold_for_review` is
+   refused.
    Recorded counter/alignment arguments must agree with those method fields,
    and the recorded index prefix must identify the same eight index inputs.
 6. Gene-family/schema/coverage/cycle rules and any independent-subject/sample-

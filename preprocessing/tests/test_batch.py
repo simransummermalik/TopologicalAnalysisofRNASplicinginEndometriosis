@@ -77,6 +77,60 @@ class BatchTests(unittest.TestCase):
         with self.assertRaisesRegex(ValueError, "already exists"):
             batch(self.args)
 
+    def test_sample_held_by_strand_check_is_left_out_and_recorded(self):
+        def held_second(job):
+            self.fake_run(job)
+            if job.sample_id == "B":
+                check = {
+                    "status": "hold_for_review",
+                    "expected": "RF",
+                    "read1_agreement": 0.9,
+                    "minimum_read1_agreement": 0.95,
+                }
+                (job.output_dir / "run_manifest.json").write_text(
+                    json.dumps({"status": "complete", "strand_check": check})
+                )
+
+        with (
+            patch("batch_preprocessing.require_tools"),
+            patch("batch_preprocessing.run", side_effect=held_second),
+            contextlib.redirect_stdout(io.StringIO()) as out,
+            contextlib.redirect_stderr(io.StringIO()) as err,
+        ):
+            batch(self.args)
+        output = self.args.output_dir
+        manifest = json.loads((output / "batch_manifest.json").read_text())
+        self.assertEqual(manifest["status"], "complete")
+        self.assertEqual([s["sample_id"] for s in manifest["samples"]], ["A"])
+        excluded = manifest["excluded_samples"]
+        self.assertEqual([s["sample_id"] for s in excluded], ["B"])
+        self.assertEqual(excluded[0]["exclusion_reason"], "strand_check_hold_for_review")
+        self.assertNotIn("B\t", (output / "junctions.tsv").read_text())
+        self.assertEqual((output / "samples.tsv").read_text(), "sample_id\tcondition\nA\tcase\n")
+        self.assertIn("B excluded", err.getvalue())
+        self.assertIn("Excluded by the strand check", out.getvalue())
+        self.assertTrue((output / "B" / "junctions.tsv").is_file())
+
+    def test_all_samples_held_publishes_nothing(self):
+        def held(job):
+            self.fake_run(job)
+            (job.output_dir / "run_manifest.json").write_text(
+                json.dumps({"status": "complete", "strand_check": {
+                    "status": "hold_for_review", "expected": "RF",
+                    "read1_agreement": 0.5, "minimum_read1_agreement": 0.95}})
+            )
+
+        with (
+            patch("batch_preprocessing.require_tools"),
+            patch("batch_preprocessing.run", side_effect=held),
+            contextlib.redirect_stderr(io.StringIO()),
+            self.assertRaisesRegex(ValueError, "every sample was excluded"),
+        ):
+            batch(self.args)
+        output = self.args.output_dir
+        self.assertEqual(json.loads((output / "batch_manifest.json").read_text())["status"], "failed")
+        self.assertFalse((output / "junctions.tsv").exists())
+
     def test_failed_sample_never_publishes_a_complete_merged_table(self):
         def fail_second(job):
             if job.sample_id == "B":

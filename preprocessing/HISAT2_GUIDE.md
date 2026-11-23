@@ -148,6 +148,14 @@ least 95% of read-1 spliced unique alignments are antisense, as expected for
 RF. `hold_for_review` means the sample must not enter the analysis until the
 team has looked at it; the run also prints a warning.
 
+The batch command leaves a held sample out of the combined `junctions.tsv`
+and `samples.tsv`. It lists the sample under `excluded_samples` in
+`batch_manifest.json` with the reason and the counts, and keeps the sample's
+own folder for review. If every sample is held, nothing is published. The
+Rust analysis also refuses any sample whose run manifest says
+`hold_for_review`. Putting a reviewed sample back requires a new dated
+decision and a new run.
+
 For a sample aligned before 2026-11-23, check its saved BAM:
 
 ```sh

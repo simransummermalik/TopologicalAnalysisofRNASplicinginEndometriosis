@@ -311,7 +311,9 @@ strand; a read is antisense when it aligned to the strand opposite to `XS`.
 Since 2026-11-23 the junction counter records these counts in each sample's
 `junction_qc.json` (`strand_orientation`), and the pipeline writes the pass or
 hold call to `run_manifest.json` (`strand_check`) and prints a warning on a
-hold. Samples aligned before then are checked from their saved BAM with
+hold. The batch command leaves a held sample out of the combined table and
+sample list and records it under `excluded_samples` in `batch_manifest.json`;
+the Rust analysis refuses a held sample as a second safeguard. Samples aligned before then are checked from their saved BAM with
 `preprocessing/strand_orientation.py` (see the
 [HISAT2 guide](../preprocessing/HISAT2_GUIDE.md#check-strandedness-after-alignment)).
 
