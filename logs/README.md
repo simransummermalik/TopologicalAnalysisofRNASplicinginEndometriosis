@@ -42,7 +42,10 @@ commits authored with Summer's university email through October 24, 2026.
 | November 3, 2026 | Summer | Prepared locally | [Offline comparison report and linked Hodge graphs](november_3rd_summer.md) |
 | November 16, 2026 | Summer | Prepared locally | [Configured statistics CLI, exports, and report integration](november_16th_summer.md) |
 | November 17, 2026 | Summer | Prepared locally | [Connected preprocessing, baselines, ranking, sensitivity and project checks](november_17th_summer.md) |
+| November 17, 2026 | Vania | Pushed | [Candidate-gene evidence extraction and inference rules (Priorities 2 and 4)](november_17th_vania.md) |
 | November 18, 2026 | Summer | Prepared locally | [Streaming BAM, disk checks, subprocess supervision and interruption handling](november_18th_summer.md) |
+| November 18, 2026 | Vania | Pushed | [Node rule, library strandedness and threshold proposal (Priority 1)](november_18th_vania.md) |
 | November 19, 2026 | Summer | HPC analysis and crate releases; log prepared locally | [Rust release, reference map, and first full-sample HPC run](november_19th_summer.md) |
 | November 20, 2026 | Summer | HPC processing; log prepared locally | [Exploratory comparison review and SRR36710385 download](november_20th_summer.md) |
 | November 21, 2026 | Summer | HPC sample completed; log prepared locally | [SRR36710385 preprocessing completion](november_21st_summer.md) |
+| November 22–23, 2026 | Vania | Pushed | [Threshold approval, strand check, run assembly, cohort configuration and interpretation tools](november_23rd_vania.md) |
