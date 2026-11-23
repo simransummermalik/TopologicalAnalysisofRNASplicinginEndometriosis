@@ -43,7 +43,7 @@ CTD's page for a gene's chemical interactions is linked as **CTD**.
 - **Look for:** in PMID 27663891's full text or figures, whether MMP2
   expression was measured after PCB 126 (CB126) in human endometrial cells,
   and in which direction.
-- **Result:**
+- **Result:** Problem- CTD reports decreased MMP2 mRNA expression after exposure to the listed chemical, contradicting the evidence table's claim of increased expression. Direction needs correction and supporting publication context should be checked.
 
 ### E-2. ADM · TCDD · genome-wide screens
 
