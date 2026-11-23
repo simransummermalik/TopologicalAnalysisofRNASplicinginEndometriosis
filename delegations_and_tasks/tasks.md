@@ -129,7 +129,7 @@ has not been met.
 | S12 | In progress | The generic statistics TSV, run manifest, sample decisions, and report are implemented and tested; the final real-study report and baseline/sensitivity results remain. |
 | S2, S3 | Not started | Real eligibility and support/coverage thresholds still require scientific review. |
 | S9–S11 | In progress | Same-sample graph/count baselines and the [support-grid runner](../scripts/sensitivity.py) are implemented and tested, including shared topology, seven one-factor scenarios and optional Rust statistics on fully eligible genes. Real-input validation, approved alternate thresholds and biological method comparisons remain. |
-| I1–I3 | Blocked | Biological interpretation must wait for reviewed real results and provenance tables. |
+| I1–I3 | Blocked | Biological interpretation must wait for reviewed real results and provenance tables. *2026-11-23:* the I1/I2 join, evidence check, category summary and exploratory set tests are implemented in `scripts/interpret_results.py` and tested on synthetic results. |
 
 ### Usability, presentation, and final work status
 

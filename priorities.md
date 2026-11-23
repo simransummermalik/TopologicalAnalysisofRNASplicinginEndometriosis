@@ -23,6 +23,10 @@ Anyone can pick up any available task; there are no assigned leads.
   [`analysis/cohort_primary/`](analysis/cohort_primary/README.md): approved
   thresholds, candidate gene set, statistics and provenance. It passes `check`
   and completes `run` on a mock cohort with the real sample IDs.
+- [x] Add `scripts/interpret_results.py` (Priority 8): joins results to the
+  evidence tables, refuses any gene whose evidence disagrees with its
+  category, summarizes categories and runs the exploratory risk, environment
+  and overlap set tests beside the confirmatory candidate test.
 - Summer has run 3 of 8 samples on the HPC cluster (SRR36710387, SRR36710386,
   SRR36710385); the other five are pending.
 
@@ -300,8 +304,12 @@ the demo even without internet access.
 **Depends on:** Priorities 2 and 5.
 
 - [ ] Join computational results to the evidence tables by stable gene ID.
+  *(Tool ready 2026-11-23: [`scripts/interpret_results.py`](analysis/cohort_primary/README.md#running-it-on-the-cluster);
+  tested on synthetic results; waiting on the real run.)*
 - [ ] Compare risk-only, environment-only, and overlap categories.
+  *(Same tool: per-category summary and exploratory set tests.)*
 - [ ] Link every discussed gene to its samples, junctions, and sources.
+  *(Same tool: `gene_interpretation.tsv` and `gene_junctions.tsv`.)*
 - [x] State that cycle-space signal does not by itself prove circular RNA.
 - [x] Document current tissue, sample-size, alignment, coverage and causation
   limits in the methods/results drafts and speaking notes; apply them to final

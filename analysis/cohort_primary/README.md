@@ -60,6 +60,21 @@ the cluster and are ignored by Git.
    `results/analysis/primary/statistics/set_test.tsv`; `results/report.html`
    shows everything.
 
+6. Join the results to the gene evidence and run the exploratory category
+   tests:
+   ```sh
+   python3 scripts/interpret_results.py \
+     --results analysis/cohort_primary/results \
+     --output analysis/cohort_primary/results/interpretation
+   ```
+   This writes one row per candidate gene with its category, evidence
+   sources, eligibility and result (`gene_interpretation.tsv`); per-sample
+   edge counts for every tested gene (`gene_junctions.tsv`); descriptive
+   counts and effects per category (`category_summary.tsv`); and
+   `set_tests.tsv`, which puts the confirmatory candidate-set test beside the
+   exploratory risk, environment and overlap set tests. It stops if any
+   gene's category disagrees with the evidence tables.
+
 ## If the check fails
 
 Fix the cause, do not edit the settings. In particular, if any sample was
