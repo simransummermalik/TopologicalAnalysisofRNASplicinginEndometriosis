@@ -1,7 +1,8 @@
 # Proposal: junction support and coverage thresholds
 
 **Status:** provisionally approved without changes on 2026-11-22 by Vania
-Zeledon; confirmation by the rest of the team is pending (drafted 2026-11-18).
+Zeledon; confirmation by Summer Malik is pending (drafted 2026-11-18). Sign-off
+by Vania and Summer approves it (2026-11-23 decision).
 Recorded in [`decisions.md`](decisions.md). These are the primary settings for
 the eight-sample run. The values were written on 2026-11-18; an exploratory
 one-case-versus-one-control comparison was viewed on 2026-11-20, before
@@ -99,10 +100,9 @@ evaluated by the count-table grid.
 
 ## Sign-off
 
-- **Approved by:** Vania Zeledon (provisional); other team members to confirm:
-  - [ ] Sydney Holmes
+- **Approved by:** sign-off by these two approves the proposal:
+  - [x] Vania Zeledon (2026-11-22)
   - [ ] Summer Malik
-  - [ ] Wynn Oo
 - **Date:** 2026-11-22
 - **Changes from this proposal, if any:** none (values frozen; see the
   2026-11-23 correction in `decisions.md`)

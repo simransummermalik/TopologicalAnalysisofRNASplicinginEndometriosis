@@ -1,7 +1,7 @@
 # Interpretation plan: how results will be reported
 
-**Status:** proposal for team approval (drafted 2026-11-23). It must be
-approved before the eight-sample results are produced. Nothing in it has been
+**Status:** proposal awaiting sign-off by Vania Zeledon and Summer Malik
+(drafted 2026-11-23). It must be approved before the eight-sample results are produced. Nothing in it has been
 computed on real data. The only case/control output seen so far is the
 exploratory one-case-versus-one-control comparison of 2026-11-20 (per-sample
 graphs, cycle fraction only; see the 2026-11-23 correction in
@@ -113,6 +113,8 @@ Every claim in the results, slides or website must carry its matching limit.
 
 ## Sign-off
 
-- **Approved by:**
+- **Approved by:** sign-off by these two approves the plan:
+  - [ ] Vania Zeledon
+  - [ ] Summer Malik
 - **Date:**
 - **Changes from this proposal, if any:**
