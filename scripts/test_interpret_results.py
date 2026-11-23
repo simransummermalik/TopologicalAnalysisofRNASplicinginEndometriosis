@@ -8,7 +8,15 @@ import tempfile
 import unittest
 from pathlib import Path
 
-from interpret_results import ROOT, load_evidence, main
+from interpret_results import (
+    ROOT,
+    classify,
+    load_evidence,
+    main,
+    set_permutation,
+    spearman,
+    usage_entropy,
+)
 
 GENE_SETS = ROOT / "data/gene_sets"
 BINARY = ROOT / "target/release/splice-girl"
@@ -42,6 +50,41 @@ class EvidenceTests(unittest.TestCase):
             path.write_text("".join(line for line in lines if "SEMA3F" not in line), encoding="utf-8")
             with self.assertRaisesRegex(ValueError, "SEMA3F: is_risk=1 but endometriosis_risk.tsv"):
                 load_evidence(copy)
+
+
+class MethodComparisonTests(unittest.TestCase):
+    def test_usage_entropy_runs_from_one_edge_to_even_spread(self):
+        self.assertEqual(usage_entropy([10, 0, 0]), 0)
+        self.assertAlmostEqual(usage_entropy([5, 5, 5]), 1.0)
+        self.assertIsNone(usage_entropy([0, 0, 0]))
+        self.assertIsNone(usage_entropy([7]))
+
+    def test_set_permutation_matches_the_rust_rules(self):
+        is_case = [True] * 4 + [False] * 4
+        perfect = set_permutation([[1, 1, 1, 1, 0, 0, 0, 0]], is_case)
+        self.assertEqual((perfect["extreme_count"], perfect["permutations_considered"]), (2, 70))
+        # Opposite directions do not cancel in the two-sided set statistic.
+        opposite = set_permutation(
+            [[1, 1, 1, 1, 0, 0, 0, 0], [0, 0, 0, 0, 1, 1, 1, 1]], is_case
+        )
+        self.assertEqual(opposite["set_statistic"], 1.0)
+        self.assertEqual(opposite["signed_effect_case_minus_control"], 0.0)
+        self.assertAlmostEqual(opposite["p_value"], 2 / 70)
+        flat = set_permutation([[0.5] * 8], is_case)
+        self.assertEqual(flat["p_value"], 1.0)
+
+    def test_outcome_rules(self):
+        self.assertEqual(classify(None, None)["outcome"], "not_tested")
+        self.assertEqual(classify(0.5, 0.01)["outcome"], "null")
+        self.assertEqual(classify(0.05, None)["outcome"], "null")
+        self.assertEqual(classify(2 / 70, 2 / 70)["outcome"], "difference_also_in_baseline")
+        self.assertEqual(classify(2 / 70, 0.4)["outcome"], "difference_not_in_baseline")
+
+    def test_spearman_handles_ties_and_small_inputs(self):
+        self.assertAlmostEqual(spearman([1, 2, 3, 4], [10, 20, 30, 40]), 1.0)
+        self.assertAlmostEqual(spearman([1, 2, 3, 4], [4, 3, 2, 1]), -1.0)
+        self.assertIsNone(spearman([1, 2], [1, 2]))
+        self.assertIsNone(spearman([1, 1, 1], [1, 2, 3]))
 
 
 @unittest.skipUnless(BINARY.is_file(), "needs cargo build --release")
@@ -118,8 +161,27 @@ class InterpretRunTests(unittest.TestCase):
         links = rows(self.output / "gene_junctions.tsv")
         self.assertEqual({r["gene_id"] for r in links}, set(STAND_INS))
         self.assertEqual({r["condition"] for r in links}, {"case", "control"})
+        discussed = rows(self.output / "discussed_genes.tsv")
+        self.assertEqual([d["rank"] for d in discussed], ["1", "2", "3"])
+        effects = [abs(float(d["mean_difference_case_minus_control"])) for d in discussed]
+        self.assertEqual(effects, sorted(effects, reverse=True))
         manifest = json.loads((self.output / "interpretation_manifest.json").read_text())
         self.assertEqual(len(manifest["commands"]), 3)
+
+    def test_method_comparison_reproduces_primary_and_records_outcome(self):
+        comparison = {r["metric"]: r for r in rows(self.output / "method_comparison.tsv")}
+        primary = rows(self.output / "set_tests.tsv")[0]
+        hodge = comparison["cycle_fraction (primary)"]
+        self.assertEqual(hodge["genes_used"], "3")
+        self.assertEqual(hodge["extreme_count"], primary["extreme_count"])
+        self.assertEqual(comparison["junction_usage_entropy (baseline)"]["genes_used"], "3")
+        self.assertIn("spearman_abs_cycle_fraction_vs_abs_entropy_effect", comparison)
+        self.assertEqual(len(rows(self.output / "gene_method_comparison.tsv")), 3)
+        outcome = json.loads((self.output / "outcome.json").read_text())
+        self.assertIn(outcome["outcome"], {
+            "null", "difference_also_in_baseline", "difference_not_in_baseline"})
+        self.assertEqual(outcome["rules"], "docs/interpretation_plan.md")
+        self.assertIn("Pre-declared outcome", self.printed.getvalue())
 
     def test_changed_category_in_results_is_refused(self):
         statistics = self.results / "analysis/primary/statistics/statistics.tsv"

@@ -54,6 +54,9 @@ not assigned zero-valued results.
 
 ## Biological comparisons still to report
 
+How these will be worded, including a null result, is fixed in advance by
+the [interpretation plan](interpretation_plan.md) (proposal, 2026-11-23).
+
 No case/control effect, disease-associated gene, significant gene set, or
 advantage over simpler baselines is claimed from this one-control pilot.
 The final results need eight reviewed sample inputs, comparable gene graphs,

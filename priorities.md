@@ -26,7 +26,10 @@ Anyone can pick up any available task; there are no assigned leads.
 - [x] Add `scripts/interpret_results.py` (Priority 8): joins results to the
   evidence tables, refuses any gene whose evidence disagrees with its
   category, summarizes categories and runs the exploratory risk, environment
-  and overlap set tests beside the confirmatory candidate test.
+  and overlap set tests beside the confirmatory candidate test. It also
+  compares cycle fraction with a junction-usage entropy baseline under the
+  same test and records the pre-declared outcome from the new
+  [interpretation plan](docs/interpretation_plan.md) (needs team approval).
 - Summer has run 3 of 8 samples on the HPC cluster (SRR36710387, SRR36710386,
   SRR36710385); the other five are pending.
 
@@ -315,6 +318,9 @@ the demo even without internet access.
   limits in the methods/results drafts and speaking notes; apply them to final
   interpretations after the cohort run.
 - [ ] Report a null result honestly if Hodge summaries do not beat baselines.
+  *(2026-11-23: the [interpretation plan](docs/interpretation_plan.md) fixes the
+  baseline, the outcome wording and which genes are discussed; the script
+  applies it. Plan awaits team approval; reporting waits on the real run.)*
 
 **Finished when:** every biological claim has visible computational evidence,
 source provenance, and a matching limitation.

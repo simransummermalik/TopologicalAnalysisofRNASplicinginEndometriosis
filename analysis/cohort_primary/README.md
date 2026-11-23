@@ -73,7 +73,12 @@ the cluster and are ignored by Git.
    counts and effects per category (`category_summary.tsv`); and
    `set_tests.tsv`, which puts the confirmatory candidate-set test beside the
    exploratory risk, environment and overlap set tests. It stops if any
-   gene's category disagrees with the evidence tables.
+   gene's category disagrees with the evidence tables. It also compares the
+   Hodge summary with a junction-usage baseline (`method_comparison.tsv`),
+   lists the five genes the write-up may name (`discussed_genes.tsv`) and
+   records which pre-declared outcome applies (`outcome.json`); the wording
+   for each outcome is fixed in the
+   [interpretation plan](../../docs/interpretation_plan.md).
 
 ## If the check fails
 
