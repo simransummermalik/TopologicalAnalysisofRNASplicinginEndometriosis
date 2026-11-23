@@ -3,8 +3,11 @@
 **Status:** provisionally approved without changes on 2026-11-22 by Vania
 Zeledon; confirmation by the rest of the team is pending (drafted 2026-11-18).
 Recorded in [`decisions.md`](decisions.md). These are the primary settings for
-the eight-sample run; if the team changes any value, record a new dated
-decision before any case/control result is seen. The
+the eight-sample run. The values were written on 2026-11-18; an exploratory
+one-case-versus-one-control comparison was viewed on 2026-11-20, before
+approval (see the 2026-11-23 correction in `decisions.md`). The values are
+therefore frozen: confirmation may only accept them, and any change must be
+reported as made after case/control data were seen. The
 [shared-graph implementation](shared_graphs.md) takes these values as explicit
 settings. Complete inputs, storage/compute and final QC review are still needed
 for the full eight-sample run.
@@ -101,4 +104,5 @@ evaluated by the count-table grid.
   - [ ] Summer Malik
   - [ ] Wynn Oo
 - **Date:** 2026-11-22
-- **Changes from this proposal, if any:** none
+- **Changes from this proposal, if any:** none (values frozen; see the
+  2026-11-23 correction in `decisions.md`)

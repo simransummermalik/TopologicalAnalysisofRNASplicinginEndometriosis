@@ -118,8 +118,8 @@ python3 preprocessing/batch_preprocessing.py plan
   --gene-map references/hisat2_v50/junction_exon_map.tsv
   --splice-sites references/hisat2_v50/splice_sites.tsv
   --strandedness RF
-  --min-anchor APPROVED_ANCHOR_LENGTH
-  --min-unique APPROVED_JUNCTION_SUPPORT
+  --min-anchor 8
+  --min-unique 1
   --output-dir preprocessing/runs/cohort_run_01
   --threads 2
 ```
@@ -136,6 +136,28 @@ The batch publishes a combined `junctions.tsv` and `samples.tsv` only after
 every sample completes. A failure stops the batch, records the failed and
 unstarted samples, and leaves existing completed results for inspection.
 The combined table preserves sample IDs and does not manufacture missing zeros.
+
+Anchor 8 and minimum support 1 are the
+[thresholds](../docs/threshold_proposal.md) provisionally approved on
+2026-11-22; filtering by edge support happens later, in the shared-graph step.
+
+### Check strandedness after alignment
+
+Each sample's `run_manifest.json` has a `strand_check` entry. `pass` means at
+least 95% of read-1 spliced unique alignments are antisense, as expected for
+RF. `hold_for_review` means the sample must not enter the analysis until the
+team has looked at it; the run also prints a warning.
+
+For a sample aligned before 2026-11-23, check its saved BAM:
+
+```sh
+samtools view preprocessing/runs/SAMPLE/aligned.bam \
+  | python3 preprocessing/strand_orientation.py --sam - --expected RF \
+      --sample-id SAMPLE > SAMPLE_strand_check.json
+```
+
+The command prints the counts and the call as JSON. It exits with 0 on pass
+and 3 on hold. A full BAM takes a few minutes to read.
 
 ### Save disk space with streaming BAM
 

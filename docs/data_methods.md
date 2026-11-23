@@ -303,10 +303,17 @@ groups; [results](../data/strandedness_2026-11-18/README.md)). The pilot's
 HISAT2 alignment of SRR36710387 independently gave 99.7%. The cohort alignment
 therefore uses `--strandedness RF` (HISAT2 `--rna-strandness RF`).
 
-After alignment, each sample's spliced-alignment orientation is rechecked
-(the strand counts reported by `preprocessing/ambiguity_audit.py`). A sample
-whose read 1 is antisense in less than 95% of eligible spliced alignments is
-held for review rather than analyzed.
+After alignment, each sample's spliced-alignment orientation is rechecked. A
+sample whose read 1 is antisense in less than 95% of eligible spliced
+alignments is held for review rather than analyzed. Eligible alignments are
+primary, uniquely mapped (`NH:i:1`), spliced and carry an `XS` transcript
+strand; a read is antisense when it aligned to the strand opposite to `XS`.
+Since 2026-11-23 the junction counter records these counts in each sample's
+`junction_qc.json` (`strand_orientation`), and the pipeline writes the pass or
+hold call to `run_manifest.json` (`strand_check`) and prints a warning on a
+hold. Samples aligned before then are checked from their saved BAM with
+`preprocessing/strand_orientation.py` (see the
+[HISAT2 guide](../preprocessing/HISAT2_GUIDE.md#check-strandedness-after-alignment)).
 
 The November 17 pilot was aligned as `unstranded`; its results are kept as
 recorded and not relabeled.

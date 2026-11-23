@@ -17,10 +17,12 @@ import shlex
 import shutil
 import subprocess
 import sys
+from collections import Counter
 from datetime import datetime, timezone
 from pathlib import Path
 
 from build_junction_gene_map import build_gene_map, write_map_manifest
+from strand_orientation import EXPECTED_READ1, summarize
 from pipeline_runtime import (
     RunInterrupted,
     add_storage_arguments,
@@ -439,6 +441,9 @@ def run(args):
             if not path.is_file() or path.stat().st_size == 0:
                 raise ValueError(f"missing or empty expected output: {path}")
         record["outputs"] = [checksum(path) for path in required]
+        record["strand_check"] = strand_check(
+            output / "junction_qc.json", args.strandedness
+        )
         record["status"] = "complete"
     except BaseException as error:
         record.update(
@@ -454,6 +459,21 @@ def run(args):
     finally:
         save(manifest, record)
     print(f"Splice Girl junction input: {output / 'junctions.tsv'}")
+    if record["strand_check"]["status"] == "hold_for_review":
+        print(
+            "WARNING: strand check failed; hold this sample for review "
+            f"(read 1 agreement {record['strand_check']['read1_agreement']:.2%}, "
+            f"expected {args.strandedness}, minimum 95%)."
+        )
+
+
+def strand_check(qc_path, strandedness):
+    """Apply the 2026-11-18 post-alignment rule to the converter's counts."""
+    with qc_path.open(encoding="utf-8") as handle:
+        counts = json.load(handle).get("strand_orientation")
+    if strandedness not in EXPECTED_READ1 or counts is None:
+        return {"status": "not_checked", "strandedness": strandedness}
+    return summarize(Counter(counts), strandedness)
 
 
 def main():

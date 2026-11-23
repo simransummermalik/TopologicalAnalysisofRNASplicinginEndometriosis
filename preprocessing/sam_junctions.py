@@ -19,6 +19,7 @@ from pathlib import Path
 from typing import Iterable
 
 from star_junctions import load_gene_map
+from strand_orientation import add_record, summarize
 
 CIGAR = re.compile(r"([1-9][0-9]*)([MIDNSHP=X])")
 
@@ -63,6 +64,7 @@ def count_junctions(
     stats = Counter()
     ambiguous_target_multiplicity = Counter()
     counts = Counter()
+    orientation = Counter()
     for line_number, raw in enumerate(lines, 1):
         if not raw.strip() or raw.startswith("@"):
             continue
@@ -101,6 +103,7 @@ def count_junctions(
         if strand is None:
             stats["unknown_transcript_strand_records"] += 1
             continue
+        add_record(orientation, flag, tags["XS"][1])
         try:
             intervals = skipped_intervals(position, fields[5], min_anchor)
         except ValueError as error:
@@ -170,6 +173,7 @@ def count_junctions(
             )
         },
     }
+    stats["strand_orientation"] = summarize(orientation)
     return filtered, {
         **dict(stats),
         "sample_id": sample_id,
@@ -283,6 +287,11 @@ def main():
                 f"{summary['ambiguous_within_one_gene']:,} within one gene; "
                 "target multiplicities are recorded in the QC JSON."
             )
+    orientation = stats["strand_orientation"]
+    for mate in ("read1", "read2"):
+        fraction = orientation[f"{mate}_antisense_fraction"]
+        if fraction is not None:
+            print(f"Strand check: {mate} antisense in {fraction:.2%} of spliced unique alignments.")
     return 0
 
 
