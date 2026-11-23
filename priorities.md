@@ -19,6 +19,10 @@ Anyone can pick up any available task; there are no assigned leads.
 - [x] Add `preprocessing/assemble_runs.py` to combine separately run samples
   (one cluster job each) into the checked cohort bundle the analysis needs.
   Tested with fake runs that the Rust `check --config` accepts.
+- [x] Save the primary analysis configuration in
+  [`analysis/cohort_primary/`](analysis/cohort_primary/README.md): approved
+  thresholds, candidate gene set, statistics and provenance. It passes `check`
+  and completes `run` on a mock cohort with the real sample IDs.
 - Summer has run 3 of 8 samples on the HPC cluster (SRR36710387, SRR36710386,
   SRR36710385); the other five are pending.
 
@@ -206,6 +210,9 @@ Real-data eligibility and thresholds remain open.
 
 - [x] Record the biological unit and unpaired cohort design in the statistics specification.
 - [ ] Freeze eligible samples, genes, thresholds, and missing-value rules.
+  *(2026-11-23: all are written into the
+  [primary analysis configuration](analysis/cohort_primary/README.md);
+  threshold confirmation by Sydney, Summer and Wynn remains.)*
 - [x] Define the main case-minus-control effect size.
 - [x] Implement the exact permutation calculation; exhaustive enumeration uses no random seed.
 - [x] Test permutation and BH correction calculations on tiny known examples.

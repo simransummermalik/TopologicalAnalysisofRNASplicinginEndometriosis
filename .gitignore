@@ -8,3 +8,8 @@ __pycache__/
 *.bam.bai
 *.fastq.gz
 *.fq.gz
+
+# Primary cohort analysis: HPC-only inputs and outputs (see analysis/cohort_primary/README.md)
+/analysis/cohort_primary/cohort/
+/analysis/cohort_primary/reference
+/analysis/cohort_primary/results/

@@ -1,0 +1,34 @@
+{
+  "schema_version": 1,
+  "input_kind": "pipeline",
+  "junctions": "cohort/junctions.tsv",
+  "manifest": "../../data/metadata/samples.tsv",
+  "genes": "../../data/gene_sets/candidate_genes.tsv",
+  "output": "results",
+  "complete_counts": true,
+  "shared_graph": {
+    "minimum_edge_count": 5,
+    "minimum_samples_per_edge": 4,
+    "minimum_gene_support": 50
+  },
+  "sensitivity": {
+    "edge_counts": [3, 5, 10],
+    "sample_counts": [2, 4, 6],
+    "gene_support": [20, 50, 100]
+  },
+  "statistics": {
+    "family": "candidate_genes",
+    "alternative": "two-sided",
+    "design": "independent",
+    "min_per_group": 4
+  },
+  "provenance": {
+    "batch_manifest": "cohort/batch_manifest.json",
+    "reference_manifest": "reference/reference_manifest.json",
+    "gene_map_manifest": "reference/junction_exon_map.tsv.manifest.json",
+    "node_rule": "shared-splice-site",
+    "strandedness": "RF",
+    "minimum_anchor": 8,
+    "exclude_duplicates": false
+  }
+}
