@@ -264,6 +264,20 @@ fn incomplete_or_tampered_sample_provenance_fails_before_outputs() {
 }
 
 #[test]
+fn assembled_runs_are_accepted_and_unknown_pipelines_refused() {
+    let fixture = Fixture::new();
+    fixture.pipeline();
+    fixture.change("batch/batch_manifest.json", |batch| {
+        batch["pipeline"] = json!("Splice Girl assembled Cleaver/HISAT2 runs")
+    });
+    assert!(fixture.plan().is_ok());
+    fixture.change("batch/batch_manifest.json", |batch| {
+        batch["pipeline"] = json!("hand-merged tables")
+    });
+    fixture.fails("unsupported pipeline");
+}
+
+#[test]
 fn sample_held_by_the_strand_check_is_refused() {
     let fixture = Fixture::new();
     fixture.pipeline();

@@ -85,6 +85,31 @@ def load_samples(path: Path):
     return samples
 
 
+HEADER = ["sample_id", "gene_id", "from", "to", "count"]
+
+
+def write_combined(output: Path, samples) -> None:
+    """Write junctions.tsv and samples.tsv from (sample_id, condition, path)."""
+    temporary = output / "junctions.tsv.tmp"
+    with temporary.open("x", encoding="utf-8", newline="") as dest:
+        writer = csv.writer(dest, delimiter="\t", lineterminator="\n")
+        writer.writerow(HEADER)
+        for sample_id, _, path in samples:
+            with path.open(encoding="utf-8", newline="") as source:
+                reader = csv.reader(source, delimiter="\t")
+                if next(reader, None) != HEADER:
+                    raise ValueError(f"unexpected junction schema for {sample_id}")
+                for row in reader:
+                    if len(row) != 5 or row[0] != sample_id:
+                        raise ValueError(f"junction identity mismatch for {sample_id}")
+                    writer.writerow(row)
+    temporary.replace(output / "junctions.tsv")
+    with (output / "samples.tsv").open("x", encoding="utf-8") as handle:
+        handle.write("sample_id\tcondition\n")
+        for sample_id, condition, _ in samples:
+            handle.write(f"{sample_id}\t{condition}\n")
+
+
 def strand_status(run_manifest: Path) -> dict:
     """The run's post-alignment strand check; {} for runs without one."""
     with run_manifest.open(encoding="utf-8") as handle:
@@ -183,31 +208,13 @@ def batch(args):
         ]
         # Publish a combined table only when every job completed. Identity is
         # preserved; absent genes/edges are not filled with fabricated zeros.
-        temporary = output / "junctions.tsv.tmp"
-        with temporary.open("x", encoding="utf-8", newline="") as dest:
-            writer = csv.writer(dest, delimiter="\t", lineterminator="\n")
-            header = ["sample_id", "gene_id", "from", "to", "count"]
-            writer.writerow(header)
-            for job, _ in kept:
-                with (job.output_dir / "junctions.tsv").open(
-                    encoding="utf-8", newline=""
-                ) as source:
-                    reader = csv.reader(source, delimiter="\t")
-                    if next(reader, None) != header:
-                        raise ValueError(
-                            f"unexpected junction schema for {job.sample_id}"
-                        )
-                    for row in reader:
-                        if len(row) != 5 or row[0] != job.sample_id:
-                            raise ValueError(
-                                f"junction identity mismatch for {job.sample_id}"
-                            )
-                        writer.writerow(row)
-        temporary.replace(output / "junctions.tsv")
-        with (output / "samples.tsv").open("x", encoding="utf-8") as handle:
-            handle.write("sample_id\tcondition\n")
-            for _, sample in kept:
-                handle.write(f"{sample['sample_id']}\t{sample['condition']}\n")
+        write_combined(
+            output,
+            [
+                (sample["sample_id"], sample["condition"], job.output_dir / "junctions.tsv")
+                for job, sample in kept
+            ],
+        )
         record["outputs"] = [
             checksum(output / name) for name in ("junctions.tsv", "samples.tsv")
         ]

@@ -241,6 +241,49 @@ its own sort scratch files inside the new run. Reserve checks happen between
 stages; an abrupt power loss/forced kill cannot execute Python's interruption
 handler, and a completely full disk can prevent final log updates.
 
+### Combine samples that were run as separate jobs
+
+On a cluster it is often easier to run each sample as its own job
+(`hisat2_pipeline.py run` per sample) than one long batch. When every sample
+has finished, combine them with `assemble_runs.py`. It realigns and recounts
+nothing; it checks the finished runs and writes the same `batch_manifest.json`,
+`junctions.tsv` and `samples.tsv` as the batch command, so the configured
+analysis (`splice-girl check --config`) can verify every sample back to its
+reference.
+
+Write a run sheet, one row per sample:
+
+```text
+sample_id	condition	run_dir	strand_check
+SRR36710390	control	runs/SRR36710390	strand/SRR36710390.json
+SRR36710386	case	runs/SRR36710386
+```
+
+`run_dir` is the sample's finished run folder. `strand_check` is the JSON from
+[the strand check](#check-strandedness-after-alignment) for runs made before
+2026-11-23; leave it blank for newer runs, which record the check themselves.
+Paths are relative to the sheet. Then:
+
+```sh
+python3 preprocessing/assemble_runs.py \
+  --samples runs.tsv --output-dir cohort \
+  --strandedness RF --min-anchor 8 --min-unique 1
+```
+
+Before writing anything it stops if any sample:
+
+- did not complete every stage, or used different strandedness, anchor,
+  support or duplicate settings;
+- used a different gene map, splice-site file or index from the others;
+- has a `junctions.tsv` that changed after its run finished;
+- has no strand check, or a strand-check file made for another sample.
+
+The strand call is recomputed from the recorded counts. A sample below 95%
+is left out of `junctions.tsv` and `samples.tsv`, listed under
+`excluded_samples` with its counts, and reported as a warning. The run
+folders are not changed or copied, so keep them in place: the analysis
+rechecks them through the absolute paths in `batch_manifest.json`.
+
 ## 6. Analyze the combined output
 
 ```sh

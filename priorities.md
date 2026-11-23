@@ -6,7 +6,23 @@ This is the short, ordered version of the full
 [task guide](delegations_and_tasks/tasks.md). It covers the entire project.
 Anyone can pick up any available task; there are no assigned leads.
 
-## Latest completed work — November 19
+## Latest completed work — November 23
+
+- [x] Provisionally approve the [junction thresholds](docs/threshold_proposal.md)
+  without changes (2026-11-22); Sydney, Summer and Wynn still to confirm. The
+  values are frozen because a one-case-versus-one-control comparison was
+  viewed on 2026-11-20 (correction recorded in decisions, 2026-11-23).
+- [x] Add the post-alignment strand check: each run records read-1 orientation
+  and a pass/hold call; held samples are left out of combined tables and
+  refused by the Rust analysis. Older runs are checked from their BAM with
+  `preprocessing/strand_orientation.py`.
+- [x] Add `preprocessing/assemble_runs.py` to combine separately run samples
+  (one cluster job each) into the checked cohort bundle the analysis needs.
+  Tested with fake runs that the Rust `check --config` accepts.
+- Summer has run 3 of 8 samples on the HPC cluster (SRR36710387, SRR36710386,
+  SRR36710385); the other five are pending.
+
+## Completed — November 19
 
 - [x] Publish v0.2.0 under CC BY 4.0 with all four named contributors' approval,
   then publish v0.2.1 with the configured-report license-footer correction.
@@ -120,6 +136,8 @@ careful case-versus-control result.
 - [ ] Extract uniquely mapped splice-junction counts.
 - [ ] Apply the agreed support, ambiguity, and coverage checks.
 - [ ] Convert every eligible sample into Splice Girl's standard junction table.
+  *(Tool ready 2026-11-23: [`assemble_runs.py`](preprocessing/HISAT2_GUIDE.md#combine-samples-that-were-run-as-separate-jobs)
+  combines separately run samples; waiting on all eight runs.)*
 - [ ] Confirm that the same gene uses comparable nodes across samples.
 - [ ] Freeze a small integration subset before attempting a larger run.
 

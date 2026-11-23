@@ -410,7 +410,11 @@ fn verify_pipeline(
     let batch: BatchManifest = read_json(&batch_path)?;
     require(
         batch.status == "complete"
-            && batch.pipeline == "Splice Girl sequential Cleaver/HISAT2 batch",
+            && matches!(
+                batch.pipeline.as_str(),
+                "Splice Girl sequential Cleaver/HISAT2 batch"
+                    | "Splice Girl assembled Cleaver/HISAT2 runs"
+            ),
         "batch is incomplete or has an unsupported pipeline",
     )?;
     let combined = unique_output(&batch.outputs, "junctions.tsv")?;
