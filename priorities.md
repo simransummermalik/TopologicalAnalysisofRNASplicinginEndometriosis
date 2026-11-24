@@ -333,7 +333,8 @@ source provenance, and a matching limitation.
 **Task IDs:** F1--F5
 
 - [ ] Finalize the [assembled methods draft](docs/methods_draft.md) after real
-  eligibility and preprocessing choices are resolved.
+  eligibility and preprocessing choices are resolved. *(2026-11-24: rewritten
+  to the frozen settings; only the values marked "after run" remain.)*
 - [ ] Finalize the [technical results draft](docs/results_draft.md) after the
   full cohort analysis; do not substitute pilot measurements for disease results.
 - [ ] Finalize the [release review](docs/release_notes.md) after independent
