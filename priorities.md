@@ -99,7 +99,7 @@ and [validation evidence](preprocessing/validation/2026-11-18-storage-mode/READM
 - [x] Write a shared speaking plan with live commands, explanations and handoffs.
 - [x] Assemble methods/results drafts with technical findings separated from
   biological comparisons that have not run.
-- [x] Correct the BH/permutation-resolution explanation and add mathematical
+- [x] Correct the BH/permutation-resolution explanation and add mathematical.
   regression examples without changing the frozen four-versus-four policy.
 - [x] Compile and inspect the available LaTeX roadmap section using a temporary
   standard wrapper; preserve the simple academic appearance.
@@ -322,7 +322,7 @@ the demo even without internet access.
   *(2026-11-23: the [interpretation plan](docs/interpretation_plan.md) fixes the
   baseline, the outcome wording and which genes are discussed; the script
   applies it. Plan approved 2026-11-24; its section 6 amendment (overlap
-  comparison, junction contributions, expression check) approved the same day;
+  comparison, junction contributions, expression check) awaits sign-off;
   reporting waits on the real run.)*
 
 **Finished when:** every biological claim has visible computational evidence,

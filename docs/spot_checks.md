@@ -43,7 +43,23 @@ CTD's page for a gene's chemical interactions is linked as **CTD**.
 - **Look for:** in PMID 27663891's full text or figures, whether MMP2
   expression was measured after PCB 126 (CB126) in human endometrial cells,
   and in which direction.
-- **Result:** Problem- CTD reports decreased MMP2 mRNA expression after exposure to the listed chemical, contradicting the evidence table's claim of increased expression. Direction needs correction and supporting publication context should be checked.
+- **Result:** pass (changed from "problem" on 2026-11-24 by Vania Zeledon
+  after the follow-up below). The reviewer's original result was:
+  ~~Problem- CTD reports decreased MMP2 mRNA expression after exposure to the listed chemical, contradicting the evidence table's claim of increased expression. Direction needs correction and supporting publication context should be checked.~~
+- **Follow-up (2026-11-24, Vania Zeledon):** resolved, no change to the
+  table. CTD's PCB 126 interaction list has two MMP2 mRNA rows. The
+  "decreased" row is *Danio rerio* (zebrafish) with 1 reference, and the
+  extraction keeps *Homo sapiens* rows only. The *Homo sapiens* row reads
+  "3,4,5,3',4'-pentachlorobiphenyl results in increased expression of MMP2
+  mRNA" with 3 references, matching `CTD:136637:expression` (3
+  publications). Its references are all *Homo sapiens*: Huang et al. 2017,
+  *Arch Toxicol* 91:1915 (dioxin-like PCBs and endometriosis); Mesnage et al.
+  2018, *Arch Toxicol* 92:2533 (HepaRG liver cells); and Gourronc et al.
+  2022, *Toxicol In Vitro* 83:105396 (preadipocytes). These match the row's
+  three PMIDs by year and by the endometriosis paper. Inclusion does not depend on direction (increases and
+  decreases both count), so MMP2's membership was never affected. The
+  reviewer may still check PMID 27663891's own figures as the **Look for**
+  line asks.
 
 ### E-2. ADM · TCDD · genome-wide screens
 
