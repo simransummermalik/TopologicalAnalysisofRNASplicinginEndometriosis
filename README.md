@@ -8,11 +8,77 @@ Splice Girl is a research software project that turns RNA splice-junction data
 into graphs. Those graphs let us ask whether RNA connections are organized
 differently in endometriosis and control endometrial tissue.
 
-> **Current status:** the software prototype, graph construction, Hodge
-> decomposition, sample comparison, and mathematical checks are working.
-> A [real CDH11 technical pilot](data/pilots/SRR36710387_prefix1m_nov17/README.md)
-> now passes independent verification on one million cleaned control read pairs.
-> The complete eight-sample analysis and biological interpretation remain open.
+> **Current status (November 24, 2026):** the Rust program, graph
+> construction, Hodge decomposition, case/control comparison, exact
+> permutation statistics and mathematical checks are finished and tested. A
+> [real CDH11 technical pilot](data/pilots/SRR36710387_prefix1m_nov17/README.md)
+> passes independent verification on real control reads. The eight-sample
+> analysis is fully specified in advance
+> ([settings](analysis/cohort_primary/README.md),
+> [interpretation plan](docs/interpretation_plan.md)); alignment of the last
+> samples on the university cluster is in progress, so no case/control
+> result is reported yet.
+
+## Team: Splice Girls
+
+**Project idea:** use genetic-risk and environmental-response evidence to
+choose endometriosis-related genes, turn each gene's RNA splice junctions
+into a graph, and use Hodge decomposition to measure whether endometriosis
+and control tissue organize their splicing differently.
+
+| Member | Role |
+|---|---|
+| Vania Zeledon | Computational development & mathematical theory |
+| Summer Malik | Lead programmer & mathematical modeling |
+| Sydney Holmes | Biological research |
+| Wynn Oo | RNA-seq data & splice-junction research |
+
+**Language:** Rust for the Splice Girl program (graph construction, Hodge
+decomposition, statistics, reports); Python for read preprocessing,
+gene-set building and result interpretation.
+
+## Algorithm (pseudocode)
+
+```text
+# 1. Choose candidate genes (Python, gene_sets/)
+risk_genes  <- genes reported for endometriosis in GWAS Catalog + Koller et al. 2026
+env_genes   <- human genes with measured responses to dioxin-like chemicals in CTD
+               (>= 2 publications, at least one not a large screen)
+candidates  <- risk_genes UNION env_genes            # 661 genes
+label each candidate risk_only, environment_only or overlap
+
+# 2. Count splice junctions per sample (Python, preprocessing/)
+for each RNA-seq sample:
+    clean reads (Cleaver/fastp); align to GRCh38 with HISAT2 (RF strandedness)
+    check read-1 orientation; exclude the sample if < 95% agree
+    for each uniquely mapped read spanning an intron (>= 8 bases each side):
+        map the intron to (gene, from_exon_node, to_exon_node) using GENCODE
+        count[sample, gene, edge] += 1           # ambiguous junctions excluded
+
+# 3. One shared graph per gene, chosen without case/control labels (Rust)
+for each candidate gene:
+    edges <- junctions with >= 5 reads in >= 4 of the 8 samples
+    keep gene if cycle_rank = |edges| - |nodes| + components >= 1
+           and every sample has >= 50 reads on these edges
+
+# 4. Hodge decomposition per sample and gene (Rust)
+F       <- count[edge] / total count            # normalized edge signal
+B1      <- incidence matrix (-1 at source node, +1 at target node)
+phi     <- argmin || F - B1^T phi ||^2           # least squares
+F_grad  <- B1^T phi                              # gradient (directional) part
+F_cycle <- F - F_grad                            # cycle-space part, B1 F_cycle = 0
+C       <- ||F_cycle||^2 / ||F||^2               # cycle fraction
+verify reconstruction, B1 F_cycle ~ 0 and F_grad . F_cycle ~ 0
+
+# 5. Compare endometriosis with controls (Rust)
+for each gene: effect <- mean C(cases) - mean C(controls)
+statistic <- mean over genes of |effect|
+for each of the 70 ways to label 4 of 8 samples as cases:
+    recompute the statistic
+p <- fraction of relabelings with statistic >= observed
+rank genes by |effect|; report the junctions that carry each change
+compare with a simpler baseline (junction-usage entropy) under the same test
+```
 
 ## The project shortened:
 
@@ -31,6 +97,8 @@ interpretation.
 
 | If you are interested in... | Read this section |
 |---|---|
+| The team and roles | [Team: Splice Girls](#team-splice-girls) |
+| The algorithm in pseudocode | [Algorithm (pseudocode)](#algorithm-pseudocode) |
 | How every project layer connects | [Complete project map](mermaid.md) |
 | The biological question | [Why study RNA splicing?](#why-study-rna-splicing) |
 | The graph idea | [From RNA connections to a graph](#from-rna-connections-to-a-graph) |
@@ -588,6 +656,9 @@ Audience members who want more detail can continue with:
 | `tests/` | Automated tests and synthetic examples |
 | `endometriosis-splicing/` | Eight-sample study metadata |
 | `preprocessing/` | FASTQ and junction-processing scripts |
+| `gene_sets/` | Scripts that build the risk, environment and candidate gene sets |
+| `scripts/` | Interpretation, sensitivity and figure scripts (`interpret_results.py`) |
+| `analysis/cohort_primary/` | Saved settings and commands for the eight-sample analysis |
 | `docs/` | Mathematical and data specifications |
 | `research/` | Background research and source material |
 | `logs/` | Dated contribution records |
