@@ -59,7 +59,7 @@ CTD's page for a gene's chemical interactions is linked as **CTD**.
     [PMID 21632981](https://pubmed.ncbi.nlm.nih.gov/21632981/) (screens)
 - **Look for:** in PMID 26238291's supplementary gene lists, whether ADM is
   listed as changed by TCDD in human liver cells, and in which direction.
-- **Result:**
+- **Result:** pass – CTD reports increased ADM mRNA following TCDD exposure, with human evidence represented among the supporting interactions. A separate human interaction reports pifithrin inhibition of the TCDD-associated response. The co-treatment and nonhuman interactions were distinguished from the direct human evidence.
 
 ### E-3. CTNNB1 · TCDD · gene not named in the abstract
 
