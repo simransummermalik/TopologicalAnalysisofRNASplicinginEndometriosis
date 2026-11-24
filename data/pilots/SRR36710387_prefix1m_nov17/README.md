@@ -44,7 +44,24 @@ the software on a real forest-shaped graph. It does not validate a nonzero
 cycle signal in real data or establish the absence of alternative splicing,
 back-splicing, circular RNA, disease effects or exposure effects.
 
-## Important review before expanding
+## Review outcome (2026-11-24)
+
+**Approved by Vania Zeledon** as a technical pilot. Each review point below
+has since been settled, so expansion to the full cohort may proceed under the
+current settings:
+
+| Review point | Outcome |
+|---|---|
+| Ambiguous junctions (73.7% of observations) | Settled by the `shared-splice-site` node rule (2026-11-18): 98.5% of annotated candidate junctions now map uniquely. |
+| Library strandedness | RF for all eight runs, measured from the reads (2026-11-18) and rechecked after each alignment. |
+| Anchors, support and coverage thresholds | Approved 2026-11-22 and confirmed 2026-11-24 ([proposal](../../../docs/threshold_proposal.md)). |
+| Deterministic-prefix sampling limit | Accepted as a limit of this pilot only; the cohort uses full samples. |
+
+This pilot used the earlier settings (unstranded alignment, one node per exon
+interval). Its numbers verify the software on real input; they are not part
+of the cohort result and are not reused in it.
+
+## Important review before expanding (original, November 17)
 
 The full-prefix junction QC reports **432,599 ambiguous**, **152,907 assigned**,
 and **1,583 unannotated** junction observations after the upstream filters.

@@ -57,7 +57,7 @@ has not been met.
 
 | Task ID | Status | Evidence or next requirement |
 |---|---|---|
-| D1 | In progress | The [suitability review](../docs/dataset_review.md) now covers design, tissue, QC, metadata gaps and conflicting library/read-length methods. Protocol confirmation and final suitability sign-off remain. *2026-11-18:* library orientation is settled as RF for all eight runs ([check](../data/strandedness_2026-11-18/README.md)). |
+| D1 | **Done** | The [suitability review](../docs/dataset_review.md) now covers design, tissue, QC, metadata gaps and conflicting library/read-length methods. Protocol confirmation and final suitability sign-off remain. *2026-11-18:* library orientation is settled as RF for all eight runs ([check](../data/strandedness_2026-11-18/README.md)). *2026-11-24:* review closed and dataset accepted; see the [final disposition](../docs/dataset_review.md#final-disposition-2026-11-24). Repeated donors cannot be ruled out from public records and are stated as an assumption. |
 | D2 | **Done** | GSE315857 and its eight exact run accessions are recorded in [samples.tsv](../endometriosis-splicing/samples.tsv) and the [README](../README.md#the-eight-sample-study). |
 | D3 | In progress | Eight runs were retrieved in Galaxy and one control pilot is local; complete source checksums are still needed. |
 | D4 | **Done** | The standardized [sample manifest](../data/metadata/samples.tsv) records unique run-based sample IDs, internal subject labels, case/control status, tissue, accessions, file locations, QC/Cleaver status, pending reference fields, and eligibility for all eight samples. |
@@ -118,7 +118,7 @@ has not been met.
 | Task IDs | Status | Evidence or next requirement |
 |---|---|---|
 | D/R6.1 | **Done (bounded technical pilot)** | [CDH11 from one real control prefix](../data/pilots/SRR36710387_prefix1m_nov17/README.md) passes BAM recount, Rust checks, independent SVD and support sensitivity. Counts, graph and provenance are saved without hand-editing the junctions. This does not complete the full sample or cohort. |
-| D/R6.2 | In progress | Review the real pilot's mapping ambiguity, exploratory settings and sample/gene joins before expanding to all approved samples/candidates. |
+| D/R6.2 | In progress | Review the real pilot's mapping ambiguity, exploratory settings and sample/gene joins before expanding to all approved samples/candidates. *2026-11-24:* pilot reviewed and approved; its mapping-ambiguity, strandedness and threshold points are settled. Steps 5–6 (expand to all candidates, save the run manifest) happen in the cohort run. |
 | C1–C4 | Blocked | Eligible samples and per-sample real gene metrics do not exist yet. |
 | S1 | **Done** | Biological unit, independence, and permutation restrictions are recorded in [statistics_spec.md](../docs/statistics_spec.md) from the real eight-sample manifest (one sample per subject, unpaired, 4 control vs. 4 case). |
 | S4 | **Done** | The primary effect (case mean minus control mean cycle fraction) is recorded in [statistics_spec.md](../docs/statistics_spec.md) as the `compare` command's existing, frozen definition. |

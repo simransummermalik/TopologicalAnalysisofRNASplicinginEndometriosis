@@ -14,8 +14,10 @@ The study used the public bulk RNA-seq dataset GSE315857: proliferative-phase
 eutopic endometrium from four women with endometriosis (SRR36710383–86) and
 four laparoscopically confirmed controls (SRR36710387–90). Both groups are the
 same tissue in the same cycle phase, so the comparison is not a lesion against
-a different tissue. Each run comes from a different subject, and the groups
-were analyzed as independent samples. Accessions, condition labels and
+a different tissue. The eight runs are distinct GEO samples with no shared
+subject identifier; each was treated as one subject and the groups were
+analyzed as independent samples (public records cannot rule out a repeated
+donor). Accessions, condition labels and
 internal subject IDs are in the [sample manifest](../data/metadata/samples.tsv).
 The raw QC summaries list 545,210,220 read pairs across the eight runs
 (49.5–89.7 million per run, median read length 100 bases).

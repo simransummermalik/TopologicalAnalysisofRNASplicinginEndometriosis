@@ -158,8 +158,11 @@ careful case-versus-control result.
 **Task IDs:** D1, D3, and D5--D12  
 **Status:** Partly complete; this is the main blocker.
 
-- [ ] Resolve the [documented dataset review](docs/dataset_review.md), including
+- [x] Resolve the [documented dataset review](docs/dataset_review.md), including
   conflicting library/read-length descriptions, and complete all raw checksums.
+  *(Closed 2026-11-24: dataset accepted; the kit/read-length conflict does not
+  affect any setting; checksums are recorded and checked per run as each
+  sample is processed.)*
 - [x] Build the full human HISAT2 index, exon map and splice-site hints from
   the verified reference (November 17).
 - [x] Implement and test the Cleaver/HISAT2 adapter matching the current data
@@ -215,15 +218,17 @@ placed into one reproducible category.
 **Depends on:** Priorities 1 and 2.
 
 **Status:** The [bounded CDH11 technical pilot](data/pilots/SRR36710387_prefix1m_nov17/README.md)
-passes on one million cleaned read pairs from one control. The full sample,
-case/control comparison and team review remain; mapping ambiguity needs review.
+passes on one million cleaned read pairs from one control. Reviewed and
+approved 2026-11-24; its review points (mapping ambiguity, strandedness,
+thresholds) are settled. The full cohort run remains.
 
 - [x] Choose one pilot gene using a written coverage/size rule.
 - [x] Run its junction table through Splice Girl.
 - [x] Compare every count with an independent BAM recount.
 - [x] Inspect its graph and compare Rust with an independent SVD projection.
 - [x] Record the prefix scope, junction exclusions and sensitivity results.
-- [ ] Review the pilot before expanding to more genes.
+- [x] Review the pilot before expanding to more genes.
+  *(Approved 2026-11-24 by Vania Zeledon; see the pilot's review outcome.)*
 
 **Finished when:** one real gene moves from checked junction counts to a saved,
 reproducible Splice Girl result.
