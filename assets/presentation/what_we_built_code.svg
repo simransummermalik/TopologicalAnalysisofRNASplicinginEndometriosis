@@ -1,0 +1,36 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1920" height="1080" viewBox="0 0 1920 1080" role="img" aria-labelledby="title desc">
+  <title id="title">How Splice Girl turns reads into graph measurements</title>
+  <desc id="desc">Three large excerpts from the Splice Girl source code show junction counting, cycle signal calculation, and cycle fraction reporting.</desc>
+  <rect width="1920" height="1080" fill="#49283f"/>
+  <rect x="48" y="48" width="1824" height="984" rx="4" fill="none" stroke="#a77e98" stroke-width="2"/>
+  <line x1="96" y1="104" x2="1824" y2="104" stroke="#e0becf" stroke-width="3"/>
+
+  <text x="112" y="145" fill="#e0becf" font-family="Arial, sans-serif" font-size="25" letter-spacing="4">SPLICE GIRL  /  SOURCE CODE</text>
+  <text x="112" y="218" fill="#f6eff1" font-family="Georgia, serif" font-size="66">From reads to graph cycles</text>
+  <text x="112" y="264" fill="#e0becf" font-family="Arial, sans-serif" font-size="26">Real excerpts from the preprocessing and Hodge analysis</text>
+
+  <line x1="112" y1="298" x2="1808" y2="298" stroke="#a77e98" stroke-width="2"/>
+  <text x="116" y="344" fill="#e0becf" font-family="Arial, sans-serif" font-size="26" letter-spacing="2">01  /  COUNT AN ASSIGNED JUNCTION</text>
+  <text x="116" y="382" fill="#b693aa" font-family="Menlo, SFMono-Regular, Consolas, monospace" font-size="21">preprocessing/sam_junctions.py</text>
+  <rect x="112" y="398" width="1696" height="124" rx="8" fill="#3a2034" stroke="#76526b" stroke-width="2"/>
+  <text x="150" y="438" fill="#e0becf" font-family="Menlo, SFMono-Regular, Consolas, monospace" font-size="31">else:</text>
+  <text x="150" y="477" fill="#f6eff1" font-family="Menlo, SFMono-Regular, Consolas, monospace" font-size="31">    counts[next(iter(targets))] += 1</text>
+  <text x="150" y="516" fill="#f6eff1" font-family="Menlo, SFMono-Regular, Consolas, monospace" font-size="31">    stats["assigned_junction_observations"] += 1</text>
+
+  <line x1="112" y1="542" x2="1808" y2="542" stroke="#a77e98" stroke-width="2"/>
+  <text x="116" y="582" fill="#e0becf" font-family="Arial, sans-serif" font-size="26" letter-spacing="2">02  /  ISOLATE THE CYCLE COMPONENT</text>
+  <text x="116" y="618" fill="#b693aa" font-family="Menlo, SFMono-Regular, Consolas, monospace" font-size="21">src/hodge.rs</text>
+  <rect x="112" y="633" width="1696" height="238" rx="8" fill="#3a2034" stroke="#76526b" stroke-width="2"/>
+  <text x="150" y="671" fill="#f6eff1" font-family="Menlo, SFMono-Regular, Consolas, monospace" font-size="31">let cycle: Vec&lt;f64&gt; = graph</text>
+  <text x="150" y="708" fill="#f6eff1" font-family="Menlo, SFMono-Regular, Consolas, monospace" font-size="31">        .signal</text>
+  <text x="150" y="745" fill="#f6eff1" font-family="Menlo, SFMono-Regular, Consolas, monospace" font-size="31">        .iter()</text>
+  <text x="150" y="782" fill="#f6eff1" font-family="Menlo, SFMono-Regular, Consolas, monospace" font-size="31">        .zip(&amp;gradient)</text>
+  <text x="150" y="819" fill="#f6eff1" font-family="Menlo, SFMono-Regular, Consolas, monospace" font-size="31">        .map(|(signal, fitted)| signal - fitted)</text>
+  <text x="150" y="856" fill="#f6eff1" font-family="Menlo, SFMono-Regular, Consolas, monospace" font-size="31">        .collect();</text>
+
+  <line x1="112" y1="891" x2="1808" y2="891" stroke="#a77e98" stroke-width="2"/>
+  <text x="116" y="935" fill="#e0becf" font-family="Arial, sans-serif" font-size="25" letter-spacing="2">03  /  MEASURE THE CYCLE SHARE</text>
+  <text x="116" y="974" fill="#b693aa" font-family="Menlo, SFMono-Regular, Consolas, monospace" font-size="21">src/hodge.rs</text>
+  <rect x="112" y="989" width="1696" height="58" rx="8" fill="#3a2034" stroke="#76526b" stroke-width="2"/>
+  <text x="150" y="1029" fill="#f6eff1" font-family="Menlo, SFMono-Regular, Consolas, monospace" font-size="29">cycle_fraction: cycle_energy / signal_energy,</text>
+</svg>
