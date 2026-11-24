@@ -78,7 +78,7 @@ synthetic smoke test as approval of the full human pilot or its thresholds.
 
 | Question | Why it matters | What must be recorded before implementation |
 |---|---|---|
-| Does the real HISAT2 pilot pass the production-method review? | The implemented adapter now matches the data methods; full-cohort suitability remains unverified. Bowtie2 alone is not the splice-junction extractor. | Reviewed human alignment/QC, frozen tool versions and thresholds, and a checked real gene before D6 is marked done. |
+| Does the real HISAT2 pilot pass the production-method review? | The implemented adapter now matches the data methods; full-cohort suitability remains unverified. Bowtie2 alone is not the splice-junction extractor. | Reviewed human alignment/QC, frozen tool versions and thresholds, and a checked real gene before D6 is marked done. *2026-11-24: mostly answered: the CDH11 pilot is approved, thresholds are frozen and the dataset is accepted. What remains is the reviewed alignment/QC of the eight cohort runs.* |
 | Which reviewed candidate-gene table is final? | Ranking and interpretation must use a frozen, source-linked set. | Stable gene IDs, evidence sources, and inclusion rules. |
 | What are the course midpoint and final deadlines? | The task board cannot assign realistic due dates without them. | Dates, owner, and the required artifact at each checkpoint. |
 | Where is the parent Overleaf proposal source? | The local roadmap section cannot be compiled alone. | Main `.tex` filename, folder, and compile command. |

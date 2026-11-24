@@ -28,6 +28,11 @@ Anyone can pick up any available task; there are no assigned leads.
   the pilot kept as a labeled technical section.
 - [x] Correct the read-depth range to 49.5–89.7 million pairs (it was given
   as 49.5–80.0; SRR36710385 has 89.7 million). No setting depends on it.
+- [x] Close the [dataset review](docs/dataset_review.md): GSE315857 accepted;
+  the kit/read-length conflict does not affect any setting, checksums and QC
+  are checked per run, and one subject per run is a stated assumption.
+- [x] Approve the [CDH11 technical pilot](data/pilots/SRR36710387_prefix1m_nov17/README.md#review-outcome-2026-11-24)
+  (Priority 3); all of its review points are settled.
 - Summer has run 3 of 8 samples on the HPC cluster (SRR36710387, SRR36710386,
   SRR36710385); the other five are pending.
 

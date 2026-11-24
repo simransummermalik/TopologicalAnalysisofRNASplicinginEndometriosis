@@ -15,7 +15,7 @@ Per-run checks still apply to every sample as it is processed.
 | Is library information settled? | Orientation yes: all eight runs are RF ([2026-11-18 check](../data/strandedness_2026-11-18/README.md)). The kit description still differs between sources; see below. |
 | Are batch/covariates complete? | Sequencing batch is not reported in the local manifest. Eight samples cannot support a large covariate model. Check donor independence and clinical metadata before interpreting diagnosis effects. |
 | Can this test exposure effects? | No patient exposure measurements are present in the study manifest. Environmental evidence prioritizes genes; it does not label these donors as exposed. |
-| Can this test the proposed graph method? | Provisionally yes: paired bulk RNA-seq, matched tissue/phase, accessible run identifiers and a successful human-reference technical pilot. Full eligibility still depends on cleaning, alignment, assignment coverage and graph comparability for every sample. |
+| Can this test the proposed graph method? | Yes (accepted 2026-11-24; see the [final disposition](#final-disposition-2026-11-24)): paired bulk RNA-seq, matched tissue/phase, accessible run identifiers and an approved human-reference technical pilot. Each sample must still pass its own per-run checks. |
 
 ## A methods discrepancy to resolve
 

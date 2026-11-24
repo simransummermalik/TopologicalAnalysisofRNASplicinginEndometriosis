@@ -16,7 +16,7 @@ entry must say the change was made after case/control data were seen.
 |---|---|---|
 | Samples and labels | the 8 runs in `data/metadata/samples.tsv` | 2026-10-20 cohort; 2026-10-29 one sample per subject |
 | Gene family | `data/gene_sets/candidate_genes.tsv` (661 genes), label `candidate_genes` | 2026-11-17 primary gene-set test |
-| Shared edge set | edge ≥ 5 reads in ≥ 4 of 8 samples | [threshold proposal](../../docs/threshold_proposal.md), provisional 2026-11-22 |
+| Shared edge set | edge ≥ 5 reads in ≥ 4 of 8 samples | [threshold proposal](../../docs/threshold_proposal.md), approved 2026-11-22, confirmed 2026-11-24 |
 | Sample coverage | ≥ 50 reads on the gene's shared graph | same |
 | Gene eligibility | cycle rank ≥ 1 and covered in every sample (applied by the software) | same |
 | Sensitivity grid | edge reads 3/5/10, samples per edge 2/4/6, coverage 20/50/100, one at a time | same |
