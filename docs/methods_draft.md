@@ -18,7 +18,7 @@ a different tissue. Each run comes from a different subject, and the groups
 were analyzed as independent samples. Accessions, condition labels and
 internal subject IDs are in the [sample manifest](../data/metadata/samples.tsv).
 The raw QC summaries list 545,210,220 read pairs across the eight runs
-(49.5–80.0 million per run, median read length 100 bases).
+(49.5–89.7 million per run, median read length 100 bases).
 
 The dataset has no patient exposure measurements and no reported sequencing
 batch. The written sources also disagree on the library kit and read length;
@@ -251,7 +251,7 @@ reference stay outside Git.
   differences are detectable, and results describe association, not cause.
 - Only uniquely mapped reads at annotated junctions were counted; ambiguous
   and unannotated junctions were excluded. Sequencing depth differs between
-  samples (49.5–80.0 million pairs).
+  samples (49.5–89.7 million pairs).
 - Back-splice junctions were not detected by this pipeline. Cycles in the
   real graphs are alternative paths between annotated exons (for example exon
   skipping), not circular RNA.

@@ -116,7 +116,7 @@ Every claim in the results, slides or website must carry its matching limit.
 | a gene is an environmental-response gene | Its membership comes from curated dioxin-like compound responses, mostly in non-reproductive tissue (CTD); no exposure was measured in these subjects. |
 | a gene is a risk gene | Membership comes from GWAS association reported for the gene; the associated variant may act through another gene. |
 | overlap genes behave differently | The overlap set has 7 genes; it is not automatically the most important group. |
-| any count-based result | Only uniquely mapped reads at annotated junctions are counted; ambiguous and unannotated junctions are excluded, and sequencing depth differs between samples (49.5–80.0 million pairs). |
+| any count-based result | Only uniquely mapped reads at annotated junctions are counted; ambiguous and unannotated junctions are excluded, and sequencing depth differs between samples (49.5–89.7 million pairs; corrected 2026-11-24 from 80.0). |
 | any category comparison | Category tests are exploratory, and the categories differ greatly in size (96 risk-only, 558 environment-only, 7 overlap). |
 | the project identified genes with large changes in splicing topology (proposal success criterion 7) | Genes were ranked by effect size; with 4 versus 4 samples no single gene can be shown to differ, so the ranked genes are illustrations, not individual findings. (Amendment A4.) |
 | the proposal's back-splice example or synthetic back-splice test | The back-splice case was shown on synthetic graphs only; in the real data every cycle comes from alternative paths between annotated exons (for example exon skipping), because back-splice junctions were not detected. (Amendment A4.) |

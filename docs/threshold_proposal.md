@@ -36,7 +36,9 @@ only with all 4 cases and 4 controls eligible.
 Cycle fraction depends on which edges exist. If each sample kept only its own
 well-supported edges, a deeper sample would see more rare junctions, form more
 cycles and get a different cycle fraction for technical reasons alone. The runs
-range from 49.5 to 80.0 million read pairs, so this would be a real confound.
+range from 49.5 to 89.7 million read pairs, so this would be a real confound.
+(Corrected 2026-11-24: this sentence first said 80.0 million; SRR36710385 has
+89.7 million pairs in the raw QC tables. No setting depends on the value.)
 
 With one shared edge set, every sample of a gene has the same graph and only
 the read proportions on its edges differ. A difference in cycle fraction then
