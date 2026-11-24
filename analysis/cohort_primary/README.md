@@ -78,7 +78,12 @@ the cluster and are ignored by Git.
    lists the five genes the write-up may name (`discussed_genes.tsv`) and
    records which pre-declared outcome applies (`outcome.json`); the wording
    for each outcome is fixed in the
-   [interpretation plan](../../docs/interpretation_plan.md).
+   [interpretation plan](../../docs/interpretation_plan.md). The plan's
+   section 6 additions are also written: whether overlap genes have larger
+   effects than other candidates (`overlap_comparison.tsv`), which junctions
+   carry each discussed gene's change (`junction_contributions.tsv`), and a
+   depth-adjusted expression check beside the baseline
+   (`method_comparison.tsv`, `outcome.json`).
 
 ## If the check fails
 

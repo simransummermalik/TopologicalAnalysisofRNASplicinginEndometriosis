@@ -11,8 +11,11 @@ from pathlib import Path
 from interpret_results import (
     ROOT,
     classify,
+    expression_check,
+    expression_log2,
     load_evidence,
     main,
+    overlap_comparison,
     set_permutation,
     spearman,
     usage_entropy,
@@ -88,6 +91,44 @@ class MethodComparisonTests(unittest.TestCase):
 
 
 @unittest.skipUnless(BINARY.is_file(), "needs cargo build --release")
+class AmendmentRuleTests(unittest.TestCase):
+    def test_overlap_comparison_needs_three_tested_overlap_genes(self):
+        effects = {"a": ("overlap", 0.5), "b": ("overlap", 0.4), "c": ("risk_only", 0.1)}
+        result = overlap_comparison(effects)
+        self.assertEqual(result["verdict"], "not_assessable")
+        self.assertIsNone(result["p_value"])
+
+    def test_overlap_comparison_is_exact_and_one_sided(self):
+        effects = {f"o{i}": ("overlap", -0.9 + i * 0.01) for i in range(3)}
+        effects.update({f"r{i}": ("risk_only", 0.01 * i) for i in range(4)})
+        effects.update({f"e{i}": ("environment_only", 0.02) for i in range(3)})
+        result = overlap_comparison(effects)
+        # The three largest |effects| are the overlap genes: 1 of C(10, 3) = 120 sets.
+        self.assertEqual(result["method"], "exact")
+        self.assertEqual(result["permutations_considered"], 120)
+        self.assertAlmostEqual(result["p_value"], 1 / 120)
+        self.assertEqual(result["verdict"], "consistent_with_hypothesis")
+        # Smaller overlap effects are not evidence for the hypothesis (one-sided).
+        flipped = {g: (c, 0.001 if c == "overlap" else e) for g, (c, e) in effects.items()}
+        self.assertEqual(overlap_comparison(flipped)["verdict"], "not_supported")
+
+    def test_overlap_comparison_samples_large_pools_reproducibly(self):
+        effects = {f"o{i}": ("overlap", 0.3) for i in range(7)}
+        effects.update({f"e{i}": ("environment_only", (i % 10) / 100) for i in range(300)})
+        first, second = overlap_comparison(effects), overlap_comparison(effects)
+        self.assertTrue(first["method"].startswith("monte_carlo_seed_"))
+        self.assertEqual(first["p_value"], second["p_value"])
+        self.assertLess(first["p_value"], 0.001)
+
+    def test_expression_rules(self):
+        self.assertAlmostEqual(expression_log2(100, 1e8), 0.0)
+        self.assertIsNone(expression_log2(0, 1e8))
+        quiet = expression_check("null", 0.01, 0.1)
+        self.assertEqual(quiet["required_statements"], [])
+        both = expression_check("difference_not_in_baseline", 0.01, 0.6)
+        self.assertEqual(len(both["required_statements"]), 2)
+
+
 class InterpretRunTests(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
@@ -168,6 +209,23 @@ class InterpretRunTests(unittest.TestCase):
         manifest = json.loads((self.output / "interpretation_manifest.json").read_text())
         self.assertEqual(len(manifest["commands"]), 3)
 
+    def test_junction_shares_add_up_to_each_discussed_gene_effect(self):
+        discussed = {d["gene_id"]: d for d in rows(self.output / "discussed_genes.tsv")}
+        shares = rows(self.output / "junction_contributions.tsv")
+        self.assertEqual({r["gene_id"] for r in shares}, set(discussed))
+        for gene_id, gene in discussed.items():
+            edges = [r for r in shares if r["gene_id"] == gene_id]
+            self.assertEqual(len(edges), 3)  # the triangle's three shared edges
+            self.assertEqual([r["rank_within_gene"] for r in edges], ["1", "2", "3"])
+            total = sum(float(r["cycle_energy_share_difference"]) for r in edges)
+            self.assertAlmostEqual(total, float(gene["mean_difference_case_minus_control"]), places=8)
+
+    def test_overlap_comparison_is_not_assessable_with_one_overlap_gene(self):
+        overlap = rows(self.output / "overlap_comparison.tsv")[0]
+        self.assertEqual(overlap["verdict"], "not_assessable")
+        self.assertEqual(overlap["tested_overlap"], "1")
+        self.assertIn("Overlap comparison (exploratory): not assessable", self.printed.getvalue())
+
     def test_method_comparison_reproduces_primary_and_records_outcome(self):
         comparison = {r["metric"]: r for r in rows(self.output / "method_comparison.tsv")}
         primary = rows(self.output / "set_tests.tsv")[0]
@@ -176,11 +234,17 @@ class InterpretRunTests(unittest.TestCase):
         self.assertEqual(hodge["extreme_count"], primary["extreme_count"])
         self.assertEqual(comparison["junction_usage_entropy (baseline)"]["genes_used"], "3")
         self.assertIn("spearman_abs_cycle_fraction_vs_abs_entropy_effect", comparison)
-        self.assertEqual(len(rows(self.output / "gene_method_comparison.tsv")), 3)
+        self.assertIn("spearman_abs_cycle_fraction_vs_abs_expression_effect", comparison)
+        self.assertEqual(comparison["gene_junction_expression_log2 (descriptive)"]["genes_used"], "3")
+        per_gene = rows(self.output / "gene_method_comparison.tsv")
+        self.assertEqual(len(per_gene), 3)
+        self.assertTrue(all(r["expression_log2_difference"] for r in per_gene))
         outcome = json.loads((self.output / "outcome.json").read_text())
         self.assertIn(outcome["outcome"], {
             "null", "difference_also_in_baseline", "difference_not_in_baseline"})
         self.assertEqual(outcome["rules"], "docs/interpretation_plan.md")
+        self.assertIn("required_statements", outcome["expression_check"])
+        self.assertEqual(outcome["overlap_comparison"]["verdict"], "not_assessable")
         self.assertIn("Pre-declared outcome", self.printed.getvalue())
 
     def test_changed_category_in_results_is_refused(self):

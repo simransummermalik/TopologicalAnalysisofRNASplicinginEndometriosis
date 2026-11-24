@@ -15,11 +15,17 @@ tables in data/gene_sets, and writes a new folder with:
   category_tests/          the Rust statistics output behind each exploratory
                            test
   method_comparison.tsv    the Hodge cycle-fraction set test beside the same
-                           test on a junction-usage entropy baseline, with
-                           gene-level rank correlations
-  gene_method_comparison.tsv  per tested gene: both effects and cycle rank
+                           test on a junction-usage entropy baseline and on
+                           depth-adjusted gene junction expression (amendment
+                           A3), with gene-level rank correlations
+  gene_method_comparison.tsv  per tested gene: all three effects and cycle rank
   discussed_genes.tsv      the genes the write-up may name: the five tested
                            genes with the largest absolute effect
+  junction_contributions.tsv  per shared edge of each discussed gene: case and
+                           control cycle-energy shares; the share differences
+                           add up to the gene's effect (amendment A2)
+  overlap_comparison.tsv   whether overlap genes have larger effects than the
+                           other tested candidates (amendment A1, exploratory)
   outcome.json             which pre-declared outcome the results fall in
                            (docs/interpretation_plan.md)
   interpretation_manifest.json  inputs with checksums and the commands run
@@ -39,6 +45,7 @@ import hashlib
 import itertools
 import json
 import math
+import random
 import statistics
 import subprocess
 import sys
@@ -51,6 +58,12 @@ SET_FAMILIES = (("risk", "is_risk"), ("environment", "is_environment"), ("overla
 TOLERANCE = 1e-9  # same as src/hodge.rs
 ALPHA = 0.05
 DISCUSSED = 5
+# Amendment of 2026-11-24 (docs/interpretation_plan.md section 6).
+OVERLAP_MINIMUM_TESTED = 3
+OVERLAP_EXACT_LIMIT = 100_000
+OVERLAP_DRAWS = 100_000
+OVERLAP_SEED = 20261124
+STRONG_CORRELATION = 0.5
 NO_LOST_EVIDENCE = {
     "is_risk": "endometriosis_risk.tsv",
     "is_environment": "environment_response.tsv",
@@ -201,6 +214,144 @@ def spearman(x: list[float], y: list[float]) -> float | None:
         return None
 
 
+def sample_depths(junctions: Path) -> dict[str, float]:
+    """Total assigned junction reads per sample in the run's input table."""
+    depth: dict[str, float] = defaultdict(float)
+    with junctions.open(encoding="utf-8") as handle:
+        header = handle.readline().rstrip("\n").split("\t")
+        sample, count = header.index("sample_id"), header.index("count")
+        for line in handle:
+            fields = line.rstrip("\n").split("\t")
+            if len(fields) > count:
+                depth[fields[sample]] += float(fields[count])
+    return dict(depth)
+
+
+def expression_log2(gene_reads: float, depth: float) -> float | None:
+    """log2 junction reads per million assigned junction reads in the sample."""
+    if gene_reads <= 0 or depth <= 0:
+        return None
+    return math.log2(gene_reads / depth * 1e6)
+
+
+def overlap_comparison(effects: dict[str, tuple[str, float]]) -> dict:
+    """Amendment A1: is the mean |effect| larger in overlap genes than in the rest?
+
+    `effects` maps tested gene ID to (category, case-minus-control effect).
+    One-sided, because the proposal's hypothesis names a direction. Gene
+    labels are permuted: every set of tested genes the size of the overlap
+    group is a possible "overlap" group. Exact when there are at most
+    OVERLAP_EXACT_LIMIT such sets, otherwise OVERLAP_DRAWS seeded draws.
+    """
+    by_category = defaultdict(list)
+    for category, effect in effects.values():
+        by_category[category].append(abs(effect))
+    means = {c: (statistics.fmean(v) if v else None) for c, v in
+             ((c, by_category.get(c, [])) for c in CATEGORIES)}
+    counts = {c: len(by_category.get(c, [])) for c in CATEGORIES}
+    result = {"tested_" + c: counts[c] for c in CATEGORIES}
+    result.update({"mean_abs_effect_" + c: means[c] for c in CATEGORIES})
+    overlap = by_category.get("overlap", [])
+    rest = by_category.get("risk_only", []) + by_category.get("environment_only", [])
+    if len(overlap) < OVERLAP_MINIMUM_TESTED or not rest:
+        result.update(verdict="not_assessable", difference=None, p_value=None, method="",
+                      permutations_considered=0,
+                      reason=f"fewer than {OVERLAP_MINIMUM_TESTED} overlap genes tested"
+                      if len(overlap) < OVERLAP_MINIMUM_TESTED else "no other tested genes")
+        return result
+    pool = overlap + rest
+    k, n = len(overlap), len(pool)
+    total = sum(pool)
+
+    def difference(chosen_sum: float) -> float:
+        return chosen_sum / k - (total - chosen_sum) / (n - k)
+
+    observed = difference(sum(overlap))
+    tolerance = TOLERANCE * max(abs(observed), 1.0)
+    if math.comb(n, k) <= OVERLAP_EXACT_LIMIT:
+        sums = [sum(pool[i] for i in c) for c in itertools.combinations(range(n), k)]
+        extreme = sum(difference(s) >= observed - tolerance for s in sums)
+        p_value, considered, method = extreme / len(sums), len(sums), "exact"
+    else:
+        rng = random.Random(OVERLAP_SEED)
+        extreme = sum(
+            difference(sum(rng.sample(pool, k))) >= observed - tolerance
+            for _ in range(OVERLAP_DRAWS)
+        )
+        p_value = (extreme + 1) / (OVERLAP_DRAWS + 1)
+        considered, method = OVERLAP_DRAWS, f"monte_carlo_seed_{OVERLAP_SEED}"
+    larger = all(
+        means[c] is None or means["overlap"] > means[c] for c in ("risk_only", "environment_only")
+    )
+    result.update(
+        difference=observed, p_value=p_value, method=method, permutations_considered=considered,
+        verdict="consistent_with_hypothesis" if larger and p_value < ALPHA else "not_supported",
+        reason="",
+    )
+    return result
+
+
+def junction_contributions(primary: Path, discussed: list[dict]) -> list[dict]:
+    """Amendment A2: where in each discussed gene the cycle-fraction change sits.
+
+    A sample's cycle fraction is the sum over edges of
+    cycle_component^2 / signal_energy, so the case-minus-control differences
+    of these per-edge shares add up exactly to the gene's effect.
+    """
+    wanted = {g["gene_id"]: g for g in discussed}
+    condition = {row["sample_id"]: row["condition"] for row in read_tsv(primary / "samples.tsv")}
+    energy = {
+        (row["sample_id"], row["gene_id"]): float(row["signal_energy"])
+        for row in read_tsv(primary / "statistics/sample_metrics.tsv")
+        if row["gene_id"] in wanted and row["status"] == "passed"
+    }
+    values = defaultdict(lambda: defaultdict(lambda: {"case": [], "control": []}))
+    for row in read_tsv(primary / "statistics/junction_components.tsv"):
+        key = (row["sample_id"], row["gene_id"])
+        if key not in energy:
+            continue
+        cycle = float(row["cycle_component"])
+        edge = values[row["gene_id"]][(row["from"], row["to"])]
+        group = condition[row["sample_id"]]
+        edge[group].append((float(row["normalized_signal"]), cycle, cycle * cycle / energy[key]))
+        edge.setdefault("count_" + group, []).append(float(row["raw_count"]))
+
+    rows = []
+    for gene_id, gene in wanted.items():
+        gene_rows = []
+        for (start, end), edge in values[gene_id].items():
+            means = {
+                group: [statistics.fmean(v[i] for v in edge[group]) for i in range(3)]
+                for group in ("case", "control")
+            }
+            gene_rows.append({
+                "discussed_rank": gene["rank"],
+                "gene_id": gene_id,
+                "gene_symbol": gene["gene_symbol"],
+                "from": start,
+                "to": end,
+                "case_mean_count": fmt(statistics.fmean(edge["count_case"])),
+                "control_mean_count": fmt(statistics.fmean(edge["count_control"])),
+                "case_mean_normalized_signal": fmt(means["case"][0]),
+                "control_mean_normalized_signal": fmt(means["control"][0]),
+                "case_mean_cycle_component": fmt(means["case"][1]),
+                "control_mean_cycle_component": fmt(means["control"][1]),
+                "case_mean_cycle_energy_share": fmt(means["case"][2]),
+                "control_mean_cycle_energy_share": fmt(means["control"][2]),
+                "cycle_energy_share_difference": means["case"][2] - means["control"][2],
+            })
+        total = sum(r["cycle_energy_share_difference"] for r in gene_rows)
+        effect = float(gene["mean_difference_case_minus_control"])
+        if not gene_rows or abs(total - effect) > 1e-8:
+            raise ValueError(f"{gene_id}: junction shares do not add up to the gene's effect")
+        gene_rows.sort(key=lambda r: (-abs(r["cycle_energy_share_difference"]), r["from"], r["to"]))
+        for position, row in enumerate(gene_rows, 1):
+            row["rank_within_gene"] = position
+            row["cycle_energy_share_difference"] = fmt(row["cycle_energy_share_difference"])
+        rows.extend(gene_rows)
+    return rows
+
+
 def classify(primary_p: float | None, baseline_p: float | None) -> dict:
     """The pre-declared outcome from docs/interpretation_plan.md."""
     if primary_p is None:
@@ -221,8 +372,22 @@ def classify(primary_p: float | None, baseline_p: float | None) -> dict:
                          "comparison; it does not show the Hodge summary is better in general)."}
 
 
-def compare_methods(primary: Path, output: Path, primary_set: dict) -> dict:
-    """Hodge cycle fraction versus the junction-usage baseline, same genes and samples."""
+def expression_check(outcome: str, expression_p: float | None, rho: float | None) -> dict:
+    """Amendment A3: the wording required about expression (interpretation plan section 6)."""
+    notes = []
+    if outcome.startswith("difference") and expression_p is not None and expression_p < ALPHA:
+        notes.append("Gene junction expression also differed across the candidate genes "
+                     "(exploratory); the cycle-fraction difference is not shown to be separate "
+                     "from an expression difference.")
+    if rho is not None and rho >= STRONG_CORRELATION:
+        notes.append("Genes with larger cycle-fraction effects also tended to have larger "
+                     "expression effects; the cycle-fraction effects largely track expression.")
+    return {"spearman": rho, "strong_correlation_threshold": STRONG_CORRELATION,
+            "required_statements": notes}
+
+
+def compare_methods(primary: Path, output: Path, primary_set: dict, depth: dict[str, float]) -> dict:
+    """Hodge cycle fraction versus the junction-usage baseline and expression, same genes and samples."""
     samples = read_tsv(primary / "samples.tsv")
     order = [row["sample_id"] for row in samples]
     is_case = [row["condition"] == "case" for row in samples]
@@ -238,26 +403,35 @@ def compare_methods(primary: Path, output: Path, primary_set: dict) -> dict:
             edges[row["gene_id"]][(row["from"], row["to"])][row["sample_id"]] = float(row["count"])
     rank = {r["gene_id"]: r["cycle_rank"] for r in read_tsv(primary / "gene_eligibility.tsv")}
 
-    genes, hodge, baseline = [], [], []
+    missing_depth = [s for s in order if depth.get(s, 0) <= 0]
+    if missing_depth:
+        raise ValueError(f"no junction reads in the input table for: {', '.join(missing_depth)}")
+    genes, hodge, baseline, expression = [], [], [], []
     for gene_id in sorted(tested):
         if len(cycle[gene_id]) != len(order):
             continue
-        entropy = []
+        entropy, level = [], []
         for sample in order:
             # Every selected shared edge is present for a covered sample
             # (a measured zero is written as 0).
             counts = [by_sample.get(sample) for by_sample in edges[gene_id].values()]
             entropy.append(None if None in counts else usage_entropy(counts))
-        if None in entropy:
+            level.append(None if None in counts else expression_log2(sum(counts), depth[sample]))
+        if None in entropy or None in level:
             continue
         genes.append(gene_id)
         hodge.append([cycle[gene_id][s] for s in order])
         baseline.append(entropy)
+        expression.append(level)
 
     if not genes:
-        result = {"hodge": None, "baseline": None}
+        result = {"hodge": None, "baseline": None, "expression": None}
     else:
-        result = {"hodge": set_permutation(hodge, is_case), "baseline": set_permutation(baseline, is_case)}
+        result = {
+            "hodge": set_permutation(hodge, is_case),
+            "baseline": set_permutation(baseline, is_case),
+            "expression": set_permutation(expression, is_case),
+        }
         rust = number(primary_set.get("set_statistic"))
         rust_p = number(primary_set.get("p_value"))
         mine = result["hodge"]
@@ -285,22 +459,27 @@ def compare_methods(primary: Path, output: Path, primary_set: dict) -> dict:
             "cycle_rank": rank.get(gene_id, ""),
             "cycle_fraction_difference": fmt(mean_diff(h)),
             "usage_entropy_difference": fmt(mean_diff(b)),
+            "expression_log2_difference": fmt(mean_diff(e)),
         }
-        for gene_id, h, b in zip(genes, hodge, baseline)
+        for gene_id, h, b, e in zip(genes, hodge, baseline, expression)
     ]
     write_tsv(output / "gene_method_comparison.tsv",
-              ["gene_id", "gene_symbol", "category", "cycle_rank",
-               "cycle_fraction_difference", "usage_entropy_difference"], gene_rows)
+              ["gene_id", "gene_symbol", "category", "cycle_rank", "cycle_fraction_difference",
+               "usage_entropy_difference", "expression_log2_difference"], gene_rows)
 
     abs_cf = [abs(float(r["cycle_fraction_difference"])) for r in gene_rows]
     abs_ent = [abs(float(r["usage_entropy_difference"])) for r in gene_rows]
+    abs_expr = [abs(float(r["expression_log2_difference"])) for r in gene_rows]
     ranks = [float(r["cycle_rank"]) for r in gene_rows]
     correlations = {
         "spearman_abs_cycle_fraction_vs_abs_entropy_effect": spearman(abs_cf, abs_ent),
         "spearman_abs_cycle_fraction_effect_vs_cycle_rank": spearman(abs_cf, ranks),
+        "spearman_abs_cycle_fraction_vs_abs_expression_effect": spearman(abs_cf, abs_expr),
     }
     rows = []
-    for metric, role in (("hodge", "cycle_fraction (primary)"), ("baseline", "junction_usage_entropy (baseline)")):
+    for metric, role in (("hodge", "cycle_fraction (primary)"),
+                         ("baseline", "junction_usage_entropy (baseline)"),
+                         ("expression", "gene_junction_expression_log2 (descriptive)")):
         test = result[metric] or {}
         rows.append({"metric": role, **{k: (fmt(v) if isinstance(v, float) else v) for k, v in test.items()}})
     for name, value in correlations.items():
@@ -312,9 +491,13 @@ def compare_methods(primary: Path, output: Path, primary_set: dict) -> dict:
         result["hodge"]["p_value"] if result["hodge"] else None,
         result["baseline"]["p_value"] if result["baseline"] else None,
     )
+    expression_p = result["expression"]["p_value"] if result["expression"] else None
+    expression_rho = correlations["spearman_abs_cycle_fraction_vs_abs_expression_effect"]
     outcome.update(
         primary_p_value=result["hodge"]["p_value"] if result["hodge"] else None,
         baseline_p_value=result["baseline"]["p_value"] if result["baseline"] else None,
+        expression_p_value=expression_p,
+        expression_check=expression_check(outcome["outcome"], expression_p, expression_rho),
         alpha=ALPHA,
         rules="docs/interpretation_plan.md",
         **correlations,
@@ -345,12 +528,19 @@ def interpret(results: Path, gene_sets: Path, binary: Path, output: Path) -> dic
             "statistics/statistics.tsv", "statistics/sample_metrics.tsv", "statistics/set_test.tsv",
         )
     ] + [results / "analysis" / "sensitivity.tsv"]
+    required.append(results / "resolved_configuration.json")
+    required.append(primary / "statistics/junction_components.tsv")
     for path in required:
         if not path.is_file():
             raise ValueError(f"not a finished configured run: missing {path}")
     if output.exists():
         raise ValueError(f"output folder already exists: {output}; choose a new folder")
 
+    configuration = json.loads((results / "resolved_configuration.json").read_text(encoding="utf-8"))
+    input_junctions = Path(configuration["junctions"])
+    if not input_junctions.is_file():
+        raise ValueError(f"the run's input junction table is missing: {input_junctions}")
+    required.append(input_junctions)
     candidates, risk, environment = load_evidence(gene_sets)
     eligible = read_tsv(primary / "eligible_genes.tsv")
     stats_rows = read_tsv(primary / "statistics/statistics.tsv")
@@ -414,8 +604,18 @@ def interpret(results: Path, gene_sets: Path, binary: Path, output: Path) -> dic
         key=lambda g: (-abs(float(g["mean_difference_case_minus_control"])),
                        float(g["p_value_exploratory"]), g["gene_id"]),
     )
-    write_tsv(output / "discussed_genes.tsv", ["rank"] + list(genes[0]),
-              [{"rank": i, **g} for i, g in enumerate(ranked[:DISCUSSED], 1)])
+    discussed = [{"rank": i, **g} for i, g in enumerate(ranked[:DISCUSSED], 1)]
+    write_tsv(output / "discussed_genes.tsv", ["rank"] + list(genes[0]), discussed)
+    contributions = junction_contributions(primary, discussed)
+    write_tsv(output / "junction_contributions.tsv",
+              list(contributions[0]) if contributions else ["discussed_rank", "gene_id"], contributions)
+
+    overlap = overlap_comparison({
+        g["gene_id"]: (g["category"], float(g["mean_difference_case_minus_control"]))
+        for g in genes if g["test_status"] == "tested"
+    })
+    write_tsv(output / "overlap_comparison.tsv", list(overlap),
+              [{k: fmt(v) if isinstance(v, float) else ("" if v is None else v) for k, v in overlap.items()}])
 
     tested = {row["gene_id"] for row in stats_rows if row["status"] == "tested"}
     junction_rows = []
@@ -474,7 +674,10 @@ def interpret(results: Path, gene_sets: Path, binary: Path, output: Path) -> dic
     set_columns = ["role", "set"] + [c for c in primary_set if c not in ("role", "set")]
     write_tsv(output / "set_tests.tsv", set_columns, set_rows)
 
-    outcome = compare_methods(primary, output, primary_set)
+    outcome = compare_methods(primary, output, primary_set, sample_depths(input_junctions))
+    outcome["overlap_comparison"] = overlap
+    (output / "outcome.json").write_text(json.dumps(outcome, indent=2, sort_keys=True) + "\n",
+                                         encoding="utf-8")
 
     manifest = {
         "tool": "scripts/interpret_results.py",
@@ -516,6 +719,12 @@ def main(argv: list[str] | None = None) -> int:
         print(f"{row['role']:>12} {row['set']:<12} genes {row.get('genes_used', '0'):>4}  p = {p}")
     decided = outcome["outcome"]
     print(f"Pre-declared outcome: {outcome_line(decided['outcome'])}. {decided['statement']}")
+    for note in decided["expression_check"]["required_statements"]:
+        print(f"Also required: {note}")
+    overlap = decided["overlap_comparison"]
+    print(f"Overlap comparison (exploratory): {outcome_line(overlap['verdict'])}"
+          + (f", p = {overlap['p_value']:.4f}" if overlap["p_value"] is not None else
+             f" ({overlap['reason']})"))
     print(f"Wrote {args.output}")
     return 0
 

@@ -96,7 +96,7 @@ native `splice-girl prepare-shared` and `splice-girl sensitivity` commands
 prepare the shared graphs and run the seven one-factor scenarios with optional
 statistics using only fully covered cyclic genes. Python and the checkout
 are not needed after installation. The
-study threshold proposal still awaits team sign-off; these commands exercise
+study thresholds were confirmed on 2026-11-24; these commands exercise
 the software without processing the human cohort.
 
 ## Then: real reads

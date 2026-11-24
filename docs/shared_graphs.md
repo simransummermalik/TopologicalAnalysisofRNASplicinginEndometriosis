@@ -2,8 +2,8 @@
 
 Implemented November 18, 2026. The software implements the
 [threshold proposal](threshold_proposal.md) with explicit caller settings.
-The proposed values were provisionally approved without changes on 2026-11-22
-(Summer's sign-off pending; see [decisions](decisions.md)). Any change must be
+The proposed values were approved without changes on 2026-11-22 and
+confirmed final on 2026-11-24 (see [decisions](decisions.md)). Any change must be
 recorded before seeing case/control effects; report the declared sensitivity grid without choosing
 the most favorable result afterward.
 

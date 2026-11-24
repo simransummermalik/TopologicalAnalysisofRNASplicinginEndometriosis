@@ -9,7 +9,7 @@ Anyone can pick up any available task; there are no assigned leads.
 ## Latest completed work — November 23
 
 - [x] Provisionally approve the [junction thresholds](docs/threshold_proposal.md)
-  without changes (2026-11-22); Summer still to sign off. The
+  without changes (2026-11-22); confirmed final 2026-11-24. The
   values are frozen because a one-case-versus-one-control comparison was
   viewed on 2026-11-20 (correction recorded in decisions, 2026-11-23).
 - [x] Add the post-alignment strand check: each run records read-1 orientation
@@ -29,7 +29,7 @@ Anyone can pick up any available task; there are no assigned leads.
   and overlap set tests beside the confirmatory candidate test. It also
   compares cycle fraction with a junction-usage entropy baseline under the
   same test and records the pre-declared outcome from the new
-  [interpretation plan](docs/interpretation_plan.md) (needs Vania and Summer's sign-off).
+  [interpretation plan](docs/interpretation_plan.md) (approved 2026-11-24).
 - Summer has run 3 of 8 samples on the HPC cluster (SRR36710387, SRR36710386,
   SRR36710385); the other five are pending.
 
@@ -62,7 +62,7 @@ Anyone can pick up any available task; there are no assigned leads.
   cycle eligibility, full-cohort gene-family handoff, and seven one-factor
   sensitivity runs with optional Rust statistics. An eight-sample synthetic
   example checks the whole path. The proposed thresholds were provisionally
-  approved without changes on 2026-11-22; Summer's sign-off pending.
+  approved without changes on 2026-11-22 and confirmed final on 2026-11-24.
 - [x] Settle library strandedness: all eight runs are RF (read 1 antisense in
   98.1–99.5% of matched reads, both groups), checked by streaming 200,000
   reads per mate from ENA. The cohort alignment uses `--strandedness RF`. See
@@ -219,7 +219,8 @@ Real-data eligibility and thresholds remain open.
 - [ ] Freeze eligible samples, genes, thresholds, and missing-value rules.
   *(2026-11-23: all are written into the
   [primary analysis configuration](analysis/cohort_primary/README.md);
-  Summer's threshold sign-off remains.)*
+  thresholds confirmed final 2026-11-24. Remaining: the eligible samples
+  after the strand check of the real runs.)*
 - [x] Define the main case-minus-control effect size.
 - [x] Implement the exact permutation calculation; exhaustive enumeration uses no random seed.
 - [x] Test permutation and BH correction calculations on tiny known examples.
@@ -320,7 +321,9 @@ the demo even without internet access.
 - [ ] Report a null result honestly if Hodge summaries do not beat baselines.
   *(2026-11-23: the [interpretation plan](docs/interpretation_plan.md) fixes the
   baseline, the outcome wording and which genes are discussed; the script
-  applies it. Plan awaits Vania and Summer's sign-off; reporting waits on the real run.)*
+  applies it. Plan approved 2026-11-24; its section 6 amendment (overlap
+  comparison, junction contributions, expression check) approved the same day;
+  reporting waits on the real run.)*
 
 **Finished when:** every biological claim has visible computational evidence,
 source provenance, and a matching limitation.

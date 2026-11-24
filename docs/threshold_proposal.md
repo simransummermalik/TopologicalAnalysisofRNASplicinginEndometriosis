@@ -1,14 +1,14 @@
 # Proposal: junction support and coverage thresholds
 
-**Status:** provisionally approved without changes on 2026-11-22 by Vania
-Zeledon; confirmation by Summer Malik is pending (drafted 2026-11-18). Sign-off
-by Vania and Summer approves it (2026-11-23 decision).
+**Status:** approved without changes by Vania Zeledon on 2026-11-22 and
+confirmed final on 2026-11-24 (drafted 2026-11-18). Sign-off is by Vania
+Zeledon alone (2026-11-24 decision).
 Recorded in [`decisions.md`](decisions.md). These are the primary settings for
 the eight-sample run. The values were written on 2026-11-18; an exploratory
 one-case-versus-one-control comparison was viewed on 2026-11-20, before
 approval (see the 2026-11-23 correction in `decisions.md`). The values are
-therefore frozen: confirmation may only accept them, and any change must be
-reported as made after case/control data were seen. The
+therefore frozen: any change must be reported as made after case/control
+data were seen. The
 [shared-graph implementation](shared_graphs.md) takes these values as explicit
 settings. Complete inputs, storage/compute and final QC review are still needed
 for the full eight-sample run.
@@ -100,9 +100,8 @@ evaluated by the count-table grid.
 
 ## Sign-off
 
-- **Approved by:** sign-off by these two approves the proposal:
-  - [x] Vania Zeledon (2026-11-22)
-  - [ ] Summer Malik
-- **Date:** 2026-11-22
+- **Approved by:** sign-off by Vania Zeledon approves the proposal:
+  - [x] Vania Zeledon (2026-11-22; confirmed final 2026-11-24)
+- **Date:** 2026-11-24
 - **Changes from this proposal, if any:** none (values frozen; see the
   2026-11-23 correction in `decisions.md`)

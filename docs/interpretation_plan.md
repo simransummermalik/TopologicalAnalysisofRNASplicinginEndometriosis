@@ -1,12 +1,20 @@
 # Interpretation plan: how results will be reported
 
-**Status:** proposal awaiting sign-off by Vania Zeledon and Summer Malik
-(drafted 2026-11-23). It must be approved before the eight-sample results are produced. Nothing in it has been
+**Status:** approved without changes by Vania Zeledon on 2026-11-24 (drafted
+2026-11-23), before the eight-sample results were produced. Recorded in
+[`decisions.md`](decisions.md). Nothing in it has been
 computed on real data. The only case/control output seen so far is the
 exploratory one-case-versus-one-control comparison of 2026-11-20 (per-sample
 graphs, cycle fraction only; see the 2026-11-23 correction in
 [`decisions.md`](decisions.md)). The junction-usage baseline below has never
 been computed on real samples.
+
+**Amendment (section 6):** drafted 2026-11-24, before any eight-sample result
+existed, after checking this plan against the project proposal
+([`hodgetheorynew.pdf`](../assets/hodgetheorynew.pdf)). It adds three
+exploratory analyses and two claim limits; it does not change the
+confirmatory test or the four outcomes. Approved without changes by Vania
+Zeledon on 2026-11-24, before any eight-sample result existed.
 
 `scripts/interpret_results.py` applies these rules mechanically and writes the
 outcome to `outcome.json`. The written results must use the matching wording
@@ -110,11 +118,106 @@ Every claim in the results, slides or website must carry its matching limit.
 | overlap genes behave differently | The overlap set has 7 genes; it is not automatically the most important group. |
 | any count-based result | Only uniquely mapped reads at annotated junctions are counted; ambiguous and unannotated junctions are excluded, and sequencing depth differs between samples (49.5–80.0 million pairs). |
 | any category comparison | Category tests are exploratory, and the categories differ greatly in size (96 risk-only, 558 environment-only, 7 overlap). |
+| the project identified genes with large changes in splicing topology (proposal success criterion 7) | Genes were ranked by effect size; with 4 versus 4 samples no single gene can be shown to differ, so the ranked genes are illustrations, not individual findings. (Amendment A4.) |
+| the proposal's back-splice example or synthetic back-splice test | The back-splice case was shown on synthetic graphs only; in the real data every cycle comes from alternative paths between annotated exons (for example exon skipping), because back-splice junctions were not detected. (Amendment A4.) |
+
+## 6. Amendment of 2026-11-24: coverage of the project proposal
+
+Checked against the project proposal, sections 1–5 above left three of its
+commitments without a pre-declared analysis. All three are **exploratory**:
+they report raw p-values or correlations, never "significant", and they do
+not change the primary test or which outcome in section 3 applies.
+
+### A1. The overlap part of the hypothesis
+
+The proposal's hypothesis (section 24) says differences "may be especially
+pronounced among genes associated with both genetic susceptibility and
+environmental response". The overlap set test in section 1 asks whether
+overlap genes differ between groups, not whether they differ *more* than
+other candidates. The added comparison (`overlap_comparison.tsv`):
+
+- **Statistic:** mean absolute cycle-fraction effect of tested overlap genes
+  minus that of the other tested candidates (risk-only and
+  environment-only together).
+- **Test:** one-sided, because the hypothesis names a direction. Category
+  labels are permuted across tested genes: every group of tested genes the
+  size of the overlap group is a possible "overlap" group. The test is exact
+  when there are at most 100,000 such groups, otherwise 100,000 random groups
+  drawn with the fixed seed 20261124, with p = (extreme + 1) / (draws + 1).
+- **Minimum:** at least 3 tested overlap genes, otherwise `not_assessable`.
+
+| `verdict` | When | Say |
+|---|---|---|
+| `not_assessable` | fewer than 3 overlap genes tested | "Too few overlap genes could be tested to assess whether their splicing differs more than other candidates'." |
+| `consistent_with_hypothesis` | overlap mean above both the risk-only and environment-only means, and p < 0.05 | "In an exploratory comparison, overlap genes had larger cycle-fraction effects than the other candidates." Add that the overlap group is small and that genes are not independent. |
+| `not_supported` | otherwise | "Overlap genes did not show larger cycle-fraction effects than the other candidates." |
+
+Do not say that overlap genes "are more affected by endometriosis": the
+comparison is between effect sizes, and if the primary test is null those
+effects are not themselves shown to be differences.
+
+### A2. Which junctions carry a gene's change
+
+The proposal's program "identifies the junctions contributing most strongly"
+(section 19, step 10). For each discussed gene (section 4),
+`junction_contributions.tsv` lists every shared edge with its case and
+control mean read count, normalized signal, signed cycle component and
+**cycle-energy share** (the edge's squared cycle component divided by the
+sample's signal energy). A sample's shares add up to its cycle fraction, so
+the case-minus-control share differences add up exactly to the gene's
+effect; the script checks this and stops if not. Edges are ranked within the
+gene by the absolute share difference.
+
+Say "the change in GENE's cycle fraction is concentrated on the junction(s)
+…", not that a junction is differently used: no junction-level test is run.
+A shared edge with no reads in a sample can still carry a cycle component
+(see [shared graphs](shared_graphs.md#interpretation-changes-to-explain)),
+so read the counts beside the shares.
+
+### A3. Expression level
+
+The hypothesis says differences occur "not only in expression level". A gene's
+cycle-fraction change could simply follow a change in how strongly it is
+expressed. For every gene in the method comparison, the script computes
+**gene junction expression**: log2 of the gene's reads on its shared graph per
+million assigned junction reads in that sample (the whole input junction
+table, all genes). It reports:
+
+- the case-minus-control difference per gene (`gene_method_comparison.tsv`);
+- the same exact set test as the primary test (`method_comparison.tsv`,
+  labeled descriptive);
+- the Spearman correlation across tested genes between the absolute
+  cycle-fraction effect and the absolute expression effect.
+
+Required wording, recorded in `outcome.json` under `expression_check`:
+
+- if the primary outcome is a difference and the expression set test has
+  p < 0.05: "Gene junction expression also differed across the candidate
+  genes; the cycle-fraction difference is not shown to be separate from an
+  expression difference."
+- if the Spearman correlation is 0.5 or higher, whatever the outcome:
+  "Genes with larger cycle-fraction effects also tended to have larger
+  expression effects."
+
+This is a junction-read measure, not a full expression analysis; say so if it
+is reported.
+
+### A4. Two claim limits
+
+Two rows were added to the table in section 5: one for the proposal's
+success criterion 7 (genes are ranked, not individually shown to differ) and
+one for back-splicing (shown on synthetic graphs only).
+
+### Amendment sign-off
+
+- **Approved by:** sign-off by Vania Zeledon approves this amendment:
+  - [x] Vania Zeledon (2026-11-24)
+- **Date:** 2026-11-24
+- **Changes from this draft, if any:** none
 
 ## Sign-off
 
-- **Approved by:** sign-off by these two approves the plan:
-  - [ ] Vania Zeledon
-  - [ ] Summer Malik
-- **Date:**
-- **Changes from this proposal, if any:**
+- **Approved by:** sign-off by Vania Zeledon approves the plan (sections 1–5):
+  - [x] Vania Zeledon (2026-11-24)
+- **Date:** 2026-11-24
+- **Changes from this proposal, if any:** none
