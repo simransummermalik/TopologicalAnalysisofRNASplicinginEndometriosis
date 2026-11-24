@@ -1,12 +1,37 @@
 # Splice Girl project priorities
 
-Updated November 19, 2026.
+Updated November 24, 2026.
 
 This is the short, ordered version of the full
 [task guide](delegations_and_tasks/tasks.md). It covers the entire project.
 Anyone can pick up any available task; there are no assigned leads.
 
-## Latest completed work — November 23
+## Latest completed work — November 24
+
+- [x] Finalize the [threshold proposal](docs/threshold_proposal.md) and the
+  [interpretation plan](docs/interpretation_plan.md): sign-off for both is
+  by Vania Zeledon alone (2026-11-24 decision). Thresholds confirmed final;
+  plan approved before any eight-sample result.
+- [x] Check both documents against the project proposal and add an approved
+  amendment (plan section 6), implemented and tested in
+  `scripts/interpret_results.py`: an overlap-versus-other-candidates
+  comparison for the hypothesis, per-junction shares of each discussed
+  gene's change, and a depth-adjusted expression check. The confirmatory
+  test and the four outcomes are unchanged.
+- [x] Resolve spot check E-1 (MMP2, PCB 126): CTD's "decreased" row is
+  zebrafish; the human row matches our table. Marked pass with the
+  reviewer's original note kept. 2 of 11 spot checks are done.
+- [x] Rewrite the [methods draft](docs/methods_draft.md) to the frozen
+  cohort settings; only values marked "after run" remain.
+- [x] Add the eight-sample skeleton to the [results draft](docs/results_draft.md):
+  every pre-declared outcome sentence, blanks naming their source files, and
+  the pilot kept as a labeled technical section.
+- [x] Correct the read-depth range to 49.5–89.7 million pairs (it was given
+  as 49.5–80.0; SRR36710385 has 89.7 million). No setting depends on it.
+- Summer has run 3 of 8 samples on the HPC cluster (SRR36710387, SRR36710386,
+  SRR36710385); the other five are pending.
+
+## Completed — November 23
 
 - [x] Provisionally approve the [junction thresholds](docs/threshold_proposal.md)
   without changes (2026-11-22); confirmed final 2026-11-24. The
@@ -30,8 +55,6 @@ Anyone can pick up any available task; there are no assigned leads.
   compares cycle fraction with a junction-usage entropy baseline under the
   same test and records the pre-declared outcome from the new
   [interpretation plan](docs/interpretation_plan.md) (approved 2026-11-24).
-- Summer has run 3 of 8 samples on the HPC cluster (SRR36710387, SRR36710386,
-  SRR36710385); the other five are pending.
 
 ## Completed — November 19
 
@@ -167,7 +190,7 @@ extracted, reviewed, deduplicated, audited, and exported (G4–G10; 103 genes).
 Overlap and categories are built (E9–E10) under the final publication rule
 (decided 2026-11-17): 96 risk-only, 558 environment-only, 7 overlap, 661
 candidates. Remaining: team sign-offs (G1 cold read, independent spot checks in
-[`docs/spot_checks.md`](docs/spot_checks.md)).
+[`docs/spot_checks.md`](docs/spot_checks.md); 2 of 11 done as of 2026-11-24).
 
 - [ ] Freeze rules for genetic-risk evidence. *(Drafted and recorded in
   `docs/decisions.md`; waiting for a teammate's cold read, G1 step 7.)*
@@ -311,9 +334,12 @@ the demo even without internet access.
   *(Tool ready 2026-11-23: [`scripts/interpret_results.py`](analysis/cohort_primary/README.md#running-it-on-the-cluster);
   tested on synthetic results; waiting on the real run.)*
 - [ ] Compare risk-only, environment-only, and overlap categories.
-  *(Same tool: per-category summary and exploratory set tests.)*
+  *(Same tool: per-category summary and exploratory set tests; since
+  2026-11-24 also the pre-declared overlap-versus-other-candidates
+  comparison, `overlap_comparison.tsv`.)*
 - [ ] Link every discussed gene to its samples, junctions, and sources.
-  *(Same tool: `gene_interpretation.tsv` and `gene_junctions.tsv`.)*
+  *(Same tool: `gene_interpretation.tsv`, `gene_junctions.tsv` and, since
+  2026-11-24, `junction_contributions.tsv`.)*
 - [x] State that cycle-space signal does not by itself prove circular RNA.
 - [x] Document current tissue, sample-size, alignment, coverage and causation
   limits in the methods/results drafts and speaking notes; apply them to final
@@ -322,7 +348,7 @@ the demo even without internet access.
   *(2026-11-23: the [interpretation plan](docs/interpretation_plan.md) fixes the
   baseline, the outcome wording and which genes are discussed; the script
   applies it. Plan approved 2026-11-24; its section 6 amendment (overlap
-  comparison, junction contributions, expression check) awaits sign-off;
+  comparison, junction contributions, expression check) approved the same day;
   reporting waits on the real run.)*
 
 **Finished when:** every biological claim has visible computational evidence,
@@ -337,6 +363,8 @@ source provenance, and a matching limitation.
   to the frozen settings; only the values marked "after run" remain.)*
 - [ ] Finalize the [technical results draft](docs/results_draft.md) after the
   full cohort analysis; do not substitute pilot measurements for disease results.
+  *(2026-11-24: eight-sample skeleton with all pre-declared wording added;
+  fill the blanks from the run's outputs.)*
 - [ ] Finalize the [release review](docs/release_notes.md) after independent
   feedback. Versions 0.2.0 and 0.2.1 are published under CC BY 4.0; full
   biological validation remains separate.
@@ -366,9 +394,11 @@ file location, or dependency.
 
 These are choices for four people, not assigned roles:
 
-1. Review the source-method discrepancy, pilot assignment loss and final data
-   settings; the index and diagnostic software are already built.
-2. Complete the independent evidence cold read/spot checks in Priority 2.
+1. Run the remaining five samples on the cluster and the strand check on the
+   three earlier runs; everything after that is scripted
+   ([cohort steps](analysis/cohort_primary/README.md#running-it-on-the-cluster)).
+2. Complete the independent evidence cold read and the 9 remaining spot
+   checks in Priority 2 (someone other than the evidence author).
 3. Have a beginner run the written demo and record where they get stuck.
 4. Rehearse the shared speaking plan and make the offline recording backup.
 
