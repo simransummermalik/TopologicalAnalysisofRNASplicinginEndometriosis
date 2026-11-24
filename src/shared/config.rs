@@ -480,12 +480,17 @@ fn verify_pipeline(
             format!("sample {} processing is incomplete", sample.sample_id),
         )?;
         require(
-            run.strand_check
-                .as_ref()
-                .is_none_or(|check| check.status != "hold_for_review"),
+            run.strand_check.as_ref().is_none_or(|check| {
+                check.status == "pass"
+                    || (check.status == "not_checked"
+                        && !matches!(run.settings.strandedness.as_str(), "RF" | "FR"))
+            }),
             format!(
-                "sample {} failed the strand check and is held for review",
-                sample.sample_id
+                "sample {} failed the strand check (status: {}) and is held for review",
+                sample.sample_id,
+                run.strand_check
+                    .as_ref()
+                    .map_or("absent", |check| check.status.as_str())
             ),
         )?;
         let methods = run.settings;

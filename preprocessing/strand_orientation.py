@@ -22,6 +22,7 @@ from __future__ import annotations
 
 import argparse
 import json
+import math
 import sys
 from collections import Counter
 from pathlib import Path
@@ -48,6 +49,8 @@ def summarize(
     counts: Counter, expected: str | None = None, minimum: float = MINIMUM
 ) -> dict:
     """Fractions per mate and, for RF/FR, a pass or hold call on read 1."""
+    if not math.isfinite(minimum) or not 0 <= minimum <= 1:
+        raise ValueError("minimum strand agreement must be between 0 and 1")
     summary: dict = {
         key: counts.get(key, 0)
         for key in (
@@ -88,6 +91,19 @@ def summarize(
         ),
     )
     return summary
+
+
+def review_message(check: dict) -> str:
+    """Explain an unsuccessful check, including checks with no denominator."""
+    agreement = check.get("read1_agreement")
+    if agreement is None:
+        if check.get("status") == "no_read1_records":
+            return "no eligible read-1 alignments; library orientation could not be verified"
+        return "strand check is missing or incomplete; library orientation could not be verified"
+    return (
+        f"read 1 agreement {agreement:.2%}, expected {check['expected']}, "
+        f"minimum {check['minimum_read1_agreement']:.0%}"
+    )
 
 
 def eligible_strand(fields: list[str]) -> tuple[int, str] | None:

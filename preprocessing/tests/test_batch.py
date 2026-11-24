@@ -131,6 +131,42 @@ class BatchTests(unittest.TestCase):
         self.assertEqual(json.loads((output / "batch_manifest.json").read_text())["status"], "failed")
         self.assertFalse((output / "junctions.tsv").exists())
 
+    def test_paired_sample_without_a_passing_strand_check_is_never_merged(self):
+        for name in ["a2.fastq", "b2.fastq"]:
+            (self.root / name).write_text("fixture")
+        self.sheet.write_text(
+            "sample_id\tcondition\tread1\tread2\n"
+            "A\tcase\ta.fastq\ta2.fastq\nB\tcontrol\tb.fastq\tb2.fastq\n"
+        )
+        self.args.strandedness = "RF"
+        for status in ["no_read1_records", "not_checked", "unknown", None]:
+            with self.subTest(status=status):
+                self.args.output_dir = self.root / f"output-{status}"
+
+                def missing_second(job):
+                    self.fake_run(job)
+                    record = {"status": "complete"}
+                    if job.sample_id == "A":
+                        record["strand_check"] = {"status": "pass"}
+                    elif status is not None:
+                        record["strand_check"] = {"status": status, "read1_agreement": None}
+                    (job.output_dir / "run_manifest.json").write_text(json.dumps(record))
+
+                with (
+                    patch("batch_preprocessing.require_tools"),
+                    patch("batch_preprocessing.run", side_effect=missing_second),
+                    contextlib.redirect_stdout(io.StringIO()),
+                    contextlib.redirect_stderr(io.StringIO()) as err,
+                ):
+                    batch(self.args)
+                output = self.args.output_dir
+                record = json.loads((output / "batch_manifest.json").read_text())
+                self.assertEqual(record["excluded_samples"][0]["sample_id"], "B")
+                self.assertEqual((output / "samples.tsv").read_text(), "sample_id\tcondition\nA\tcase\n")
+                self.assertNotIn("B\t", (output / "junctions.tsv").read_text())
+                self.assertTrue((output / "B" / "junctions.tsv").is_file())
+                self.assertIn("could not be verified", err.getvalue())
+
     def test_failed_sample_never_publishes_a_complete_merged_table(self):
         def fail_second(job):
             if job.sample_id == "B":

@@ -272,11 +272,16 @@ cargo --version
 If those commands are missing, install Rust from
 [rustup.rs](https://rustup.rs/).
 
-Splice Girl requires **Rust 1.85 or newer**. To install the command from this
-repository, run:
+Splice Girl requires **Rust 1.85 or newer**. Install the published command:
 
 ```sh
-cargo install --path .
+cargo install splice-girl --locked
+```
+
+To install the current code from this repository instead, run:
+
+```sh
+cargo install --path . --locked
 splice-girl --version
 splice-girl --help
 ```

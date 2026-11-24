@@ -94,6 +94,45 @@ commands:\n  \
     )
 }
 
+fn command_help(program: &str, name: &str) -> Option<String> {
+    let (syntax, explanation) = match name {
+        "analyze" => (
+            "analyze <junctions.tsv> [--output <new-folder>]",
+            "Calculate Hodge measurements for each sample and gene. With --output, save sample_metrics.tsv, junction_components.tsv and run_manifest.json.\nInput columns: sample_id, gene_id, from, to, count (tab-separated).",
+        ),
+        "validate" => (
+            "validate <junctions.tsv> [manifest.tsv]",
+            "Check input formatting, sample IDs, graph structure and numerical identities. Writes no files; exits unsuccessfully if validation fails.\nManifest columns: sample_id and condition (case or control).",
+        ),
+        "gene" => (
+            "gene <GENE_ID> <junctions.tsv> <manifest.tsv> [--output <new-folder>]",
+            "Compare one gene's cycle fractions across samples. Use the exact gene_id from the junction table. Results are descriptive; no p-values are calculated.",
+        ),
+        "compare" => (
+            "compare <junctions.tsv> <manifest.tsv> [--output <new-folder>]",
+            "Summarize observed genes across case and control samples. Missing measurements remain missing. Results are descriptive; no p-values are calculated.",
+        ),
+        "report" => (
+            "report <junctions.tsv> <manifest.tsv> --output <new-folder>",
+            "Save an offline HTML report, result tables and SVG graph figures. Open report.html in a browser after completion; keep the folder together when sharing.\nThe output folder must not already exist.",
+        ),
+        "visualize" => (
+            "visualize <SAMPLE_ID> <GENE_ID> <junctions.tsv> <output.svg>",
+            "Save observed, gradient and cycle panels for one sample and gene. Use IDs from the junction table. Open the SVG in a browser on your own computer; copy it from the HPC first if needed.",
+        ),
+        "stats" => (
+            "stats <junctions.tsv> <manifest.tsv> --genes <family.tsv> --family <label> --alternative <two-sided|case-greater|case-less> --design independent --min-per-group <n> --output <new-folder> [--rank-by <absolute-effect|adjusted-p>]",
+            "Run exact label-permutation tests with BH correction for an explicit gene family. Declare the alternative, independent-sample design and minimum group size. For the cohort workflow with shared topology, use run --config <analysis.json>.",
+        ),
+        "cite" => (
+            "cite",
+            "Print the supplied CITATION.cff software citation metadata.",
+        ),
+        _ => return None,
+    };
+    Some(format!("usage: {program} {syntax}\n\n{explanation}"))
+}
+
 fn run(command: &[String]) -> Result<(), String> {
     let program = command
         .first()
@@ -110,6 +149,13 @@ fn run(command: &[String]) -> Result<(), String> {
     if matches!(first_argument.as_str(), "--version" | "-V") {
         println!("splice-girl {}", env!("CARGO_PKG_VERSION"));
         return Ok(());
+    }
+
+    if command.len() == 3 && matches!(command[2].as_str(), "--help" | "-h") {
+        if let Some(help) = command_help(&program, &first_argument) {
+            println!("{help}");
+            return Ok(());
+        }
     }
 
     if first_argument == "--start" {

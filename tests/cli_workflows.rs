@@ -50,6 +50,32 @@ fn project_path(relative: &str) -> String {
 }
 
 #[test]
+fn command_help_succeeds_without_input_files() {
+    for command in [
+        "analyze",
+        "validate",
+        "gene",
+        "compare",
+        "report",
+        "visualize",
+        "stats",
+        "cite",
+    ] {
+        for flag in ["--help", "-h"] {
+            let output = run(&[command, flag]);
+            assert!(
+                output.status.success(),
+                "{command} {flag}: {}",
+                text(&output.stderr)
+            );
+            assert!(output.stderr.is_empty());
+            assert!(text(&output.stdout).contains(&format!(" {command}")));
+            assert!(text(&output.stdout).contains("usage:"));
+        }
+    }
+}
+
+#[test]
 fn validate_reports_compact_input_and_math_summary() {
     let junctions = project_path("examples/demo/junctions.tsv");
     let output = run(&["validate", &junctions]);

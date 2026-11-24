@@ -1,5 +1,17 @@
 # Changelog
 
+## Unreleased
+
+- Exclude paired samples with missing or inconclusive strand checks from
+  sequential batches, preserving their files and recording why they were
+  excluded. Configured Rust analysis also refuses recorded inconclusive
+  checks. The assembly workflow already required a passing check.
+- Reject invalid strand agreement thresholds rather than interpreting
+  values outside 0--1 or nonfinite values.
+- Add focused `--help` and `-h` for analyze, validate, gene, compare, report,
+  visualize, stats and cite, including report/SVG viewing instructions.
+- Update the crate installation guide to show the published registry command.
+
 ## 0.2.1 — 2026-11-19
 
 - Fix the configured-analysis report footer to use the package's declared

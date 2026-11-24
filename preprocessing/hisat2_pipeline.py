@@ -22,7 +22,7 @@ from datetime import datetime, timezone
 from pathlib import Path
 
 from build_junction_gene_map import build_gene_map, write_map_manifest
-from strand_orientation import EXPECTED_READ1, summarize
+from strand_orientation import EXPECTED_READ1, review_message, summarize
 from pipeline_runtime import (
     RunInterrupted,
     add_storage_arguments,
@@ -459,12 +459,12 @@ def run(args):
     finally:
         save(manifest, record)
     print(f"Splice Girl junction input: {output / 'junctions.tsv'}")
-    if record["strand_check"]["status"] == "hold_for_review":
+    if record["strand_check"]["status"] in {"hold_for_review", "no_read1_records"}:
         print(
-            "WARNING: strand check failed; this sample is held for review and "
+            "WARNING: strand check did not pass; this sample is held for review and "
             "a batch leaves it out of the combined table "
-            f"(read 1 agreement {record['strand_check']['read1_agreement']:.2%}, "
-            f"expected {args.strandedness}, minimum 95%)."
+            f"({review_message(record['strand_check'])}).",
+            file=sys.stderr,
         )
 
 
@@ -472,9 +472,9 @@ def strand_check(qc_path, strandedness):
     """Apply the 2026-11-18 post-alignment rule to the converter's counts."""
     with qc_path.open(encoding="utf-8") as handle:
         counts = json.load(handle).get("strand_orientation")
-    if strandedness not in EXPECTED_READ1 or counts is None:
+    if strandedness not in EXPECTED_READ1:
         return {"status": "not_checked", "strandedness": strandedness}
-    return summarize(Counter(counts), strandedness)
+    return summarize(Counter(counts or {}), strandedness)
 
 
 def main():

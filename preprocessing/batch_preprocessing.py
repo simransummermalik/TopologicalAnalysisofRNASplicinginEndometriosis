@@ -32,6 +32,7 @@ from pipeline_runtime import (
     require_budget,
     storage_settings,
 )
+from strand_orientation import EXPECTED_READ1, review_message
 
 
 def load_samples(path: Path):
@@ -178,16 +179,17 @@ def batch(args):
             item["status"] = "complete"
             item["run_manifest"] = checksum(job.output_dir / "run_manifest.json")
             check = strand_status(job.output_dir / "run_manifest.json")
-            if check.get("status") == "hold_for_review":
+            if check.get("status") in {"hold_for_review", "no_read1_records"} or (
+                args.strandedness in EXPECTED_READ1 and check.get("status") != "pass"
+            ):
                 # 2026-11-18 rule: held for review, not analyzed. The run's
                 # files stay in place for inspection.
                 item["status"] = "excluded"
-                item["exclusion_reason"] = "strand_check_hold_for_review"
+                item["exclusion_reason"] = f"strand_check_{check.get('status', 'missing')}"
                 item["strand_check"] = check
                 print(
                     f"WARNING: {job.sample_id} excluded from the combined table: "
-                    f"read 1 agreement {check['read1_agreement']:.2%} is below "
-                    f"{check['minimum_read1_agreement']:.0%} for {check['expected']}.",
+                    f"{review_message(check)}.",
                     file=sys.stderr,
                 )
             save(manifest, record)

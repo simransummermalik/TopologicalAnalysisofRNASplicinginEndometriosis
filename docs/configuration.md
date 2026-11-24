@@ -73,8 +73,11 @@ Preflight checks:
    sample's conversion input, and the node rule matches the configuration.
 5. Every sample used the configured strand, anchor and duplicate policy,
    retained read-counter support 1, and completed its recorded stages. A
-   sample whose run manifest records a strand check of `hold_for_review` is
-   refused.
+   sample whose run manifest records `hold_for_review` or `no_read1_records`
+   is refused. A recorded paired-library (RF/FR) check must say `pass`;
+   `not_checked` and unknown statuses are refused. Older manifests without
+   this field remain readable; use the assembly workflow and a separate BAM
+   strand check before combining historical runs.
    Recorded counter/alignment arguments must agree with those method fields,
    and the recorded index prefix must identify the same eight index inputs.
 6. Gene-family/schema/coverage/cycle rules and any independent-subject/sample-

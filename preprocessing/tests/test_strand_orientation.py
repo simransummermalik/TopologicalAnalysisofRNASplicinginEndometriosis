@@ -76,6 +76,19 @@ class StrandOrientationTests(unittest.TestCase):
             self.assertAlmostEqual(check["read1_agreement"], 0.95)
             self.assertEqual(strand_check(qc, "unstranded")["status"], "not_checked")
 
+    def test_missing_or_empty_paired_orientation_counts_do_not_pass(self):
+        with tempfile.TemporaryDirectory() as folder:
+            qc = Path(folder) / "junction_qc.json"
+            for record in ({}, {"strand_orientation": {}}):
+                qc.write_text(json.dumps(record), encoding="utf-8")
+                self.assertEqual(strand_check(qc, "RF")["status"], "no_read1_records")
+                self.assertEqual(strand_check(qc, "FR")["status"], "no_read1_records")
+
+    def test_invalid_agreement_threshold_is_rejected(self):
+        for minimum in (-0.1, 1.1, float("nan"), float("inf")):
+            with self.subTest(minimum=minimum), self.assertRaisesRegex(ValueError, "between 0 and 1"):
+                summarize(Counter(read1_antisense=100), "RF", minimum)
+
 
 if __name__ == "__main__":
     unittest.main()

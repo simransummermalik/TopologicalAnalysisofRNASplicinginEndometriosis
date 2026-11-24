@@ -294,6 +294,19 @@ fn sample_held_by_the_strand_check_is_refused() {
 }
 
 #[test]
+fn inconclusive_or_unknown_paired_strand_checks_are_refused() {
+    let fixture = Fixture::new();
+    fixture.pipeline();
+    for status in ["no_read1_records", "not_checked", "unknown"] {
+        fixture.change("batch/S0/run_manifest.json", |run| {
+            run["strand_check"] = json!({"status": status, "read1_agreement": null})
+        });
+        fixture.refresh_child();
+        fixture.fails("failed the strand check");
+    }
+}
+
+#[test]
 fn mismatched_reference_and_node_rules_are_rejected() {
     let fixture = Fixture::new();
     fixture.pipeline();

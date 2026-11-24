@@ -7,16 +7,16 @@ explicitly configured permutation tests, SVG figures and offline reports.
 
 ## Install
 
-Build from the source checkout with Rust 1.85 or newer:
-
-```sh
-cargo install --path . --locked
-```
-
-Registry installation becomes available after the crate is published:
+Install from crates.io with Rust 1.85 or newer:
 
 ```sh
 cargo install splice-girl --locked
+```
+
+Or build the current source checkout:
+
+```sh
+cargo install --path . --locked
 ```
 
 No Python or source checkout is needed to run the installed junction-analysis
@@ -48,6 +48,8 @@ completed batch/reference/map provenance and consistency checks.
 The installed tool includes `analyze`, `validate`, `gene`, `compare`, `stats`,
 `report`, `visualize`, `prepare-shared`, `sensitivity`, `check`, `run`, `cite` and the interactive
 `--start` menu. Use `splice-girl --help` for the command list.
+For help with one command, use `splice-girl analyze --help` or
+`splice-girl report --help` in the current source version.
 
 ## Inputs and interpretation
 
