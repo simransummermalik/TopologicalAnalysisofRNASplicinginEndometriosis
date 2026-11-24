@@ -567,6 +567,39 @@ silently skip malformed input or replace an existing result.
 The error tests in `tests/cli_errors.rs` run these mistakes through the real
 command and confirm that each one exits unsuccessfully with a useful message.
 
+## Input and output files:
+
+### Input files
+
+All inputs are tab-separated text files with a header row. Small examples are
+in [`examples/demo/`](examples/demo/).
+
+| File | Needed for | Columns |
+|---|---|---|
+| Junction table (e.g. `junctions.tsv`) | every command | `sample_id`, `gene_id`, `from`, `to`, `count`: one row per splice junction per sample; `from`/`to` are the exons it joins, `count` the reads supporting it |
+| Sample manifest (e.g. `manifest.tsv`) | `compare`, `gene`, `report`, `stats` | `sample_id`, `condition` (`case` or `control`) |
+| Gene list (e.g. `stats_genes.tsv`) | `stats` | `gene_id`, one gene per row (extra columns such as category labels are kept) |
+| Analysis settings (`analysis.json`) | `check`/`run --config` | the saved study settings; see [`analysis/cohort_primary/`](analysis/cohort_primary/README.md) |
+
+For real data, the junction table is made from RNA-seq reads by the
+[Cleaver/HISAT2 pipeline](preprocessing/HISAT2_GUIDE.md).
+
+### Output files
+
+Commands given `--output <new-folder>` write these files into that folder:
+
+| File | Written by | What it contains |
+|---|---|---|
+| `sample_metrics.tsv` | `analyze`, `compare`, `report`, `stats` | One row per sample and gene: node and edge counts, total reads, signal/gradient/cycle energy, **cycle fraction**, and the PASS/FAIL math checks |
+| `junction_components.tsv` | same | One row per junction: raw count, normalized signal, gradient component and cycle component |
+| `comparisons.tsv` | `compare`, `report`, `stats` | Each sample's cycle fraction per gene with its condition, or why it was excluded |
+| `gene_summaries.tsv` | `compare`, `report`, `stats` | Per gene: case and control means, medians and ranges, and the case-minus-control difference |
+| `statistics.tsv` | `stats` | Per gene: exact permutation p-value, BH-adjusted p-value and test status |
+| `set_test.tsv`, `set_scores.tsv` | `stats` | The gene-set test across the whole gene list, and the score of every relabeling |
+| `baseline_metrics.tsv`, `baseline_comparisons.tsv` | `stats` | Simpler count and topology measures for comparison with the Hodge result |
+| `report.html`, `graphs/` | `report`, `stats` | An offline report to open in a browser, with SVG graph figures |
+| `run_manifest.json` | every saved run | The command, settings, software version and input checksums, so the run can be reproduced |
+
 ## What the output means:
 
 A result includes:
