@@ -3,6 +3,11 @@
 This checklist describes the smallest honest software release. It does not
 claim that the biological study is finished.
 
+Version 0.2.2 was published to crates.io on November 24, 2026 after its exact
+64-file archive passed tests and isolated installation. It adds focused help
+and stricter handling of recorded strand checks; see the
+[validation record](software_validation.md#022-crate-archive-acceptance--november-24-2026).
+
 The [release notes](release_notes.md) cover the current crate and its history.
 Version 0.1.0 was published under MIT. Version 0.2.0 changed the source license
 to CC BY 4.0, and version 0.2.1 with the report-footer correction was published
@@ -43,7 +48,7 @@ on November 19 that all four named contributors approved the license change.
 7. Update the version, changelog, and software-validation date together.
 8. Record contributor authorization for a license change before publishing it.
 
-`Cargo.toml` and `LICENSE` record CC BY 4.0 for 0.2.1; the already-published
+`Cargo.toml` and `LICENSE` record CC BY 4.0 for 0.2.2; the already-published
 0.1.0 crate remains under MIT. `CITATION.cff` and `splice-girl cite` provide
 the requested paper citation. The paper-citation request is separate from CC
 BY's legal attribution requirements.

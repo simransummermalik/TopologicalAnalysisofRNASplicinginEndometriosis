@@ -49,7 +49,7 @@ The installed tool includes `analyze`, `validate`, `gene`, `compare`, `stats`,
 `report`, `visualize`, `prepare-shared`, `sensitivity`, `check`, `run`, `cite` and the interactive
 `--start` menu. Use `splice-girl --help` for the command list.
 For help with one command, use `splice-girl analyze --help` or
-`splice-girl report --help` in the current source version.
+`splice-girl report --help` (available since version 0.2.2).
 
 ## Inputs and interpretation
 

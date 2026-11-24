@@ -1,5 +1,24 @@
 # Splice Girl crate releases
 
+## 0.2.2 — patch release, published November 24, 2026
+
+Adds focused command help, accepts checked cohort bundles assembled from
+separate sample jobs, and refuses recorded inconclusive strand checks during
+configured analysis. Installation instructions now lead with crates.io.
+The license remains CC BY 4.0. Repository preprocessing also has stricter
+strand-check handling; Python preprocessing scripts are outside the crate.
+
+The exact archive is reviewed with:
+
+```sh
+python3 scripts/check_crate.py --output-dir target/crate-review-0.2.2
+```
+
+The 64-file archive passed its Rust tests and the isolated installed-tool
+walkthrough. Cargo confirmed `Published splice-girl v0.2.2` on crates.io.
+Install or update with `cargo install splice-girl --version 0.2.2 --locked`.
+Start the menu with `splice-girl --start`.
+
 ## 0.2.1 — patch release, published November 19, 2026
 
 This CC BY 4.0 patch release fixes the configured-analysis report footer so it

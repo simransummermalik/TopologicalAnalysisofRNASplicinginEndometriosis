@@ -1,11 +1,31 @@
 # Splice Girl software validation
 
-**Validation date:** November 19, 2026
-**Package version:** `0.2.1`
+**Validation date:** November 24, 2026
+**Package version:** `0.2.2`
 
 This note records installation, compatibility, workflow, test, and performance
 checks for the current Rust tool. It is development evidence, not a biological
 benchmark.
+
+## 0.2.2 crate archive acceptance — November 24, 2026
+
+The exact 64-file `0.2.2` crate was packaged, extracted, tested and installed
+with `python3 scripts/check_crate.py --output-dir target/crate-review-0.2.2`.
+All 127 Rust tests passed, and the installed walkthrough completed outside
+the checkout with PATH empty. Local formatting, strict Clippy and the release
+build passed; the repository's 64 preprocessing and 32 helper-script tests
+also passed. This run used Rust 1.97.1; the minimum-compiler runs described
+below are historical and were not repeated for this patch.
+
+Cargo confirmed publication of `splice-girl v0.2.2` to crates.io. The package
+retains CC BY 4.0 and excludes raw data, references, alignments, presentation
+assets and Python preprocessing scripts. The release files were updated
+locally; publishing this crate did not push a GitHub commit or tag.
+
+The local archive was 123,221 bytes, with SHA-256
+`4119a95c847efb64acacd64855e5b711b4fc76ca899c78b7dc03e545966cfded`.
+The local `target/crate-review-0.2.2/` folder holds acceptance JSON files and
+logs; it is ignored by Git.
 
 ## Environment
 
