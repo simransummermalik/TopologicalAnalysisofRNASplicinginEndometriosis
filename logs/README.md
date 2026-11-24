@@ -49,3 +49,4 @@ commits authored with Summer's university email through October 24, 2026.
 | November 20, 2026 | Summer | HPC processing; log prepared locally | [Exploratory comparison review and SRR36710385 download](november_20th_summer.md) |
 | November 21, 2026 | Summer | HPC sample completed; log prepared locally | [SRR36710385 preprocessing completion](november_21st_summer.md) |
 | November 22–23, 2026 | Vania | Pushed | [Threshold approval, strand check, run assembly, cohort configuration and interpretation tools](november_23rd_vania.md) |
+| November 24, 2026 | Vania | Pushed | [Final sign-offs, plan amendment, dataset and pilot review, write-ups and submission README](november_24th_vania.md) |

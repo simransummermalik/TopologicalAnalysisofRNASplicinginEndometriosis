@@ -389,7 +389,8 @@ results agree with one another.
 
 **Task IDs:** P1.2, P1.3, and P1.5--P1.7
 
-- [ ] Record course deadlines and internal checkpoints.
+- [x] Record course deadlines and internal checkpoints.
+  *(Due 2026-11-24 at 11:30; deliverables recorded in decisions.)*
 - [ ] Record where the main Overleaf source lives. The source map now records
   that the parent `.tex` file is still in Overleaf and not in this checkout.
 - [x] Create `docs/decisions.md` and add dated decisions without deleting history.

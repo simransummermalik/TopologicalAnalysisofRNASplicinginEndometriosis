@@ -39,7 +39,7 @@ has not been met.
 | Task ID | Status | Evidence or next requirement |
 |---|---|---|
 | P1.1 | **Done** | This file now contains a visible status entry for every task group. |
-| P1.2 | Not started | Course checkpoints and final dates still need to be recorded. |
+| P1.2 | **Done** | *2026-11-24:* the project is due 2026-11-24 at 11:30; the required deliverables are recorded in [`decisions.md`](../docs/decisions.md). |
 | P1.3 | **Done** | [`docs/source_map.md`](../docs/source_map.md) records the local roadmap section and the missing parent Overleaf source. |
 | P1.4 | **Done** | [Data contract](../docs/data_contract.md), version 0.7, including configured statistics and offline reporting. |
 | P1.5 | **Done** | [`docs/decisions.md`](../docs/decisions.md) records dated choices and open questions without deleting history. |
